@@ -1,0 +1,244 @@
+On Hitting Opponent
+
+Stench
+Magician
+Rock Head
+Moxie
+Poison Touch
+
+
+After Being Hit
+
+Static
+Colour Change
+Shield Dust
+Rough Skin
+Effect Spore
+Synchronise
+Poison Point
+Flame Body
+Cute Charm
+Steadfast
+Anger Point
+Pickpocket
+Cursed Body
+Weak Armour
+Mummy
+Justified
+Rattled
+Iron Barbs
+Gooey
+Aftermath
+
+
+On Switch In
+
+Drizzle
+Drought
+Sand Stream
+Snow Warning
+Trace
+Forecast
+Intimidate
+Download
+Anticipation
+Forewarn
+Illusion
+Imposter
+
+
+Damage Inversion
+
+Volt Absorb
+Water Absorb
+Sap Sipper
+Flash Fire
+Motor Drive
+
+
+Stat Boosting
+
+Sand Veil
+Compound Eyes
+Swift Swim
+Chlorophyll
+Hustle
+Plus
+Minus
+Marvel Scale
+Tangled Feet
+Quick Feet
+Sand Rush
+Victory Star
+Rivalry
+Snow Cloak
+Unburden
+Solar Power
+Grass Pelt
+Defiant
+Competitive
+
+Damage Boosting
+
+Huge Power
+Guts
+Pure Power
+Sheer Force
+Toxic Boost
+Flare Boost
+Sand Force
+Strong Jaw
+Iron Fist
+Overgrow
+Blaze
+Torrent
+Swarm
+Reckless
+Technician
+Analytic
+Adaptability
+Mega Launcher
+Tough Claws
+Dark Aura
+Fairy Aura
+
+
+Prevents Stat Drops
+
+Clear Body
+Keen Eye
+Hyper Cutter
+White Smoke
+Big Pecks
+Flower Veil
+Leaf Guard
+
+
+Move Negating
+
+Wonder Guard
+Levitate
+Soundproof
+Bulletproof
+
+
+Type-Drawing
+
+Lightning Rod
+Storm Drain
+
+
+Health/Status Recovery
+
+Natural Cure
+Rain Dish
+Ice Body
+Poison Heal
+Cheek Pouch
+Hydration
+Healer
+Regenerator
+Shed Skin
+Dry Skin
+
+
+Move Type Changing
+
+Normalise
+Protean
+Refrigerate
+Pixilate
+Aerilate
+
+
+Override Other Abilities/Moves/Effects
+
+Mould Breaker
+Turboblaze
+Teravolt
+
+
+Priority Affecting
+
+Stall
+Prankster
+Gale Wings
+
+
+General Passive
+
+Speed Boost
+Battle Armour
+Sturdy
+Damp
+Limber
+Oblivious
+Cloud Nine
+Insomnia
+Immunity
+Own Tempo
+Suction Cups
+Shadow Tag
+Serene Grace
+Inner Focus
+Magma Armour
+Water Veil
+Magnet Pull
+Pressure
+Thick Fat
+Early Bird
+Run Away
+Pickup
+Truant
+Sticky Hold
+Liquid Ooze
+Arena Trap
+Vital Spirit
+Shell Armour
+Air Lock
+Gluttony
+Heatproof
+Simple
+Skill Link
+Sniper
+Magic Guard
+No Guard
+Klutz
+Super Luck
+Unaware
+Tinted Lens
+Filter
+Solid Rock
+Slow Start
+Scrappy
+Frisk
+Multitype
+Flower Gift
+Bad Dreams
+Contrary
+Unnerve
+Defeatist
+Friend Guard
+Heavy Metal
+Light Metal
+Multiscale
+Harvest
+Telepathy
+Moody
+Overcoat
+Wonder Skin
+Infiltrator
+Magic Bounce
+Zen Mode
+Aroma Veil
+Fur Coat
+Sweet Veil
+Stance Change
+Symbiosis
+Aura Break
+
+
+No Battle Effect
+
+Illuminate
+Honey Gather

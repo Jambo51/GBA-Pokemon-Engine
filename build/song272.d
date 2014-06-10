@@ -1,0 +1,2 @@
+song272.o: \
+ c:/devkitPro/GBAWorkSpace/template/source/data/audio/m4asongs/song272.s

@@ -1,0 +1,21 @@
+STATUS: Validatating gr.
+WARNING:   No explicit src path.
+STATUS: Validation succeeded.
+STATUS: Started run at: 2014-02-01, 17:16:50
+STATUS: Validatating gr.
+STATUS: Validation succeeded.
+STATUS: Preparing data.
+STATUS: Work-DIB creation.
+WARNING:   converting from 4 bpp to 2 bpp.
+STATUS: Work-DIB creation complete: 3952x16@8.
+STATUS: Tile preparation.
+STATUS:   tiling to 8x8 tiles.
+STATUS: Tile preparation complete.
+STATUS: Graphics preparation.
+STATUS:   Bitpacking: 8 -> 2.
+STATUS: Graphics preparation complete.
+STATUS: Palette preparation.
+STATUS: Palette preparation complete.
+STATUS: Data preparation complete.
+STATUS: Export to C: Text into C:\Users\Jamie\Desktop\Text.c .
+STATUS: Run completed :).

@@ -3,7 +3,6 @@
 	.global SampleLUT4A3054
 	.align 4
 
-@ Voice LUT Number 1
 SampleLUT4A3054:
 	.byte		0x01
 	.byte		0x3C

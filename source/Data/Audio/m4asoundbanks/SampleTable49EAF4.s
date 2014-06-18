@@ -3,7 +3,6 @@
 	.global SampleTable49EAF4
 	.align 4
 
-@ Voice Collection Number 1
 SampleTable49EAF4:
 @**************** Voice 000 ****************************@
 	.int		0x00003C01
@@ -146,8 +145,9 @@ SampleTable49EAF4:
 	.int		0x00000002
 	.int		0x000F0000
 @**************** Voice 035 ****************************@
+@**************** Wave Voice ****************************@
 	.int		0x00003C0B
-	.int		0x084A31EC
+	.int		WaveSample4A31EC
 	.int		0x000F0700
 @**************** Voice 036 ****************************@
 	.int		0x00003C01
@@ -339,27 +339,27 @@ SampleTable49EAF4:
 	.int		0x000F0000
 @**************** Voice 083 ****************************@
 	.int		0xC0004008
-	.int		0x084C6794
+	.int		Sample4C67A4
 	.int		0x00FF00FF
 @**************** Voice 084 ****************************@
 	.int		0xC0004008
-	.int		0x084B7F50
+	.int		Sample4B7F60
 	.int		0x00FF00FF
 @**************** Voice 085 ****************************@
 	.int		0xC7004308
-	.int		0x084B8E68
+	.int		Sample4B8E78
 	.int		0xE4AFB4FF
 @**************** Voice 086 ****************************@
 	.int		0xC0004008
-	.int		0x084B8E68
+	.int		Sample4B8E78
 	.int		0xF2FF00FF
 @**************** Voice 087 ****************************@
 	.int		0x00004108
-	.int		0x084B42A4
+	.int		Sample4B42B4
 	.int		0x7FFFFFFF
 @**************** Voice 088 ****************************@
 	.int		0xC0004008
-	.int		0x084B4B34
+	.int		Sample4B4B44
 	.int		0xF2FF00FF
 @**************** Voice 089 ****************************@
 	.int		0x98004000
@@ -375,7 +375,7 @@ SampleTable49EAF4:
 	.int		0xE2FF00FF
 @**************** Voice 092 ****************************@
 	.int		0xC0003C08
-	.int		0x084B3BB0
+	.int		Sample4B3BC0
 	.int		0xF2FF00FF
 @**************** Voice 093 ****************************@
 	.int		0xC0004800
@@ -395,7 +395,7 @@ SampleTable49EAF4:
 	.int		0xE2FF00FF
 @**************** Voice 097 ****************************@
 	.int		0x8A002108
-	.int		0x084B6544
+	.int		Sample4B6554
 	.int		0xE700EBFF
 @**************** Voice 098 ****************************@
 	.int		0xE8005400
@@ -411,23 +411,23 @@ SampleTable49EAF4:
 	.int		0xE700EBFF
 @**************** Voice 101 ****************************@
 	.int		0xC0004008
-	.int		0x084BC8B8
+	.int		Sample4BC8C8
 	.int		0xE767A5FF
 @**************** Voice 102 ****************************@
 	.int		0xC0004008
-	.int		0x084B53AC
+	.int		Sample4B53BC
 	.int		0xCC4D7FFF
 @**************** Voice 103 ****************************@
 	.int		0xC0004008
-	.int		0x084B5C60
+	.int		Sample4B5C70
 	.int		0xBC00E7FF
 @**************** Voice 104 ****************************@
 	.int		0xC0004008
-	.int		0x084C40E8
+	.int		Sample4C40F8
 	.int		0xF2FF00FF
 @**************** Voice 105 ****************************@
 	.int		0xF6004008
-	.int		0x084B6544
+	.int		Sample4B6554
 	.int		0xE700EBFF
 @**************** Voice 106 ****************************@
 	.int		0x00003C01
@@ -435,27 +435,27 @@ SampleTable49EAF4:
 	.int		0x000F0000
 @**************** Voice 107 ****************************@
 	.int		0xC0004008
-	.int		0x084B6544
+	.int		Sample4B6554
 	.int		0xE700EBFF
 @**************** Voice 108 ****************************@
 	.int		0xC0004008
-	.int		0x084B6544
+	.int		Sample4B6554
 	.int		0xD8FF0008
 @**************** Voice 109 ****************************@
 	.int		0xC0004008
-	.int		0x084C4AA0
+	.int		Sample4C4AB0
 	.int		0x00FF00FF
 @**************** Voice 110 ****************************@
 	.int		0xC0004008
-	.int		0x084B7470
+	.int		Sample4B7480
 	.int		0x00FF00FF
 @**************** Voice 111 ****************************@
 	.int		0xC0004008
-	.int		0x084B7988
+	.int		Sample4B7998
 	.int		0x00FF00FF
 @**************** Voice 112 ****************************@
 	.int		0xC0004008
-	.int		0x084B7988
+	.int		Sample4B7998
 	.int		0x00FF00FF
 @**************** Voice 113 ****************************@
 	.int		0x00003C01

@@ -37,14 +37,10 @@ const u32 pauseOutlinePalette[8] = { 0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20
 const Colour blackPalette[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 const Colour whitePalette[16] = { 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF };
 
-const ALIGN(1) u8 pokegear[] = { 0x0A, 0xCA, 0xE3, 0xDF, 0x1B, 0xDB, 0xD9, 0xD5, 0xE6, 0xFF };
-const ALIGN(1) u8 pokedex[] = { 0x0A, 0xCA, 0xE3, 0xDF, 0x1B, 0xD8, 0xD9, 0xEC, 0xFF };
-const ALIGN(1) u8 pokemon[] = { 0x0A, 0xCA, 0xE3, 0xDF, 0x1B, 0xE1, 0xE3, 0xE2, 0xFF };
-const ALIGN(1) u8 bagText[] = { 0x0A, 0xBC, 0xD5, 0xDB, 0xFF };
-const ALIGN(1) u8 save[] = { 0x0A, 0xCD, 0xD5, 0xEA, 0xD9, 0xFF };
-const ALIGN(1) u8 options[] = { 0x0A, 0xC9, 0xE4, 0xE8, 0xDD, 0xE3, 0xE2, 0xE7, 0xFF };
-const ALIGN(1) u8 exitText[] = { 0x0A, 0xBF, 0xEC, 0xDD, 0xE8, 0xFF };
-const u8* menuItems[8] = { (u8*)&pokegear, (u8*)&pokedex, (u8*)&pokemon, (u8*)&bagText, (u8*)(&(player.name)), (u8*)&save, (u8*)&options, (u8*)&exitText };
+#define NUMBASEMENUITEMS 5
+#define NUMMENUITEMS 8
+
+const char* menuItems[NUMMENUITEMS] = { "Pokégear", "Pokédex", "Pokémon", "Bag", *(&player.name), "Save", "Options", "Exit" };
 
 const u8* mapNamesTable[0x100];
 
@@ -175,21 +171,31 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 	memcpy32((void*)TilePaletteRAM(14), &pauseOutlinePalette, 8);
 	REG_BG0CNT = MAIN_BG_SETTINGS2;
 	vu32 i;
-	u32 currentY = 8;
-	for (i = 0; i < 8; i++)
+	u32 currentY = 0;
+	for (i = 0; i < NUMMENUITEMS; i++)
 	{
-		u8* pointer = menuItems[i];
-		if (pauseMenuLocation == i)
+		char* pointer = menuItems[i];
+		/*if (pauseMenuLocation == i)
 		{
-			BufferString(pointer, 0);
-			pointer = (u8*)(&(buffers[0]));
-			pointer[0] = 0xEF;
+			pointer = (char*)MemoryAllocate(12);
+			StringCopy(pointer, menuItems[i], 0);
+			pointer[0] = 'A';
+			DrawString(pointer, 0, currentY, 0x8);
+			MemoryDeallocate(pointer);
 		}
+		else if (pointer == *(&player.name))
+		{
+			pointer = (char*)MemoryAllocate(12);
+			StringCopy(pointer + 1, menuItems[i], 0);
+			pointer[0] = 'B';
+			DrawString(pointer, 0, currentY, 0x8);
+			MemoryDeallocate(pointer);
+		}*/
 		if (pointer != 0)
 		{
-			DrawString(pointer, 0, currentY, 0x8);
+			DrawString(pointer, 8, currentY, 0x8);
 		}
-		currentY += 15;
+		currentY += 16;
 	}
 	location[0] = 0xE001;
 	memset16((void*)&(location[1]), 0xE002, 7);
@@ -200,7 +206,7 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 		u8 j;
 		for (j = 0; j < 8; j++)
 		{
-			location[0x20 + (0x20 * i) + (j + 1)] = 0xE13C + (9 * i) + j;
+			location[0x20 + (0x20 * i) + (j + 1)] = 0xE200 + i + (20 * j);
 		}
 		location[0x28 + (0x20 * i)] = 0xE006;
 	}
@@ -413,7 +419,7 @@ u32 CountExtraMenuRows()
 
 u32 CountMenuRows()
 {
-	return 5 + CountExtraMenuRows();
+	return NUMBASEMENUITEMS + CountExtraMenuRows();
 }
 
 void HandleMenuMoveRequest(u8 direction)
@@ -441,7 +447,7 @@ void HandleMenuMoveRequest(u8 direction)
 
 void ExitMenu()
 {
-	ClearMenuBox((void*)0x0600F82A, 0xF, 9);
+	ClearMenuBox((void*)0x0600F82A, 18, 9);
 	SetCheckKeyPressesOverworld();
 	MemoryDeallocate(pauseMenuFunctions);
 	pauseMenuFunctions = (void*)0;
@@ -479,7 +485,7 @@ void StartMenuKeyPresses()
 		}
 		else
 		{
-			Function = (void*)(((u32*)menuLoc)[7]);
+			Function = (void*)(((u32*)menuLoc)[NUMMENUITEMS - 1]);
 			Function();
 		}
 		SetKeyIgnored(Key_A, 0);
@@ -490,7 +496,7 @@ void SetPauseMenuFunctions()
 {
 	u8 currentSlot = 0;
 	pauseMenuFunctions = MemoryAllocate(sizeof(u32) * 8);
-	u32* menuLoc = (u32*)(&(pauseMenuFunctions[0]));
+	FunctionPtr* menuLoc = pauseMenuFunctions;
 	if (CheckFlag(Flag_Pokegear) == 1)
 	{
 		menuLoc[currentSlot] = 0;//(u32)&Pokegear;
@@ -526,7 +532,7 @@ void CheckKeyPressesOverworld()
 	if (IsKeyDown(Key_Start) != 0)
 	{
 		SetPauseMenuFunctions();
-		PlaceMenuBox((u16*)0x0600F82A, (CountMenuRows() << 1) + 2, 9);
+		PlaceMenuBox((u16*)0x0600F82A, (CountMenuRows() << 1) + 1, 9);
 		SetKeyIgnored(Key_Start, 0);
 		HandleKeyPresses = &StartMenuKeyPresses;
 	}
@@ -541,15 +547,15 @@ void SetCheckKeyPressesOverworld()
 	HandleKeyPresses = &CheckKeyPressesOverworld;
 }
 
-const u8 playerName[] = { 0xC4, 0xD5, 0xE1, 0xD6, 0xE3, 0xA6, 0xA2, 0xFF };
+const char* playerName = "Jambo51";
 
 void LoadOverworld()
 {
-	SetPlayerName((u8*)(&playerName));
+	SetPlayerName(playerName);
 	player.stereoSound = 1;
 	SetFlag(Flag_UsingGBP);
 	animStruct = (TileAnimationStruct*)MemoryAllocate(sizeof(TileAnimationStruct) * 10);
-	player.trainerID = GetRandom32BitValue();
+	player.completeTrainerID = GetRandom32BitValue();
 	currentMap = (GetMapHeaderFromBankAndMapID(3, 0))[0];
 	overworldSpriteData[0].xLocation = 4;
 	overworldSpriteData[0].yLocation = 5;

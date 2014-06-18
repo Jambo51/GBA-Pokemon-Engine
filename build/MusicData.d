@@ -166,8 +166,22 @@ MusicData.o: c:/devkitPro/GBAWorkSpace/template/source/data/MusicData.c \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\GBPSongs\song_146.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\GBPSongs\song_147.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples.h \
- c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CF750.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample5048B4.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\../../GlobalDefinitions.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample502778.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample500568.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4F039C.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4EC8AC.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4C67A4.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4C4AB0.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4C40F8.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B8E78.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B7F60.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B5C70.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B53BC.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B5370.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B3720.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CF750.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CE1F4.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CCB94.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CBC34.h \
@@ -1008,9 +1022,37 @@ c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\GBPSongs\song_147.h:
 
 c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples.h:
 
-c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CF750.h:
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample5048B4.h:
 
 c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\../../GlobalDefinitions.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample502778.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample500568.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4F039C.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4EC8AC.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4C67A4.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4C4AB0.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4C40F8.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B8E78.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B7F60.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B5C70.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B53BC.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B5370.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4B3720.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CF750.h:
 
 c:/devkitPro/GBAWorkSpace/template/include/Data/Audio\M4ASamples\Sample4CE1F4.h:
 

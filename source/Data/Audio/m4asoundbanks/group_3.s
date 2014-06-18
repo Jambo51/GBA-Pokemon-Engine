@@ -189,9 +189,9 @@ group_3:
 	.int		0x00000002
 	.int		0x000F0000
 @**************** Voice 046 ****************************@
-	.int		0x00003C00
-	.int		Sample509F58
-	.int		0xEB00F6FF
+	.int		0x00003C08
+	.int		Sample4EC8AC
+	.int		0xE200F6FF
 @**************** Voice 047 ****************************@
 	.int		0x00003C00
 	.int		Sample4A73CC

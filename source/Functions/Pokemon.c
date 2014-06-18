@@ -1,6 +1,7 @@
 #include "Data/GlobalDefinitions.h"
 #include "Data/PokemonBaseData.h"
 #include "Data/MemoryLocations.h"
+#include "Data/Maps.h"
 #include "Functions/Maths.h"
 #include "Functions/TextFunctions.h"
 
@@ -72,6 +73,33 @@ typedef enum CryptionIndices
 	SpecialDefence,
 	IsObedient7
 } CryptionIndices;
+
+typedef enum EvolutionTypes
+{
+	NoEvolution,
+	MaxHappiness,
+	MaxHappinessTimeDependent,
+	LevelUp,
+	LevelUpWithStatBalance,
+	LevelUpWithPersonality,
+	LevelUpGender,
+	LevelUpTimeDependent,
+	LevelUpWithHeldItem,
+	LevelUpWithHeldItemTimeDependent,
+	LevelUpWithKnownMove,
+	LevelUpWithSpeciesInParty,
+	LevelUpWithTypeInParty,
+	LevelUpInMapName,
+	LevelUpInSpecificMap,
+	LevelUpWithWeatherOnOverworld,
+	MaxBeauty,
+	CreatesPokemon,
+	Trade,
+	TradeWhileHoldingItem,
+	TradeWithSpecificSpecies,
+	ItemUsed,
+	ItemWithConditionUsed
+} EvolutionTypes;
 
 const u16 numberOfPokemon = 649;
 
@@ -271,6 +299,48 @@ u32 PokemonDecrypter(Pokemon* thePokemon, u8 index)
 			return 0;
 			break;
 	}
+}
+
+u32 CountPokemon(Pokemon* location, u32 length)
+{
+	u32 counter = 0;
+	u32 i;
+	for (i = 0; i < length; i++)
+	{
+		if (PokemonDecrypter(&location[i], PersonalityID) != 0)
+		{
+			counter++;
+		}
+	}
+	return counter;
+}
+
+u32 CountPartyPokemon()
+{
+	return CountPokemon(partyPokemon, 6);
+}
+
+u32 CountEnemyPartyPokemon()
+{
+	return CountPokemon(enemyPokemon, 6);
+}
+
+u32 CountBoxPokemon(u32 boxID)
+{
+	u32 address = (u32)&storageBoxes;
+	address += POKEMONPERBOX * boxID * sizeof(Pokemon);
+	return CountPokemon((Pokemon*)address, POKEMONPERBOX);
+}
+
+u32 CountAllBoxPokemon()
+{
+	u32 counter = 0;
+	u32 i;
+	for (i = 0; i < NUMBOXES; i++)
+	{
+		counter += CountBoxPokemon(i);
+	}
+	return counter;
 }
 
 void SetOTName(AbridgedPokemon* thePokemon, u8* nameString)
@@ -684,7 +754,326 @@ void PokemonEncrypter(Pokemon* thePokemon, u8 index, u32 value)
 	}
 }
 
-void AddExperienceToPokemon(Pokemon* thePokemon, u32 experience)
+#define MaxHappiness 0xD0
+
+u32 HappinessCheck(Pokemon* thePokemon)
+{
+	if (PokemonDecrypter(thePokemon, Friendship) >= MaxHappiness)
+	{
+		return true;
+	}
+	return false;
+}
+
+u32 LevelCheck(Pokemon* thePokemon, u32 theLevel)
+{
+	return PokemonDecrypter(thePokemon, Level) >= theLevel;
+}
+
+u32 TimeCheck()
+{
+	return rtcData.timeOfDay != Time_Night;
+}
+
+u32 GenderCheck(Pokemon* thePokemon, u32 targetGender)
+{
+	return PokemonDecrypter(thePokemon, Gender) == targetGender;
+}
+
+u32 HeldItemCheck(Pokemon* thePokemon, u32 targetItem)
+{
+	return PokemonDecrypter(thePokemon, HeldItem) == targetItem;
+}
+
+u32 KnownMoveCheck(Pokemon* thePokemon, u32 targetMove)
+{
+	u32 i;
+	for (i = 0; i < 4; i++)
+	{
+		if (PokemonDecrypter(thePokemon, Move1 + i) == targetMove)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+u32 CheckLevelUpEvolutions(Pokemon* thePokemon)
+{
+	IndexTable* data = &evoDataPointers[PokemonDecrypter(thePokemon, Species)];
+	u32 length = data->index;
+	EvolutionData* mainDataLoc = (EvolutionData*)data->pointerToData;
+	u32 i;
+	for (i = 0; i < length; i++)
+	{
+		u32 evolutionTriggered = false;
+		switch (mainDataLoc[i].evolutionType)
+		{
+			case MaxHappiness:
+				if (HappinessCheck(thePokemon) == true)
+				{
+					// Evolve
+				}
+				break;
+			case MaxHappinessTimeDependent:
+				if (HappinessCheck(thePokemon) == true && TimeCheck() == mainDataLoc[i].condition2)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUp:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpTimeDependent:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && TimeCheck() == mainDataLoc[i].condition2)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpGender:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && GenderCheck(thePokemon, mainDataLoc[i].condition2) == true)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpInSpecificMap:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && currentMap.mapBankMapCombined == mainDataLoc[i].condition2)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpInMapName:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && currentMap.mapNameID == mainDataLoc[i].condition2)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpWithHeldItem:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && HeldItemCheck(thePokemon, mainDataLoc[i].condition2) == true)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpWithHeldItemTimeDependent:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && HeldItemCheck(thePokemon, mainDataLoc[i].condition2) == true && TimeCheck() == mainDataLoc[i].condition2)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpWithKnownMove:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && KnownMoveCheck(thePokemon, mainDataLoc[i].condition2) == true)
+				{
+					// Evolve
+				}
+				break;
+			case LevelUpWithPersonality:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true)
+				{
+					u16 targetSpecies;
+					if (UnsignedModulus((PokemonDecrypter(thePokemon, PersonalityID) & 0xFFFF), 10) > 4)
+					{
+						targetSpecies = mainDataLoc[i].condition2;
+					}
+					else
+					{
+						targetSpecies = mainDataLoc[i].resultingSpecies;
+					}
+				}
+			case LevelUpWithSpeciesInParty:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true)
+				{
+					u32 j;
+					for (j = 0; j < 6; j++)
+					{
+						if (PokemonDecrypter(&partyPokemon[j], Species) == mainDataLoc[i].condition2)
+						{
+							// Evolve
+							break;
+						}
+					}
+				}
+				break;
+			case LevelUpWithStatBalance:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1Split.byte1) == true)
+				{
+					u32 statOne = PokemonDecrypter(thePokemon, Attack + mainDataLoc[i].condition2Split.byte1);
+					u32 statTwo = PokemonDecrypter(thePokemon, Attack + mainDataLoc[i].condition2Split.byte2);
+					u32 success = false;
+					switch (mainDataLoc[i].condition1Split.byte2)
+					{
+						case 0:
+							if (statOne == statTwo)
+							{
+								success = true;
+							}
+							break;
+						case 1:
+							if (statOne < statTwo)
+							{
+								success = true;
+							}
+							break;
+						case 2:
+							if (statOne > statTwo)
+							{
+								success = true;
+							}
+							break;
+						case 3:
+							if (statOne <= statTwo)
+							{
+								success = true;
+							}
+							break;
+						case 4:
+							if (statOne >= statTwo)
+							{
+								success = true;
+							}
+							break;
+						default:
+							break;
+					}
+					if (success == true)
+					{
+						// Evolve
+					}
+				}
+				break;
+			case LevelUpWithTypeInParty:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true)
+				{
+					u32 j;
+					for (j = 0; j < 6; j++)
+					{
+						Pokemon* p = &partyPokemon[j];
+						u16 c = mainDataLoc[i].condition2;
+						if (PokemonDecrypter(p, Type1) == c || PokemonDecrypter(p, Type2) == c)
+						{
+							// Evolve
+							break;
+						}
+					}
+				}
+				break;
+			case LevelUpWithWeatherOnOverworld:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true)
+				{
+					u8 mapBank = currentMap.mapLocation.mapBank;
+					u8 map = currentMap.mapLocation.map;
+					MapHeader* header = maps[mapBank][map];
+					if (header->weatherType == mainDataLoc[i].condition2)
+					{
+						// Evolve
+					}
+				}
+				break;
+			case MaxBeauty:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true && PokemonDecrypter(thePokemon, Beauty) >= MaxHappiness)
+				{
+					// Evolve
+				}
+				break;
+			case CreatesPokemon:
+				if (LevelCheck(thePokemon, mainDataLoc[i].condition1) == true)
+				{
+					if (CountPartyPokemon() < 6)// && PlayerHasItemCategory(Category_Balls) == true)
+					{
+						// Create Pokémon
+					}
+					// Evolve
+				}
+			default:
+				break;
+		}
+		if (evolutionTriggered == true)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+u32 CheckTradeEvolutions(Pokemon* incomingPokemon, Pokemon* outgoingPokemon)
+{
+	IndexTable* data = &evoDataPointers[PokemonDecrypter(incomingPokemon, Species)];
+	u32 length = data->index;
+	EvolutionData* mainDataLoc = (EvolutionData*)data->pointerToData;
+	u32 i;
+	for (i = 0; i < length; i++)
+	{
+		u32 evolutionTriggered = false;
+		switch (mainDataLoc[i].evolutionType)
+		{
+			case Trade:
+				// Evolve
+				break;
+			case TradeWhileHoldingItem:
+				if (HeldItemCheck(incomingPokemon, mainDataLoc[i].condition1) == true)
+				{
+					// Evolve
+				}
+				break;
+			case TradeWithSpecificSpecies:
+				if (PokemonDecrypter(outgoingPokemon, Species) == mainDataLoc[i].condition1)
+				{
+					// Evolve
+				}
+				break;
+			default:
+				break;
+		}
+		if (evolutionTriggered == true)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+u32 CheckStoneEvolutions(Pokemon* thePokemon, u16 itemID)
+{
+	IndexTable* data = &evoDataPointers[PokemonDecrypter(thePokemon, Species)];
+	u32 length = data->index;
+	EvolutionData* mainDataLoc = (EvolutionData*)data->pointerToData;
+	u32 i;
+	for (i = 0; i < length; i++)
+	{
+		u32 evolutionTriggered = false;
+		if (itemID == mainDataLoc[i].condition1)
+		{
+			switch (mainDataLoc[i].evolutionType)
+			{
+				case ItemUsed:
+					// Evolve
+					break;
+				case ItemWithConditionUsed:
+					switch (mainDataLoc[i].condition2Split.byte1)
+					{
+						case 0:
+							if (GenderCheck(thePokemon, mainDataLoc[i].condition2Split.byte2) == true)
+							{
+								// Evolve
+							}
+							break;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		if (evolutionTriggered == true)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+u32 AddExperienceToPokemon(Pokemon* thePokemon, u32 experience)
 {
 	u32 currentExp = PokemonDecrypter(thePokemon, Experience);
 	u32 maxExp = GetLevel100MaxExperience(PokemonDecrypter(thePokemon, Species));
@@ -698,10 +1087,17 @@ void AddExperienceToPokemon(Pokemon* thePokemon, u32 experience)
 		value = maxExp;
 	}
 	PokemonEncrypter(thePokemon, Experience, value);
+	u32 levelUpCheckRequired = false;
 	while (ExperienceGainCausesLevelUp(PokemonDecrypter(thePokemon, Species), PokemonDecrypter(thePokemon, Experience), PokemonDecrypter(thePokemon, Level)) == 1)
 	{
 		PokemonEncrypter(thePokemon, Level, PokemonDecrypter(thePokemon, Level) + 1);
+		levelUpCheckRequired = true;
 	}
+	if (levelUpCheckRequired == true)
+	{
+		return CheckLevelUpEvolutions(thePokemon);
+	}
+	return false;
 }
 
 bool PokemonIsShiny(Pokemon* thePokemon)
@@ -985,6 +1381,6 @@ void GeneratePokemon(Pokemon* thePokemon, u8 level, u16 species)
 void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species)
 {
 	GeneratePokemon(thePokemon, level, species);
-	PokemonEncrypter(thePokemon, OTID, player.trainerID);
+	PokemonEncrypter(thePokemon, OTID, player.completeTrainerID);
 	PokemonEncrypter(thePokemon, OTName, (u32)(&player.name));
 }

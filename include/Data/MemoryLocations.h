@@ -56,7 +56,7 @@ extern void (*MusicEngine)(void);
 extern TileAnimationStruct* animStruct;
 extern ConnectionStruct* connectStruct;
 extern PaletteFadeStruct fadeStruct[32];
-extern void* pauseMenuFunctions;
+extern FunctionPtr* pauseMenuFunctions;
 extern MemoryManagementStructure mallocData;
 extern SpriteManagementStructure sprallocData;
 extern PaletteManagementStructure pallocData;

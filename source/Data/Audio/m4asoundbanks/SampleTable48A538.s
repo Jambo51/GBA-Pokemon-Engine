@@ -3,7 +3,6 @@
 	.global SampleTable48A538
 	.align 4
 
-@ Voice Collection Number 48
 SampleTable48A538:
 @**************** Voice 000 ****************************@
 	.int		0x00003C00

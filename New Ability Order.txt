@@ -6,7 +6,6 @@ Rock Head
 Moxie
 Poison Touch
 
-
 After Being Hit
 
 Static
@@ -30,7 +29,6 @@ Iron Barbs
 Gooey
 Aftermath
 
-
 On Switch In
 
 Drizzle
@@ -46,7 +44,6 @@ Forewarn
 Illusion
 Imposter
 
-
 Damage Inversion
 
 Volt Absorb
@@ -54,7 +51,6 @@ Water Absorb
 Sap Sipper
 Flash Fire
 Motor Drive
-
 
 Stat Boosting
 
@@ -102,7 +98,6 @@ Tough Claws
 Dark Aura
 Fairy Aura
 
-
 Prevents Stat Drops
 
 Clear Body
@@ -113,7 +108,6 @@ Big Pecks
 Flower Veil
 Leaf Guard
 
-
 Move Negating
 
 Wonder Guard
@@ -121,12 +115,10 @@ Levitate
 Soundproof
 Bulletproof
 
-
 Type-Drawing
 
 Lightning Rod
 Storm Drain
-
 
 Health/Status Recovery
 
@@ -141,7 +133,6 @@ Regenerator
 Shed Skin
 Dry Skin
 
-
 Move Type Changing
 
 Normalise
@@ -150,20 +141,17 @@ Refrigerate
 Pixilate
 Aerilate
 
-
 Override Other Abilities/Moves/Effects
 
 Mould Breaker
 Turboblaze
 Teravolt
 
-
 Priority Affecting
 
 Stall
 Prankster
 Gale Wings
-
 
 General Passive
 
@@ -236,7 +224,6 @@ Sweet Veil
 Stance Change
 Symbiosis
 Aura Break
-
 
 No Battle Effect
 

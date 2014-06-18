@@ -19,6 +19,8 @@
 
 #include "tonc.h"
 
+typedef void (*FunctionPtr)(void);
+
 // --- primary typedefs ---
 typedef enum { Time_Day, Time_Morning, Time_Afternoon, Time_Night } Times;
 
@@ -39,6 +41,8 @@ typedef enum { Vertical_8x16, Vertical_8x32, Vertical_16x32, Vertical_32x64 } Ve
 typedef enum { Song_None, Song_CrystalTitleScreen, Song_GSCRoute1, Song_GSCRoute3, Song_GSCRoute11, Song_MagnetTrainFanfare, Song_KantoGymBattle, Song_KantoTrainerBattle, Song_KantoWildBattle, Song_GSCPokecentre, Song_HikerEncounter, Song_ClassicLassEncounter, Song_PolicemanEncounter, Song_HealingFanfare, Song_GSCLavenderTown, Song_Route2, Song_GSCMountMoon, Song_GSCFollowMe, Song_GSCGameCorner, Song_GSCRidingTheBike, Song_GSCHallOfFame, Song_GSCViridianCity, Song_GSCCeladonCity, Song_GSCTrainerVictoryFanfare, Song_GSCWildVictoryFanfare, Song_GSCGymVictoryFanfare, Song_DanceOfTheClefairy, Song_GSCGym, Song_GSCPalletTown, Song_GSCOaksLab, Song_GSCOaksTheme, Song_SilverEncounter, Song_SilverOutro, Song_GSCSurfing, Song_GSCEvolution, Song_NationalPark, Song_GSCCredits, Song_AzaleaTown, Song_CherrygroveCity, Song_KimonoGirlEncounter, Song_UnionCave, Song_JohtoWildBattle, Song_JohtoTrainerBattle, Song_Route30, Song_EcruteakCity, Song_VioletCity, Song_JohtoGymBattle, Song_GSCChampionBattle, Song_SilverBattle, Song_TeamRocketBattle, Song_ElmsLab, Song_DarkCave, Song_Route29, Song_Route34, Song_SSAqua, Song_YoungsterEncounter, Song_GSCLassEncounter, Song_TeamRocketEncounter, Song_PokecollectorEncounter, Song_SageEncounter, Song_NewBarkTown, Song_GoldenrodCity, Song_GSCVermilionCity, Song_RadioFanfare1, Song_PokefluteRadio, Song_TinTower, Song_SproutTower, Song_BurnedTower, Song_OlivineLighthouse, Song_Route42, Song_GSCIndigoPlateau, Song_Route38, Song_RocketHideout, Song_DragonsDen, Song_JohtoLegendaryBattle, Song_UnownRadioSignal, Song_GSCWildBattleVitoryNoIntro, Song_Route26, Song_EncounterWithMum, Song_VictoryRoad, Song_PokemonLullaby, Song_PokemonMarch, Song_GSIntro1, Song_GSIntro2, Song_ContinueMenuTheme, Song_InsideTheRuins, Song_RocketRadioTowerTakeover, Song_EcruteakDanceTheatre, Song_PreparingForBugCatchingContest, Song_BugCatchingContest, Song_RocketRadioSignal, Song_Unknown, Song_TheEnd, Song_ClairsTheme, Song_Unknown2, Song_Unknown3, Song_BuenasRadioShow, Song_EusinesTheme, Song_CrystalIntro, Song_BattleTower, Song_LegendaryBeastBattle, Song_BattleTowerInterior, Song_PokecomCentre, Song_RBYPalletTown, Song_RBYPokecentre, Song_RBYGym, Song_RBYViridianCity, Song_CeruleanCity, Song_RBYCeladonCity, Song_CinnabarIsland, Song_RBYVermilionCity, Song_RBYLavenderTown, Song_SSAnne, Song_RBYOaksTheme, Song_BluesTheme, Song_RBYFollowMe, Song_RBYEvolution, Song_RBYHealingFanfare, Song_RBYRoute1, Song_Route24, Song_RBYRoute3, Song_RBYRoute11, Song_RBYIndigoPlateau, Song_RBYTitleScreen, Song_RBYCredits, Song_RBYHallOfFame, Song_RBYOaksLab, Song_JigglypuffsLullaby, Song_RBYRidingTheBike, Song_RBYSurfing, Song_RBYGameCorner, Song_RBYIntro, Song_UnknownDungeon, Song_ViridianForest, Song_RBYMountMoon, Song_CinnabarMansion, Song_PokemonTower, Song_SilphCo, Song_RBYEvilEncounter, Song_RBYFemaleEncounter, Song_RBYMaleEncounter, Song_RBYGymBattle, Song_RBYTrainerBattle, Song_RBYWildBattle, Song_RBYChampionBattle, Song_RBYTrainerVictoryFanfare, Song_RBYWildVictoryFanfare, Song_RBYGymVictoryFanfare } Songs;
 
 typedef enum { Gender_Male, Gender_Female, Gender_Genderless = 0xFF } PokemonGenders;
+
+typedef enum { Category_Items, Category_KeyItems, Category_Berries, Category_Apricorns, Category_TechnicalMachines, Category_Balls } ItemCategories;
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -252,14 +256,23 @@ typedef struct WildData
 	WildGrassPokemonData* fishingRodData;
 } WildData;
 
+typedef struct MapBankMapCombo
+{
+	u8 mapBank;
+	u8 map;
+} MapBankMapCombo;
+
 typedef struct MapHeader {
 	MapFooter* footerLocation;
 	u32* eventsLocation;
 	LevelScript* levelScriptsLocation;
 	MapConnection* connections;
 	u16 musicTrack;
-	u8 mapBank;
-	u8 map;
+	union
+	{
+		MapBankMapCombo mapLocation;
+		u16 mapBankMapCombined;
+	};
 	u8 mapNameID;
 	u8 caveStatus;
 	u8 weatherType;
@@ -278,8 +291,17 @@ typedef struct BagItem {
 	u16 itemID;
 } BagItem;
 
+typedef struct TrainerIDStruct {
+	u16 trainerID;
+	u16 secretID;
+} TrainerIDStruct;
+
 typedef struct Player {
-	u32 trainerID;
+	union
+	{
+		u32 completeTrainerID;
+		TrainerIDStruct trainerIDStruct;
+	};
 	u16 hoursPlayed;
 	u8 minutesPlayed;
 	u8 secondsPlayed;
@@ -463,11 +485,29 @@ typedef struct NPCData {
 	u8 isMoving:1;
 } NPCData;
 
+typedef struct Double8BitValue
+{
+	u8 byte1;
+	u8 byte2;
+} Double8BitValue;
+
 typedef struct EvolutionData {
 	u16 evolutionType;
-	u16 condition1;
-	u16 resultingSpecies;
-	u16 condition2;
+	union
+	{
+		u16 condition1;
+		Double8BitValue condition1Split;
+	};
+	union
+	{
+		u16 resultingSpecies;
+		Double8BitValue resultingSpeciesSplit;
+	};
+	union
+	{
+		u16 condition2;
+		Double8BitValue condition2Split;
+	};
 } EvolutionData;
 
 typedef struct KeyBuffer {
@@ -644,9 +684,12 @@ typedef struct Pokemon {
 	u16 specialDefence;
 } Pokemon;
 
+#define NUMBOXES 25
+#define POKEMONPERBOX 30
+
 typedef struct PokemonStorageBoxes {
 	u32 currentBoxID;
-	AbridgedPokemon boxData[25][30];
+	AbridgedPokemon boxData[NUMBOXES][POKEMONPERBOX];
 } PokemonStorageBoxes;
 
 typedef struct BaseData {

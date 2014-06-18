@@ -32,7 +32,7 @@ void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 	}
 }
 
-void StoreTextIntoBuffer(u8* bufferLocation, u8* textStringLocation, u32 length)
+void StoreTextIntoBuffer(char* bufferLocation, char* textStringLocation, u32 length)
 {
 	if (length > 0x20)
 	{
@@ -49,11 +49,11 @@ void StoreTextIntoBuffer(u8* bufferLocation, u8* textStringLocation, u32 length)
 	}
 }
 
-extern void SetPlayerName(u8*);
+extern void SetPlayerName(char*);
 
-void SetPlayerName(u8* nameString)
+void SetPlayerName(char* nameString)
 {
-	StoreTextIntoBuffer((u8*)&player.name, nameString, 10);
+	StoreTextIntoBuffer(player.name, nameString, 10);
 }
 
 void FadeToBlackPreGameStart()
@@ -69,6 +69,15 @@ int main()
 {
 	StartTimer(2, 0, 0);
 	StartTimer(3, 1, 0);
+	tte_init_chr4c(
+	        0,
+	        BG_CBB(15) | BG_SBB(10),
+	        0xF000,
+	        bytes2word(13,15,0,0),
+	        CLR_BLACK,
+	        &verdana9_b4Font,
+	        (fnDrawg)chr4c_drawg_b4cts_fast);
+	tte_init_con();
 	rtc_enable();
 	irq_init(NULL);
 	irq_add(II_VBLANK, NULL);
@@ -86,11 +95,14 @@ int main()
 	HandleKeyPresses = &IgnoreKeyPresses;
 	CallbackMain = &FadeToBlackPreGameStart;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
-	SetMusicEngine(GBPSoundsEngine);
+	SetMusicEngine(M4AEngine);
 	u16* pRAM = (u16*)TilePaletteRAM(0);
 	pRAM[0] = 0x7FFF;
 	SetupFadeScreenSlot(2, 0, &blackPalette);
 	pauseMenuLocation = 0;
+	SetFlag(Flag_Pokedex);
+	SetFlag(Flag_Pokegear);
+	SetFlag(Flag_PokemonMenu);
 	while(1)
 	{
 		VBlankIntrWait();

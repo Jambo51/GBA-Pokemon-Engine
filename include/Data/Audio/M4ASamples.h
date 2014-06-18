@@ -1,6 +1,20 @@
 #ifndef M4AAUDIO_SAMPLES_HEADER_H_
 #define M4AAUDIO_SAMPLES_HEADER_H_
 
+#include "M4ASamples\Sample5048B4.h"
+#include "M4ASamples\Sample502778.h"
+#include "M4ASamples\Sample500568.h"
+#include "M4ASamples\Sample4F039C.h"
+#include "M4ASamples\Sample4EC8AC.h"
+#include "M4ASamples\Sample4C67A4.h"
+#include "M4ASamples\Sample4C4AB0.h"
+#include "M4ASamples\Sample4C40F8.h"
+#include "M4ASamples\Sample4B8E78.h"
+#include "M4ASamples\Sample4B7F60.h"
+#include "M4ASamples\Sample4B5C70.h"
+#include "M4ASamples\Sample4B53BC.h"
+#include "M4ASamples\Sample4B5370.h"
+#include "M4ASamples\Sample4B3720.h"
 #include "M4ASamples\Sample4CF750.h"
 #include "M4ASamples\Sample4CE1F4.h"
 #include "M4ASamples\Sample4CCB94.h"

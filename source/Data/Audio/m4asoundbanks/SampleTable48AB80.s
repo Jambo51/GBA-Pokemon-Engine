@@ -3,7 +3,6 @@
 	.global SampleTable48AB80
 	.align 4
 
-@ Voice Collection Number 58
 SampleTable48AB80:
 @**************** Voice 000 ****************************@
 	.int		0x00003C00
@@ -22,13 +21,13 @@ SampleTable48AB80:
 	.int		Sample4E5F74
 	.int		0xA5DA00FF
 @**************** Voice 004 ****************************@
-	.int		0x00000040
-	.int		0x0848AB80
-	.int		0x084A3138
+	.int		0x00000080
+	.int		SampleTable48A0D0
+	.int		0x00000000
 @**************** Voice 005 ****************************@
 	.int		0x00000040
-	.int		SampleTable48AB80
-	.int		0x084A3054
+	.int		SampleTable48A508
+	.int		SampleLUT4A3054
 @**************** Voice 006 ****************************@
 	.int		0x00003C00
 	.int		Sample4FE58C
@@ -215,8 +214,8 @@ SampleTable48AB80:
 	.int		0xE200F6FF
 @**************** Voice 052 ****************************@
 	.int		0x00000040
-	.int		SampleTable48AB80
-	.int		0x084A309C
+	.int		SampleTable48A538
+	.int		SampleLUT4A309C
 @**************** Voice 053 ****************************@
 	.int		0x00003C01
 	.int		0x00000002
@@ -247,8 +246,8 @@ SampleTable48AB80:
 	.int		0x000F0000
 @**************** Voice 060 ****************************@
 	.int		0x00000040
-	.int		SampleTable48AB80
-	.int		0x084A30E4
+	.int		SampleTable48A55C
+	.int		SampleLUT4A30E4
 @**************** Voice 061 ****************************@
 	.int		0x00003C01
 	.int		0x00000002
@@ -256,15 +255,15 @@ SampleTable48AB80:
 @**************** Voice 062 ****************************@
 	.int		0x00000040
 	.int		SampleTable48AB80
-	.int		0x084A3138
+	.int		SampleLUT4A3138
 @**************** Voice 063 ****************************@
 	.int		0x00003C01
 	.int		0x00000002
 	.int		0x000F0000
 @**************** Voice 064 ****************************@
 	.int		0x00000040
-	.int		SampleTable48AB80
-	.int		0x084A3180
+	.int		SampleTable48AB98
+	.int		SampleLUT4A3180
 @**************** Voice 065 ****************************@
 	.int		0x00003C01
 	.int		0x00000002
@@ -370,12 +369,14 @@ SampleTable48AB80:
 	.int		0x00000002
 	.int		0x000F0000
 @**************** Voice 091 ****************************@
+@**************** Wave Voice ****************************@
 	.int		0x00003C0B
-	.int		0x084A323C
+	.int		WaveSample4A323C
 	.int		0x020F0700
 @**************** Voice 092 ****************************@
+@**************** Wave Voice ****************************@
 	.int		0x00003C0B
-	.int		0x084A324C
+	.int		WaveSample4A324C
 	.int		0x020F0700
 @**************** Voice 093 ****************************@
 	.int		0x00003C01
@@ -430,9 +431,9 @@ SampleTable48AB80:
 	.int		0x00000002
 	.int		0x00000200
 @**************** Voice 106 ****************************@
-	.int		0x00000040
-	.int		0x0848AB80
-	.int		0x084A3138
+	.int		0x00000080
+	.int		SampleTable489F74
+	.int		0x00000000
 @**************** Voice 107 ****************************@
 	.int		0x00003C01
 	.int		0x00000002

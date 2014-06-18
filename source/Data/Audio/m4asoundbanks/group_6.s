@@ -6,11 +6,11 @@
 group_6:
 @**************** Voice 000 ****************************@
 	.int		0x00003C08
-	.int		Sample4EDD7C
+	.int		Sample4F039C
 	.int		0xA500F9FF
 @**************** Voice 001 ****************************@
 	.int		0x00003C10
-	.int		Sample4EDD7C
+	.int		Sample4F039C
 	.int		0xA5FF00FF
 @**************** Voice 002 ****************************@
 	.int		0x00003C00

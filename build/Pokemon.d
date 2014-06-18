@@ -18,6 +18,7 @@ Pokemon.o: c:/devkitPro/GBAWorkSpace/template/source/functions/Pokemon.c \
  c:/devkitPro/GBAWorkSpace/template/include/Data/PokemonBaseData.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/GlobalDefinitions.h \
  c:/devkitPro/GBAWorkSpace/template/include/Data/MemoryLocations.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/Maps.h \
  c:/devkitPro/GBAWorkSpace/template/include/Functions/Maths.h \
  c:/devkitPro/GBAWorkSpace/template/include/Functions/TextFunctions.h
 
@@ -58,6 +59,8 @@ c:/devkitPro/GBAWorkSpace/template/include/Data/PokemonBaseData.h:
 c:/devkitPro/GBAWorkSpace/template/include/Data/GlobalDefinitions.h:
 
 c:/devkitPro/GBAWorkSpace/template/include/Data/MemoryLocations.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/Maps.h:
 
 c:/devkitPro/GBAWorkSpace/template/include/Functions/Maths.h:
 

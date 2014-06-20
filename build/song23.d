@@ -1,2 +1,0 @@
-song23.o: \
- c:/devkitPro/GBAWorkSpace/template/source/data/audio/m4asongs/song23.s

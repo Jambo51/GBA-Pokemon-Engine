@@ -24,7 +24,7 @@ typedef void (*FunctionPtr)(void);
 // --- primary typedefs ---
 typedef enum { Time_Day, Time_Morning, Time_Afternoon, Time_Night } Times;
 
-typedef enum { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokedex = 0x800, Flag_PokemonMenu = 0x801, Flag_Pokegear = 0x802 } Flags;
+typedef enum { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex = 0x801, Flag_PokemonMenu = 0x802  } Flags;
 
 typedef enum { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None } Types;
 
@@ -356,7 +356,8 @@ typedef struct GBPToneData {
 	u8 modulationCountdown:6;
 	u8 modulationStatus:1;
 	u8 modulationActivationStatus:1;
-	u8 modulationDelay;
+	u8 modulationDelay:6;
+	u8 modulationMode:2;
 	u8 modulationDepth;
 	u8 modulationSpeedDelay:4;
 	u8 modulationSpeed:4;
@@ -392,7 +393,8 @@ typedef struct GBPWaveData {
 	u8 modulationCountdown:6;
 	u8 modulationStatus:1;
 	u8 modulationActivationStatus:1;
-	u8 modulationDelay;
+	u8 modulationDelay:6;
+	u8 modulationMode:2;
 	u8 modulationDepth;
 	u8 modulationSpeedDelay:4;
 	u8 modulationSpeed:4;

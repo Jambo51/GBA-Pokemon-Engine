@@ -8,7 +8,7 @@
 
 #include "Data/GlobalDefinitions.h"
 #include "Data/MemoryLocations.h"
-#define DEFAULTDEADTIME 16
+#define DEFAULTDEADTIME 8
 
 void IgnoreKeyPresses()
 {

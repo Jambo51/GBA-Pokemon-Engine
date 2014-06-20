@@ -161,6 +161,13 @@ s32 CharacterComparison(u8 charOne, u8 charTwo)
 	return Sign(charOne - charTwo);
 }
 
+void DrawCharacter(char c, u8 x, u8 y, u8 colour)
+{
+	tte_printf("#{P:%d,%d}", x, y);
+	char string[] = { c, '\0' };
+	tte_printf((char*)&string);
+}
+
 void DrawString(char* string, u8 x, u8 y, u8 colour)
 {
 	if (string != 0)

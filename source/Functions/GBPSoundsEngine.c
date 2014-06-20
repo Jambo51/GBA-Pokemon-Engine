@@ -351,7 +351,8 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 				u8 theByte = theData[0].nextInstruction[2];
 				if (theByte != 0)
 				{
-					theData[0].modulationDelay = theData[0].nextInstruction[1];
+					theData[0].modulationDelay = theData[0].nextInstruction[1] & 0x3F;
+					theData[0].modulationMode = (theData[0].nextInstruction[1] & 0xC0) >> 6;
 					theData[0].modulationDepth = (theByte & 0xF0) >> 4;
 					theData[0].modulationSpeed = theByte & 0xF;
 					theData[0].modulationActivationStatus = 1;
@@ -544,7 +545,8 @@ u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID)
 				u8 theByte = theData[0].nextInstruction[2];
 				if (theByte != 0)
 				{
-					theData[0].modulationDelay = theData[0].nextInstruction[1];
+					theData[0].modulationDelay = theData[0].nextInstruction[1] & 0x3F;
+					theData[0].modulationMode = (theData[0].nextInstruction[1] & 0xC0) >> 6;
 					theData[0].modulationDepth = (theByte & 0xF0) >> 4;
 					theData[0].modulationSpeed = theByte & 0xF;
 					theData[0].modulationActivationStatus = 1;
@@ -708,15 +710,42 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 	theData[0].modulationSpeedDelay = theData[0].modulationSpeed;
 	u8 theValue = 0;
 	u16 pitch = theData[0].pitch;
-	u8 halfValue = theData[0].modulationDepth >> 1;
-	if (theData[0].modulationStatus == 0)
+	switch (theData[0].modulationMode)
 	{
-		theValue = 1;
-		pitch += (theData[0].modulationDepth - halfValue);
-	}
-	else
-	{
-		pitch -= halfValue;
+		case 0:
+		{
+			u8 halfValue = theData[0].modulationDepth >> 1;
+			if (theData[0].modulationStatus == 0)
+			{
+				theValue = 1;
+				pitch += (theData[0].modulationDepth - halfValue);
+			}
+			else
+			{
+				pitch -= halfValue;
+			}
+			break;
+		}
+		case 1:
+			if (theData[0].modulationStatus == 0)
+			{
+				theValue = 1;
+			}
+			else
+			{
+				pitch -= theData[0].modulationDepth;
+			}
+			break;
+		case 2:
+			if (theData[0].modulationStatus == 0)
+			{
+				theValue = 1;
+			}
+			else
+			{
+				pitch += theData[0].modulationDepth;
+			}
+			break;
 	}
 	theData[0].modulationStatus = theValue;
 	return pitch;
@@ -780,15 +809,42 @@ void ModulateWaveTrack(GBPWaveData* theData)
 				theData[0].modulationSpeedDelay = theData[0].modulationSpeed;
 				u8 theValue = 0;
 				u16 pitch = theData[0].pitch;
-				u8 halfValue = theData[0].modulationDepth >> 1;
-				if (theData[0].modulationStatus == 0)
+				switch (theData[0].modulationMode)
 				{
-					theValue = 1;
-					pitch += (theData[0].modulationDepth - halfValue);
-				}
-				else
-				{
-					pitch -= halfValue;
+					case 0:
+					{
+						u8 halfValue = theData[0].modulationDepth >> 1;
+						if (theData[0].modulationStatus == 0)
+						{
+							theValue = 1;
+							pitch += (theData[0].modulationDepth - halfValue);
+						}
+						else
+						{
+							pitch -= halfValue;
+						}
+						break;
+					}
+					case 1:
+						if (theData[0].modulationStatus == 0)
+						{
+							theValue = 1;
+						}
+						else
+						{
+							pitch -= theData[0].modulationDepth;
+						}
+						break;
+					case 2:
+						if (theData[0].modulationStatus == 0)
+						{
+							theValue = 1;
+						}
+						else
+						{
+							pitch += theData[0].modulationDepth;
+						}
+						break;
 				}
 				theData[0].modulationStatus = theValue;
 				tone1Controller[10] = pitch;

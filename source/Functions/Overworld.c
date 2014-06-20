@@ -171,23 +171,26 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 	memcpy32((void*)TilePaletteRAM(14), &pauseOutlinePalette, 8);
 	REG_BG0CNT = MAIN_BG_SETTINGS2;
 	vu32 i;
-	u32 currentY = 0;
+	u32 currentPosition = 0;
 	for (i = 0; i < NUMMENUITEMS; i++)
 	{
-		char* pointer = menuItems[i];
-		if (pauseMenuLocation == i)
+		if ((i < 3 && CheckFlag(Flag_Pokegear + i) == true) || i >= 3)
 		{
-			pointer = (char*)MemoryAllocate(12);
-			StringCopy(pointer + 1, menuItems[i], 0);
-			pointer[0] = '~' + 1;
-			DrawString(pointer, 0, currentY, 0x8);
-			MemoryDeallocate(pointer);
+			char* pointer = menuItems[i];
+			if (pauseMenuLocation == currentPosition)
+			{
+				pointer = (char*)MemoryAllocate(12);
+				StringCopy(pointer + 1, menuItems[i], 0);
+				pointer[0] = '~' + 1;
+				DrawString(pointer, 0, currentPosition << 4, 0x8);
+				MemoryDeallocate(pointer);
+			}
+			else if (pointer != 0)
+			{
+				DrawString(pointer, 8, currentPosition << 4, 0x8);
+			}
+			currentPosition++;
 		}
-		else if (pointer != 0)
-		{
-			DrawString(pointer, 8, currentY, 0x8);
-		}
-		currentY += 16;
 	}
 	u16 paletteSlot = textPalette << 12;
 	location[0] = paletteSlot | 1;
@@ -427,14 +430,15 @@ void HandleMenuMoveRequest(u8 direction)
 	{
 		if (pauseMenuLocation == 0)
 		{
-			newLocation = CountMenuRows();
+			newLocation = CountMenuRows() - 1;
 		}
 		else
 		{
 			newLocation = currentLocation - 1;
 		}
 	}
-	//ReplaceCursorAtNewLocation();
+	memset32((void*)(0x0600C000 + (currentLocation << 6)), 0x11111111, 16);
+	DrawCharacter('~' + 1, 0, newLocation << 4, 0);
 	pauseMenuLocation = (u8)newLocation;
 }
 

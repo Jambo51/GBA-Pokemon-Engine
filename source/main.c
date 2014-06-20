@@ -3,6 +3,10 @@
 #include "Data/GlobalDefinitions.h"
 #include "Data/MemoryLocations.h"
 #include "Data/pokefont_b4.h"
+#include "Data/cyrillicPokefont_b4.h"
+#include "Data/japanesePokefont_b4.h"
+#include "Data/arabicPokefont_b4.h"
+#include "Data/braillePokefont_b4.h"
 
 #define BG_PRIORITY_THREE 3
 #define BG_PRIORITY_TWO 2
@@ -12,12 +16,15 @@
 
 #define LATIN 0
 #define CYRILLIC 1
+#define JAPANESE 2
+#define ARABIC 3
+#define BRAILLE 4
 
 #define M4A 0
 #define GBP 1
 
 #define TEXTSET LATIN
-#define MUSICENGINE M4A
+#define MUSICENGINE GBP
 
 void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 {
@@ -83,6 +90,12 @@ int main()
 	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &pokefont_b4Font, 0xE);
 #elif TEXTSET == CYRILLIC
 	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &cyrillicPokefont_b4Font, 0xE);
+#elif TEXTSET == JAPANESE
+	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &japanesePokefont_b4Font, 0xE);
+#elif TEXTSET == ARABIC
+	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &arabicPokefont_b4Font, 0xE);
+#elif TEXTSET == BRAILLE
+	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &braillePokefont_b4Font, 0xE);
 #endif
 	rtc_enable();
 	irq_init(NULL);
@@ -113,7 +126,7 @@ int main()
 	SetFlag(Flag_Pokedex);
 	SetFlag(Flag_Pokegear);
 	SetFlag(Flag_PokemonMenu);
-	while(1)
+	while (1)
 	{
 		VBlankIntrWait();
 		M4_Intr();

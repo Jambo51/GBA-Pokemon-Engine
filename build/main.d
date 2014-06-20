@@ -39,7 +39,8 @@ main.o: c:/devkitPro/GBAWorkSpace/template/source/main.c \
  c:/devkitPro/GBAWorkSpace/template/include/Functions/Maths.h \
  c:/devkitPro/GBAWorkSpace/template/include/Functions/MemoryManagement.h \
  c:/devkitPro/GBAWorkSpace/template/include/Functions/CallbackSystem.h \
- c:/devkitPro/GBAWorkSpace/template/include/Data/MemoryLocations.h
+ c:/devkitPro/GBAWorkSpace/template/include/Data/MemoryLocations.h \
+ c:/devkitPro/GBAWorkSpace/template/include/Data/pokefont_b4.h
 
 c:/devkitPro/GBAWorkSpace/template/include/Functions.h:
 
@@ -122,3 +123,5 @@ c:/devkitPro/GBAWorkSpace/template/include/Functions/MemoryManagement.h:
 c:/devkitPro/GBAWorkSpace/template/include/Functions/CallbackSystem.h:
 
 c:/devkitPro/GBAWorkSpace/template/include/Data/MemoryLocations.h:
+
+c:/devkitPro/GBAWorkSpace/template/include/Data/pokefont_b4.h:

@@ -46,6 +46,7 @@ extern u8 pauseMenuLocation;
 extern NPCData overworldSpriteData[24];
 extern u8 hardwareColumn;
 extern u8 hardwareRow;
+extern u8 textPalette;
 extern GBPMusicStruct gbpData[2];
 extern KeyBuffer keyStates;
 extern PreOAMStruct preOAM[40];

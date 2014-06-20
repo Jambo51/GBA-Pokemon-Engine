@@ -27,5 +27,6 @@ void BufferSignedLongNumber(s32 number, u8 bufferID);
 void BufferSignedShortNumber(s16 number, u8 bufferID);
 s32 CharacterComparison(u8 charOne, u8 charTwo);
 void DrawString(u8* string, u8 x, u8 y, u8 colour);
+void InitialiseTextEngine(u32 colourWord, const TFont* font, u8 paletteSet);
 
 #endif /* TEXTFUNCTIONS_H_ */

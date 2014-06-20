@@ -2,12 +2,22 @@
 #include "Functions.h"
 #include "Data/GlobalDefinitions.h"
 #include "Data/MemoryLocations.h"
+#include "Data/pokefont_b4.h"
 
 #define BG_PRIORITY_THREE 3
 #define BG_PRIORITY_TWO 2
 #define BG_PRIORITY_ONE 1
 #define BG_PRIORITY_ZERO 0
 #define MAIN_BG_SETTINGS (BG_CBB(0) | BG_4BPP | BG_REG_32x32 | BG_MOSAIC)
+
+#define LATIN 0
+#define CYRILLIC 1
+
+#define M4A 0
+#define GBP 1
+
+#define TEXTSET LATIN
+#define MUSICENGINE M4A
 
 void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 {
@@ -69,15 +79,11 @@ int main()
 {
 	StartTimer(2, 0, 0);
 	StartTimer(3, 1, 0);
-	tte_init_chr4c(
-	        0,
-	        BG_CBB(15) | BG_SBB(10),
-	        0xF000,
-	        bytes2word(13,15,0,0),
-	        CLR_BLACK,
-	        &verdana9_b4Font,
-	        (fnDrawg)chr4c_drawg_b4cts_fast);
-	tte_init_con();
+#if TEXTSET == LATIN
+	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &pokefont_b4Font, 0xE);
+#elif TEXTSET == CYRILLIC
+	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &cyrillicPokefont_b4Font, 0xE);
+#endif
 	rtc_enable();
 	irq_init(NULL);
 	irq_add(II_VBLANK, NULL);
@@ -95,7 +101,11 @@ int main()
 	HandleKeyPresses = &IgnoreKeyPresses;
 	CallbackMain = &FadeToBlackPreGameStart;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
+#if MUSICENGINE == M4A
 	SetMusicEngine(M4AEngine);
+#elif MUSICENGINE == GBP
+	SetMusicEngine(GBPSoundsEngine);
+#endif
 	u16* pRAM = (u16*)TilePaletteRAM(0);
 	pRAM[0] = 0x7FFF;
 	SetupFadeScreenSlot(2, 0, &blackPalette);

@@ -41,6 +41,7 @@ void ToggleActiveMusicEngine()
 	else
 	{
 		SetMusicEngine(M4AEngine);
+		M4_Init();
 	}
 }
 

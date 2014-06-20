@@ -43,6 +43,7 @@ EWRAM_LOCATION ALIGN(1) u8 pauseMenuLocation;
 EWRAM_LOCATION ALIGN(4) NPCData overworldSpriteData[24];
 EWRAM_LOCATION ALIGN(1) u8 hardwareColumn;
 EWRAM_LOCATION ALIGN(1) u8 hardwareRow;
+EWRAM_LOCATION ALIGN(1) u8 textPalette;
 ALIGN(4) GBPMusicStruct gbpData[2];
 EWRAM_LOCATION ALIGN(2) KeyBuffer keyStates;
 EWRAM_LOCATION ALIGN(4) PreOAMStruct preOAM[40];

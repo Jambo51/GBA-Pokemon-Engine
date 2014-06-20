@@ -174,3 +174,17 @@ void DrawString(char* string, u8 x, u8 y, u8 colour)
 		tte_printf(string);
 	}
 }
+
+void InitialiseTextEngine(u32 colourWord, const TFont* font, u8 paletteSet)
+{
+	tte_init_chr4c(
+			0,
+			BG_CBB(15) | BG_SBB(10),
+			0xF000,
+			colourWord,
+			15,
+			font,
+			(fnDrawg)chr4c_drawg_b4cts_fast);
+	tte_init_con();
+	textPalette = paletteSet;
+}

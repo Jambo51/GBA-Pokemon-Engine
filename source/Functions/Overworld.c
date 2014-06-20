@@ -167,7 +167,7 @@ void ClearMenuBox(u16* location, u32 height, u32 width)
 void PlaceMenuBox(u16* location, u32 height, u32 width)
 {
 	memcpy32((void*)0x06008020, &pauseOutline[player.boxOutline], 8 * 9);
-	memset32((void*)0x0600A7A0, 0x11111111, 8);
+	memset32((void*)0x0600C000, 0x11111111, 0x460);
 	memcpy32((void*)TilePaletteRAM(14), &pauseOutlinePalette, 8);
 	REG_BG0CNT = MAIN_BG_SETTINGS2;
 	vu32 i;
@@ -175,44 +175,37 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 	for (i = 0; i < NUMMENUITEMS; i++)
 	{
 		char* pointer = menuItems[i];
-		/*if (pauseMenuLocation == i)
-		{
-			pointer = (char*)MemoryAllocate(12);
-			StringCopy(pointer, menuItems[i], 0);
-			pointer[0] = 'A';
-			DrawString(pointer, 0, currentY, 0x8);
-			MemoryDeallocate(pointer);
-		}
-		else if (pointer == *(&player.name))
+		if (pauseMenuLocation == i)
 		{
 			pointer = (char*)MemoryAllocate(12);
 			StringCopy(pointer + 1, menuItems[i], 0);
-			pointer[0] = 'B';
+			pointer[0] = '~' + 1;
 			DrawString(pointer, 0, currentY, 0x8);
 			MemoryDeallocate(pointer);
-		}*/
-		if (pointer != 0)
+		}
+		else if (pointer != 0)
 		{
 			DrawString(pointer, 8, currentY, 0x8);
 		}
 		currentY += 16;
 	}
-	location[0] = 0xE001;
-	memset16((void*)&(location[1]), 0xE002, 7);
-	location[8] = 0xE003;
+	u16 paletteSlot = textPalette << 12;
+	location[0] = paletteSlot | 1;
+	memset16((void*)&(location[1]), paletteSlot | 2, 7);
+	location[8] = paletteSlot | 3;
 	for (i = 0; i < height; i++)
 	{
-		location[0x20 + (0x20 * i)] = 0xE004;
+		location[0x20 + (0x20 * i)] = paletteSlot | 4;
 		u8 j;
 		for (j = 0; j < 8; j++)
 		{
-			location[0x20 + (0x20 * i) + (j + 1)] = 0xE200 + i + (20 * j);
+			location[0x20 + (0x20 * i) + (j + 1)] = paletteSlot | (0x200 + i + (20 * j));
 		}
-		location[0x28 + (0x20 * i)] = 0xE006;
+		location[0x28 + (0x20 * i)] = paletteSlot | 6;
 	}
-	location[(0x20 * height)] = 0xE007;
-	memset16((void*)&(location[(0x20 * height) + 1]), 0xE008, 7);
-	location[(0x20 * height) + 8] = 0xE009;
+	location[(0x20 * height)] = paletteSlot | 7;
+	memset16((void*)&(location[(0x20 * height) + 1]), paletteSlot | 8, 7);
+	location[(0x20 * height) + 8] = paletteSlot | 9;
 }
 
 void AnimateTiles()

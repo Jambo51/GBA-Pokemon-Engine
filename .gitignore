@@ -1,2 +1,11 @@
 *.o
 *.d
+audio
+gfx
+lib
+template.elf
+template.gba
+libgfx.a
+SDL.dll
+vba.ini
+vba-over.ini

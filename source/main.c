@@ -2,11 +2,7 @@
 #include "Functions.h"
 #include "Data/GlobalDefinitions.h"
 #include "Data/MemoryLocations.h"
-#include "Data/pokefont_b4.h"
-#include "Data/cyrillicPokefont_b4.h"
-#include "Data/japanesePokefont_b4.h"
-#include "Data/arabicPokefont_b4.h"
-#include "Data/braillePokefont_b4.h"
+#include "Data/Fonts.h"
 
 #define BG_PRIORITY_THREE 3
 #define BG_PRIORITY_TWO 2

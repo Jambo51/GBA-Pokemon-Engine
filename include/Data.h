@@ -11,10 +11,9 @@
 #include "Data/GlobalDefinitions.h"
 #include "Data/Maps.h"
 #include "Data/MemoryLocations.h"
-#include "Data/mm_types.h"
 #include "Data/MusicData.h"
 #include "Data/OverworldSprites.h"
 #include "Data/PokemonBaseData.h"
-#include "Data/Text.h"
+#include "Data/Fonts.h"
 
 #endif /* DATA_H_ */

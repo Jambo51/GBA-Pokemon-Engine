@@ -21,7 +21,7 @@ EWRAM_LOCATION ALIGN(4) Pokemon temporaryHoldingPokemon;
 EWRAM_LOCATION ALIGN(4) Bag bag;
 EWRAM_LOCATION ALIGN(4) Player player;
 EWRAM_LOCATION ALIGN(4) Pokemon enemyPokemon[6];
-EWRAM_LOCATION ALIGN(4) Buffer buffers[8];
+EWRAM_LOCATION ALIGN(4) char buffers[8][20];
 EWRAM_LOCATION ALIGN(4) MapHeader currentMap;
 EWRAM_LOCATION ALIGN(4) u32 currentSeed;
 EWRAM_LOCATION ALIGN(4) OverworldMovementStruct movingInformation;

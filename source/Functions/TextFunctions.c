@@ -8,11 +8,10 @@
 
 #define NEWLINE 0xFE
 #define END '\0'
-const ALIGN(1) u8 charWidths[0xFA] = { 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x08, 0x06, 0x06, 0x06, 0x06, 0x06, 0x08, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x08, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x09, 0x06, 0x06, 0x0D, 0x06, 0x06, 0x06, 0x06, 0x0A, 0x06, 0x03, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x02, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x04, 0x06, 0x08, 0x03, 0x03, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x04, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x0A, 0x0A, 0x0A, 0x0A, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x05, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x08, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x02, 0x06, 0x03, 0x06, 0x03, 0x06, 0x06, 0x06, 0x03, 0x03, 0x06, 0x06, 0x06, 0x07, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x05, 0x06, 0x06, 0x02, 0x05, 0x05, 0x03, 0x06, 0x05, 0x06, 0x06, 0x06, 0x05, 0x05, 0x05, 0x05, 0x06, 0x06, 0x06, 0x06, 0x06, 0x08, 0x03, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06 };
 
-void StringCopy(u8* stringDest, u8* stringSource, u32 length)
+void StringCopy(char* stringDest, char* stringSource, u32 length)
 {
-	u8 currentChar = stringSource[0];
+	char currentChar = stringSource[0];
 	u32 index = 0;
 	if (length == 0)
 	{
@@ -27,25 +26,98 @@ void StringCopy(u8* stringDest, u8* stringSource, u32 length)
 	stringDest[index] = currentChar;
 }
 
-void BufferString(u8* string, u8 bufferID)
+const IndexTable localBuffersTable[] = { { 20, *(&buffers[0]) }, { 20, *(&buffers[1]) }, { 20, *(&buffers[2]) }, { 20, *(&buffers[3]) }, { 20, *(&buffers[4]) }, { 20, *(&buffers[5]) }, { 20, *(&buffers[6]) }, { 20, *(&buffers[7]) }, { 7, *(&player.name) }, { 7, *(&player.primaryRivalName) }, { 7, *(&player.secondaryRivalName) }, { 7, *(&player.tertiaryRivalName) } };
+
+u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length)
+{
+	u32 index = 0;
+	u32 pos = 0;
+	if (stringSource != 0 && stringDest != 0)
+	{
+		u8 currentChar = stringSource[pos];
+		if (length == 0)
+		{
+			length = 0xFFFFFFFF;
+		}
+		while (currentChar != END && index <= length)
+		{
+			if (currentChar > 0xF7)
+			{
+				switch (currentChar - 0xF8)
+				{
+					case 0xFB - 0xF8:
+					{
+						char* pointer = 0;
+						u32 length = 0;
+						char c = stringSource[index + 1];
+						if (c < 12)
+						{
+							length = localBuffersTable[(u32)c].index;
+							pointer = (char*)localBuffersTable[(u32)c].pointerToData;
+						}
+						index += StringCopyWithBufferChecks(&(stringDest[index]), pointer, length);
+						pos += 2;
+						currentChar = stringSource[pos];
+						break;
+					}
+					case 0xFD - 0xF8:
+					{
+						// Note that this is battle specific
+						// However, many of the indices required for this to operate
+						// Are currently not implemented
+						// Therefore this is largely a placeholder for the mean time
+						char* pointer = 0;
+						u32 length = 0;
+						char c = stringSource[index + 1];
+						if (c < 12)
+						{
+							length = localBuffersTable[(u32)c].index;
+							pointer = (char*)localBuffersTable[(u32)c].pointerToData;
+						}
+						index += StringCopyWithBufferChecks(*(&stringDest[index]), pointer, length);
+						pos += 2;
+						currentChar = stringSource[pos];
+						break;
+					}
+				}
+			}
+			else
+			{
+				stringDest[index] = currentChar;
+				index++;
+				pos++;
+				currentChar = stringSource[pos];
+			}
+		}
+		stringDest[index] = currentChar;
+	}
+	return index;
+}
+
+void BufferString(char* string, u8 bufferID, u32 maxLength)
 {
 	if (string != 0)
 	{
 		u8* buffer = (u8*)(&(buffers[bufferID]));
-		StringCopy(buffer, string, 0);
+		StringCopy(buffer, string, maxLength);
 	}
 }
 
-void BufferPokemonName(u16 pokemonIndex, u8 bufferID)
+void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 {
-	BufferString((u8*)(&(pokemonNames[pokemonIndex])), bufferID);
+	BufferString((u8*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
+}
+
+void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
+{
+	// Placeholder
 }
 
 void BufferRouteName(u8 mapBank, u8 mapID, u8 bufferID)
 {
 	MapHeader* header = (MapHeader*)GetMapHeaderFromBankAndMapID(mapBank, mapID);
 	u32 mapNameIndex = header[0].mapNameID;
-	BufferString((u8*)(&(mapNamesTable[mapNameIndex])), bufferID);
+	BufferString((u8*)(&(mapNamesTable[mapNameIndex])), bufferID, 20);
 }
 
 void BufferNumber(u32 number, u32 length, u8 bufferID)
@@ -66,7 +138,7 @@ void BufferNumber(u32 number, u32 length, u8 bufferID)
 	{
 		if (string[i] != '0' || (i == (length - 1)))
 		{
-			BufferString(&string[i], bufferID);
+			BufferString(&string[i], bufferID, 0);
 			break;
 		}
 	}
@@ -93,7 +165,7 @@ void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 		if (string[i] != '0' || (i == (length - 1)))
 		{
 			string[i - 1] = '-';
-			BufferString(&string[i - 1], bufferID);
+			BufferString(&string[i - 1], bufferID, 0);
 			break;
 		}
 	}
@@ -172,13 +244,12 @@ void DrawString(char* string, u8 x, u8 y, u8 colour)
 {
 	if (string != 0)
 	{
-		if (colour > 0xF || colour == 0)
-		{
-			colour = 1;
-		}
+		char* newString = (char*)MemoryAllocate(100 * sizeof(char));
+		StringCopyWithBufferChecks(newString, string, 0);
 		//tte_set_pos(x, y);
 		tte_printf("#{P:%d,%d}", x, y);
-		tte_printf(string);
+		tte_printf(newString);
+		MemoryDeallocate(newString);
 	}
 }
 

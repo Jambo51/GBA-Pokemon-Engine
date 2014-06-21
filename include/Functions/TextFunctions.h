@@ -15,9 +15,11 @@
 #define NEWLINE 0xFE
 #define END 0xFF
 
-void StringCopy(u8* stringDest, u8* stringSource, u32 length);
-void BufferString(u8* string, u8 bufferID);
-void BufferPokemonName(u16 pokemonIndex, u8 bufferID);
+void StringCopy(char* stringDest, char* stringSource, u32 length);
+u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length);
+void BufferString(char* string, u8 bufferID);
+void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID);
+void BufferPokemonName(u8 pokemonIndex, u8 bufferID);
 void BufferRouteName(u8 mapBank, u8 mapID, u8 bufferID);
 void BufferNumber(u32 number, u32 length, u8 bufferID);
 void BufferNegativeNumber(s32 number, u32 length, u8 bufferID);

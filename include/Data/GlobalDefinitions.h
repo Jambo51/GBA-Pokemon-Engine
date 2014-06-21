@@ -307,14 +307,17 @@ typedef struct Player {
 	u8 secondsPlayed;
 	u8 framesPlayed;
 	u8 gender;
-	char name[10];
+	char name[7];
+	char primaryRivalName[7];
+	char secondaryRivalName[7];
+	char tertiaryRivalName[7];
 	u16 boxOutline:4;
 	u16 stereoSound:1;
 	u16 options:11;
 } Player;
 
 typedef struct Buffer {
-	u8 text[20];
+	char text[20];
 } Buffer;
 
 typedef struct RealTimeClock {

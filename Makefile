@@ -39,7 +39,7 @@ GFXLIBS		:=
 LIBS		:= -ltonc
 
 BUILD		:= build
-SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/functions
+SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/data/sprites/pokemonsprites source/functions
 DATADIRS	:= data
 INCDIRS		:= include
 LIBDIRS		:= $(TONCCODE)/tonclib $(CURDIR)

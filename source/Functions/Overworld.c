@@ -452,25 +452,21 @@ void ExitMenu()
 
 void StartMenuKeyPresses()
 {
-	if (IsKeyDown(Key_Start) != 0)
+	if (IsKeyDownButNotHeld(Key_Start) == true)
 	{
 		ExitMenu();
-		SetKeyIgnored(Key_Start, 0);
 	}
-	else if (IsKeyDown(Key_B) != 0)
+	else if (IsKeyDownButNotHeld(Key_B) == true)
 	{
 		ExitMenu();
-		SetKeyIgnored(Key_B, 0);
 	}
-	else if (IsKeyDown(Key_Up) != 0)
+	else if (IsKeyDownButNotHeld(Key_Up) == true)
 	{
 		HandleMenuMoveRequest(1);
-		SetKeyIgnored(Key_Up, 10);
 	}
-	else if (IsKeyDown(Key_Down) != 0)
+	else if (IsKeyDownButNotHeld(Key_Down) == true)
 	{
 		HandleMenuMoveRequest(0);
-		SetKeyIgnored(Key_Down, 10);
 	}
 	else if (IsKeyDown(Key_A) != 0)
 	{
@@ -485,7 +481,6 @@ void StartMenuKeyPresses()
 			Function = (void*)(((u32*)menuLoc)[NUMMENUITEMS - 1]);
 			Function();
 		}
-		SetKeyIgnored(Key_A, 0);
 	}
 }
 
@@ -526,11 +521,10 @@ void SetPauseMenuFunctions()
 
 void CheckKeyPressesOverworld()
 {
-	if (IsKeyDown(Key_Start) != 0)
+	if (IsKeyDown(Key_Start) == true && IsKeyHeld(Key_Start) == false)
 	{
 		SetPauseMenuFunctions();
 		PlaceMenuBox((u16*)0x0600F82A, (CountMenuRows() << 1) + 1, 9);
-		SetKeyIgnored(Key_Start, 0);
 		HandleKeyPresses = &StartMenuKeyPresses;
 	}
 	else if ((movingInformation.isMoving != 0) || (IsDPadDown() == 1))

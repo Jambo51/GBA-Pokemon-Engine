@@ -11,10 +11,10 @@
 #include "Data/GlobalDefinitions.h"
 
 void IgnoreKeyPresses();
-extern void SetKeyIgnored(u8 keyID, u8 length);
-extern void SetDPadKeysIgnored(u8 length);
+void SetKeyIgnored(u8 keyID, u8 framesOffDefaultDeadTime);
 extern u8 IsKeyHeld(u8 keyID);
 extern u8 IsKeyDown(u8 keyID);
+u8 IsKeyDownButNotHeld(u8 keyID);
 u8 IsDPadDown();
 extern s32 GetHorizontalKeyState();
 extern s32 GetVerticalKeyState();

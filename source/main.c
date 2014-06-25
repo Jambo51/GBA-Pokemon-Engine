@@ -20,7 +20,7 @@
 #define GBP 1
 
 #define TEXTSET LATIN
-#define MUSICENGINE GBP
+#define MUSICENGINE M4A
 
 void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 {

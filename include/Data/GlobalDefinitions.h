@@ -537,16 +537,7 @@ typedef struct KeyBuffer {
 	u8 IsRBIgnored:1;
 	u8 IsLBIgnored:1;
 	u8 unused2:6;
-	u8 ATimer;
-	u8 BTimer;
-	u8 SelectTimer;
-	u8 StartTimer;
-	u8 RightTimer;
-	u8 LeftTimer;
-	u8 UpTimer;
-	u8 DownTimer;
-	u8 RBTimer;
-	u8 LBTimer;
+	u8 Timers[10];
 } KeyBuffer;
 
 typedef struct PreOAMStruct {

@@ -479,6 +479,58 @@ void M4_PlayByName(SongData *Song) {
 	M4_PlaySong(SongP->Player, SongP->Song);
 }
 
+#define FADESPEED 4
+#define M4_MAXVOL 127
+
+enum Fades { Fade_Out, Fade_In };
+
+void M4_Fade(u32 direction)
+{
+	u32 Player = 0;
+	if (direction == Fade_Out)
+	{
+		if (M4Players[Player].Volume == 0)
+		{
+			currentSongPlaybackStatus = 1;
+		}
+		else if (M4Players[Player].Volume < FADESPEED)
+		{
+			M4Players[Player].Volume = 0;
+			currentSongPlaybackStatus = 1;
+		}
+		else
+		{
+			M4Players[Player].Volume -= FADESPEED;
+		}
+	}
+	else
+	{
+		if (M4Players[Player].Volume == M4_MAXVOL)
+		{
+			currentSongPlaybackStatus = 2;
+		}
+		else if (M4Players[Player].Volume + FADESPEED > M4_MAXVOL)
+		{
+			M4Players[Player].Volume = M4_MAXVOL;
+			currentSongPlaybackStatus = 2;
+		}
+		else
+		{
+			M4Players[Player].Volume += FADESPEED;
+		}
+	}
+}
+
+void M4_FadeOut()
+{
+	M4_Fade(Fade_Out);
+}
+
+void M4_FadeIn()
+{
+	M4_Fade(Fade_In);
+}
+
 /*****************************/
 
 void M4_PlayByIdx(u32 Idx) {
@@ -525,10 +577,30 @@ void M4_MainEngine()
 			M4_Main();
 			break;
 		case 3:
+			M4_FadeOut();
+			M4_Main();
+			if (currentSongPlaybackStatus == 1)
+			{
+				M4_StopSong(0);
+				currentSongPlaybackStatus = 0;
+				M4Players[0].Volume = M4_MAXVOL;
+			}
 			break;
 		case 4:
+		{
+			u16 temp = currentSongID;
+			if (temp > 0)
+			{
+				M4_PlayByIdx(temp - 1);
+				currentSongPlaybackStatus = 7;
+				M4Players[0].Volume = 0;
+			}
+			M4_FadeIn();
+			M4_Main();
 			break;
+		}
 		case 5:
+			M4_FadeOut();
 			M4_Main();
 			if (currentSongPlaybackStatus == 1)
 			{
@@ -543,6 +615,9 @@ void M4_MainEngine()
 		case 6:
 			currentSongPlaybackStatus = 0;
 			break;
+		case 7:
+			M4_FadeIn();
+			M4_Main();
 		default:
 			break;
 	}

@@ -815,7 +815,6 @@ void ApplyMovement()
 		if (newDirection != overworldSpriteData[0].directionFacing && overworldSpriteData[0].isMoving == 0)
 		{
 			overworldSpriteData[0].directionFacing = newDirection;
-			SetDPadKeysIgnored(8);
 		}
 		else
 		{

@@ -15,5 +15,6 @@
 #include "Data/OverworldSprites.h"
 #include "Data/PokemonBaseData.h"
 #include "Data/Fonts.h"
+#include "Data/Sprites.h"
 
 #endif /* DATA_H_ */

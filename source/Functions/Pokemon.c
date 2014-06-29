@@ -101,6 +101,19 @@ typedef enum EvolutionTypes
 	ItemWithConditionUsed
 } EvolutionTypes;
 
+enum SpriteSides {
+	Sprite_Side_Front,
+	Sprite_Side_Back,
+	Palette_Normal,
+	Palette_Shiny
+};
+
+enum FormeCheckTypes {
+	NoFormes,
+	GenderSplit,
+	GenericFromByte
+};
+
 const u16 numberOfPokemon = 649;
 
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
@@ -300,6 +313,8 @@ u32 PokemonDecrypter(Pokemon* thePokemon, u8 index)
 			break;
 	}
 }
+
+#define PokemonDecrypt PokemonDecrypter
 
 u32 CountPokemon(Pokemon* location, u32 length)
 {
@@ -1352,6 +1367,68 @@ void SetMoves(Pokemon* thePokemon)
 		currentIndex = i & 3;
 		level = theMoveset[i].level;
 	}
+}
+
+const void* spriteLookupFromIndices[] = { &pokemonFrontSprites, &pokemonBackSprites, &pokemonNormalPalettes, &pokemonShinyPalettes };
+
+void* GetPokemonSpritePaletteFromPokemon(Pokemon* thePokemon, u32 sideIndex)
+{
+	IndexTable* entry = NULL;
+	u32 formeTypeValue = 0;
+	{
+		u16 species = PokemonDecrypter(thePokemon, Species);
+		entry = (IndexTable*)spriteLookupFromIndices[sideIndex];
+		entry = &(entry[species]);
+		formeTypeValue = pokemonBaseData[species].formeType;
+	}
+	u32 index = entry->index;
+	void** data = (void**)entry->pointerToData;
+	switch (formeTypeValue)
+	{
+		case NoFormes:
+			data = data[0];
+			break;
+		case GenderSplit:
+		{
+			u32 gender = PokemonDecrypter(thePokemon, Gender);
+			if (gender == Gender_Genderless)
+			{
+				gender = Gender_Male;
+			}
+			if (gender >= index)
+			{
+				gender = 0;
+			}
+			data = data[gender];
+			break;
+		}
+		case GenericFromByte:
+		{
+			u32 spriteIndex = PokemonDecrypter(thePokemon, FormeIndex);
+			if (spriteIndex >= index)
+			{
+				spriteIndex = 0;
+			}
+			data = data[spriteIndex];
+			break;
+		}
+	}
+	return data;
+}
+
+void* GetPokemonFrontSpriteFromPokemon(Pokemon* thePokemon)
+{
+	return GetPokemonSpritePaletteFromPokemon(thePokemon, Sprite_Side_Front);
+}
+
+void* GetPokemonBackSpriteFromPokemon(Pokemon* thePokemon)
+{
+	return GetPokemonSpritePaletteFromPokemon(thePokemon, Sprite_Side_Back);
+}
+
+void* GetPokemonPaletteFromPokemon(Pokemon* thePokemon)
+{
+	return GetPokemonSpritePaletteFromPokemon(thePokemon, Palette_Normal + PokemonIsShiny(thePokemon));
 }
 
 void GeneratePokemon(Pokemon* thePokemon, u8 level, u16 species)

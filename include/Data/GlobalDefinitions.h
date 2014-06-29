@@ -713,6 +713,10 @@ typedef struct BaseData {
 	u8 hiddenAbility;
 	u8 safariZoneFleeRate;
 	u8 colour;
+	u8 formeType;
+	u8 fsYPos;
+	u8 bsYPos;
+	u8 shadowPos;
 } BaseData;
 
 typedef struct PokedexData {

@@ -69,7 +69,7 @@ export AUDIOFILES := $(foreach dir,$(notdir $(wildcard $(AUDIO)/*.*)),$(CURDIR)/
 
 bMB		:= 0	# Multiboot build
 bTEMPS	:= 0	# Save gcc temporaries (.i and .s files)
-bDEBUG2	:= 0	# Generate debug info (bDEBUG2? Not a full DEBUG flag. Yet)
+bDEBUG	:= 0	# Generate debug info (bDEBUG2? Not a full DEBUG flag. Yet)
 
 
 # === BUILD FLAGS =====================================================
@@ -86,6 +86,32 @@ IARCH   := -mthumb-interwork -marm -mlong-calls
 
 # --- Main flags ---
 
+ifeq ($(strip $(bDEBUG)), 2)
+
+CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O3
+CFLAGS		+= -Wall
+CFLAGS		+= $(INCLUDE)
+CFLAGS		+=
+
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
+
+ASFLAGS		:= $(ARCH) $(INCLUDE)
+LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
+
+else ifeq ($(strip $(bDEBUG)), 1)
+
+CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O3
+CFLAGS		+= -Wall
+CFLAGS		+= $(INCLUDE)
+CFLAGS		+=
+
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
+
+ASFLAGS		:= $(ARCH) $(INCLUDE)
+LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
+
+else
+
 CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O2
 CFLAGS		+= -Wall
 CFLAGS		+= $(INCLUDE)
@@ -95,6 +121,8 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 
 ASFLAGS		:= $(ARCH) $(INCLUDE)
 LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
+endif
+
 
 # --- switched additions ----------------------------------------------
 
@@ -102,7 +130,16 @@ LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
 ifeq ($(strip $(bMB)), 1)
 	TARGET	:= $(PROJ).mb
 else
+	
+	
+ifeq ($(strip $(bDEBUG)), 2)
+	TARGET	:= $(PROJ)_debug_VBA
+else ifeq ($(strip $(bDEBUG)), 1)
+	TARGET	:= $(PROJ)_debug_Eclipse
+else
 	TARGET	:= $(PROJ)
+endif
+
 endif
 
 # --- Save temporary files ? ---
@@ -113,7 +150,11 @@ endif
 
 # --- Debug info ? ---
 
-ifeq ($(strip $(bDEBUG)), 1)
+ifeq ($(strip $(bDEBUG)), 2)
+	CFLAGS		+= -DNDEBUG
+	CXXFLAGS	+= -DNDEBUG
+	ASFLAGS		+= -DNDEBUG
+else ifeq ($(strip $(bDEBUG)), 1)
 	CFLAGS		+= -DDEBUG -g
 	CXXFLAGS	+= -DDEBUG -g
 	ASFLAGS		+= -DDEBUG -g
@@ -123,6 +164,7 @@ else
 	CXXFLAGS	+= -DNDEBUG
 	ASFLAGS		+= -DNDEBUG
 endif
+
 
 
 # === BUILD PROC ======================================================

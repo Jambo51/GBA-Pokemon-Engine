@@ -513,7 +513,7 @@ SampleTable4A2C58:
 @**************** Voice 126 ****************************@
 @**************** Wave Voice ****************************@
 	.int		0x8E460343
-	.int		WaveSample7EFEFFFF
+	.int		WaveSample4A31EC
 	.int		0x8E460343
 @**************** Voice 127 ****************************@
 	.int		0x21A8AAAA

@@ -20,7 +20,7 @@
 #define GBP 1
 
 #define TEXTSET LATIN
-#define MUSICENGINE M4A
+#define MUSICENGINE GBP
 
 void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 {
@@ -133,6 +133,7 @@ int main()
 		UpdateOAMFromStructure();
 		MusicEngine();
 		DefragmentMallocData();
+		GetRandom32BitValue();
 	}
 	return 0;
 }

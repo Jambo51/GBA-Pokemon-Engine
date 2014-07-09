@@ -34,13 +34,59 @@ const u32 pauseOutline[1][9][8] = { { { 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEE
 } } ;
 
 const u32 pauseOutlinePalette[8] = { 0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20664, 0x7B146546, 0x6F5B3529, 0x663156F5, 0x18C541AE };
-const Colour blackPalette[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-const Colour whitePalette[16] = { 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF };
+const u16 blackPalette[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+const u16 whitePalette[16] = { 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF };
 
 #define NUMBASEMENUITEMS 5
 #define NUMMENUITEMS 8
 
-const char* menuItems[NUMMENUITEMS] = { "Pokégear", "Pokédex", "Pokémon", "Bag", *(&player.name), "Save", "Options", "Exit" };
+void TransitionToPokegear()
+{
+
+}
+
+void TransitionToPokedex()
+{
+
+}
+
+void TransitionToPokemonMenu()
+{
+
+}
+
+void TransitionToBag()
+{
+
+}
+
+void TransitionToPlayerCard()
+{
+
+}
+
+void SaveGame()
+{
+
+}
+
+void TransitionToOptions()
+{
+
+}
+
+void ClearMenuBox(u16*, u32, u32);
+void SetCheckKeyPressesOverworld(void);
+
+void ExitMenu()
+{
+	ClearMenuBox((u16*)0x0600F82A, 18, 9);
+	SetCheckKeyPressesOverworld();
+	MemoryDeallocate(pauseMenuFunctions);
+	pauseMenuFunctions = (void*)0;
+}
+
+const TextFunctionPair menuItems[] = { { "Pokégear", &TransitionToPokegear }, { "Pokédex", &TransitionToPokedex }, { "Pokémon", &TransitionToPokemonMenu }, { "Bag", &TransitionToBag }, { *(&player.name), &TransitionToPlayerCard }, { "Save", &SaveGame }, { "Options", &TransitionToOptions }, { "Exit", &ExitMenu } };
 
 const u8* mapNamesTable[0x100];
 
@@ -176,11 +222,11 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 	{
 		if ((i < 3 && CheckFlag(Flag_Pokegear + i) == true) || i >= 3)
 		{
-			char* pointer = menuItems[i];
+			char* pointer = menuItems[i].string;
 			if (pauseMenuLocation == currentPosition)
 			{
 				pointer = (char*)MemoryAllocate(12);
-				StringCopy(pointer + 1, menuItems[i], 0);
+				StringCopy(pointer + 1, menuItems[i].string, 0);
 				pointer[0] = '~' + 1;
 				DrawString(pointer, 0, currentPosition << 4, 0x8);
 				MemoryDeallocate(pointer);
@@ -442,14 +488,6 @@ void HandleMenuMoveRequest(u8 direction)
 	pauseMenuLocation = (u8)newLocation;
 }
 
-void ExitMenu()
-{
-	ClearMenuBox((void*)0x0600F82A, 18, 9);
-	SetCheckKeyPressesOverworld();
-	MemoryDeallocate(pauseMenuFunctions);
-	pauseMenuFunctions = (void*)0;
-}
-
 void StartMenuKeyPresses()
 {
 	if (IsKeyDownButNotHeld(Key_Start) == true)
@@ -491,37 +529,34 @@ void SetPauseMenuFunctions()
 	FunctionPtr* menuLoc = pauseMenuFunctions;
 	if (CheckFlag(Flag_Pokegear) == 1)
 	{
-		menuLoc[currentSlot] = 0;//(u32)&Pokegear;
+		menuLoc[currentSlot] = menuItems[0].function;
 		currentSlot++;
 	}
 	if (CheckFlag(Flag_Pokedex) == 1)
 	{
-		menuLoc[currentSlot] = 0;//(u32)&Pokedex;
+		menuLoc[currentSlot] = menuItems[1].function;
 		currentSlot++;
 	}
 	if (CheckFlag(Flag_PokemonMenu) == 1)
 	{
-		menuLoc[currentSlot] = 0;//(u32)&PokemonMenu;
+		menuLoc[currentSlot] = menuItems[2].function;
 		currentSlot++;
 	}
-	menuLoc[currentSlot] = 0;//(u32)&Bag;
-	currentSlot++;
-	menuLoc[currentSlot] = 0;//(u32)&PlayerCard;
-	currentSlot++;
-	menuLoc[currentSlot] = 0;//(u32)&Save;
-	currentSlot++;
-	menuLoc[currentSlot] = 0;//(u32)&Options;
-	currentSlot++;
-	menuLoc[currentSlot] = (u32)&ExitMenu;
+	u32 i;
+	for (i = 0; i < 5; i++)
+	{
+		menuLoc[currentSlot] = menuItems[3 + i].function;
+		currentSlot++;
+	}
 	if (currentSlot != 7)
 	{
-		menuLoc[7] = (u32)&ExitMenu;
+		menuLoc[NUMMENUITEMS - 1] = menuItems[NUMMENUITEMS - 1].function;
 	}
 }
 
 void CheckKeyPressesOverworld()
 {
-	if (IsKeyDown(Key_Start) == true && IsKeyHeld(Key_Start) == false)
+	if (movingInformation.isMoving == 0 && IsKeyDown(Key_Start) == true && IsKeyHeld(Key_Start) == false)
 	{
 		SetPauseMenuFunctions();
 		PlaceMenuBox((u16*)0x0600F82A, (CountMenuRows() << 1) + 1, 9);

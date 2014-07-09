@@ -34,9 +34,9 @@ u32 GetSeenCaughtStatus(u32 pokemonIndex, u32 modeIndex)
 	return 0;
 }
 
-u32 CheckFlag(u32 flagID)
+u32 GenericCheckFlag(u32 flagID, u8* flagLocation)
 {
-	u8* location = FlagDecryption(flagID, (u8*)(&mainFlagBank), upperMainFlagLimit);
+	u8* location = FlagDecryption(flagID, flagLocation, upperMainFlagLimit);
 	if (location == 0)
 	{
 		return 0;
@@ -44,9 +44,14 @@ u32 CheckFlag(u32 flagID)
 	return ((location[0] >> (flagID & 7)) & 1);
 }
 
-void SetFlag(u32 flagID)
+u32 CheckFlag(u32 flagID)
 {
-	u8* location = FlagDecryption(flagID, (u8*)(&mainFlagBank), upperMainFlagLimit);
+	return GenericCheckFlag(flagID, (u8*)(&mainFlagBank));
+}
+
+void GenericSetFlag(u32 flagID, u8* flagLocation)
+{
+	u8* location = FlagDecryption(flagID, flagLocation, upperMainFlagLimit);
 	if (location == 0)
 	{
 		return;
@@ -54,12 +59,22 @@ void SetFlag(u32 flagID)
 	location[0] = location[0] | (1 << (flagID & 7));
 }
 
-void ClearFlag(u32 flagID)
+void SetFlag(u32 flagID)
 {
-	u8* location = FlagDecryption(flagID, (u8*)(&mainFlagBank), upperMainFlagLimit);
+	GenericSetFlag(flagID, (u8*)(&mainFlagBank));
+}
+
+void GenericClearFlag(u32 flagID, u8* flagLocation)
+{
+	u8* location = FlagDecryption(flagID, flagLocation, upperMainFlagLimit);
 	if (location == 0)
 	{
 		return;
 	}
 	location[0] = location[0] & ~(1 << (flagID & 7));
+}
+
+void ClearFlag(u32 flagID)
+{
+	GenericClearFlag(flagID, (u8*)(&mainFlagBank));
 }

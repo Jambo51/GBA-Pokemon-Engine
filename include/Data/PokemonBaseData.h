@@ -25,9 +25,5 @@ extern u8 superRodLikelihoods[];
 extern MoveData moveData[];
 extern void* movesets[];
 extern IndexTable evoDataPointers[];
-extern IndexTable pokemonFrontSprites[];
-extern IndexTable pokemonNormalPalettes[];
-extern IndexTable pokemonBackSprites[];
-extern IndexTable pokemonShinyPalettes[];
 
 #endif

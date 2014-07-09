@@ -117,6 +117,7 @@ static void M4_Update(M4Player *Play) {
 }
 
 /*****************************/
+u16* locations[] = { (u16*)0x04000062, (u16*)0x04000068, (u16*)0x04000070, (u16*)0x04000078 };
 
 void M4_Player(void) {
 	static const u16 Sqrt[] = {
@@ -372,7 +373,6 @@ void M4_Player(void) {
 					}
 				}
 			} else {
-				const u16* locations[] = { (u16*)0x04000062, (u16*)0x04000068, (u16*)0x04000070, (u16*)0x04000078 };
 				u16* location = locations[SGx];
 				location[0] = 0;
 			}

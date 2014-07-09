@@ -431,7 +431,7 @@ void ChangeSpriteFrame(u8 spriteID)
 	}
 	if (found == 1)
 	{
-		u8 oamID = overworldSpriteData[i].oamStructID;
+		//u8 oamID = overworldSpriteData[i].oamStructID;
 		//void* tileBase = (void*)(0x06010000 + (preOAM[oamID].tilebaseStart << 5));
 		//u8 frameID = walkingFrameConversion[overworldSpriteData[i].directionFacing][overworldSpriteData[i].nextWalkingFrame];
 

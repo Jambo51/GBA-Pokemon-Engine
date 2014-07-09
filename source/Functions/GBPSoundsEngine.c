@@ -9,6 +9,7 @@
 #include "Data/MemoryLocations.h"
 #include "Functions/LoadUnalignedCode.h"
 #include "Functions/MemoryManagement.h"
+#include "Functions/Flags.h"
 
 #define SetOctave0 0xD8
 #define SetOctave7 0xD0
@@ -23,7 +24,7 @@ typedef enum SoundEngineCommands
 	SetNoteAttributes,
 	Arpeggiate,
 	SetDutyCycle2,
-	DF,
+	Portamento,
 	PitchBend,
 	SetModulation,
 	E2,
@@ -328,23 +329,35 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 				u8 byte = theData[0].nextInstruction[1];
 				if (byte != 0)
 				{
-					theData[0].arpeggiationActivationStatus = 1;
+					GenericSetFlag(ArpeggiationActivation, (u8*)&theData[0].statusFlags);
 					theData[0].arpeggiationDelayCount = (byte & 0xF0) >> 4;
 					theData[0].arpeggiationCountdown = theData[0].arpeggiationDelayCount;
-					theData[0].arpeggiationStatus = 0;
+					GenericClearFlag(ArpeggiationStatus, (u8*)&theData[0].statusFlags);
 					theData[0].arpeggiationVoice = byte & 0x3;
 				}
 				else
 				{
-					theData[0].arpeggiationActivationStatus = 0;
+					GenericClearFlag(ArpeggiationActivation, (u8*)&theData[0].statusFlags);
 				}
 				commandLength = 2;
 				break;
 			}
 			case PitchBend:
-				theData[0].pitchBendActivationStatus = 1;
-				u8 byte = theData[0].nextInstruction[2];
+				GenericSetFlag(PitchBendActivation, (u8*)&theData[0].statusFlags);
+				// Note that this is incomplete and requires research into how pitch
+				// bends are handled in the original engine
+				//u8 byte = theData[0].nextInstruction[2];
 				commandLength = 3;
+				break;
+			case Portamento:
+				// No data for this as yet as it is a completely custom effect
+				// At least it is in terms of this engine, since the
+				// portamento effect is not present in RBY or GSC
+				GenericSetFlag(PortamentoActivation, (u8*)&theData[0].statusFlags);
+				theData[0].portamentoDelay = theData[0].nextInstruction[1];
+				theData[0].portamentoSpeed = theData[0].nextInstruction[2];
+				theData[0].portamentoTarget = CalculateTonePitchFromMidiNumber(theData[0].nextInstruction[3], theData[0].keyShift, theData[0].currentOctave, theData[0].tone);
+				commandLength = 4;
 				break;
 			case SetModulation:
 			{
@@ -355,11 +368,11 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 					theData[0].modulationMode = (theData[0].nextInstruction[1] & 0xC0) >> 6;
 					theData[0].modulationDepth = (theByte & 0xF0) >> 4;
 					theData[0].modulationSpeed = theByte & 0xF;
-					theData[0].modulationActivationStatus = 1;
+					GenericSetFlag(ModulationActivation, (u8*)&theData[0].statusFlags);
 				}
 				else
 				{
-					theData[0].modulationActivationStatus = 0;
+					GenericClearFlag(ModulationActivation, (u8*)&theData[0].statusFlags);
 				}
 				commandLength = 3;
 				break;
@@ -549,11 +562,11 @@ u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID)
 					theData[0].modulationMode = (theData[0].nextInstruction[1] & 0xC0) >> 6;
 					theData[0].modulationDepth = (theByte & 0xF0) >> 4;
 					theData[0].modulationSpeed = theByte & 0xF;
-					theData[0].modulationActivationStatus = 1;
+					GenericSetFlag(ModulationActivation, (u8*)&theData[0].statusFlags);
 				}
 				else
 				{
-					theData[0].modulationActivationStatus = 0;
+					GenericClearFlag(ModulationActivation, (u8*)&theData[0].statusFlags);
 				}
 				commandLength = 3;
 				break;
@@ -710,12 +723,13 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 	theData[0].modulationSpeedDelay = theData[0].modulationSpeed;
 	u8 theValue = 0;
 	u16 pitch = theData[0].pitch;
+	u32 flagResult = GenericCheckFlag(ModulationStatus, (u8*)&theData[0].statusFlags);
 	switch (theData[0].modulationMode)
 	{
 		case 0:
 		{
 			u8 halfValue = theData[0].modulationDepth >> 1;
-			if (theData[0].modulationStatus == 0)
+			if (flagResult == 0)
 			{
 				theValue = 1;
 				pitch += (theData[0].modulationDepth - halfValue);
@@ -727,7 +741,7 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 			break;
 		}
 		case 1:
-			if (theData[0].modulationStatus == 0)
+			if (flagResult == 0)
 			{
 				theValue = 1;
 			}
@@ -737,7 +751,7 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 			}
 			break;
 		case 2:
-			if (theData[0].modulationStatus == 0)
+			if (flagResult == 0)
 			{
 				theValue = 1;
 			}
@@ -747,21 +761,46 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 			}
 			break;
 	}
-	theData[0].modulationStatus = theValue;
+	(theValue) ? GenericSetFlag(ModulationStatus, (u8*)&theData[0].statusFlags) : GenericClearFlag(ModulationStatus, (u8*)&theData[0].statusFlags);
 	return pitch;
 }
 
 void ModulateToneTrack(GBPToneData* theData, u8 trackID)
 {
-	if (theData[0].pitchBendActivationStatus == 1)
+	if (GenericCheckFlag(PitchBendActivation, (u8*)&theData[0].statusFlags)  == 1)
 	{
-		theData[0].pitch += (theData[0].pitchBendDirection == 1) ? -theData[0].pitchBendRate : theData[0].pitchBendRate;
+		theData[0].pitch += theData[0].pitchBendRate;
+	}
+	if (GenericCheckFlag(PortamentoActivation, (u8*)&theData[0].statusFlags) == 1)
+	{
+		if (theData[0].portamentoCountdown == 0)
+		{
+			if (theData[0].portamentoTarget != theData[0].pitch)
+			{
+				if (theData[0].portamentoTarget > theData[0].pitch)
+				{
+					theData[0].pitch++;
+				}
+				else
+				{
+					theData[0].pitch--;
+				}
+			}
+			else
+			{
+				GenericClearFlag(PortamentoActivation, (u8*)&theData[0].statusFlags);
+			}
+		}
+		else
+		{
+			theData[0].portamentoCountdown--;
+		}
 	}
 	if (theData[0].modulationCountdown > 0)
 	{
 		theData[0].modulationCountdown--;
 	}
-	if (theData[0].modulationActivationStatus == 1)
+	if (GenericCheckFlag(ModulationActivation, (u8*)&theData[0].statusFlags) == 1)
 	{
 		if (theData[0].modulationCountdown == 0)
 		{
@@ -780,27 +819,29 @@ void ModulateToneTrack(GBPToneData* theData, u8 trackID)
 void ResetToneModulationArpeggiationCounters(GBPToneData* theData, u8 trackID)
 {
 	theData[0].modulationCountdown = theData[0].modulationDelay;
-	theData[0].modulationStatus = 0;
+	GenericClearFlag(ModulationStatus, (u8*)&theData[0].statusFlags);
 	theData[0].modulationSpeedDelay = theData[0].modulationSpeed;
 	if (theData[0].modulationCountdown == 0)
 	{
 		ModulateToneTrack(theData, trackID);
 	}
-	theData[0].arpeggiationCountdown = (theData[0].arpeggiationActivationStatus == 1)?theData[0].arpeggiationDelayCount:0;
-	theData[0].arpeggiationStatus = 0;
+	theData[0].arpeggiationCountdown = (GenericCheckFlag(ArpeggiationActivation, (u8*)&theData[0].statusFlags) == 1) ? theData[0].arpeggiationDelayCount : 0;
+	GenericClearFlag(ArpeggiationStatus, (u8*)&theData[0].statusFlags);
+	GenericClearFlag(PortamentoActivation, (u8*)&theData[0].statusFlags);
+	GenericClearFlag(PitchBendActivation, (u8*)&theData[0].statusFlags);
 }
 
 void ModulateWaveTrack(GBPWaveData* theData)
 {
-	if (theData[0].pitchBendActivationStatus == 1)
+	if (GenericCheckFlag(PitchBendActivation, (u8*)&theData[0].statusFlags) == 1)
 	{
-		theData[0].pitch += (theData[0].pitchBendDirection == 1) ? -theData[0].pitchBendRate : theData[0].pitchBendRate;
+		theData[0].pitch += theData[0].pitchBendRate;
 	}
 	if (theData[0].modulationCountdown > 0)
 	{
 		theData[0].modulationCountdown--;
 	}
-	if (theData[0].modulationActivationStatus == 1)
+	if (GenericCheckFlag(ModulationActivation, (u8*)&theData[0].statusFlags) == 1)
 	{
 		if (theData[0].modulationCountdown == 0)
 		{
@@ -809,12 +850,13 @@ void ModulateWaveTrack(GBPWaveData* theData)
 				theData[0].modulationSpeedDelay = theData[0].modulationSpeed;
 				u8 theValue = 0;
 				u16 pitch = theData[0].pitch;
+				u32 flagCheck = GenericCheckFlag(ModulationStatus, (u8*)&theData[0].statusFlags);
 				switch (theData[0].modulationMode)
 				{
 					case 0:
 					{
 						u8 halfValue = theData[0].modulationDepth >> 1;
-						if (theData[0].modulationStatus == 0)
+						if (flagCheck == 0)
 						{
 							theValue = 1;
 							pitch += (theData[0].modulationDepth - halfValue);
@@ -826,7 +868,7 @@ void ModulateWaveTrack(GBPWaveData* theData)
 						break;
 					}
 					case 1:
-						if (theData[0].modulationStatus == 0)
+						if (flagCheck == 0)
 						{
 							theValue = 1;
 						}
@@ -836,7 +878,7 @@ void ModulateWaveTrack(GBPWaveData* theData)
 						}
 						break;
 					case 2:
-						if (theData[0].modulationStatus == 0)
+						if (flagCheck == 0)
 						{
 							theValue = 1;
 						}
@@ -846,7 +888,7 @@ void ModulateWaveTrack(GBPWaveData* theData)
 						}
 						break;
 				}
-				theData[0].modulationStatus = theValue;
+				(theValue) ? GenericSetFlag(ModulationStatus, (u8*)&theData[0].statusFlags) : GenericClearFlag(ModulationStatus, (u8*)&theData[0].statusFlags);
 				tone1Controller[10] = pitch;
 			}
 			else
@@ -859,7 +901,7 @@ void ModulateWaveTrack(GBPWaveData* theData)
 
 void ArpeggiateToneTrack(GBPToneData* theData, u8 trackID)
 {
-	if (theData[0].arpeggiationActivationStatus == 1)
+	if (GenericCheckFlag(ArpeggiationActivation, (u8*)&theData[0].statusFlags) == 1)
 	{
 		if (theData[0].arpeggiationCountdown > 0)
 		{
@@ -869,8 +911,8 @@ void ArpeggiateToneTrack(GBPToneData* theData, u8 trackID)
 		{
 			u16 location = (trackID == 0)?1:4;
 			theData[0].arpeggiationCountdown = theData[0].arpeggiationDelayCount;
-			tone1Controller[location] = (tone1Controller[location] & 0xFF00) | (((theData[0].arpeggiationStatus == 1)?theData[0].currentVoice:theData[0].arpeggiationVoice) << 6);
-			theData[0].arpeggiationStatus = (theData[0].arpeggiationStatus == 1)?0:1;
+			tone1Controller[location] = (tone1Controller[location] & 0xFF00) | (((GenericCheckFlag(ArpeggiationStatus, (u8*)&theData[0].statusFlags) == 1)?theData[0].currentVoice:theData[0].arpeggiationVoice) << 6);
+			(GenericCheckFlag(ArpeggiationStatus, (u8*)&theData[0].statusFlags) == 1)? GenericClearFlag(ArpeggiationStatus, (u8*)&theData[0].statusFlags) : GenericSetFlag(ArpeggiationStatus, (u8*)&theData[0].statusFlags);
 		}
 	}
 }
@@ -958,7 +1000,7 @@ void UpdateCurrentlyPlayingSong()
 					ExecuteWaveModifications(&(gbpData[currentMusicEngineSet].wave), commandID);
 					gbpData[currentMusicEngineSet].wave.nextInstruction++;
 					gbpData[currentMusicEngineSet].wave.modulationCountdown = gbpData[currentMusicEngineSet].wave.modulationDelay;
-					gbpData[currentMusicEngineSet].wave.modulationStatus = 0;
+					GenericClearFlag(ModulationStatus, (u8*)&gbpData[currentMusicEngineSet].wave.statusFlags);
 					gbpData[currentMusicEngineSet].wave.modulationSpeedDelay = gbpData[currentMusicEngineSet].wave.modulationSpeed;
 					if (gbpData[currentMusicEngineSet].wave.modulationCountdown == 0)
 					{
@@ -1200,6 +1242,8 @@ void GBPSoundsMainEngine()
 {
 	switch (currentSongPlaybackStatus)
 	{
+		case 0:
+			break;
 		case 1:
 			StartNewSongImmediately();
 			break;
@@ -1230,6 +1274,8 @@ void GBPSoundsMainEngine()
 			FadeSongIn();
 			break;
 		default:
+			UpdateCurrentlyPlayingSong();
+			currentSongPlaybackStatus = 2;
 			break;
 	}
 }

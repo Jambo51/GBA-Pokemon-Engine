@@ -652,4 +652,9 @@
 #include "PokemonSprites\PokemonSprite648.h"
 #include "PokemonSprites\PokemonSprite649.h"
 
+extern IndexTable pokemonFrontSprites[];
+extern IndexTable pokemonNormalPalettes[];
+extern IndexTable pokemonBackSprites[];
+extern IndexTable pokemonShinyPalettes[];
+
 #endif

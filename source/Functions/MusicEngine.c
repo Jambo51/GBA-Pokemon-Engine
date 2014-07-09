@@ -22,7 +22,7 @@ void SetMusicEngine(u32 engineID)
 {
 	if (engineID < 2)
 	{
-		MusicEngine = musicEngines[engineID];
+		MusicEngine = (void (*)(void))musicEngines[engineID];
 	}
 }
 

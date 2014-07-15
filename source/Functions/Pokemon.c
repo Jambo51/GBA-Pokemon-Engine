@@ -1121,19 +1121,19 @@ void GenerateAllIVs(Pokemon* thePokemon)
 
 void SetGender(Pokemon* thePokemon)
 {
-	u8 genderValue = pokemonBaseData[thePokemon[0].mainData.species].genderSplitByte;
-	u8 gender = 0xFE;
+	u32 genderValue = pokemonBaseData[thePokemon[0].mainData.species].genderSplitByte;
+	u32 gender = 0xFE;
 	if (genderValue == 0xFF)
 	{
 		gender = genderValue;
 	}
 	else if ((thePokemon[0].mainData.personalityID & 0xFF) < genderValue)
 	{
-		gender = 1;
+		gender = Gender_Female;
 	}
 	else
 	{
-		gender = 0;
+		gender = Gender_Male;
 	}
 	PokemonEncrypter(thePokemon, Gender, gender);
 }

@@ -665,7 +665,11 @@ typedef struct AbridgedPokemon {
 	u32 formeValue:10;
 	u32 forceShiny:1;
 	u8 ppBonuses;
-	u8 friendship;
+	union
+	{
+		u8 friendship;
+		u8 eggCycleCounter;
+	};
 	u8 type1;
 	u8 type2;
 	u16 move1;

@@ -19266,162 +19266,715 @@ pointerSet649:
 baseData:
 	.word		0x00000001
 	.word		pointerSet000
+	.byte		GenderDist_Genderless
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet001
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet002
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet003
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet004
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet005
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet006
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet007
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_WATER1
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet008
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_WATER1
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet009
+	.byte		GenderDist_8712
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_WATER1
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet010
+	.byte		GenderDist_5050
+	.byte		Steps_2805
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet011
+	.byte		GenderDist_5050
+	.byte		Steps_2805
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet012
+	.byte		GenderDist_5050
+	.byte		Steps_2805
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet013
+	.byte		GenderDist_5050
+	.byte		Steps_2805
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet014
+	.byte		GenderDist_5050
+	.byte		Steps_2805
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet015
+	.byte		GenderDist_5050
+	.byte		Steps_2805
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet016
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet017
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet018
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet019
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet020
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet021
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet022
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet023
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet024
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet025
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
+	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet026
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
+	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet027
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet028
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet029
+	.byte		GenderDist_0100
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet030
+	.byte		GenderDist_0100
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet031
+	.byte		GenderDist_0100
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet032
+	.byte		GenderDist_1000
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet033
+	.byte		GenderDist_1000
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet034
+	.byte		GenderDist_1000
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MONSTER
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet035
+	.byte		GenderDist_2575
+	.byte		Steps_5355
+	.byte		LevelUp_Fast
+	.byte		EGG_GROUP_FAIRY
+	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet036
+	.byte		GenderDist_2575
+	.byte		Steps_5355
+	.byte		LevelUp_Fast
+	.byte		EGG_GROUP_FAIRY
+	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet037
+	.byte		GenderDist_2575
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet038
+	.byte		GenderDist_2575
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet039
+	.byte		GenderDist_2575
+	.byte		Steps_5355
+	.byte		LevelUp_Fast
+	.byte		EGG_GROUP_FAIRY
+	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet040
+	.byte		GenderDist_2575
+	.byte		Steps_5355
+	.byte		LevelUp_Fast
+	.byte		EGG_GROUP_FAIRY
+	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet041
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet042
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FLYING
+	.byte		EGG_GROUP_FLYING
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet043
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_GRASS
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet044
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_GRASS
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet045
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_GRASS
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet046
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet047
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet048
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet049
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_BUG
+	.byte		EGG_GROUP_BUG
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet050
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet051
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet052
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet053
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet054
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_WATER1
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet055
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_WATER1
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet056
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet057
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet058
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_Slow
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet059
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_Slow
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet060
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_WATER1
+	.byte		EGG_GROUP_WATER1
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet061
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_WATER1
+	.byte		EGG_GROUP_WATER1
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet062
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_WATER1
+	.byte		EGG_GROUP_WATER1
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet063
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet064
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet065
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet066
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet067
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet068
+	.byte		GenderDist_7525
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet069
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_GRASS
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet070
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_GRASS
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet071
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_GRASS
+	.byte		EGG_GROUP_GRASS
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet072
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_Slow
+	.byte		EGG_GROUP_WATER3
+	.byte		EGG_GROUP_WATER3
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet073
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_Slow
+	.byte		EGG_GROUP_WATER3
+	.byte		EGG_GROUP_WATER3
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet074
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MINERAL
+	.byte		EGG_GROUP_MINERAL
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet075
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MINERAL
+	.byte		EGG_GROUP_MINERAL
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet076
+	.byte		GenderDist_5050
+	.byte		Steps_4080
+	.byte		LevelUp_MediumSlow
+	.byte		EGG_GROUP_MINERAL
+	.byte		EGG_GROUP_MINERAL
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet077
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet078
+	.byte		GenderDist_5050
+	.byte		Steps_5355
+	.byte		LevelUp_MediumFast
+	.byte		EGG_GROUP_FIELD
+	.byte		EGG_GROUP_FIELD
+	.byte		0x00
+	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet079
 	.word		0x00000001

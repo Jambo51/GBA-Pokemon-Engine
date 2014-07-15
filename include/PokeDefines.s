@@ -1587,3 +1587,33 @@
 	.equ		Ability_Aura_Break,		185
 	.equ		Ability_Illuminate,		186
 	.equ		Ability_Honey_Gather,		187
+
+	.equ		GenderDist_5050,		127
+	.equ		GenderDist_7525,		63
+	.equ		GenderDist_2575,		191
+	.equ		GenderDist_8712,		32
+	.equ		GenderDist_1287,		222
+	.equ		GenderDist_1000,		254
+	.equ		GenderDist_0100,		0
+	.equ		GenderDist_Genderless,	255
+
+	.equ		Steps_5355,				22
+	.equ		Steps_2805,				11
+	.equ		Steps_4080,				16
+	.equ		Steps_6630,				26
+	.equ		Steps_10455,			41
+	.equ		Steps_9180,				36
+	.equ		Steps_7905,				31
+	.equ		Steps_20655,			81
+	.equ		Steps_30855,			121
+
+	.equ		LevelUp_Fast,			4
+	.equ		LevelUp_MediumFast,		0
+	.equ		LevelUp_Slow,			5
+	.equ		LevelUp_MediumSlow,		3
+	.equ		LevelUp_Erratic,		1
+	.equ		LevelUp_Fluctuating,	2
+
+	.equ		NoFormes,				0
+	.equ		GenderSplit,			1
+	.equ		GenericFromByte,		2

@@ -475,7 +475,7 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 
 void SwitchWavePattern(u8 patternID)
 {
-	if (patternID < 11)
+	if (patternID < NUMWAVEPATTERNS)
 	{
 		WavePattern* mainPattern = (WavePattern*)0x04000090;
 		tone1Controller[8] = 0x40;

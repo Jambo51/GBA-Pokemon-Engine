@@ -10,6 +10,8 @@
 
 #include "GlobalDefinitions.h"
 
+#define NUMWAVEPATTERNS 15
+
 extern GBPTrackHeader* gbpSongs[];
 extern u16 CGBFreq[];
 extern u16 freq[75];

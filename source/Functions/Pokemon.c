@@ -1479,9 +1479,50 @@ void GeneratePokemonEgg(Pokemon* mother, Pokemon* father)
 	// Calculate Egg Moves and award where necessary
 }
 
-void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species)
+void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIndex)
 {
 	GeneratePokemon(thePokemon, level, species);
 	PokemonEncrypter(thePokemon, OTID, player.completeTrainerID);
 	PokemonEncrypter(thePokemon, OTName, (u32)(&player.name));
+	InternalBaseData* data = (InternalBaseData*)((void**)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex];
+	PokemonEncrypter(thePokemon, Friendship, data[0].baseFriendship);
+}
+
+void GenerateWildPokemonFromData(Pokemon* thePokemon, WildPokemonData* wildData)
+{
+	WildPokemonEntry* pointer = wildData->wildData[rtcData.timeOfDay];
+	if (pointer == 0)
+	{
+		pointer = wildData->wildData[0];
+		if (pointer == 0)
+		{
+			return;
+		}
+	}
+	u32 loopCounter = 0;
+	{
+		u32 percentage = GetDelimitedRandom32BitValue(100);
+		u32 counter = pointer[loopCounter].percentage;
+		while (counter < percentage && counter <= 100)
+		{
+			loopCounter++;
+			counter += pointer[loopCounter].percentage;
+		}
+	}
+	u32 calculatedLevel;
+	{
+		calculatedLevel = pointer[loopCounter].maxLevel;
+		u32 minLevel = pointer[loopCounter].minLevel;
+		if (minLevel > calculatedLevel)
+		{
+			u32 temp = minLevel;
+			minLevel = calculatedLevel;
+			calculatedLevel = temp;
+		}
+		if (calculatedLevel != minLevel)
+		{
+			calculatedLevel += GetDelimitedRandom32BitValue((calculatedLevel - minLevel) + 1);
+		}
+	}
+	GeneratePokemon(thePokemon, calculatedLevel, pointer[loopCounter].species);
 }

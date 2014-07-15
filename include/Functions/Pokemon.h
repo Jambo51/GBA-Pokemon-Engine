@@ -57,6 +57,6 @@ void* GetPokemonFrontSpriteFromPokemon(Pokemon* thePokemon);
 void* GetPokemonBackSpriteFromPokemon(Pokemon* thePokemon);
 void* GetPokemonPaletteFromPokemon(Pokemon* thePokemon);
 void GeneratePokemon(Pokemon* thePokemon, u8 level, u16 species);
-void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species);
+void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIndex);
 
 #endif

@@ -22,43 +22,47 @@
 typedef void (*FunctionPtr)(void);
 
 // --- primary typedefs ---
-typedef enum { Time_Day, Time_Morning, Time_Afternoon, Time_Night } Times;
+enum Times { Time_Day, Time_Morning, Time_Afternoon, Time_Night, Time_NumTimes };
 
-typedef enum { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex = 0x801, Flag_PokemonMenu = 0x802  } Flags;
+enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex = 0x801, Flag_PokemonMenu = 0x802 };
 
-typedef enum { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None } Types;
+enum Types { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None };
 
-typedef enum { Key_A, Key_B, Key_Select, Key_Start, Key_Right, Key_Left, Key_Up, Key_Down, Key_RightBumper, Key_LeftBumper } Keys;
+enum Keys { Key_A, Key_B, Key_Select, Key_Start, Key_Right, Key_Left, Key_Up, Key_Down, Key_RightBumper, Key_LeftBumper };
 
-typedef enum { Shape_Square, Shape_Horizontal, Shape_Vertical } OAMShapes;
+enum Shapes { Shape_Square, Shape_Horizontal, Shape_Vertical };
 
-typedef enum { Square_8x8, Square_16x16, Square_32x32, Square_64x64 } SquareShapeSizes;
+enum SquareShapes { Square_8x8, Square_16x16, Square_32x32, Square_64x64 };
 
-typedef enum { Horizontal_16x8, Horizontal_32x8, Horizontal_32x16, Horizontal_64x32 } HorizontalShapeSizes;
+enum HorizontalShaeps { Horizontal_16x8, Horizontal_32x8, Horizontal_32x16, Horizontal_64x32 };
 
-typedef enum { Vertical_8x16, Vertical_8x32, Vertical_16x32, Vertical_32x64 } VerticalShapeSizes;
+enum VerticalShapes { Vertical_8x16, Vertical_8x32, Vertical_16x32, Vertical_32x64 };
 
-typedef enum { Song_None, Song_CrystalTitleScreen, Song_GSCRoute1, Song_GSCRoute3, Song_GSCRoute11, Song_MagnetTrainFanfare, Song_KantoGymBattle, Song_KantoTrainerBattle, Song_KantoWildBattle, Song_GSCPokecentre, Song_HikerEncounter, Song_ClassicLassEncounter, Song_PolicemanEncounter, Song_HealingFanfare, Song_GSCLavenderTown, Song_Route2, Song_GSCMountMoon, Song_GSCFollowMe, Song_GSCGameCorner, Song_GSCRidingTheBike, Song_GSCHallOfFame, Song_GSCViridianCity, Song_GSCCeladonCity, Song_GSCTrainerVictoryFanfare, Song_GSCWildVictoryFanfare, Song_GSCGymVictoryFanfare, Song_DanceOfTheClefairy, Song_GSCGym, Song_GSCPalletTown, Song_GSCOaksLab, Song_GSCOaksTheme, Song_SilverEncounter, Song_SilverOutro, Song_GSCSurfing, Song_GSCEvolution, Song_NationalPark, Song_GSCCredits, Song_AzaleaTown, Song_CherrygroveCity, Song_KimonoGirlEncounter, Song_UnionCave, Song_JohtoWildBattle, Song_JohtoTrainerBattle, Song_Route30, Song_EcruteakCity, Song_VioletCity, Song_JohtoGymBattle, Song_GSCChampionBattle, Song_SilverBattle, Song_TeamRocketBattle, Song_ElmsLab, Song_DarkCave, Song_Route29, Song_Route34, Song_SSAqua, Song_YoungsterEncounter, Song_GSCLassEncounter, Song_TeamRocketEncounter, Song_PokecollectorEncounter, Song_SageEncounter, Song_NewBarkTown, Song_GoldenrodCity, Song_GSCVermilionCity, Song_RadioFanfare1, Song_PokefluteRadio, Song_TinTower, Song_SproutTower, Song_BurnedTower, Song_OlivineLighthouse, Song_Route42, Song_GSCIndigoPlateau, Song_Route38, Song_RocketHideout, Song_DragonsDen, Song_JohtoLegendaryBattle, Song_UnownRadioSignal, Song_GSCWildBattleVitoryNoIntro, Song_Route26, Song_EncounterWithMum, Song_VictoryRoad, Song_PokemonLullaby, Song_PokemonMarch, Song_GSIntro1, Song_GSIntro2, Song_ContinueMenuTheme, Song_InsideTheRuins, Song_RocketRadioTowerTakeover, Song_EcruteakDanceTheatre, Song_PreparingForBugCatchingContest, Song_BugCatchingContest, Song_RocketRadioSignal, Song_Unknown, Song_TheEnd, Song_ClairsTheme, Song_Unknown2, Song_Unknown3, Song_BuenasRadioShow, Song_EusinesTheme, Song_CrystalIntro, Song_BattleTower, Song_LegendaryBeastBattle, Song_BattleTowerInterior, Song_PokecomCentre, Song_RBYPalletTown, Song_RBYPokecentre, Song_RBYGym, Song_RBYViridianCity, Song_CeruleanCity, Song_RBYCeladonCity, Song_CinnabarIsland, Song_RBYVermilionCity, Song_RBYLavenderTown, Song_SSAnne, Song_RBYOaksTheme, Song_BluesTheme, Song_RBYFollowMe, Song_RBYEvolution, Song_RBYHealingFanfare, Song_RBYRoute1, Song_Route24, Song_RBYRoute3, Song_RBYRoute11, Song_RBYIndigoPlateau, Song_RBYTitleScreen, Song_RBYCredits, Song_RBYHallOfFame, Song_RBYOaksLab, Song_JigglypuffsLullaby, Song_RBYRidingTheBike, Song_RBYSurfing, Song_RBYGameCorner, Song_RBYIntro, Song_UnknownDungeon, Song_ViridianForest, Song_RBYMountMoon, Song_CinnabarMansion, Song_PokemonTower, Song_SilphCo, Song_RBYEvilEncounter, Song_RBYFemaleEncounter, Song_RBYMaleEncounter, Song_RBYGymBattle, Song_RBYTrainerBattle, Song_RBYWildBattle, Song_RBYChampionBattle, Song_RBYTrainerVictoryFanfare, Song_RBYWildVictoryFanfare, Song_RBYGymVictoryFanfare } Songs;
+enum Songs { Song_None, Song_CrystalTitleScreen, Song_GSCRoute1, Song_GSCRoute3, Song_GSCRoute11, Song_MagnetTrainFanfare, Song_KantoGymBattle, Song_KantoTrainerBattle, Song_KantoWildBattle, Song_GSCPokecentre, Song_HikerEncounter, Song_ClassicLassEncounter, Song_PolicemanEncounter, Song_HealingFanfare, Song_GSCLavenderTown, Song_Route2, Song_GSCMountMoon, Song_GSCFollowMe, Song_GSCGameCorner, Song_GSCRidingTheBike, Song_GSCHallOfFame, Song_GSCViridianCity, Song_GSCCeladonCity, Song_GSCTrainerVictoryFanfare, Song_GSCWildVictoryFanfare, Song_GSCGymVictoryFanfare, Song_DanceOfTheClefairy, Song_GSCGym, Song_GSCPalletTown, Song_GSCOaksLab, Song_GSCOaksTheme, Song_SilverEncounter, Song_SilverOutro, Song_GSCSurfing, Song_GSCEvolution, Song_NationalPark, Song_GSCCredits, Song_AzaleaTown, Song_CherrygroveCity, Song_KimonoGirlEncounter, Song_UnionCave, Song_JohtoWildBattle, Song_JohtoTrainerBattle, Song_Route30, Song_EcruteakCity, Song_VioletCity, Song_JohtoGymBattle, Song_GSCChampionBattle, Song_SilverBattle, Song_TeamRocketBattle, Song_ElmsLab, Song_DarkCave, Song_Route29, Song_Route34, Song_SSAqua, Song_YoungsterEncounter, Song_GSCLassEncounter, Song_TeamRocketEncounter, Song_PokecollectorEncounter, Song_SageEncounter, Song_NewBarkTown, Song_GoldenrodCity, Song_GSCVermilionCity, Song_RadioFanfare1, Song_PokefluteRadio, Song_TinTower, Song_SproutTower, Song_BurnedTower, Song_OlivineLighthouse, Song_Route42, Song_GSCIndigoPlateau, Song_Route38, Song_RocketHideout, Song_DragonsDen, Song_JohtoLegendaryBattle, Song_UnownRadioSignal, Song_GSCWildBattleVitoryNoIntro, Song_Route26, Song_EncounterWithMum, Song_VictoryRoad, Song_PokemonLullaby, Song_PokemonMarch, Song_GSIntro1, Song_GSIntro2, Song_ContinueMenuTheme, Song_InsideTheRuins, Song_RocketRadioTowerTakeover, Song_EcruteakDanceTheatre, Song_PreparingForBugCatchingContest, Song_BugCatchingContest, Song_RocketRadioSignal, Song_Unknown, Song_TheEnd, Song_ClairsTheme, Song_Unknown2, Song_Unknown3, Song_BuenasRadioShow, Song_EusinesTheme, Song_CrystalIntro, Song_BattleTower, Song_LegendaryBeastBattle, Song_BattleTowerInterior, Song_PokecomCentre, Song_RBYPalletTown, Song_RBYPokecentre, Song_RBYGym, Song_RBYViridianCity, Song_CeruleanCity, Song_RBYCeladonCity, Song_CinnabarIsland, Song_RBYVermilionCity, Song_RBYLavenderTown, Song_SSAnne, Song_RBYOaksTheme, Song_BluesTheme, Song_RBYFollowMe, Song_RBYEvolution, Song_RBYHealingFanfare, Song_RBYRoute1, Song_Route24, Song_RBYRoute3, Song_RBYRoute11, Song_RBYIndigoPlateau, Song_RBYTitleScreen, Song_RBYCredits, Song_RBYHallOfFame, Song_RBYOaksLab, Song_JigglypuffsLullaby, Song_RBYRidingTheBike, Song_RBYSurfing, Song_RBYGameCorner, Song_RBYIntro, Song_UnknownDungeon, Song_ViridianForest, Song_RBYMountMoon, Song_CinnabarMansion, Song_PokemonTower, Song_SilphCo, Song_RBYEvilEncounter, Song_RBYFemaleEncounter, Song_RBYMaleEncounter, Song_RBYGymBattle, Song_RBYTrainerBattle, Song_RBYWildBattle, Song_RBYChampionBattle, Song_RBYTrainerVictoryFanfare, Song_RBYWildVictoryFanfare, Song_RBYGymVictoryFanfare };
 
-typedef enum { Gender_Male, Gender_Female, Gender_Genderless = 0xFF } PokemonGenders;
+enum Genders { Gender_Male, Gender_Female, Gender_Genderless = 0xFF };
 
-typedef enum { Category_Items, Category_KeyItems, Category_Berries, Category_Apricorns, Category_TechnicalMachines, Category_Balls } ItemCategories;
+enum ItemCategories { Category_Items, Category_KeyItems, Category_Berries, Category_Apricorns, Category_TechnicalMachines, Category_Balls };
 
-typedef enum Abilities { NoAbility, Stench, Magician, Rock_Head, Moxie, Poison_Touch, Static, Colour_Change, Shield_Dust, Rough_Skin, Effect_Spore, Synchronise, Poison_Point, Flame_Body, Cute_Charm, Steadfast, Anger_Point, Pickpocket, Cursed_Body, Weak_Armour, Mummy, Justified, Rattled, Iron_Barbs, Gooey, Aftermath, Drizzle, Drought, Sand_Stream, Snow_Warning, Trace, Forecast, Intimidate, Download, Anticipation, Forewarn, Illusion, Imposter, Volt_Absorb, Water_Absorb, Sap_Sipper, Flash_Fire, Motor_Drive, Sand_Veil, Compound_Eyes, Swift_Swim, Chlorophyll, Hustle, Plus, Minus, Marvel_Scale, Tangled_Feet, Quick_Feet, Sand_Rush, Victory_Star, Rivalry, Snow_Cloak, Unburden, Solar_Power, Grass_Pelt, Defiant, Competitive, Huge_Power, Guts, Pure_Power, Sheer_Force, Toxic_Boost, Flare_Boost, Sand_Force, Strong_Jaw, Iron_Fist, Overgrow, Blaze, Torrent, Swarm, Reckless, Technician, Analytic, Adaptability, Mega_Launcher, Tough_Claws, Dark_Aura, Fairy_Aura, Clear_Body, Keen_Eye, Hyper_Cutter, White_Smoke, Big_Pecks, Flower_Veil, Leaf_Guard, Wonder_Guard, Levitate, Soundproof, Bulletproof, Lightning_Rod, Storm_Drain, Natural_Cure, Rain_Dish, Ice_Body, Poison_Heal, Cheek_Pouch, Hydration, Healer, Regenerator, Shed_Skin, Dry_Skin, Normalise, Protean, Refrigerate, Pixilate, Aerilate, Mould_Breaker, Turboblaze, Teravolt, Stall, Prankster, Gale_Wings, Speed_Boost, Battle_Armour, Sturdy, Damp, Limber, Oblivious, Cloud_Nine, Insomnia, Immunity, Own_Tempo, Suction_Cups, Shadow_Tag, Serene_Grace, Inner_Focus, Magma_Armour, Water_Veil, Magnet_Pull, Pressure, Thick_Fat, Early_Bird, Run_Away, Pickup, Truant, Sticky_Hold, Liquid_Ooze, Arena_Trap, Vital_Spirit, Shell_Armour, Air_Lock, Gluttony, Heatproof, Simple, Skill_Link, Sniper, Magic_Guard, No_Guard, Klutz, Super_Luck, Unaware, Tinted_Lens, Filter, Solid_Rock, Slow_Start, Scrappy, Frisk, Multitype, Flower_Gift, Bad_Dreams, Contrary, Unnerve, Defeatist, Friend_Guard, Heavy_Metal, Light_Metal, Multiscale, Harvest, Telepathy, Moody, Overcoat, Wonder_Skin, Infiltrator, Magic_Bounce, Zen_Mode, Aroma_Veil, Fur_Coat, Sweet_Veil, Stance_Change, Symbiosis, Aura_Break, Illuminate, Honey_Gather } Abilities;
+enum Abilities { NoAbility, Stench, Magician, Rock_Head, Moxie, Poison_Touch, Static, Colour_Change, Shield_Dust, Rough_Skin, Effect_Spore, Synchronise, Poison_Point, Flame_Body, Cute_Charm, Steadfast, Anger_Point, Pickpocket, Cursed_Body, Weak_Armour, Mummy, Justified, Rattled, Iron_Barbs, Gooey, Aftermath, Drizzle, Drought, Sand_Stream, Snow_Warning, Trace, Forecast, Intimidate, Download, Anticipation, Forewarn, Illusion, Imposter, Volt_Absorb, Water_Absorb, Sap_Sipper, Flash_Fire, Motor_Drive, Sand_Veil, Compound_Eyes, Swift_Swim, Chlorophyll, Hustle, Plus, Minus, Marvel_Scale, Tangled_Feet, Quick_Feet, Sand_Rush, Victory_Star, Rivalry, Snow_Cloak, Unburden, Solar_Power, Grass_Pelt, Defiant, Competitive, Huge_Power, Guts, Pure_Power, Sheer_Force, Toxic_Boost, Flare_Boost, Sand_Force, Strong_Jaw, Iron_Fist, Overgrow, Blaze, Torrent, Swarm, Reckless, Technician, Analytic, Adaptability, Mega_Launcher, Tough_Claws, Dark_Aura, Fairy_Aura, Clear_Body, Keen_Eye, Hyper_Cutter, White_Smoke, Big_Pecks, Flower_Veil, Leaf_Guard, Wonder_Guard, Levitate, Soundproof, Bulletproof, Lightning_Rod, Storm_Drain, Natural_Cure, Rain_Dish, Ice_Body, Poison_Heal, Cheek_Pouch, Hydration, Healer, Regenerator, Shed_Skin, Dry_Skin, Normalise, Protean, Refrigerate, Pixilate, Aerilate, Mould_Breaker, Turboblaze, Teravolt, Stall, Prankster, Gale_Wings, Speed_Boost, Battle_Armour, Sturdy, Damp, Limber, Oblivious, Cloud_Nine, Insomnia, Immunity, Own_Tempo, Suction_Cups, Shadow_Tag, Serene_Grace, Inner_Focus, Magma_Armour, Water_Veil, Magnet_Pull, Pressure, Thick_Fat, Early_Bird, Run_Away, Pickup, Truant, Sticky_Hold, Liquid_Ooze, Arena_Trap, Vital_Spirit, Shell_Armour, Air_Lock, Gluttony, Heatproof, Simple, Skill_Link, Sniper, Magic_Guard, No_Guard, Klutz, Super_Luck, Unaware, Tinted_Lens, Filter, Solid_Rock, Slow_Start, Scrappy, Frisk, Multitype, Flower_Gift, Bad_Dreams, Contrary, Unnerve, Defeatist, Friend_Guard, Heavy_Metal, Light_Metal, Multiscale, Harvest, Telepathy, Moody, Overcoat, Wonder_Skin, Infiltrator, Magic_Bounce, Zen_Mode, Aroma_Veil, Fur_Coat, Sweet_Veil, Stance_Change, Symbiosis, Aura_Break, Illuminate, Honey_Gather };
 
-typedef enum CryptionIndices { PersonalityID, OTID, Nickname, FormeIndex, Gender, Nature, ForcedShiny, OTName, Mark, Checksum, IsObedient, Species, HeldItem, Move1, Move2, Move3, Move4, Move1PP, Move2PP, Move3PP, Move4PP, PPBonuses, Coolness, Beauty, Cuteness, Experience, HP_EV, Attack_EV, Defence_EV, Speed_EV, Special_Attack_EV, Special_Defence_EV, Friendship, Smartness, PokerusStatus, MetLocation, CaptureLevel, IsObedient2, PokeBall, HP_IV, Attack_IV, Defence_IV, Speed_IV, Special_Attack_IV, Special_Defence_IV, IsEgg, Ability, Toughness, Feel, Type1, Type2, IsObedient3, IsObedient4, IsObedient5, IsObedient6, StatusAilment, Level, CurrentHP, MaximumHP, Attack, Defence, Speed, SpecialAttack, SpecialDefence, IsObedient7 } CryptionIndices;
+enum CryptionIndices { PersonalityID, OTID, Nickname, FormeIndex, Gender, Nature, ForcedShiny, OTName, Mark, Checksum, IsObedient, Species, HeldItem, Move1, Move2, Move3, Move4, Move1PP, Move2PP, Move3PP, Move4PP, PPBonuses, Coolness, Beauty, Cuteness, Experience, HP_EV, Attack_EV, Defence_EV, Speed_EV, Special_Attack_EV, Special_Defence_EV, Friendship, Smartness, PokerusStatus, MetLocation, CaptureLevel, IsObedient2, PokeBall, HP_IV, Attack_IV, Defence_IV, Speed_IV, Special_Attack_IV, Special_Defence_IV, IsEgg, Ability, Toughness, Feel, Type1, Type2, IsObedient3, IsObedient4, IsObedient5, IsObedient6, StatusAilment, Level, CurrentHP, MaximumHP, Attack, Defence, Speed, SpecialAttack, SpecialDefence, IsObedient7 };
 
-typedef enum EvolutionTypes { NoEvolution, MaxHappiness, MaxHappinessTimeDependent, LevelUp, LevelUpWithStatBalance, LevelUpWithPersonality, LevelUpGender, LevelUpTimeDependent, LevelUpWithHeldItem, LevelUpWithHeldItemTimeDependent, LevelUpWithKnownMove, LevelUpWithKnownMoveType, LevelUpWithSpeciesInParty, LevelUpWithTypeInParty, LevelUpInMapName, LevelUpInSpecificMap, LevelUpWithWeatherOnOverworld, MaxBeauty, CreatesPokemon, Trade, TradeWhileHoldingItem, TradeWithSpecificSpecies, ItemUsed, ItemWithConditionUsed } EvolutionTypes;
+enum EvolutionTypes { NoEvolution, MaxHappiness, MaxHappinessTimeDependent, LevelUp, LevelUpWithStatBalance, LevelUpWithPersonality, LevelUpGender, LevelUpTimeDependent, LevelUpWithHeldItem, LevelUpWithHeldItemTimeDependent, LevelUpWithKnownMove, LevelUpWithKnownMoveType, LevelUpWithSpeciesInParty, LevelUpWithTypeInParty, LevelUpInMapName, LevelUpInSpecificMap, LevelUpWithWeatherOnOverworld, MaxBeauty, CreatesPokemon, Trade, TradeWhileHoldingItem, TradeWithSpecificSpecies, ItemUsed, ItemWithConditionUsed };
 
 enum SpriteSides { Sprite_Side_Front, Sprite_Side_Back, Palette_Normal, Palette_Shiny };
 
-typedef enum FormeCheckTypes { NoFormes, GenderSplit, GenericFromByte } FormeCheckTypes;
+enum FormeCheckTypes { NoFormes, GenderSplit, GenericFromByte };
 
-typedef enum PokemonSpecies { Missingno, Bulbasaur, Ivysaur, Venusaur, Charmander, Charmeleon, Charizard, Squirtle, Wartortle, Blastoise, Caterpie, Metapod, Butterfree, Weedle, Kakuna, Beedrill, Pidgey, Pidgeotto, Pidgeot, Rattata, Raticate, Spearow, Fearow, Ekans, Arbok, Pikachu, Raichu, Sandshrew, Sandslash, NidoranF, Nidorina, Nidoqueen, NidoranM, Nidorino, Nidoking, Clefairy, Clefable, Vulpix, Ninetales, Jigglypuff, Wigglytuff, Zubat, Golbat, Oddish, Gloom, Vileplume, Paras, Parasect, Venonat, Venomoth, Diglett, Dugtrio, Meowth, Persian, Psyduck, Golduck, Mankey, Primeape, Growlithe, Arcanine, Poliwag, Poliwhirl, Poliwrath, Abra, Kadabra, Alakazam, Machop, Machoke, Machamp, Bellsprout, Weepinbell, Victreebel, Tentacool, Tentacruel, Geodude, Graveler, Golem, Ponyta, Rapidash, Slowpoke, Slowbro, Magnemite, Magneton, Farfetchd, Doduo, Dodrio, Seel, Dewgong, Grimer, Muk, Shellder, Cloyster, Gastly, Haunter, Gengar, Onix, Drowzee, Hypno, Krabby, Kingler, Voltorb, Electrode, Exeggcute, Exeggutor, Cubone, Marowak, Hitmonlee, Hitmonchan, Lickitung, Koffing, Weezing, Rhyhorn, Rhydon, Chansey, Tangela, Kangaskhan, Horsea, Seadra, Goldeen, Seaking, Staryu, Starmie, Mr_Mime, Scyther, Jynx, Electabuzz, Magmar, Pinsir, Tauros, Magikarp, Gyarados, Lapras, Ditto, Eevee, Vaporeon, Jolteon, Flareon, Porygon, Omanyte, Omastar, Kabuto, Kabutops, Aerodactyl, Snorlax, Articuno, Zapdos, Moltres, Dratini, Dragonair, Dragonite, Mewtwo, Mew, Chikorita, Bayleef, Meganium, Cyndaquil, Quilava, Typhlosion, Totodile, Croconaw, Feraligatr, Sentret, Furret, Hoothoot, Noctowl, Ledyba, Ledian, Spinarak, Ariados, Crobat, Chinchou, Lanturn, Pichu, Cleffa, Igglybuff, Togepi, Togetic, Natu, Xatu, Mareep, Flaaffy, Ampharos, Bellossom, Marill, Azumarill, Sudowoodo, Politoed, Hoppip, Skiploom, Jumpluff, Aipom, Sunkern, Sunflora, Yanma, Wooper, Quagsire, Espeon, Umbreon, Murkrow, Slowking, Misdreavus, Unown, Wobbuffet, Girafarig, Pineco, Forretress, Dunsparce, Gligar, Steelix, Snubbull, Granbull, Qwilfish, Scizor, Shuckle, Heracross, Sneasel, Teddiursa, Ursaring, Slugma, Magcargo, Swinub, Piloswine, Corsola, Remoraid, Octillery, Delibird, Mantine, Skarmory, Houndour, Houndoom, Kingdra, Phanpy, Donphan, Porygon2, Stantler, Smeargle, Tyrogue, Hitmontop, Smoochum, Elekid, Magby, Miltank, Blissey, Raikou, Entei, Suicune, Larvitar, Pupitar, Tyranitar, Lugia, Ho_Oh, Celebi, Treecko, Grovyle, Sceptile, Torchic, Combusken, Blaziken, Mudkip, Marshtomp, Swampert, Poochyena, Mightyena, Zigzagoon, Linoone, Wurmple, Silcoon, Beautifly, Cascoon, Dustox, Lotad, Lombre, Ludicolo, Seedot, Nuzleaf, Shiftry, Taillow, Swellow, Wingull, Pelipper, Ralts, Kirlia, Gardevoir, Surskit, Masquerain, Shroomish, Breloom, Slakoth, Vigoroth, Slaking, Nincada, Ninjask, Shedinja, Whismur, Loudred, Exploud, Makuhita, Hariyama, Azurill, Nosepass, Skitty, Delcatty, Sableye, Mawile, Aron, Lairon, Aggron, Meditite, Medicham, Electrike, Manectric, Plusle, Minun, Volbeat, Illumise, Roselia, Gulpin, Swalot, Carvanha, Sharpedo, Wailmer, Wailord, Numel, Camerupt, Torkoal, Spoink, Grumpig, Spinda, Trapinch, Vibrava, Flygon, Cacnea, Cacturne, Swablu, Altaria, Zangoose, Seviper, Lunatone, Solrock, Barboach, Whiscash, Corphish, Crawdaunt, Baltoy, Claydol, Lileep, Cradily, Anorith, Armaldo, Feebas, Milotic, Castform, Kecleon, Shuppet, Banette, Duskull, Dusclops, Tropius, Chimecho, Absol, Wynaut, Snorunt, Glalie, Spheal, Sealeo, Walrein, Clamperl, Huntail, Gorebyss, Relicanth, Luvdisc, Bagon, Shelgon, Salamence, Beldum, Metang, Metagross, Regirock, Regice, Registeel, Latias, Latios, Kyogre, Groudon, Rayquaza, Jirachi, Deoxys, Turtwig, Grotle, Torterra, Chimchar, Monferno, Infernape, Piplup, Prinplup, Empoleon, Starly, Staravia, Staraptor, Bidoof, Bibarel, Kricketot, Kricketune, Shinx, Luxio, Luxray, Budew, Roserade, Cranidos, Rampardos, Shieldon, Bastiodon, Burmy, Wormadam, Mothim, Combee, Vespiquen, Pachirisu, Buizel, Floatzel, Cherubi, Cherrim, Shellos, Gastrodon, Ambipom, Drifloon, Drifblim, Buneary, Lopunny, Mismagius, Honchkrow, Glameow, Purugly, Chingling, Stunky, Skuntank, Bronzor, Bronzong, Bonsly, Mime_Jr, Happiny, Chatot, Spiritomb, Gible, Gabite, Garchomp, Munchlax, Riolu, Lucario, Hippopotas, Hippowdon, Skorupi, Drapion, Croagunk, Toxicroak, Carnivine, Finneon, Lumineon, Mantyke, Snover, Abomasnow, Weavile, Magnezone, Lickilicky, Rhyperior, Tangrowth, Electivire, Magmortar, Togekiss, Yanmega, Leafeon, Glaceon, Gliscor, Mamoswine, Porygon_Z, Gallade, Probopass, Dusknoir, Froslass, Rotom, Uxie, Mesprit, Azelf, Dialga, Palkia, Heatran, Regigigas, Giratina, Cresselia, Phione, Manaphy, Darkrai, Shaymin, Arceus, Victini, Snivy, Servine, Serperior, Tepig, Pignite, Emboar, Oshawott, Dewott, Samurott, Patrat, Watchog, Lillipup, Herdier, Stoutland, Purrloin, Liepard, Pansage, Simisage, Pansear, Simisear, Panpour, Simipour, Munna, Musharna, Pidove, Tranquil, Unfezant, Blitzle, Zebstrika, Roggenrola, Boldore, Gigalith, Woobat, Swoobat, Drilbur, Excadrill, Audino, Timburr, Gurdurr, Conkeldurr, Tympole, Palpitoad, Seismitoad, Throh, Sawk, Sewaddle, Swadloon, Leavanny, Venipede, Whirlipede, Scolipede, Cottonee, Whimsicott, Petilil, Lilligant, Basculin, Sandile, Krokorok, Krookodile, Darumaka, Darmanitan, Maractus, Dwebble, Crustle, Scraggy, Scrafty, Sigilyph, Yamask, Cofagrigus, Tirtouga, Carracosta, Archen, Archeops, Trubbish, Garbodor, Zorua, Zoroark, Minccino, Cinccino, Gothita, Gothorita, Gothitelle, Solosis, Duosion, Reuniclus, Ducklett, Swanna, Vanillite, Vanillish, Vanilluxe, Deerling, Sawsbuck, Emolga, Karrablast, Escavalier, Foongus, Amoonguss, Frillish, Jellicent, Alomomola, Joltik, Galvantula, Ferroseed, Ferrothorn, Klink, Klang, Klinklang, Tynamo, Eelektrik, Eelektross, Elgyem, Beheeyem, Litwick, Lampent, Chandelure, Axew, Fraxure, Haxorus, Cubchoo, Beartic, Cryogonal, Shelmet, Accelgor, Stunfisk, Mienfoo, Mienshao, Druddigon, Golett, Golurk, Pawniard, Bisharp, Bouffalant, Rufflet, Braviary, Vullaby, Mandibuzz, Heatmor, Durant, Deino, Zweilous, Hydreigon, Larvesta, Volcarona, Cobalion, Terrakion, Virizion, Tornadus, Thundurus, Reshiram, Zekrom, Landorus, Kyurem, Keldeo, Meloetta, Genesect, Chespin, Quilladin, Chesnaught, Fennekin, Braixen, Delphox, Froakie, Frogadier, Greninja, Bunnelby, Diggersby, Fletchling, Fletchinder, Talonflame, Scatterbug, Spewpa, Vivillion, Litleo, Pyroar, Flabebe, Floette, Florges, Skiddo, Gogoat, Pancham, Pangoro, Furfrou, Espurr, Meowstic, Honedge, Doublade, Aegislash, Spritze, Aromatisse, Swirlix, Slurpuff, Inkay, Malamar, Binnacle, Barbacle, Skrelp, Dragalge, Clauncher, Clawitzer, Helioptile, Heliolisk, Tyrunt, Tyrantrum, Amaura, Aurorus, Sylveon, Hawlucha, Dedenne, Carbink, Goomy, Sliggoo, Goodra, Klefki, Phantump, Trevenant, Pumpkaboo, Gourgeist, Bergmite, Avalugg, Noibat, Noivern, Xerneas, Yvetal, Zygarde, Diancie, Unknown1, Unknown2 } PokemonSpecies;
+enum PokemonSpecies { Missingno, Bulbasaur, Ivysaur, Venusaur, Charmander, Charmeleon, Charizard, Squirtle, Wartortle, Blastoise, Caterpie, Metapod, Butterfree, Weedle, Kakuna, Beedrill, Pidgey, Pidgeotto, Pidgeot, Rattata, Raticate, Spearow, Fearow, Ekans, Arbok, Pikachu, Raichu, Sandshrew, Sandslash, NidoranF, Nidorina, Nidoqueen, NidoranM, Nidorino, Nidoking, Clefairy, Clefable, Vulpix, Ninetales, Jigglypuff, Wigglytuff, Zubat, Golbat, Oddish, Gloom, Vileplume, Paras, Parasect, Venonat, Venomoth, Diglett, Dugtrio, Meowth, Persian, Psyduck, Golduck, Mankey, Primeape, Growlithe, Arcanine, Poliwag, Poliwhirl, Poliwrath, Abra, Kadabra, Alakazam, Machop, Machoke, Machamp, Bellsprout, Weepinbell, Victreebel, Tentacool, Tentacruel, Geodude, Graveler, Golem, Ponyta, Rapidash, Slowpoke, Slowbro, Magnemite, Magneton, Farfetchd, Doduo, Dodrio, Seel, Dewgong, Grimer, Muk, Shellder, Cloyster, Gastly, Haunter, Gengar, Onix, Drowzee, Hypno, Krabby, Kingler, Voltorb, Electrode, Exeggcute, Exeggutor, Cubone, Marowak, Hitmonlee, Hitmonchan, Lickitung, Koffing, Weezing, Rhyhorn, Rhydon, Chansey, Tangela, Kangaskhan, Horsea, Seadra, Goldeen, Seaking, Staryu, Starmie, Mr_Mime, Scyther, Jynx, Electabuzz, Magmar, Pinsir, Tauros, Magikarp, Gyarados, Lapras, Ditto, Eevee, Vaporeon, Jolteon, Flareon, Porygon, Omanyte, Omastar, Kabuto, Kabutops, Aerodactyl, Snorlax, Articuno, Zapdos, Moltres, Dratini, Dragonair, Dragonite, Mewtwo, Mew, Chikorita, Bayleef, Meganium, Cyndaquil, Quilava, Typhlosion, Totodile, Croconaw, Feraligatr, Sentret, Furret, Hoothoot, Noctowl, Ledyba, Ledian, Spinarak, Ariados, Crobat, Chinchou, Lanturn, Pichu, Cleffa, Igglybuff, Togepi, Togetic, Natu, Xatu, Mareep, Flaaffy, Ampharos, Bellossom, Marill, Azumarill, Sudowoodo, Politoed, Hoppip, Skiploom, Jumpluff, Aipom, Sunkern, Sunflora, Yanma, Wooper, Quagsire, Espeon, Umbreon, Murkrow, Slowking, Misdreavus, Unown, Wobbuffet, Girafarig, Pineco, Forretress, Dunsparce, Gligar, Steelix, Snubbull, Granbull, Qwilfish, Scizor, Shuckle, Heracross, Sneasel, Teddiursa, Ursaring, Slugma, Magcargo, Swinub, Piloswine, Corsola, Remoraid, Octillery, Delibird, Mantine, Skarmory, Houndour, Houndoom, Kingdra, Phanpy, Donphan, Porygon2, Stantler, Smeargle, Tyrogue, Hitmontop, Smoochum, Elekid, Magby, Miltank, Blissey, Raikou, Entei, Suicune, Larvitar, Pupitar, Tyranitar, Lugia, Ho_Oh, Celebi, Treecko, Grovyle, Sceptile, Torchic, Combusken, Blaziken, Mudkip, Marshtomp, Swampert, Poochyena, Mightyena, Zigzagoon, Linoone, Wurmple, Silcoon, Beautifly, Cascoon, Dustox, Lotad, Lombre, Ludicolo, Seedot, Nuzleaf, Shiftry, Taillow, Swellow, Wingull, Pelipper, Ralts, Kirlia, Gardevoir, Surskit, Masquerain, Shroomish, Breloom, Slakoth, Vigoroth, Slaking, Nincada, Ninjask, Shedinja, Whismur, Loudred, Exploud, Makuhita, Hariyama, Azurill, Nosepass, Skitty, Delcatty, Sableye, Mawile, Aron, Lairon, Aggron, Meditite, Medicham, Electrike, Manectric, Plusle, Minun, Volbeat, Illumise, Roselia, Gulpin, Swalot, Carvanha, Sharpedo, Wailmer, Wailord, Numel, Camerupt, Torkoal, Spoink, Grumpig, Spinda, Trapinch, Vibrava, Flygon, Cacnea, Cacturne, Swablu, Altaria, Zangoose, Seviper, Lunatone, Solrock, Barboach, Whiscash, Corphish, Crawdaunt, Baltoy, Claydol, Lileep, Cradily, Anorith, Armaldo, Feebas, Milotic, Castform, Kecleon, Shuppet, Banette, Duskull, Dusclops, Tropius, Chimecho, Absol, Wynaut, Snorunt, Glalie, Spheal, Sealeo, Walrein, Clamperl, Huntail, Gorebyss, Relicanth, Luvdisc, Bagon, Shelgon, Salamence, Beldum, Metang, Metagross, Regirock, Regice, Registeel, Latias, Latios, Kyogre, Groudon, Rayquaza, Jirachi, Deoxys, Turtwig, Grotle, Torterra, Chimchar, Monferno, Infernape, Piplup, Prinplup, Empoleon, Starly, Staravia, Staraptor, Bidoof, Bibarel, Kricketot, Kricketune, Shinx, Luxio, Luxray, Budew, Roserade, Cranidos, Rampardos, Shieldon, Bastiodon, Burmy, Wormadam, Mothim, Combee, Vespiquen, Pachirisu, Buizel, Floatzel, Cherubi, Cherrim, Shellos, Gastrodon, Ambipom, Drifloon, Drifblim, Buneary, Lopunny, Mismagius, Honchkrow, Glameow, Purugly, Chingling, Stunky, Skuntank, Bronzor, Bronzong, Bonsly, Mime_Jr, Happiny, Chatot, Spiritomb, Gible, Gabite, Garchomp, Munchlax, Riolu, Lucario, Hippopotas, Hippowdon, Skorupi, Drapion, Croagunk, Toxicroak, Carnivine, Finneon, Lumineon, Mantyke, Snover, Abomasnow, Weavile, Magnezone, Lickilicky, Rhyperior, Tangrowth, Electivire, Magmortar, Togekiss, Yanmega, Leafeon, Glaceon, Gliscor, Mamoswine, Porygon_Z, Gallade, Probopass, Dusknoir, Froslass, Rotom, Uxie, Mesprit, Azelf, Dialga, Palkia, Heatran, Regigigas, Giratina, Cresselia, Phione, Manaphy, Darkrai, Shaymin, Arceus, Victini, Snivy, Servine, Serperior, Tepig, Pignite, Emboar, Oshawott, Dewott, Samurott, Patrat, Watchog, Lillipup, Herdier, Stoutland, Purrloin, Liepard, Pansage, Simisage, Pansear, Simisear, Panpour, Simipour, Munna, Musharna, Pidove, Tranquil, Unfezant, Blitzle, Zebstrika, Roggenrola, Boldore, Gigalith, Woobat, Swoobat, Drilbur, Excadrill, Audino, Timburr, Gurdurr, Conkeldurr, Tympole, Palpitoad, Seismitoad, Throh, Sawk, Sewaddle, Swadloon, Leavanny, Venipede, Whirlipede, Scolipede, Cottonee, Whimsicott, Petilil, Lilligant, Basculin, Sandile, Krokorok, Krookodile, Darumaka, Darmanitan, Maractus, Dwebble, Crustle, Scraggy, Scrafty, Sigilyph, Yamask, Cofagrigus, Tirtouga, Carracosta, Archen, Archeops, Trubbish, Garbodor, Zorua, Zoroark, Minccino, Cinccino, Gothita, Gothorita, Gothitelle, Solosis, Duosion, Reuniclus, Ducklett, Swanna, Vanillite, Vanillish, Vanilluxe, Deerling, Sawsbuck, Emolga, Karrablast, Escavalier, Foongus, Amoonguss, Frillish, Jellicent, Alomomola, Joltik, Galvantula, Ferroseed, Ferrothorn, Klink, Klang, Klinklang, Tynamo, Eelektrik, Eelektross, Elgyem, Beheeyem, Litwick, Lampent, Chandelure, Axew, Fraxure, Haxorus, Cubchoo, Beartic, Cryogonal, Shelmet, Accelgor, Stunfisk, Mienfoo, Mienshao, Druddigon, Golett, Golurk, Pawniard, Bisharp, Bouffalant, Rufflet, Braviary, Vullaby, Mandibuzz, Heatmor, Durant, Deino, Zweilous, Hydreigon, Larvesta, Volcarona, Cobalion, Terrakion, Virizion, Tornadus, Thundurus, Reshiram, Zekrom, Landorus, Kyurem, Keldeo, Meloetta, Genesect, Chespin, Quilladin, Chesnaught, Fennekin, Braixen, Delphox, Froakie, Frogadier, Greninja, Bunnelby, Diggersby, Fletchling, Fletchinder, Talonflame, Scatterbug, Spewpa, Vivillion, Litleo, Pyroar, Flabebe, Floette, Florges, Skiddo, Gogoat, Pancham, Pangoro, Furfrou, Espurr, Meowstic, Honedge, Doublade, Aegislash, Spritze, Aromatisse, Swirlix, Slurpuff, Inkay, Malamar, Binnacle, Barbacle, Skrelp, Dragalge, Clauncher, Clawitzer, Helioptile, Heliolisk, Tyrunt, Tyrantrum, Amaura, Aurorus, Sylveon, Hawlucha, Dedenne, Carbink, Goomy, Sliggoo, Goodra, Klefki, Phantump, Trevenant, Pumpkaboo, Gourgeist, Bergmite, Avalugg, Noibat, Noivern, Xerneas, Yvetal, Zygarde, Diancie, Hoopa, Volcanion };
 
-typedef enum Items { ITEM_NOITEM, ITEM_THUNDERSTONE, ITEM_SUNSTONE, ITEM_FIRESTONE, ITEM_LEAFSTONE, ITEM_WATERSTONE, ITEM_MOONSTONE, ITEM_DUSKSTONE, ITEM_SHINYSTONE, ITEM_DAWNSTONE, ITEM_EVERSTONE, ITEM_LAXINCENSE, ITEM_SEAINCENSE, ITEM_ODDINCENSE, ITEM_FULLINCENSE, ITEM_ROSEINCENSE, ITEM_PUREINCENSE, ITEM_ROCKINCENSE, ITEM_LUCKINCENSE, ITEM_WAVEINCENSE, ITEM_RAZORCLAW, ITEM_RAZORFANG, ITEM_KINGSROCK, ITEM_METALCOAT, ITEM_UPGRADE, ITEM_DUBIOUSDISC, ITEM_ELECTIRISER, ITEM_MAGMARISER, ITEM_PROTECTOR, ITEM_DRAGONSCALE, ITEM_PRISMSCALE } ItemEnum;
+enum Items { ITEM_NOITEM, ITEM_THUNDERSTONE, ITEM_SUNSTONE, ITEM_FIRESTONE, ITEM_LEAFSTONE, ITEM_WATERSTONE, ITEM_MOONSTONE, ITEM_DUSKSTONE, ITEM_SHINYSTONE, ITEM_DAWNSTONE, ITEM_EVERSTONE, ITEM_LAXINCENSE, ITEM_SEAINCENSE, ITEM_ODDINCENSE, ITEM_FULLINCENSE, ITEM_ROSEINCENSE, ITEM_PUREINCENSE, ITEM_ROCKINCENSE, ITEM_LUCKINCENSE, ITEM_WAVEINCENSE, ITEM_RAZORCLAW, ITEM_RAZORFANG, ITEM_KINGSROCK, ITEM_METALCOAT, ITEM_UPGRADE, ITEM_DUBIOUSDISC, ITEM_ELECTIRISER, ITEM_MAGMARISER, ITEM_PROTECTOR, ITEM_DRAGONSCALE, ITEM_PRISMSCALE };
 
 enum EggGroups { EGG_GROUP_MONSTER,	EGG_GROUP_WATER1, EGG_GROUP_BUG, EGG_GROUP_FLYING, EGG_GROUP_FIELD, EGG_GROUP_FAIRY, EGG_GROUP_GRASS, EGG_GROUP_HUMAN_LIKE, EGG_GROUP_WATER3, EGG_GROUP_MINERAL, EGG_GROUP_AMORPHOUS, EGG_GROUP_WATER2, EGG_GROUP_DITTO, EGG_GROUP_DRAGON, EGG_GROUP_UNDISCOVERED };
+
+enum WildDatOrders { GrassData, WaterData, TreeData, RockSmashData, FishingRodData, NumWildDatas };
+
+enum GBPStatusFlags { ModulationActivation, ModulationStatus, PortamentoActivation, PitchBendActivation, ArpeggiationActivation, ArpeggiationStatus };
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -275,36 +279,21 @@ typedef struct LevelScript
 
 typedef struct WildPokemonEntry
 {
-	u8 minLevel;
-	u8 maxLevel;
+	u16 percentage;
+	u16 minLevel;
+	u16 maxLevel;
 	u16 species;
 } WildPokemonEntry;
 
-typedef struct WildGrassPokemonData
+typedef struct WildPokemonData
 {
-	u32 information;
-	WildPokemonEntry* wildData[12];
-} WildGrassPokemonData;
-
-typedef struct WildWaterPokemonData
-{
-	u32 information;
-	WildPokemonEntry* wildData[10];
-} WildWaterPokemonData;
-
-typedef struct WildTreePokemonData
-{
-	u32 information;
-	WildPokemonEntry* wildData[5];
-} WildTreePokemonData;
+	u8 encounterRate[Time_NumTimes];
+	WildPokemonEntry* wildData[Time_NumTimes];
+} WildPokemonData;
 
 typedef struct WildData
 {
-	WildGrassPokemonData* grassData;
-	WildWaterPokemonData* waterData;
-	WildTreePokemonData* treeData;
-	WildTreePokemonData* rockSmashData;
-	WildGrassPokemonData* fishingRodData;
+	WildPokemonData* data[NumWildDatas];
 } WildData;
 
 typedef struct MapBankMapCombo
@@ -334,8 +323,6 @@ typedef struct MapHeader {
 	u8 battleType;
 	WildData* wildDataLocation;
 } MapHeader;
-
-
 
 typedef struct BagItem {
 	u16 quantity;
@@ -390,10 +377,6 @@ typedef struct Bag {
 	BagItem TMData[103];
 	BagItem berryItemsData[30];
 } Bag;
-
-enum GBPStatusFlags {
-	ModulationActivation, ModulationStatus, PortamentoActivation, PitchBendActivation, ArpeggiationActivation, ArpeggiationStatus
-};
 
 typedef struct GBPToneData {
 	u8* nextInstruction;
@@ -748,6 +731,16 @@ typedef struct PercentageItemPair {
 	u16 itemID;
 } PercentageItemPair;
 
+typedef struct EVYieldStruct {
+	u16 hpEVYield:2;
+	u16 attackEVYield:2;
+	u16 defenceEVYield:2;
+	u16 speedEVYield:2;
+	u16 specialAttackEVYield:2;
+	u16 specialDefenceEVYield:2;
+	u16 unused:4;
+} EVYieldStruct;
+
 typedef struct InternalBaseData {
 	u8 baseHP;
 	u8 baseAttack;
@@ -755,16 +748,20 @@ typedef struct InternalBaseData {
 	u8 baseSpeed;
 	u8 baseSpecialAttack;
 	u8 baseSpecialDefence;
-	PercentageItemPair* items;
 	u8 type1;
 	u8 type2;
+	PercentageItemPair* items;
 	u8 ability1;
 	u8 ability2;
 	u8 hiddenAbility;
 	u8 frontspriteYPos;
 	u8 backspriteYPos;
 	u8 shadowPos;
-	u16 EVYield;
+	union
+	{
+		u16 EVYield;
+		EVYieldStruct EVYields;
+	};
 	u16 baseExpYield;
 	u8 baseFriendship;
 	u8 catchRate;

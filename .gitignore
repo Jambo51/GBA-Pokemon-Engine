@@ -1,8 +1,7 @@
-*.o
 *.d
 audio
+build
 gfx
-lib
 template.elf
 template.gba
 libgfx.a

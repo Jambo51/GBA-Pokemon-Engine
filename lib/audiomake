@@ -1,0 +1,10 @@
+
+GFXDIRS		:= audio/gbppokemoncries audio/gbpsongs audio/m4apokemoncries audio/m4asamples audio/m4awavesamples audio/m4asoundbanks audio/m4asongs
+
+.PHONY : build clean
+
+build:
+	@for dir in $(GFXDIRS) ; do $(MAKE) build -C $$dir ; done;
+
+clean:
+	@for dir in $(GFXDIRS) ; do $(MAKE) clean -C $$dir ; done;

@@ -40,6 +40,7 @@ u32 GenerateIV();
 void GenerateAllIVs(Pokemon* thePokemon);
 void SetGender(Pokemon* thePokemon);
 void SetNature(Pokemon* thePokemon, u8 forcedNatureValue);
+u32 GetClampedFormeByteValue(Pokemon* thePokemon);
 u8 GetBaseStatFromIndex(u16 species, u8 statIndex);
 void CalculateStats(Pokemon* thePokemon);
 void GiveHeldItemFromTrainerData(Pokemon* thePokemon);

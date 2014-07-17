@@ -1,0 +1,25 @@
+
+export PATH	:= $(DEVKITARM)/bin:$(PATH)
+
+.SUFFIXES :
+
+.PHONY	: build clean
+
+include $(DEVKITARM)/gba_rules
+
+#.SECONDARY : $(OFILES:.o=.s)
+
+# --- rules ---
+build	: $(TARGET)
+
+clean:
+	-rm -f $(TARGET) $(OFILES) $(OFILES:.o=.s)
+
+$(TARGET) : $(OFILES)
+
+# Simplified rules for speed
+%.o : %.c
+	@$(CC) -c $< -o $@
+
+%.o : %.s
+	@$(CC) -c $< -o $@

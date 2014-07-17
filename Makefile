@@ -36,7 +36,7 @@ export PROJ	?= $(notdir $(CURDIR))
 TITLE		:= POKEMON_EMPTGAME
 GFXLIBS		:=
 
-LIBS		:= -ltonc
+LIBS		:= -ltonc -laudio -lobjects -ltiles
 
 BUILD		:= build
 SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/data/sprites source/data/sprites/pokemonsprites source/functions
@@ -200,7 +200,7 @@ endif
 # --- Define object file list ---
 export OFILES	:=	$(addsuffix .o, $(BINFILES))					\
 					$(CFILES:.c=.o) $(CPPFILES:.cpp=.o)				\
-					$(SFILES:.s=.o)  $(SOUND_FILES)
+					$(SFILES:.s=.o)
 
 # --- Create include and library search paths ---
 export INCLUDE	:=	$(foreach dir,$(INCDIRS),-I$(CURDIR)/$(dir))	\
@@ -217,7 +217,6 @@ export LIBPATHS	:=	-L$(CURDIR) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -f $(CURDIR)/gfxmake
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	arm-none-eabi-nm -Sn $(OUTPUT).elf > $(BUILD)/$(TARGET).map
 	GBAROMFixer.exe $(TARGET).gba $(TITLE)

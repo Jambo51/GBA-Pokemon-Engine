@@ -2,7 +2,7 @@
 #include "Data/PokemonBaseData.h"
 #include "Data/MemoryLocations.h"
 #include "Data/Maps.h"
-#include "Data/Sprites/PokeSprites.h"
+#include "libobjects.h"
 #include "Data/PokeStats.h"
 #include "Functions/Maths.h"
 #include "Functions/TextFunctions.h"
@@ -1173,25 +1173,27 @@ u32 GetClampedFormeByteValue(Pokemon* thePokemon)
 u8 GetBaseStatFromIndex(u16 species, u8 statIndex, u32 formeIndex)
 {
 	u8 returnable = 0;
+	InternalBaseData* dataLoc = pokemonBaseData[species].baseDataInfo.pointerToData;
+	dataLoc = ((void**)dataLoc)[formeIndex];
 	switch (statIndex)
 	{
 		case 0:
-			returnable = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].baseHP;
+			returnable = dataLoc->baseHP;
 			break;
 		case 1:
-			returnable = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].baseAttack;
+			returnable = dataLoc->baseAttack;
 			break;
 		case 2:
-			returnable = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].baseDefence;
+			returnable = dataLoc->baseDefence;
 			break;
 		case 3:
-			returnable = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].baseSpeed;
+			returnable = dataLoc->baseSpeed;
 			break;
 		case 4:
-			returnable = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].baseSpecialAttack;
+			returnable = dataLoc->baseSpecialAttack;
 			break;
 		case 5:
-			returnable = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].baseSpecialDefence;
+			returnable = dataLoc->baseSpecialDefence;
 			break;
 	}
 	return returnable;
@@ -1200,13 +1202,25 @@ u8 GetBaseStatFromIndex(u16 species, u8 statIndex, u32 formeIndex)
 void CalculateStats(Pokemon* thePokemon)
 {
 	u32 formeIndex = GetClampedFormeByteValue(thePokemon);
-	u16 statValue = UnsignedDivide(((PokemonDecrypter(thePokemon, HP_IV) + (GetBaseStatFromIndex(PokemonDecrypter(thePokemon, Species), 0, formeIndex) << 1) + (PokemonDecrypter(thePokemon, HP_EV) >> 2) + 100) * PokemonDecrypter(thePokemon, Level)), 100) + 10;
+	u16 species = PokemonDecrypter(thePokemon, Species);
+	u32 level = PokemonDecrypter(thePokemon, Level);
+	u32 sum = PokemonDecrypter(thePokemon, HP_IV);
+	sum += (GetBaseStatFromIndex(species, 0, formeIndex) << 1);
+	sum += ((PokemonDecrypter(thePokemon, HP_EV) >> 2) + 100) * level;
+	u16 statValue = UnsignedDivide(sum, 100) + 10;
 	u16 hpDiff = PokemonDecrypter(thePokemon, MaximumHP) - PokemonDecrypter(thePokemon, CurrentHP);
 	PokemonEncrypter(thePokemon, CurrentHP, statValue - hpDiff);
 	PokemonEncrypter(thePokemon, MaximumHP, statValue);
 	for (statValue = 1; statValue < 6; statValue++)
 	{
-		PokemonEncrypter(thePokemon, MaximumHP + statValue, UnsignedFractionalMultiplication((UnsignedDivide(((PokemonDecrypter(thePokemon, (HP_IV + statValue)) + (GetBaseStatFromIndex(PokemonDecrypter(thePokemon, Species), 0, formeIndex) << 1) + (PokemonDecrypter(thePokemon, (HP_EV + statValue)) >> 2) + 100) * PokemonDecrypter(thePokemon, Level)), 100) + 10), natureEffects[PokemonDecrypter(thePokemon, Nature)][statValue - 1]));
+		sum = PokemonDecrypter(thePokemon, (HP_IV + statValue));
+		sum += (GetBaseStatFromIndex(species, 0, formeIndex) << 1);
+		sum += (PokemonDecrypter(thePokemon, (HP_EV + statValue)) >> 2);
+		sum += 100;
+		sum *= level;
+		sum = UnsignedDivide(sum, 100) + 10;
+		sum = UnsignedFractionalMultiplication(sum, natureEffects[PokemonDecrypter(thePokemon, Nature)][statValue - 1]);
+		PokemonEncrypter(thePokemon, MaximumHP + statValue, sum);
 	}
 }
 

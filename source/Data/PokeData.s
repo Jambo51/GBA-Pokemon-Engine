@@ -21117,6 +21117,7 @@ baseData:
 	.word		pointerSet648
 	.word		0x00000001
 	.word		pointerSet649
+	/*
 	.word		0x00000001
 	.word		pointerSet650
 	.word		0x00000001
@@ -21260,4 +21261,4 @@ baseData:
 	.word		0x00000001
 	.word		pointerSet720
 	.word		0x00000001
-	.word		pointerSet721
+	.word		pointerSet721*/

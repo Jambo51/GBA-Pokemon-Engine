@@ -1,10 +1,6 @@
 *.d
-audio
+audiotemp
 build
 gfx
-template.elf
-template.gba
-libgfx.a
-SDL.dll
-vba.ini
-vba-over.ini
+*.elf
+*.gba

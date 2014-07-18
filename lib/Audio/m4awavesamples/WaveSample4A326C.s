@@ -1,6 +1,6 @@
 
 	.text
-	.section .rodata
+	.text
 	.Global WaveSample4A326C
 	.align 4
 

@@ -1,5 +1,5 @@
 #MAPLE EXPORTED SAMPLE - PLEASE CHECK THE HEADER VALUES!
-#TONE NAME     : Sample4EC8AC
+	.text
 #FREQUENCY     : 27400192
 #BASE NOTE#    : 60
 #START ADRESS  : 0000000
@@ -11,7 +11,7 @@
 #WAVE EXP/COMP : 1
 #VOL EXP/COMP  : 1
 
-	.section .rodata
+	.text
 	.Global	Sample4EC8AC
 	.Align	2
 

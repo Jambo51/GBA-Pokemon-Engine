@@ -1,0 +1,10 @@
+
+GFXDIRS		:= sprites/dssprites
+
+.PHONY : build clean
+
+build:
+	@for dir in $(GFXDIRS) ; do $(MAKE) build -C $$dir ; done;
+
+clean:
+	@for dir in $(GFXDIRS) ; do $(MAKE) clean -C $$dir ; done;

@@ -117,7 +117,7 @@ int main()
 #endif
 	u16* pRAM = (u16*)TilePaletteRAM(0);
 	pRAM[0] = 0x7FFF;
-	SetupFadeScreenSlot(2, 0, &blackPalette);
+	SetupFadeScreenSlot(2, 0, (u16*)&blackPalette);
 	pauseMenuLocation = 0;
 	SetFlag(Flag_Pokedex);
 	SetFlag(Flag_Pokegear);

@@ -2,7 +2,7 @@
 #include "Data/PokemonBaseData.h"
 #include "Data/MemoryLocations.h"
 #include "Data/Maps.h"
-#include "libobjects.h"
+#include "Data/PokeSprites.h"
 #include "Data/PokeStats.h"
 #include "Functions/Maths.h"
 #include "Functions/TextFunctions.h"
@@ -253,12 +253,12 @@ u32 CountAllBoxPokemon()
 
 void SetOTName(AbridgedPokemon* thePokemon, char* nameString)
 {
-	StringCopy(&thePokemon[0].originalTrainerName, nameString, 7);
+	StringCopy((char*)&thePokemon[0].originalTrainerName, nameString, 7);
 }
 
 void SetNickname(AbridgedPokemon* thePokemon, char* nameString)
 {
-	StringCopy(&thePokemon[0].nickname, nameString, 11);
+	StringCopy((char*)&thePokemon[0].nickname, nameString, 11);
 }
 
 u16 CalculateChecksum(u16* thePokemon)
@@ -328,7 +328,7 @@ void InternalPokemonEncrypter(AbridgedPokemon* thePokemon, u8 index, u32 value)
 			thePokemon[0].originalTrainerID = value;
 			break;
 		case Nickname:
-			SetNickname(thePokemon, (u8*)value);
+			SetNickname(thePokemon, (char*)value);
 			break;
 		case FormeIndex:
 			if (value <= 0x3FF)
@@ -355,7 +355,7 @@ void InternalPokemonEncrypter(AbridgedPokemon* thePokemon, u8 index, u32 value)
 			}
 			break;
 		case OTName:
-			SetOTName(thePokemon, (u8*)value);
+			SetOTName(thePokemon, (char*)value);
 			break;
 		case Mark:
 			if (value <= 0xF)
@@ -936,7 +936,6 @@ u32 CheckTradeEvolutions(Pokemon* incomingPokemon, Pokemon* outgoingPokemon)
 	u16 species = PokemonDecrypter(incomingPokemon, Species);
 	u32 length = evoData[species].index;
 	EvolutionData* mainDataLoc = (EvolutionData*)evoData[species].pointerToData;
-	u32 i;
 	if (mainDataLoc != 0)
 	{
 		u32 i;
@@ -1256,7 +1255,11 @@ void GivePokemonAbility(Pokemon* thePokemon, bool isHiddenAbility)
 {
 	u16 species = PokemonDecrypter(thePokemon, Species);
 	u8 abilityValue = 1;
-	InternalBaseData* indexData = &pokemonBaseData[species].baseDataInfo.pointerToData[GetClampedFormeByteValue(thePokemon)];
+	InternalBaseData* indexData;
+	{
+		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
+		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
+	}
 	if (isHiddenAbility && indexData->hiddenAbility != 0)
 	{
 		abilityValue = indexData->hiddenAbility;
@@ -1277,7 +1280,11 @@ void GivePokemonAbility(Pokemon* thePokemon, bool isHiddenAbility)
 
 void SetBaseFriendship(Pokemon* thePokemon, bool isBattle)
 {
-	InternalBaseData* indexData = &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo.pointerToData[GetClampedFormeByteValue(thePokemon)];
+	InternalBaseData* indexData;
+	{
+		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo.pointerToData;
+		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
+	}
 	(isBattle)?PokemonEncrypter(thePokemon, Friendship, 0):PokemonEncrypter(thePokemon, Friendship, indexData->baseFriendship);
 }
 
@@ -1291,7 +1298,11 @@ void SetBaseExperienceFromLevel(Pokemon* thePokemon)
 void SetBasicTypes(Pokemon* thePokemon)
 {
 	u16 species = PokemonDecrypter(thePokemon, Species);
-	InternalBaseData* indexData = &pokemonBaseData[species].baseDataInfo.pointerToData[GetClampedFormeByteValue(thePokemon)];
+	InternalBaseData* indexData;
+	{
+		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
+		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
+	}
 	PokemonEncrypter(thePokemon, Type1, indexData->type1);
 	PokemonEncrypter(thePokemon, Type2, indexData->type2);
 }
@@ -1342,7 +1353,7 @@ void SetMoves(Pokemon* thePokemon)
 	}
 }
 
-const void* spriteLookupFromIndices[] = { &pokemonFrontSprites, &pokemonBackSprites, &pokemonNormalPalettes, &pokemonShinyPalettes };
+const void* spriteLookupFromIndices[] = { &pokemonFrontSprite, &pokemonBackSprite, &pokemonNormalPalette, &pokemonShinyPalette };
 
 void* GetPokemonSpritePaletteFromPokemon(Pokemon* thePokemon, u32 sideIndex)
 {
@@ -1456,7 +1467,7 @@ IncenseItemEgg incenseItemEggs[] = { { Wynaut, Wobbuffet, ITEM_LAXINCENSE }, { A
 void GeneratePokemonEgg(Pokemon* mother, Pokemon* father)
 {
 	u16 motherItem = PokemonDecrypter(mother, HeldItem);
-	u16 fatherItem = PokemonDecrypter(father, HeldItem);
+	//u16 fatherItem = PokemonDecrypter(father, HeldItem);
 	u16 species = PokemonDecrypter(mother, Species);
 	if (pokemonBaseData[species].eggGroup1 == EGG_GROUP_DITTO && pokemonBaseData[species].eggGroup2 == EGG_GROUP_DITTO)
 	{

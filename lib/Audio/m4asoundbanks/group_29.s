@@ -1,5 +1,5 @@
 	.text
-	.section .rodata
+	.text
 	.global group_29
 	.align 4
 

@@ -1,8 +1,9 @@
 	.text
-	.section .rodata
+	.text
 	.global SampleLUT4A309C
 	.align 4
 
+@ Voice LUT Number 48
 SampleLUT4A309C:
 	.byte		0x02
 	.byte		0x02

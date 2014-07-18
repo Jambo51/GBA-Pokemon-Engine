@@ -1,5 +1,5 @@
 #MAPLE EXPORTED SAMPLE - PLEASE CHECK THE HEADER VALUES!
-#TONE NAME     : Sample4A3DB8
+#TONE NAME     : Sample4A3DB9
 #FREQUENCY     : 3425024
 #BASE NOTE#    : 60
 #START ADRESS  : 0000000
@@ -11,7 +11,7 @@
 #WAVE EXP/COMP : 1
 #VOL EXP/COMP  : 1
 
-	.section .rodata
+	.text
 	.Global	Sample4A3DB8
 	.Align	2
 

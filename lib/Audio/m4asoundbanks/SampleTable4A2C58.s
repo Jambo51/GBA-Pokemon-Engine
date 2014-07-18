@@ -1,5 +1,5 @@
 	.text
-	.section .rodata
+	.text
 	.global SampleTable4A2C58
 	.align 4
 

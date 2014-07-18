@@ -36,7 +36,13 @@ export PROJ	?= $(notdir $(CURDIR))
 TITLE		:= POKEMON_EMPTGAME
 GFXLIBS		:=
 
-LIBS		:= -ltonc -laudio -lobjects -ltiles
+ifeq ($(strip $(bSpriteSet)), 1)
+SPRITELIB	:= GBA
+else
+SPRITELIB	:= DS
+endif
+
+LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lobjects
 
 BUILD		:= build
 SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/data/sprites source/data/sprites/pokemonsprites source/functions
@@ -60,7 +66,7 @@ AUDIO    :=  audio
 CFILES    :=  $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES  :=  $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES    :=  $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-BINFILES  :=  $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.bin))) soundbank.bin
+BINFILES  :=  $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.bin)))
 
 # build audio file list, include full path
 export AUDIOFILES := $(foreach dir,$(notdir $(wildcard $(AUDIO)/*.*)),$(CURDIR)/$(AUDIO)/$(dir))
@@ -70,7 +76,6 @@ export AUDIOFILES := $(foreach dir,$(notdir $(wildcard $(AUDIO)/*.*)),$(CURDIR)/
 bMB		:= 0	# Multiboot build
 bTEMPS	:= 0	# Save gcc temporaries (.i and .s files)
 bDEBUG	:= 0	# Generate debug info (bDEBUG2? Not a full DEBUG flag. Yet)
-
 
 # === BUILD FLAGS =====================================================
 # This is probably where you can stop editing

@@ -1,4 +1,5 @@
 cd lib
 BuildAudioArchive.bat
-BuildObjectArchive.bat
-BuildTilesArchive.bat & pause
+BuildDSSpriteArchive.bat
+BuildGBASpriteArchive.bat
+BuildTilesArchive.bat

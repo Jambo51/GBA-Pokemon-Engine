@@ -1,9 +1,9 @@
 
 @{{BLOCK(verdana9_b4)
 
-@ Verdana 9 from ' ' to 'ÿ'. 4bpp, with (i,s,p) = (1,2,4)
+@ Verdana 9 from ' ' to 'ï¿½'. 4bpp, with (i,s,p) = (1,2,4)
 
-	.section .rodata
+	.text
 	.align	2
 	.global	braillePokefont_b4Font
 pokefont_b4Font:
@@ -14,7 +14,7 @@ pokefont_b4Font:
 	.hword	64
 	.byte	4, 0
 
-	.section .rodata
+	.text
 	.align	2
 	.global braillePokefont_b4Glyphs		@ 14336 unsigned chars
 braillePokefont_b4Glyphs:
@@ -1026,7 +1026,7 @@ braillePokefont_b4Glyphs:
 	.hword 0x2114,0x4444,0x2144,0x4444,0x4214,0x4444,0x4214,0x4444
 	.hword 0x4444,0x4444,0x4444,0x4444,0x4444,0x4444,0x4444,0x4444
 
-	.section .rodata
+	.text
 	.align	2
 	.global braillePokefont9_b4Widths		@ 224 unsigned chars
 braillePokefont_b4Widths:

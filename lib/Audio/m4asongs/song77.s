@@ -11,7 +11,7 @@
 	.equ	song77_exg, 1
 	.equ	song77_cmp, 1
 
-	.section .rodata
+	.text
 	.global	song77
 	.align	2
 

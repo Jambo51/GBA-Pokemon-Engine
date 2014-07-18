@@ -1,8 +1,9 @@
 
-	.section .rodata
+	.text
 	.align 1
 
 song_16_track_0:
+song_16_track_0_goto_0:
 	.byte 0xDA
 	.byte 0x00
 	.byte 0xD0
@@ -24,7 +25,7 @@ song_16_track_0:
 	.byte 0x01
 	.byte 0xFD
 	.byte 0x00
-	.int song_16_track_1_goto_0
+	.int song_16_track_0_goto_0
 
 song_16_track_1:
 	.byte 0xE1

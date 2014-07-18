@@ -106,10 +106,10 @@ const WavePattern patterns[] = {
 			{ 0x1F223344, 0xCE8A4600, 0xDCEDFEF8, 0x6587A9CB },
 			{ 0x08000011, 0x9A571300, 0x98A9BAB4, 0x21436587 },
 			{ 0x2833E221, 0xEAFF22E1, 0x10DC1410, 0x735141E3 },
-			{ 0x0000FFFF, 0x00000000, 0x00000000, 0x00000000 },
-			{ 0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000 },
-			{ 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000 },
-			{ 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000 }
+			{ 0x000000FF, 0x00000000, 0x000000FF, 0x00000000 },
+			{ 0x0000FFFF, 0x00000000, 0x0000FFFF, 0x00000000 },
+			{ 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000 },
+			{ 0xFFFFFFFF, 0x0000FFFF, 0xFFFFFFFF, 0x0000FFFF }
 	};
 
 const ALIGN(1) u8 noiseData00[] = { 0x20, 0x11, 0x00, 0xFF };
@@ -156,4 +156,4 @@ const u8* noiseDataPointers2[] = { (u8*)(&noiseData00), (u8*)(&noiseData01), (u8
 const u8* noiseDataPointers3[] = { (u8*)(&noiseData30), (u8*)(&noiseData31), (u8*)(&noiseData32), (u8*)(&noiseData33), (u8*)(&noiseData34), (u8*)(&noiseData35), (u8*)(&noiseData36), (u8*)(&noiseData37), (u8*)(&noiseData38), (u8*)(&noiseData39), (u8*)(&noiseData30), (u8*)(&noiseData311), (u8*)(&noiseData312) };
 const u8* noiseDataPointers4[] = { (u8*)(&noiseData30), (u8*)(&noiseData36), (u8*)(&noiseData32), (u8*)(&noiseData33), (u8*)(&noiseData34), (u8*)(&noiseData45), (u8*)(&noiseData35), (u8*)(&noiseData47), (u8*)(&noiseData48), (u8*)(&noiseData49), (u8*)(&noiseData410), (u8*)(&noiseData311), (u8*)(&noiseData412) };
 const u8* noiseDataPointers5[] = { (u8*)(&noiseData00), (u8*)(&noiseData110), (u8*)(&noiseData111), (u8*)(&noiseData112), (u8*)(&noiseData37), (u8*)(&noiseData38), (u8*)(&noiseData39), (u8*)(&noiseData05), (u8*)(&noiseData06), (u8*)(&noiseData412), (u8*)(&noiseData33), (u8*)(&noiseData32), (u8*)(&noiseData311) };
-const u8** noiseDataPointers[] = { (u8**)(&noiseDataPointers0), (u8**)(&noiseDataPointers1), (u8**)(&noiseDataPointers2), (u8**)(&noiseDataPointers3), (u8**)(&noiseDataPointers4), (u8**)(&noiseDataPointers5) };
+const void* noiseDataPointers[] = { &noiseDataPointers0, &noiseDataPointers1, &noiseDataPointers2, &noiseDataPointers3, &noiseDataPointers4, &noiseDataPointers5 };

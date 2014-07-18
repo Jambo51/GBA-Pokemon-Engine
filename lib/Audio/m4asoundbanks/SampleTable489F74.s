@@ -1,8 +1,9 @@
 	.text
-	.section .rodata
+	.text
 	.global SampleTable489F74
 	.align 4
 
+@ Voice Collection Number 0
 SampleTable489F74:
 @**************** Voice 000 ****************************@
 	.int		0x00003C01
@@ -49,7 +50,6 @@ SampleTable489F74:
 	.int		0x00000002
 	.int		0x000F0000
 @**************** Voice 011 ****************************@
-@**************** Wave Voice ****************************@
 	.int		0x00003C03
 	.int		WaveSample4A31EC
 	.int		0x010F0700
@@ -82,7 +82,6 @@ SampleTable489F74:
 	.int		0x00000002
 	.int		0x00060100
 @**************** Voice 019 ****************************@
-@**************** Wave Voice ****************************@
 	.int		0x00003C03
 	.int		WaveSample4A320C
 	.int		0x010F0700

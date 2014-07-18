@@ -11,11 +11,11 @@
 	.equ	song1_exg, 1
 	.equ	song1_cmp, 1
 
-	.section .rodata
+	.text
 	.global	song1
 	.align	2
 
-@**************** Track 00 ****************************@
+@**************** Track 01 ****************************@
 
 song1_0:
 	.byte	KEYSH , 0

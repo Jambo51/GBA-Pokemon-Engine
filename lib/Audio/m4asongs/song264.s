@@ -11,7 +11,7 @@
 	.equ	song264_exg, 1
 	.equ	song264_cmp, 1
 
-	.section .rodata
+	.text
 	.global	song264
 	.align	2
 

@@ -1,16 +1,16 @@
 	.text
-	.section .rodata
+	.text
 	.global group_6
 	.align 4
 
 group_6:
 @**************** Voice 000 ****************************@
 	.int		0x00003C08
-	.int		Sample4F039C
+	.int		Sample4EDD7C
 	.int		0xA500F9FF
 @**************** Voice 001 ****************************@
 	.int		0x00003C10
-	.int		Sample4F039C
+	.int		Sample4EDD7C
 	.int		0xA5FF00FF
 @**************** Voice 002 ****************************@
 	.int		0x00003C00

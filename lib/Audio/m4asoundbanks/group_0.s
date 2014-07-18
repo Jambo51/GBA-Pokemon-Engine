@@ -1,12 +1,12 @@
 	.text
-	.section .rodata
+	.text
 	.global group_0
 	.align 4
 
 group_0:
-@**************** Voice 000 ****************************@
+@**************** Voice 001 ****************************@
 	.int		0x00000080
-	.int		SampleTable48A0D0
+	.int		SampleTable489F74
 	.int		0x00000000
 @**************** Voice 001 ****************************@
 	.int		0x00000040

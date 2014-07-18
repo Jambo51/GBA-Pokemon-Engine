@@ -1,8 +1,9 @@
 	.text
-	.section .rodata
+	.text
 	.global SampleTable48A508
 	.align 4
 
+@ Voice Collection Number 1
 SampleTable48A508:
 @**************** Voice 000 ****************************@
 	.int		0x00003C00

@@ -7,8 +7,9 @@
 
 #include "Functions/MusicEngine/EngineM4.h"
 #include "Data\Audio\M4ASongs.h"
+#include "Data/GlobalDefinitions.h"
 
-const STT song_table[0x92] = {
+const RODATA_LOCATION STT song_table[0x92] = {
 		{ (SongData*)&song278, 0, 0 },
 		{ (SongData*)&song291, 0, 0 },
 		{ (SongData*)&song293, 0, 0 },
@@ -36,5 +37,28 @@ const STT song_table[0x92] = {
 		{ (SongData*)&song312, 0, 0 },
 		{ (SongData*)0x0, 0, 0 },
 		{ (SongData*)&song275, 0, 0 },
-		{ (SongData*)&song300, 0, 0 }
+		{ (SongData*)&song300, 0, 0 },
+		{ (SongData*)&song301, 0, 0 },
+		{ (SongData*)&song302, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)&song305, 0, 0 },
+		{ (SongData*)&song264, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)&song336, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)&song337, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)0x0, 0, 0 }
 };

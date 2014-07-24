@@ -98,14 +98,14 @@ void BufferString(char* string, u8 bufferID, u32 maxLength)
 {
 	if (string != 0)
 	{
-		u8* buffer = (u8*)(&(buffers[bufferID]));
+		char* buffer = (char*)(&(buffers[bufferID]));
 		StringCopy(buffer, string, maxLength);
 	}
 }
 
 void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 {
-	BufferString((u8*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
+	BufferString((char*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
 }
 
 void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
@@ -117,14 +117,14 @@ void BufferRouteName(u8 mapBank, u8 mapID, u8 bufferID)
 {
 	MapHeader* header = (MapHeader*)GetMapHeaderFromBankAndMapID(mapBank, mapID);
 	u32 mapNameIndex = header[0].mapNameID;
-	BufferString((u8*)(&(mapNamesTable[mapNameIndex])), bufferID, 20);
+	BufferString((char*)(&(mapNamesTable[mapNameIndex])), bufferID, 20);
 }
 
 void BufferNumber(u32 number, u32 length, u8 bufferID)
 {
 	u32 chars = ToDecimal(number);
 	u32 i;
-	u8* string = (u8*)MemoryAllocate(sizeof(u8) * length + 1);
+	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
 	for (i = 0; i < length; i++)
 	{
 		u32 value = (chars & (0xF << (i << 2)) >> (i << 2));
@@ -150,7 +150,7 @@ void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 	number *= -1;
 	u32 chars = ToDecimal(number);
 	u32 i;
-	u8* string = (u8*)MemoryAllocate(sizeof(u8) * length + 1);
+	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
 	for (i = 0; i < length; i++)
 	{
 		u32 value = (chars & (0xF << (i << 2)) >> (i << 2));

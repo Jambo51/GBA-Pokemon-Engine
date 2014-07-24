@@ -16,13 +16,13 @@ enum MusicEngineStates {
 	GBPSoundsEngine
 };
 
-const void (*musicEngines[2])(void) = { (void (*)(void))&M4_MainEngine, (void (*)(void))&GBPSoundsMainEngine };
+const RODATA_LOCATION void (*musicEngines[2])(void) = { (void**)&M4_MainEngine, (void**)&GBPSoundsMainEngine };
 
 void SetMusicEngine(u32 engineID)
 {
 	if (engineID < 2)
 	{
-		MusicEngine = (void (*)(void))musicEngines[engineID];
+		MusicEngine = musicEngines[engineID];
 	}
 }
 

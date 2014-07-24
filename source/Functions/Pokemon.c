@@ -7,7 +7,7 @@
 #include "Functions/Maths.h"
 #include "Functions/TextFunctions.h"
 
-const u16 numberOfPokemon = 649;
+const RODATA_LOCATION u16 numberOfPokemon = 649;
 
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
 {
@@ -206,8 +206,6 @@ u32 PokemonDecrypter(Pokemon* thePokemon, u8 index)
 			break;
 	}
 }
-
-#define PokemonDecrypt PokemonDecrypter
 
 u32 CountPokemon(Pokemon* location, u32 length)
 {
@@ -1210,16 +1208,16 @@ void CalculateStats(Pokemon* thePokemon)
 	u16 hpDiff = PokemonDecrypter(thePokemon, MaximumHP) - PokemonDecrypter(thePokemon, CurrentHP);
 	PokemonEncrypter(thePokemon, CurrentHP, statValue - hpDiff);
 	PokemonEncrypter(thePokemon, MaximumHP, statValue);
-	for (statValue = 1; statValue < 6; statValue++)
+	u32 i;
+	for (i = 1; i < 6; i++)
 	{
-		sum = PokemonDecrypter(thePokemon, (HP_IV + statValue));
-		sum += (GetBaseStatFromIndex(species, 0, formeIndex) << 1);
-		sum += (PokemonDecrypter(thePokemon, (HP_EV + statValue)) >> 2);
-		sum += 100;
+		sum = PokemonDecrypter(thePokemon, (HP_IV + i));
+		sum += (GetBaseStatFromIndex(species, i, formeIndex) << 1);
+		sum += (PokemonDecrypter(thePokemon, (HP_EV + i)) >> 2);
 		sum *= level;
-		sum = UnsignedDivide(sum, 100) + 10;
-		sum = UnsignedFractionalMultiplication(sum, natureEffects[PokemonDecrypter(thePokemon, Nature)][statValue - 1]);
-		PokemonEncrypter(thePokemon, MaximumHP + statValue, sum);
+		sum = UnsignedDivide(sum, 100) + 5;
+		sum = UnsignedFractionalMultiplication(sum, natureEffects[PokemonDecrypter(thePokemon, Nature)][i - 1]);
+		PokemonEncrypter(thePokemon, MaximumHP + i, sum);
 	}
 }
 
@@ -1461,8 +1459,8 @@ u16 FindBabySpeciesInner(u16 sourceSpecies)
 	return sourceSpecies;
 }
 
-u16 alternativeSpeciesChecks[][2] = { { NidoranF, NidoranM }, { NidoranM, NidoranF }, { Illumise, Volbeat }, { Volbeat, Illumise } };
-IncenseItemEgg incenseItemEggs[] = { { Wynaut, Wobbuffet, ITEM_LAXINCENSE }, { Azurill, Marill, ITEM_SEAINCENSE }, { Mime_Jr, Mr_Mime, ITEM_ODDINCENSE }, { Munchlax, Snorlax, ITEM_FULLINCENSE }, { Budew, Roselia, ITEM_ROSEINCENSE }, { Chingling, Chimecho, ITEM_PUREINCENSE }, { Bonsly, Sudowoodo, ITEM_ROCKINCENSE }, { Happiny, Chansey, ITEM_LUCKINCENSE }, { Mantyke, Mantine, ITEM_WAVEINCENSE } };
+const RODATA_LOCATION u16 alternativeSpeciesChecks[][2] = { { NidoranF, NidoranM }, { Illumise, Volbeat }, { Volbeat, Illumise } };
+const RODATA_LOCATION IncenseItemEgg incenseItemEggs[] = { { Wynaut, Wobbuffet, ITEM_LAXINCENSE }, { Azurill, Marill, ITEM_SEAINCENSE }, { Mime_Jr, Mr_Mime, ITEM_ODDINCENSE }, { Munchlax, Snorlax, ITEM_FULLINCENSE }, { Budew, Roselia, ITEM_ROSEINCENSE }, { Chingling, Chimecho, ITEM_PUREINCENSE }, { Bonsly, Sudowoodo, ITEM_ROCKINCENSE }, { Happiny, Chansey, ITEM_LUCKINCENSE }, { Mantyke, Mantine, ITEM_WAVEINCENSE } };
 
 void GeneratePokemonEgg(Pokemon* mother, Pokemon* father)
 {
@@ -1479,7 +1477,7 @@ void GeneratePokemonEgg(Pokemon* mother, Pokemon* father)
 		species = Phione;
 	}
 	u32 i;
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < 3; i++)
 	{
 		if (species == alternativeSpeciesChecks[i][0])
 		{

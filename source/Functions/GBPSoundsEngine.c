@@ -59,8 +59,6 @@ typedef enum SoundEngineCommands
 	End
 } SoundEngineCommands;
 
-vu16* tone1Controller = (vu16*)(0x04000060);
-
 void ClearMusicPlaybackData()
 {
 	memset32(&(gbpData[currentMusicEngineSet]), 0, sizeof(GBPMusicStruct) >> 2);
@@ -102,6 +100,7 @@ u16 CalculateWavePitchFromMidiNumber(u8 commandID, s8 keyShift, u8 octave, u16 t
 
 void ExecuteToneModifications(GBPToneData* theData, u8 trackID, u8 commandID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	u16 activationValue = 0;
 	u16 firstValue = 0;
 	u16 secondValue = 0;
@@ -145,6 +144,7 @@ void ExecuteToneModifications(GBPToneData* theData, u8 trackID, u8 commandID)
 
 void ExecuteWaveModifications(GBPWaveData* theData, u8 commandID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	u16 velocity = 0;
 	u16 pitch = 0;
 	u16 activationValue = 0;
@@ -175,6 +175,7 @@ void ExecuteWaveModifications(GBPWaveData* theData, u8 commandID)
 
 void WriteNoisePattern()
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	u16 value1 = (gbpData[currentMusicEngineSet].noise.samplePointer[0] & 0xF);
 	gbpData[currentMusicEngineSet].noise.noiseFrameDelay = value1;
 	u16 value2 = (gbpData[currentMusicEngineSet].noise.samplePointer[1] << 8) | 0x3F;
@@ -186,6 +187,7 @@ void WriteNoisePattern()
 
 void ExecuteNoiseModifications(u8 commandID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	u16 noteLength = CalculateLengthOfTone(gbpData[currentMusicEngineSet].noise.frameDelay, gbpData[currentMusicEngineSet].tempo, (commandID & 0xF), gbpData[currentMusicEngineSet].noise.noteLength2);
 	gbpData[currentMusicEngineSet].noise.noteLength1 = (noteLength & 0xFF00) >> 8;
 	gbpData[currentMusicEngineSet].noise.noteLength2 = noteLength & 0xFF;
@@ -279,6 +281,7 @@ u16 U16LittleEndianToBigEndian(u16 input)
 
 u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	u8 commandLength = 1;
 	if (commandID >= SetOctave7 && commandID < SetOctave0)
 	{
@@ -475,6 +478,7 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 
 void SwitchWavePattern(u8 patternID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	if (patternID < NUMWAVEPATTERNS)
 	{
 		WavePattern* mainPattern = (WavePattern*)0x04000090;
@@ -767,6 +771,7 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 
 void ModulateToneTrack(GBPToneData* theData, u8 trackID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	if (GenericCheckFlag(PitchBendActivation, (u8*)&theData[0].statusFlags)  == 1)
 	{
 		theData[0].pitch += theData[0].pitchBendRate;
@@ -833,6 +838,7 @@ void ResetToneModulationArpeggiationCounters(GBPToneData* theData, u8 trackID)
 
 void ModulateWaveTrack(GBPWaveData* theData)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	if (GenericCheckFlag(PitchBendActivation, (u8*)&theData[0].statusFlags) == 1)
 	{
 		theData[0].pitch += theData[0].pitchBendRate;
@@ -901,6 +907,7 @@ void ModulateWaveTrack(GBPWaveData* theData)
 
 void ArpeggiateToneTrack(GBPToneData* theData, u8 trackID)
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	if (GenericCheckFlag(ArpeggiationActivation, (u8*)&theData[0].statusFlags) == 1)
 	{
 		if (theData[0].arpeggiationCountdown > 0)
@@ -1164,6 +1171,7 @@ void StartNewFanfareImmediately()
 
 void FadeSong()
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	UpdateCurrentlyPlayingSong();
 	if (musicFadePointer != 0 && musicFadePointer[0].active == 1)
 	{
@@ -1240,6 +1248,7 @@ void FadeSongIn()
 
 void GBPSoundsMainEngine()
 {
+	vu16* tone1Controller = (vu16*)(0x04000060);
 	switch (currentSongPlaybackStatus)
 	{
 		case 0:

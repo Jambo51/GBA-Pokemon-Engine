@@ -144,7 +144,7 @@ void rtc_update()
 	{
 		rtcData.timeOfDay = timeToWrite;
 		PutMapPalettesInMemory();
-		LoadObjectPaletteIntoMemory(spriteTable[0].paletteSlotID, (void*)preOAM[0].paletteSlot, 1);
+		LoadObjectPaletteIntoMemory(spriteTable[0].paletteSlotID, preOAM[0].paletteSlot, 1);
 	}
 }
 

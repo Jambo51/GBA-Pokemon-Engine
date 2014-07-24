@@ -22,7 +22,7 @@
 #define MAIN_BG_SETTINGS1 (BG_CBB(0) | MAJORITY)
 #define MAIN_BG_SETTINGS2 (BG_CBB(2) | MAJORITY)
 
-const u32 pauseOutline[1][9][8] = { { { 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEEEEEDF0, 0xEEEEEDF0, 0xBCEEEDF0, 0x11CEEDF0, 0x11BEEDF0 },
+const RODATA_LOCATION u32 pauseOutline[1][9][8] = { { { 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEEEEEDF0, 0xEEEEEDF0, 0xBCEEEDF0, 0x11CEEDF0, 0x11BEEDF0 },
 		{ 0x00000000, 0xFFFFFFFF, 0xDDDDDDDD, 0xEEEEEEEE, 0xEEEEEEEE, 0xBBBBBBBB, 0x11111111, 0x11111111 },
 		{ 0x00000000, 0x00FFFFFF, 0x0FADDDDD, 0x0FEEEEEE, 0x0FAEEEEE, 0x0FAEEECB, 0x0FAEEC11, 0x0FAEEB11 },
 		{ 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0 },
@@ -33,9 +33,9 @@ const u32 pauseOutline[1][9][8] = { { { 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEE
 		{ 0x0FAEEB11, 0x0FAEEC11, 0x0FAEEECB, 0x0FAEEEEE, 0x0FAEEEEE, 0x0FFAAAAA, 0x00FFFFFF, 0x00000000 }
 } } ;
 
-const u32 pauseOutlinePalette[8] = { 0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20664, 0x7B146546, 0x6F5B3529, 0x663156F5, 0x18C541AE };
-const u16 blackPalette[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-const u16 whitePalette[16] = { 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF };
+const u32 RODATA_LOCATION pauseOutlinePalette[8] = { 0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20664, 0x7B146546, 0x6F5B3529, 0x663156F5, 0x18C541AE };
+const u16 RODATA_LOCATION blackPalette[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+const u16 RODATA_LOCATION whitePalette[16] = { 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF };
 
 #define NUMBASEMENUITEMS 5
 #define NUMMENUITEMS 8
@@ -86,7 +86,7 @@ void ExitMenu()
 	pauseMenuFunctions = (void*)0;
 }
 
-const TextFunctionPair menuItems[] = { { "Pokégear", &TransitionToPokegear }, { "Pokédex", &TransitionToPokedex }, { "Pokémon", &TransitionToPokemonMenu }, { "Bag", &TransitionToBag }, { *(&player.name), &TransitionToPlayerCard }, { "Save", &SaveGame }, { "Options", &TransitionToOptions }, { "Exit", &ExitMenu } };
+const RODATA_LOCATION TextFunctionPair menuItems[] = { { "Pokégear", &TransitionToPokegear }, { "Pokédex", &TransitionToPokedex }, { "Pokémon", &TransitionToPokemonMenu }, { "Bag", &TransitionToBag }, { *(&player.name), &TransitionToPlayerCard }, { "Save", &SaveGame }, { "Options", &TransitionToOptions }, { "Exit", &ExitMenu } };
 
 const u8* mapNamesTable[0x100];
 

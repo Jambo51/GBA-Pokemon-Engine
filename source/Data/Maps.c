@@ -201,16 +201,16 @@ const MapConnectionData connectionData3_0[] = {
 		{ 0x00000002, 0x00000000, 0x03, 0x1, 0x0000}, { 0x00000001, 0x00000000, 0x03, 0x27, 0x0000 }
 };
 
-const MapConnection connections3_0 = { 2, (MapConnectionData*)(&connectionData3_0) };
+const MapConnection connections3_0 = { 1, (MapConnectionData*)(&connectionData3_0) };
 
 const MapConnectionData connectionData3_19[] = {
 		{ 0x00000001, 0x00000000, 0x03, 0x0, 0x0000}
 };
 
-const MapConnection connections3_19 = { 2, (MapConnectionData*)(&connectionData3_19) };
+const MapConnection connections3_19 = { 1, (MapConnectionData*)(&connectionData3_19) };
 
-const Tileset tileset0 = { 0x1, &Tileset0Tiles, &Tileset0Pal, &Tileset0MapBlock, &Tileset0AnimStruct, &Tileset0BlockInformation };
-const Tileset tileset1 = { 0x101, &Tileset1Tiles, &Tileset1Pal, &Tileset1MapBlock, 0, &Tileset1BlockInformation };
+const RODATA_LOCATION Tileset tileset0 = { 0x1, &Tileset0Tiles, &Tileset0Pal, &Tileset0MapBlock, &Tileset0AnimStruct, &Tileset0BlockInformation };
+const RODATA_LOCATION Tileset tileset1 = { 0x101, &Tileset1Tiles, &Tileset1Pal, &Tileset1MapBlock, 0, &Tileset1BlockInformation };
 
 const MapFooter mapFooter3_0 = { 24, 20, &map3_0BorderData, &map3_0, &tileset0, &tileset1, 2, 2 };
 const MapHeader mapHeader3_0 = { &mapFooter3_0, 0, 0, &connections3_0, Song_GSCPalletTown, 3, 0, 0, 0, 0 };
@@ -218,9 +218,4 @@ const MapHeader mapHeader3_0 = { &mapFooter3_0, 0, 0, &connections3_0, Song_GSCP
 const MapFooter mapFooter3_19 = { 24, 40, &map3_0BorderData, &map3_19, &tileset0, &tileset1, 2, 2 };
 const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, 3, 19, 0, 0, 0 };
 
-const MapHeader* mapBank0[] = { (MapHeader*)(0x08125598) };
-const MapHeader* mapBank1[] = { (MapHeader*)(0x08125598) };
-const MapHeader* mapBank2[] = { (MapHeader*)(0x08125598) };
-const MapHeader* mapBank3[] = { (MapHeader*)(&mapHeader3_0), (MapHeader*)(&mapHeader3_19) };
-
-const MapHeader** maps[] = { (MapHeader**)(&mapBank0), (MapHeader**)(&mapBank1), (MapHeader**)(&mapBank2), (MapHeader**)(&mapBank3) };
+const MapHeader* maps[][2] = { { 0x00000000, 0x00000000 }, { 0x00000000, 0x00000000 }, { 0x00000000, 0x00000000 }, { (MapHeader*)(&mapHeader3_0), (MapHeader*)(&mapHeader3_19) } };

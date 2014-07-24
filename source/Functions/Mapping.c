@@ -12,7 +12,7 @@
 #define tilemapTop ((u32*)0x0600E800)
 #define tilemapBottom ((u32*)0x0600F000)
 
-const TileAnimationStruct emptyAnimStruct = { 0, 0, 0, 0, 0, 0, 0, 0 };
+const RODATA_LOCATION TileAnimationStruct emptyAnimStruct = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 MapHeader* GetMapHeaderFromBankAndMapID(u8 bank, u8 map)
 {
@@ -39,9 +39,10 @@ u16 GetMusicTrackIDFromBankAndMapID(u8 bank, u8 map)
 	return (GetMapHeaderFromBankAndMapID(bank, map))[0].musicTrack;
 }
 
+const RODATA_LOCATION u8 sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
+
 u32 CalculateObjectSize(u8 shape, u8 size)
 {
-	const u8 sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
 	return (u32)sizes[shape][size];
 }
 
@@ -126,7 +127,7 @@ void PutTileAnimationDataIntoMemory(u8 tilesetID)
 	}
 }
 
-const IndexTable dataForTilesets[2][2] = { { { 5120, (void*)0x06000000 }, { 3072, (void*)0x06005000 } }, { { 4096, (void*)0x06000000 },	{ 4096, (void*)0x06004000 } } };
+const RODATA_LOCATION IndexTable dataForTilesets[2][2] = { { { 5120, (void*)0x06000000 }, { 3072, (void*)0x06005000 } }, { { 4096, (void*)0x06000000 },	{ 4096, (void*)0x06004000 } } };
 
 void StoreTilesetIntoMemory(u8 tilesetID, void* location, u8 tilesetMode, u8 isCompressed)
 {
@@ -582,15 +583,17 @@ void TurnDown(u32 thing)
 	}
 }
 
+const RODATA_LOCATION u16 xLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 56 } };
+
 u16 CalculateObjectXLocation(u8 shape, u8 size)
 {
-	const u16 xLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 56 } };
 	return xLocs[shape][size];
 }
 
+const RODATA_LOCATION u16 yLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 112 } };
+
 u16 CalculateObjectYLocation(u8 shape, u8 size)
 {
-	const u16 yLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 112 } };
 	return yLocs[shape][size];
 }
 

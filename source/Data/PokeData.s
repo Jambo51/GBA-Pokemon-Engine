@@ -19263,7 +19263,9 @@ pokemonInternalBaseData649_0:
 pointerSet649:
 	.word		pokemonInternalBaseData649_0
 
-baseData:
+ 	.align 4
+
+pokemonBaseData:
 	.word		0x00000001
 	.word		pointerSet000
 	.byte		GenderDist_Genderless
@@ -19271,6 +19273,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_UNDISCOVERED
 	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19281,6 +19284,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet002
@@ -19289,6 +19293,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_GRASS
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19299,6 +19304,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet004
@@ -19307,6 +19313,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19317,6 +19324,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_DRAGON
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet006
@@ -19325,6 +19333,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19335,6 +19344,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_WATER1
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet008
@@ -19343,6 +19353,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_WATER1
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19353,6 +19364,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_WATER1
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet010
@@ -19361,6 +19373,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19371,6 +19384,7 @@ baseData:
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet012
@@ -19379,6 +19393,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
+	.byte		0x00
 	.byte		0x00
 	.byte		GenderSplit
 	.word		0x00000001
@@ -19389,6 +19404,7 @@ baseData:
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet014
@@ -19397,6 +19413,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19407,6 +19424,7 @@ baseData:
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet016
@@ -19415,6 +19433,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19425,6 +19444,7 @@ baseData:
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet018
@@ -19433,6 +19453,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19443,6 +19464,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet020
@@ -19451,6 +19473,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		GenderSplit
 	.word		0x00000001
@@ -19461,6 +19484,7 @@ baseData:
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet022
@@ -19469,6 +19493,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19479,6 +19504,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_DRAGON
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet024
@@ -19487,6 +19513,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_DRAGON
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19497,6 +19524,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FAIRY
 	.byte		0x00
+	.byte		0x00
 	.byte		GenderSplit
 	.word		0x00000001
 	.word		pointerSet026
@@ -19505,6 +19533,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
 	.byte		0x00
 	.byte		GenderSplit
 	.word		0x00000001
@@ -19515,6 +19544,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet028
@@ -19523,6 +19553,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19533,6 +19564,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet030
@@ -19541,6 +19573,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_UNDISCOVERED
 	.byte		EGG_GROUP_UNDISCOVERED
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19551,6 +19584,7 @@ baseData:
 	.byte		EGG_GROUP_UNDISCOVERED
 	.byte		EGG_GROUP_UNDISCOVERED
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet032
@@ -19559,6 +19593,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19569,6 +19604,7 @@ baseData:
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet034
@@ -19577,6 +19613,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MONSTER
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19587,6 +19624,7 @@ baseData:
 	.byte		EGG_GROUP_FAIRY
 	.byte		EGG_GROUP_FAIRY
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet036
@@ -19595,6 +19633,7 @@ baseData:
 	.byte		LevelUp_Fast
 	.byte		EGG_GROUP_FAIRY
 	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19605,6 +19644,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet038
@@ -19613,6 +19653,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19623,6 +19664,7 @@ baseData:
 	.byte		EGG_GROUP_FAIRY
 	.byte		EGG_GROUP_FAIRY
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet040
@@ -19631,6 +19673,7 @@ baseData:
 	.byte		LevelUp_Fast
 	.byte		EGG_GROUP_FAIRY
 	.byte		EGG_GROUP_FAIRY
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19641,6 +19684,7 @@ baseData:
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet042
@@ -19649,6 +19693,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FLYING
 	.byte		EGG_GROUP_FLYING
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19659,6 +19704,7 @@ baseData:
 	.byte		EGG_GROUP_GRASS
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet044
@@ -19667,6 +19713,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_GRASS
 	.byte		EGG_GROUP_GRASS
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19677,6 +19724,7 @@ baseData:
 	.byte		EGG_GROUP_GRASS
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet046
@@ -19685,6 +19733,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_GRASS
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19695,6 +19744,7 @@ baseData:
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet048
@@ -19703,6 +19753,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19713,6 +19764,7 @@ baseData:
 	.byte		EGG_GROUP_BUG
 	.byte		EGG_GROUP_BUG
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet050
@@ -19721,6 +19773,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19731,6 +19784,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet052
@@ -19739,6 +19793,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19749,6 +19804,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet054
@@ -19757,6 +19813,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_WATER1
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19767,6 +19824,7 @@ baseData:
 	.byte		EGG_GROUP_WATER1
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet056
@@ -19775,6 +19833,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19785,6 +19844,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet058
@@ -19793,6 +19853,7 @@ baseData:
 	.byte		LevelUp_Slow
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19803,6 +19864,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet060
@@ -19811,6 +19873,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_WATER1
 	.byte		EGG_GROUP_WATER1
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19821,6 +19884,7 @@ baseData:
 	.byte		EGG_GROUP_WATER1
 	.byte		EGG_GROUP_WATER1
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet062
@@ -19829,6 +19893,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_WATER1
 	.byte		EGG_GROUP_WATER1
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19839,6 +19904,7 @@ baseData:
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet064
@@ -19847,6 +19913,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19857,6 +19924,7 @@ baseData:
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet066
@@ -19865,6 +19933,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19875,6 +19944,7 @@ baseData:
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet068
@@ -19883,6 +19953,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_HUMAN_LIKE
 	.byte		EGG_GROUP_HUMAN_LIKE
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19893,6 +19964,7 @@ baseData:
 	.byte		EGG_GROUP_GRASS
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet070
@@ -19901,6 +19973,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_GRASS
 	.byte		EGG_GROUP_GRASS
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19911,6 +19984,7 @@ baseData:
 	.byte		EGG_GROUP_GRASS
 	.byte		EGG_GROUP_GRASS
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet072
@@ -19919,6 +19993,7 @@ baseData:
 	.byte		LevelUp_Slow
 	.byte		EGG_GROUP_WATER3
 	.byte		EGG_GROUP_WATER3
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19929,6 +20004,7 @@ baseData:
 	.byte		EGG_GROUP_WATER3
 	.byte		EGG_GROUP_WATER3
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet074
@@ -19937,6 +20013,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MINERAL
 	.byte		EGG_GROUP_MINERAL
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19947,6 +20024,7 @@ baseData:
 	.byte		EGG_GROUP_MINERAL
 	.byte		EGG_GROUP_MINERAL
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet076
@@ -19955,6 +20033,7 @@ baseData:
 	.byte		LevelUp_MediumSlow
 	.byte		EGG_GROUP_MINERAL
 	.byte		EGG_GROUP_MINERAL
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
@@ -19965,6 +20044,7 @@ baseData:
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
 	.byte		0x00
+	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001
 	.word		pointerSet078
@@ -19973,6 +20053,7 @@ baseData:
 	.byte		LevelUp_MediumFast
 	.byte		EGG_GROUP_FIELD
 	.byte		EGG_GROUP_FIELD
+	.byte		0x00
 	.byte		0x00
 	.byte		NoFormes
 	.word		0x00000001

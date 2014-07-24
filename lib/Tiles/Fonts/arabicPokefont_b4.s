@@ -3,7 +3,7 @@
 
 @ Verdana 9 from ' ' to '�'. 4bpp, with (i,s,p) = (1,2,4)
 
-	.text
+	.section .rodata
 	.align	2
 	.global	arabicPokefont_b4Font
 pokefont_b4Font:

@@ -14,7 +14,7 @@ typedef enum
 	National
 } PokedexStates;
 
-const u16* dexModeConversionTable[] = { (u16*)&regionalValues[0] };
+const RODATA_LOCATION u16* dexModeConversionTable[] = { (u16*)&regionalValues[0] };
 const u16 dexLengths[] = { REGIONAL_DEX_LENGTH, numberOfPokemon };
 
 int ConvertNationalIDToRegionalID(u32 index, u32 mode)

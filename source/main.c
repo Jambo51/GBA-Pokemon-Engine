@@ -20,7 +20,7 @@
 #define GBP 1
 
 #define TEXTSET LATIN
-#define MUSICENGINE GBP
+#define MUSICENGINE M4A
 
 void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 {
@@ -126,7 +126,7 @@ int main()
 		u32 i;
 		for (i = 0; i < 6; i++)
 		{
-			GivePokemonToPlayer(&partyPokemon[i], 5, GetDelimitedRandom32BitValue(numberOfPokemon) + 1, 0);
+			GivePokemonToPlayer(&partyPokemon[i], 5, GetDelimitedRandom32BitValue(Rapidash) + 1, 0);
 		}
 	}
 	while (1)

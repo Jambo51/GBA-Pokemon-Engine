@@ -1,5 +1,5 @@
 
-	.text
+	.section .rodata
 	.align 1
 
 song_113_track_0:

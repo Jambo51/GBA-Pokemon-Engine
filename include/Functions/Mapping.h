@@ -31,7 +31,7 @@ void PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location);
 void DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID);
 void DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID);
 void DrawMap(u32 xLocation, u32 yLocation);
-u8 LoadObjectPaletteIntoMemory(u32* paletteLocation, u8 slot, u8 overloadExisting);
+u8 LoadObjectPaletteIntoMemory(u32 paletteID, u8 slot, u8 overloadExisting);
 void ChangeSpriteFrame(u8 spriteID);
 u16 CalculateObjectXLocation(u8 shape, u8 size);
 u16 CalculateObjectYLocation(u8 shape, u8 size);

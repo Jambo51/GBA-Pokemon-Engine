@@ -11,7 +11,7 @@
 #WAVE EXP/COMP : 1
 #VOL EXP/COMP  : 1
 
-	.text
+	.section .rodata
 	.Global	Sample4DA5B8
 	.Align	2
 

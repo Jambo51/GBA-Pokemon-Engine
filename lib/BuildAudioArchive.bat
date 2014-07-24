@@ -1,1 +1,1 @@
-make -f audiomake & pause
+make -f audiomake

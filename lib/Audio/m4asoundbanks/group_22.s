@@ -1,4 +1,4 @@
-	.text
+	.section .rodata
 	.text
 	.global group_22
 	.align 4

@@ -1,5 +1,5 @@
 @Hi
-	.text
+	.section .rodata
 	.align 1
 
 song_1_track_0_call_0:

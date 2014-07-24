@@ -37,7 +37,7 @@ extern u8 overworldScriptWaitingToBeRun;
 extern RealTimeClock rtcData;
 extern s16 x;
 extern s16 y;
-extern u32 seasonByte;
+extern u8 seasonByte;
 extern u16 currentFanfareID;
 extern u16 currentSongID;
 extern u16 currentSongPlaybackStatus;

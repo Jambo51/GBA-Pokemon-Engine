@@ -1,4 +1,4 @@
-	.text
+	.section .rodata
 	.align 4
 	.global PokemonSprite123_FrontSprite
 	.global PokemonSprite123_NormalPalette

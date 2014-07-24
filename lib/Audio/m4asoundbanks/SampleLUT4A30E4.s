@@ -1,4 +1,4 @@
-	.text
+	.section .rodata
 	.text
 	.global SampleLUT4A30E4
 	.align 4

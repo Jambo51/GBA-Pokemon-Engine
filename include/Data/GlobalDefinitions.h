@@ -12,12 +12,15 @@
 #define CALLBACKLENGTH 10
 
 #define EWRAM_LOCATION __attribute__((section (".sbss")))
+#define IWRAM_LOCATION __attribute__((section (".bss")))
+#define RODATA_LOCATION __attribute__((section (".rodata")))
 
 #define TilePaletteRAM(n) (0x05000000 + (n << 5))
 #define ObjectPaletteRAM(n) (0x05000200 + (n << 5))
 #define ObjectTileBase(n) (0x06010000 + (n << 5))
 
 #include "tonc.h"
+#include <stdbool.h>
 
 typedef void (*FunctionPtr)(void);
 

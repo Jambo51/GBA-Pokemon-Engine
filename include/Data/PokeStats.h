@@ -11,5 +11,6 @@
 #include "GlobalDefinitions.h"
 
 extern IndexTable evoData[];
+extern BaseData pokemonBaseData[];
 
 #endif /* POKESTATS_H_ */

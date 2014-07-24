@@ -1243,22 +1243,23 @@ void GiveHeldItemFromBaseData(Pokemon* thePokemon)
 		counter += values[i].percentage;
 		if (randomValue < counter)
 		{
+			item = values[i].itemID;
 			break;
 		}
 	}
 	PokemonEncrypter(thePokemon, HeldItem, item);
 }
 
-void GivePokemonAbility(Pokemon* thePokemon, bool isHiddenAbility)
+void GivePokemonAbility(Pokemon* thePokemon, u32 isHiddenAbility)
 {
 	u16 species = PokemonDecrypter(thePokemon, Species);
-	u8 abilityValue = 1;
+	u8 abilityValue = 0;
 	InternalBaseData* indexData;
 	{
 		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
 		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
 	}
-	if (isHiddenAbility && indexData->hiddenAbility != 0)
+	if ((isHiddenAbility == 1) && (indexData->hiddenAbility != 0))
 	{
 		abilityValue = indexData->hiddenAbility;
 	}
@@ -1276,14 +1277,14 @@ void GivePokemonAbility(Pokemon* thePokemon, bool isHiddenAbility)
 	PokemonEncrypter(thePokemon, Ability, abilityValue);
 }
 
-void SetBaseFriendship(Pokemon* thePokemon, bool isBattle)
+void SetBaseFriendship(Pokemon* thePokemon, u32 isBattle)
 {
 	InternalBaseData* indexData;
 	{
 		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo.pointerToData;
 		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
 	}
-	(isBattle)?PokemonEncrypter(thePokemon, Friendship, 0):PokemonEncrypter(thePokemon, Friendship, indexData->baseFriendship);
+	(isBattle == 1)?PokemonEncrypter(thePokemon, Friendship, 0):PokemonEncrypter(thePokemon, Friendship, indexData->baseFriendship);
 }
 
 void SetBaseExperienceFromLevel(Pokemon* thePokemon)

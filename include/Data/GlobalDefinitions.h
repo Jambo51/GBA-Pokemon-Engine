@@ -665,8 +665,9 @@ typedef struct AbridgedPokemon {
 	u16 species;
 	u16 heldItem;
 	u32 experience:21;
-	u32 formeValue:10;
+	u32 formeValue:9;
 	u32 forceShiny:1;
+	u32 hasHiddenAbility:1;
 	u8 ppBonuses;
 	union
 	{

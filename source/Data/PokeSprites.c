@@ -1,9 +1,8 @@
-/*
- * PokeSprites.c
+/* * PokeSprites.c
  *
  *  Created on: 17 Jul 2014
- *      Author: Jamie
- */
+ *      Author: Jamie*/
+
 
 #include "libsprites.h"
 
@@ -208,7 +207,7 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet197[] = { &PokemonSprite197_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet198[] = { &PokemonSprite198_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet199[] = { &PokemonSprite199_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet200[] = { &PokemonSprite200_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet201[] = { &PokemonSprite201_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet201[] = { &PokemonSprite201_FrontSprite, &UnownB_FrontSprite, &UnownC_FrontSprite, &UnownD_FrontSprite, &UnownE_FrontSprite, &UnownF_FrontSprite, &UnownG_FrontSprite, &UnownH_FrontSprite, &UnownI_FrontSprite, &UnownJ_FrontSprite, &UnownK_FrontSprite, &UnownL_FrontSprite, &UnownM_FrontSprite, &UnownN_FrontSprite, &UnownO_FrontSprite, &UnownP_FrontSprite, &UnownQ_FrontSprite, &UnownR_FrontSprite, &UnownS_FrontSprite, &UnownT_FrontSprite, &UnownU_FrontSprite, &UnownV_FrontSprite, &UnownW_FrontSprite, &UnownX_FrontSprite, &UnownY_FrontSprite, &UnownZ_FrontSprite, &UnownExclamationMark_FrontSprite, &UnownQuestionMark_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet202[] = { &PokemonSprite202_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet203[] = { &PokemonSprite203_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet204[] = { &PokemonSprite204_FrontSprite };
@@ -393,7 +392,7 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet382[] = { &PokemonSprite382_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet383[] = { &PokemonSprite383_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet384[] = { &PokemonSprite384_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet385[] = { &PokemonSprite385_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet386[] = { &PokemonSprite386_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet386[] = { &PokemonSprite386_FrontSprite, &sprite_rip_000_FrontSprite, &sprite_rip_001_FrontSprite, &sprite_rip_002_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet387[] = { &PokemonSprite387_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet388[] = { &PokemonSprite388_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet389[] = { &PokemonSprite389_FrontSprite };
@@ -419,8 +418,8 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet408[] = { &PokemonSprite408_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet409[] = { &PokemonSprite409_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet410[] = { &PokemonSprite410_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet411[] = { &PokemonSprite411_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet412[] = { &PokemonSprite412_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet413[] = { &PokemonSprite413_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet412[] = { &PokemonSprite412_FrontSprite, &sprite_rip_003_FrontSprite, &sprite_rip_004_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet413[] = { &PokemonSprite413_FrontSprite, &sprite_rip_005_FrontSprite, &sprite_rip_006_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet414[] = { &PokemonSprite414_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet415[] = { &PokemonSprite415_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet416[] = { &PokemonSprite416_FrontSprite };
@@ -428,9 +427,9 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet417[] = { &PokemonSprite417_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet418[] = { &PokemonSprite418_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet419[] = { &PokemonSprite419_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet420[] = { &PokemonSprite420_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet421[] = { &PokemonSprite421_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet422[] = { &PokemonSprite422_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet423[] = { &PokemonSprite423_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet421[] = { &PokemonSprite421_FrontSprite, &sprite_rip_007_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet422[] = { &PokemonSprite422_FrontSprite, &sprite_rip_008_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet423[] = { &PokemonSprite423_FrontSprite, &sprite_rip_009_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet424[] = { &PokemonSprite424_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet425[] = { &PokemonSprite425_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet426[] = { &PokemonSprite426_FrontSprite };
@@ -486,7 +485,7 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet475[] = { &PokemonSprite475_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet476[] = { &PokemonSprite476_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet477[] = { &PokemonSprite477_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet478[] = { &PokemonSprite478_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet479[] = { &PokemonSprite479_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet479[] = { &PokemonSprite479_FrontSprite, &sprite_rip_010_FrontSprite, &sprite_rip_011_FrontSprite, &sprite_rip_012_FrontSprite, &sprite_rip_013_FrontSprite, &sprite_rip_014_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet480[] = { &PokemonSprite480_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet481[] = { &PokemonSprite481_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet482[] = { &PokemonSprite482_FrontSprite };
@@ -494,13 +493,13 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet483[] = { &PokemonSprite483_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet484[] = { &PokemonSprite484_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet485[] = { &PokemonSprite485_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet486[] = { &PokemonSprite486_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet487[] = { &PokemonSprite487_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet487[] = { &PokemonSprite487_FrontSprite, &sprite_rip_015_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet488[] = { &PokemonSprite488_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet489[] = { &PokemonSprite489_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet490[] = { &PokemonSprite490_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet491[] = { &PokemonSprite491_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet492[] = { &PokemonSprite492_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet493[] = { &PokemonSprite493_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet492[] = { &PokemonSprite492_FrontSprite, &sprite_rip_016_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet493[] = { &PokemonSprite493_FrontSprite, &sprite_rip_017_FrontSprite, &sprite_rip_018_FrontSprite, &sprite_rip_019_FrontSprite, &sprite_rip_020_FrontSprite, &sprite_rip_021_FrontSprite, &sprite_rip_022_FrontSprite, &sprite_rip_023_FrontSprite, &sprite_rip_024_FrontSprite, &sprite_rip_025_FrontSprite, &sprite_rip_026_FrontSprite, &sprite_rip_027_FrontSprite, &sprite_rip_028_FrontSprite, &sprite_rip_029_FrontSprite, &sprite_rip_030_FrontSprite, &sprite_rip_031_FrontSprite, &sprite_rip_032_FrontSprite, &sprite_rip_033_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet494[] = { &PokemonSprite494_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet495[] = { &PokemonSprite495_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet496[] = { &PokemonSprite496_FrontSprite };
@@ -557,12 +556,12 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet546[] = { &PokemonSprite546_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet547[] = { &PokemonSprite547_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet548[] = { &PokemonSprite548_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet549[] = { &PokemonSprite549_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet550[] = { &PokemonSprite550_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet550[] = { &PokemonSprite550_FrontSprite, &sprite_rip_034_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet551[] = { &PokemonSprite551_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet552[] = { &PokemonSprite552_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet553[] = { &PokemonSprite553_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet554[] = { &PokemonSprite554_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet555[] = { &PokemonSprite555_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet555[] = { &PokemonSprite555_FrontSprite, &sprite_rip_035_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet556[] = { &PokemonSprite556_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet557[] = { &PokemonSprite557_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet558[] = { &PokemonSprite558_FrontSprite };
@@ -592,8 +591,8 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet581[] = { &PokemonSprite581_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet582[] = { &PokemonSprite582_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet583[] = { &PokemonSprite583_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet584[] = { &PokemonSprite584_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet585[] = { &PokemonSprite585_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet586[] = { &PokemonSprite586_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet585[] = { &PokemonSprite585_FrontSprite, &sprite_rip_036_FrontSprite, &sprite_rip_037_FrontSprite, &sprite_rip_038_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet586[] = { &PokemonSprite586_FrontSprite, &sprite_rip_039_FrontSprite, &sprite_rip_040_FrontSprite, &sprite_rip_041_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet587[] = { &PokemonSprite587_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet588[] = { &PokemonSprite588_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet589[] = { &PokemonSprite589_FrontSprite };
@@ -657,7 +656,7 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet646[] = { &PokemonSprite646_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet647[] = { &PokemonSprite647_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet648[] = { &PokemonSprite648_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet649[] = { &PokemonSprite649_FrontSprite };
-/*const RODATA_LOCATION void* PointerToFrontSpriteSet650[] = { &PokemonSprite650_FrontSprite };
+const RODATA_LOCATION void* PointerToFrontSpriteSet650[] = { &PokemonSprite650_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet651[] = { &PokemonSprite651_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet652[] = { &PokemonSprite652_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet653[] = { &PokemonSprite653_FrontSprite };
@@ -728,7 +727,8 @@ const RODATA_LOCATION void* PointerToFrontSpriteSet717[] = { &PokemonSprite717_F
 const RODATA_LOCATION void* PointerToFrontSpriteSet718[] = { &PokemonSprite718_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet719[] = { &PokemonSprite719_FrontSprite };
 const RODATA_LOCATION void* PointerToFrontSpriteSet720[] = { &PokemonSprite720_FrontSprite };
-const RODATA_LOCATION void* PointerToFrontSpriteSet721[] = { &PokemonSprite721_FrontSprite };*/
+const RODATA_LOCATION void* PointerToFrontSpriteSet721[] = { &PokemonSprite721_FrontSprite };
+const RODATA_LOCATION void* PointerToEggFrontSprite[] = { &EggSprite_FrontSprite };
 
 const RODATA_LOCATION void* PointerToBackSpriteSet000[] = { &PokemonSprite000_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet001[] = { &PokemonSprite001_BackSprite };
@@ -931,7 +931,7 @@ const RODATA_LOCATION void* PointerToBackSpriteSet197[] = { &PokemonSprite197_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet198[] = { &PokemonSprite198_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet199[] = { &PokemonSprite199_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet200[] = { &PokemonSprite200_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet201[] = { &PokemonSprite201_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet201[] = { &PokemonSprite201_BackSprite, &UnownB_BackSprite, &UnownC_BackSprite, &UnownD_BackSprite, &UnownE_BackSprite, &UnownF_BackSprite, &UnownG_BackSprite, &UnownH_BackSprite, &UnownI_BackSprite, &UnownJ_BackSprite, &UnownK_BackSprite, &UnownL_BackSprite, &UnownM_BackSprite, &UnownN_BackSprite, &UnownO_BackSprite, &UnownP_BackSprite, &UnownQ_BackSprite, &UnownR_BackSprite, &UnownS_BackSprite, &UnownT_BackSprite, &UnownU_BackSprite, &UnownV_BackSprite, &UnownW_BackSprite, &UnownX_BackSprite, &UnownY_BackSprite, &UnownZ_BackSprite, &UnownExclamationMark_NormalPalette, &UnownQuestionMark_NormalPalette };
 const RODATA_LOCATION void* PointerToBackSpriteSet202[] = { &PokemonSprite202_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet203[] = { &PokemonSprite203_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet204[] = { &PokemonSprite204_BackSprite };
@@ -1116,7 +1116,7 @@ const RODATA_LOCATION void* PointerToBackSpriteSet382[] = { &PokemonSprite382_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet383[] = { &PokemonSprite383_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet384[] = { &PokemonSprite384_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet385[] = { &PokemonSprite385_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet386[] = { &PokemonSprite386_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet386[] = { &PokemonSprite386_BackSprite, &sprite_rip_000_BackSprite, &sprite_rip_001_BackSprite, &sprite_rip_002_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet387[] = { &PokemonSprite387_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet388[] = { &PokemonSprite388_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet389[] = { &PokemonSprite389_BackSprite };
@@ -1142,8 +1142,8 @@ const RODATA_LOCATION void* PointerToBackSpriteSet408[] = { &PokemonSprite408_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet409[] = { &PokemonSprite409_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet410[] = { &PokemonSprite410_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet411[] = { &PokemonSprite411_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet412[] = { &PokemonSprite412_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet413[] = { &PokemonSprite413_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet412[] = { &PokemonSprite412_BackSprite, &sprite_rip_003_BackSprite, &sprite_rip_004_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet413[] = { &PokemonSprite413_BackSprite, &sprite_rip_005_BackSprite, &sprite_rip_005_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet414[] = { &PokemonSprite414_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet415[] = { &PokemonSprite415_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet416[] = { &PokemonSprite416_BackSprite };
@@ -1151,9 +1151,9 @@ const RODATA_LOCATION void* PointerToBackSpriteSet417[] = { &PokemonSprite417_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet418[] = { &PokemonSprite418_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet419[] = { &PokemonSprite419_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet420[] = { &PokemonSprite420_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet421[] = { &PokemonSprite421_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet422[] = { &PokemonSprite422_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet423[] = { &PokemonSprite423_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet421[] = { &PokemonSprite421_BackSprite, &sprite_rip_007_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet422[] = { &PokemonSprite422_BackSprite, &sprite_rip_008_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet423[] = { &PokemonSprite423_BackSprite, &sprite_rip_009_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet424[] = { &PokemonSprite424_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet425[] = { &PokemonSprite425_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet426[] = { &PokemonSprite426_BackSprite };
@@ -1209,7 +1209,7 @@ const RODATA_LOCATION void* PointerToBackSpriteSet475[] = { &PokemonSprite475_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet476[] = { &PokemonSprite476_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet477[] = { &PokemonSprite477_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet478[] = { &PokemonSprite478_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet479[] = { &PokemonSprite479_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet479[] = { &PokemonSprite479_BackSprite, &sprite_rip_010_BackSprite, &sprite_rip_011_BackSprite, &sprite_rip_012_BackSprite, &sprite_rip_013_BackSprite, &sprite_rip_014_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet480[] = { &PokemonSprite480_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet481[] = { &PokemonSprite481_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet482[] = { &PokemonSprite482_BackSprite };
@@ -1217,13 +1217,13 @@ const RODATA_LOCATION void* PointerToBackSpriteSet483[] = { &PokemonSprite483_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet484[] = { &PokemonSprite484_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet485[] = { &PokemonSprite485_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet486[] = { &PokemonSprite486_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet487[] = { &PokemonSprite487_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet487[] = { &PokemonSprite487_BackSprite, &sprite_rip_015_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet488[] = { &PokemonSprite488_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet489[] = { &PokemonSprite489_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet490[] = { &PokemonSprite490_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet491[] = { &PokemonSprite491_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet492[] = { &PokemonSprite492_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet493[] = { &PokemonSprite493_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet492[] = { &PokemonSprite492_BackSprite, &sprite_rip_016_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet493[] = { &PokemonSprite493_BackSprite, &sprite_rip_017_BackSprite, &sprite_rip_018_BackSprite, &sprite_rip_019_BackSprite, &sprite_rip_020_BackSprite, &sprite_rip_021_BackSprite, &sprite_rip_022_BackSprite, &sprite_rip_023_BackSprite, &sprite_rip_024_BackSprite, &sprite_rip_025_BackSprite, &sprite_rip_026_BackSprite, &sprite_rip_027_BackSprite, &sprite_rip_028_BackSprite, &sprite_rip_029_BackSprite, &sprite_rip_030_BackSprite, &sprite_rip_031_BackSprite, &sprite_rip_032_BackSprite, &sprite_rip_033_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet494[] = { &PokemonSprite494_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet495[] = { &PokemonSprite495_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet496[] = { &PokemonSprite496_BackSprite };
@@ -1280,12 +1280,12 @@ const RODATA_LOCATION void* PointerToBackSpriteSet546[] = { &PokemonSprite546_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet547[] = { &PokemonSprite547_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet548[] = { &PokemonSprite548_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet549[] = { &PokemonSprite549_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet550[] = { &PokemonSprite550_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet550[] = { &PokemonSprite550_BackSprite, &sprite_rip_034_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet551[] = { &PokemonSprite551_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet552[] = { &PokemonSprite552_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet553[] = { &PokemonSprite553_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet554[] = { &PokemonSprite554_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet555[] = { &PokemonSprite555_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet555[] = { &PokemonSprite555_BackSprite, &sprite_rip_035_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet556[] = { &PokemonSprite556_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet557[] = { &PokemonSprite557_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet558[] = { &PokemonSprite558_BackSprite };
@@ -1315,8 +1315,8 @@ const RODATA_LOCATION void* PointerToBackSpriteSet581[] = { &PokemonSprite581_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet582[] = { &PokemonSprite582_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet583[] = { &PokemonSprite583_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet584[] = { &PokemonSprite584_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet585[] = { &PokemonSprite585_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet586[] = { &PokemonSprite586_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet585[] = { &PokemonSprite585_BackSprite, &sprite_rip_036_BackSprite, &sprite_rip_037_BackSprite, &sprite_rip_038_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet586[] = { &PokemonSprite586_BackSprite, &sprite_rip_039_BackSprite, &sprite_rip_040_BackSprite, &sprite_rip_041_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet587[] = { &PokemonSprite587_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet588[] = { &PokemonSprite588_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet589[] = { &PokemonSprite589_BackSprite };
@@ -1380,7 +1380,7 @@ const RODATA_LOCATION void* PointerToBackSpriteSet646[] = { &PokemonSprite646_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet647[] = { &PokemonSprite647_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet648[] = { &PokemonSprite648_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet649[] = { &PokemonSprite649_BackSprite };
-/*const RODATA_LOCATION void* PointerToBackSpriteSet650[] = { &PokemonSprite650_BackSprite };
+const RODATA_LOCATION void* PointerToBackSpriteSet650[] = { &PokemonSprite650_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet651[] = { &PokemonSprite651_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet652[] = { &PokemonSprite652_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet653[] = { &PokemonSprite653_BackSprite };
@@ -1451,7 +1451,8 @@ const RODATA_LOCATION void* PointerToBackSpriteSet717[] = { &PokemonSprite717_Ba
 const RODATA_LOCATION void* PointerToBackSpriteSet718[] = { &PokemonSprite718_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet719[] = { &PokemonSprite719_BackSprite };
 const RODATA_LOCATION void* PointerToBackSpriteSet720[] = { &PokemonSprite720_BackSprite };
-const RODATA_LOCATION void* PointerToBackSpriteSet721[] = { &PokemonSprite721_BackSprite };*/
+const RODATA_LOCATION void* PointerToBackSpriteSet721[] = { &PokemonSprite721_BackSprite };
+const RODATA_LOCATION void* PointerToEggBackSprite[] = { &EggSprite_BackSprite };
 
 const RODATA_LOCATION void* PointerToNormalPaletteSet000[] = { &PokemonSprite000_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet001[] = { &PokemonSprite001_NormalPalette };
@@ -1654,7 +1655,7 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet197[] = { &PokemonSprite197
 const RODATA_LOCATION void* PointerToNormalPaletteSet198[] = { &PokemonSprite198_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet199[] = { &PokemonSprite199_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet200[] = { &PokemonSprite200_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet201[] = { &PokemonSprite201_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet201[] = { &PokemonSprite201_NormalPalette, &UnownB_NormalPalette, &UnownC_NormalPalette, &UnownD_NormalPalette, &UnownE_NormalPalette, &UnownF_NormalPalette, &UnownG_NormalPalette, &UnownH_NormalPalette, &UnownI_NormalPalette, &UnownJ_NormalPalette, &UnownK_NormalPalette, &UnownL_NormalPalette, &UnownM_NormalPalette, &UnownN_NormalPalette, &UnownO_NormalPalette, &UnownP_NormalPalette, &UnownQ_NormalPalette, &UnownR_NormalPalette, &UnownS_NormalPalette, &UnownT_NormalPalette, &UnownU_NormalPalette, &UnownV_NormalPalette, &UnownW_NormalPalette, &UnownX_NormalPalette, &UnownY_NormalPalette, &UnownZ_NormalPalette, &UnownExclamationMark_NormalPalette, &UnownQuestionMark_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet202[] = { &PokemonSprite202_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet203[] = { &PokemonSprite203_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet204[] = { &PokemonSprite204_NormalPalette };
@@ -1839,7 +1840,7 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet382[] = { &PokemonSprite382
 const RODATA_LOCATION void* PointerToNormalPaletteSet383[] = { &PokemonSprite383_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet384[] = { &PokemonSprite384_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet385[] = { &PokemonSprite385_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet386[] = { &PokemonSprite386_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet386[] = { &PokemonSprite386_NormalPalette, &sprite_rip_000_NormalPalette, &sprite_rip_001_NormalPalette, &sprite_rip_002_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet387[] = { &PokemonSprite387_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet388[] = { &PokemonSprite388_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet389[] = { &PokemonSprite389_NormalPalette };
@@ -1865,8 +1866,8 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet408[] = { &PokemonSprite408
 const RODATA_LOCATION void* PointerToNormalPaletteSet409[] = { &PokemonSprite409_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet410[] = { &PokemonSprite410_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet411[] = { &PokemonSprite411_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet412[] = { &PokemonSprite412_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet413[] = { &PokemonSprite413_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet412[] = { &PokemonSprite412_NormalPalette, &sprite_rip_003_NormalPalette, &sprite_rip_004_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet413[] = { &PokemonSprite413_NormalPalette, &sprite_rip_005_NormalPalette, &sprite_rip_006_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet414[] = { &PokemonSprite414_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet415[] = { &PokemonSprite415_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet416[] = { &PokemonSprite416_NormalPalette };
@@ -1874,9 +1875,9 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet417[] = { &PokemonSprite417
 const RODATA_LOCATION void* PointerToNormalPaletteSet418[] = { &PokemonSprite418_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet419[] = { &PokemonSprite419_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet420[] = { &PokemonSprite420_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet421[] = { &PokemonSprite421_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet422[] = { &PokemonSprite422_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet423[] = { &PokemonSprite423_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet421[] = { &PokemonSprite421_NormalPalette, &sprite_rip_007_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet422[] = { &PokemonSprite422_NormalPalette, &sprite_rip_008_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet423[] = { &PokemonSprite423_NormalPalette, &sprite_rip_009_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet424[] = { &PokemonSprite424_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet425[] = { &PokemonSprite425_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet426[] = { &PokemonSprite426_NormalPalette };
@@ -1932,7 +1933,7 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet475[] = { &PokemonSprite475
 const RODATA_LOCATION void* PointerToNormalPaletteSet476[] = { &PokemonSprite476_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet477[] = { &PokemonSprite477_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet478[] = { &PokemonSprite478_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet479[] = { &PokemonSprite479_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet479[] = { &PokemonSprite479_NormalPalette, &sprite_rip_010_NormalPalette, &sprite_rip_011_NormalPalette, &sprite_rip_012_NormalPalette, &sprite_rip_013_NormalPalette, &sprite_rip_014_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet480[] = { &PokemonSprite480_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet481[] = { &PokemonSprite481_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet482[] = { &PokemonSprite482_NormalPalette };
@@ -1940,13 +1941,13 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet483[] = { &PokemonSprite483
 const RODATA_LOCATION void* PointerToNormalPaletteSet484[] = { &PokemonSprite484_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet485[] = { &PokemonSprite485_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet486[] = { &PokemonSprite486_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet487[] = { &PokemonSprite487_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet487[] = { &PokemonSprite487_NormalPalette, &sprite_rip_015_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet488[] = { &PokemonSprite488_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet489[] = { &PokemonSprite489_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet490[] = { &PokemonSprite490_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet491[] = { &PokemonSprite491_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet492[] = { &PokemonSprite492_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet493[] = { &PokemonSprite493_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet492[] = { &PokemonSprite492_NormalPalette, &sprite_rip_016_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet493[] = { &PokemonSprite493_NormalPalette, &sprite_rip_017_NormalPalette, &sprite_rip_018_NormalPalette, &sprite_rip_019_NormalPalette, &sprite_rip_020_NormalPalette, &sprite_rip_021_NormalPalette, &sprite_rip_022_NormalPalette, &sprite_rip_023_NormalPalette, &sprite_rip_024_NormalPalette, &sprite_rip_025_NormalPalette, &sprite_rip_026_NormalPalette, &sprite_rip_027_NormalPalette, &sprite_rip_028_NormalPalette, &sprite_rip_029_NormalPalette, &sprite_rip_030_NormalPalette, &sprite_rip_031_NormalPalette, &sprite_rip_032_NormalPalette, &sprite_rip_033_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet494[] = { &PokemonSprite494_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet495[] = { &PokemonSprite495_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet496[] = { &PokemonSprite496_NormalPalette };
@@ -2003,12 +2004,12 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet546[] = { &PokemonSprite546
 const RODATA_LOCATION void* PointerToNormalPaletteSet547[] = { &PokemonSprite547_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet548[] = { &PokemonSprite548_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet549[] = { &PokemonSprite549_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet550[] = { &PokemonSprite550_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet550[] = { &PokemonSprite550_NormalPalette, &sprite_rip_034_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet551[] = { &PokemonSprite551_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet552[] = { &PokemonSprite552_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet553[] = { &PokemonSprite553_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet554[] = { &PokemonSprite554_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet555[] = { &PokemonSprite555_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet555[] = { &PokemonSprite555_NormalPalette, &sprite_rip_035_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet556[] = { &PokemonSprite556_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet557[] = { &PokemonSprite557_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet558[] = { &PokemonSprite558_NormalPalette };
@@ -2038,8 +2039,8 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet581[] = { &PokemonSprite581
 const RODATA_LOCATION void* PointerToNormalPaletteSet582[] = { &PokemonSprite582_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet583[] = { &PokemonSprite583_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet584[] = { &PokemonSprite584_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet585[] = { &PokemonSprite585_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet586[] = { &PokemonSprite586_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet585[] = { &PokemonSprite585_NormalPalette, &sprite_rip_036_NormalPalette, &sprite_rip_037_NormalPalette, &sprite_rip_038_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet586[] = { &PokemonSprite586_NormalPalette, &sprite_rip_039_NormalPalette, &sprite_rip_040_NormalPalette, &sprite_rip_041_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet587[] = { &PokemonSprite587_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet588[] = { &PokemonSprite588_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet589[] = { &PokemonSprite589_NormalPalette };
@@ -2103,7 +2104,7 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet646[] = { &PokemonSprite646
 const RODATA_LOCATION void* PointerToNormalPaletteSet647[] = { &PokemonSprite647_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet648[] = { &PokemonSprite648_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet649[] = { &PokemonSprite649_NormalPalette };
-/*const RODATA_LOCATION void* PointerToNormalPaletteSet650[] = { &PokemonSprite650_NormalPalette };
+const RODATA_LOCATION void* PointerToNormalPaletteSet650[] = { &PokemonSprite650_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet651[] = { &PokemonSprite651_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet652[] = { &PokemonSprite652_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet653[] = { &PokemonSprite653_NormalPalette };
@@ -2174,7 +2175,8 @@ const RODATA_LOCATION void* PointerToNormalPaletteSet717[] = { &PokemonSprite717
 const RODATA_LOCATION void* PointerToNormalPaletteSet718[] = { &PokemonSprite718_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet719[] = { &PokemonSprite719_NormalPalette };
 const RODATA_LOCATION void* PointerToNormalPaletteSet720[] = { &PokemonSprite720_NormalPalette };
-const RODATA_LOCATION void* PointerToNormalPaletteSet721[] = { &PokemonSprite721_NormalPalette };*/
+const RODATA_LOCATION void* PointerToNormalPaletteSet721[] = { &PokemonSprite721_NormalPalette };
+const RODATA_LOCATION void* PointerToEggNormalPalette[] = { &EggSprite_NormalPalette };
 
 const RODATA_LOCATION void* PointerToShinyPaletteSet000[] = { &PokemonSprite000_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet001[] = { &PokemonSprite001_ShinyPalette };
@@ -2377,7 +2379,7 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet197[] = { &PokemonSprite197_
 const RODATA_LOCATION void* PointerToShinyPaletteSet198[] = { &PokemonSprite198_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet199[] = { &PokemonSprite199_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet200[] = { &PokemonSprite200_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet201[] = { &PokemonSprite201_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet201[] = { &PokemonSprite201_ShinyPalette, &UnownB_ShinyPalette, &UnownC_ShinyPalette, &UnownD_ShinyPalette, &UnownE_ShinyPalette, &UnownF_ShinyPalette, &UnownG_ShinyPalette, &UnownH_ShinyPalette, &UnownI_ShinyPalette, &UnownJ_ShinyPalette, &UnownK_ShinyPalette, &UnownL_ShinyPalette, &UnownM_ShinyPalette, &UnownN_ShinyPalette, &UnownO_ShinyPalette, &UnownP_ShinyPalette, &UnownQ_ShinyPalette, &UnownR_ShinyPalette, &UnownS_ShinyPalette, &UnownT_ShinyPalette, &UnownU_ShinyPalette, &UnownV_ShinyPalette, &UnownW_ShinyPalette, &UnownX_ShinyPalette, &UnownY_ShinyPalette, &UnownZ_ShinyPalette, &UnownExclamationMark_ShinyPalette, &UnownQuestionMark_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet202[] = { &PokemonSprite202_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet203[] = { &PokemonSprite203_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet204[] = { &PokemonSprite204_ShinyPalette };
@@ -2562,7 +2564,7 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet382[] = { &PokemonSprite382_
 const RODATA_LOCATION void* PointerToShinyPaletteSet383[] = { &PokemonSprite383_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet384[] = { &PokemonSprite384_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet385[] = { &PokemonSprite385_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet386[] = { &PokemonSprite386_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet386[] = { &PokemonSprite386_ShinyPalette, &sprite_rip_000_ShinyPalette, &sprite_rip_001_ShinyPalette, &sprite_rip_002_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet387[] = { &PokemonSprite387_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet388[] = { &PokemonSprite388_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet389[] = { &PokemonSprite389_ShinyPalette };
@@ -2588,8 +2590,8 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet408[] = { &PokemonSprite408_
 const RODATA_LOCATION void* PointerToShinyPaletteSet409[] = { &PokemonSprite409_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet410[] = { &PokemonSprite410_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet411[] = { &PokemonSprite411_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet412[] = { &PokemonSprite412_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet413[] = { &PokemonSprite413_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet412[] = { &PokemonSprite412_ShinyPalette, &sprite_rip_003_ShinyPalette, &sprite_rip_004_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet413[] = { &PokemonSprite413_ShinyPalette, &sprite_rip_005_ShinyPalette, &sprite_rip_006_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet414[] = { &PokemonSprite414_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet415[] = { &PokemonSprite415_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet416[] = { &PokemonSprite416_ShinyPalette };
@@ -2597,9 +2599,9 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet417[] = { &PokemonSprite417_
 const RODATA_LOCATION void* PointerToShinyPaletteSet418[] = { &PokemonSprite418_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet419[] = { &PokemonSprite419_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet420[] = { &PokemonSprite420_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet421[] = { &PokemonSprite421_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet422[] = { &PokemonSprite422_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet423[] = { &PokemonSprite423_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet421[] = { &PokemonSprite421_ShinyPalette, &sprite_rip_007_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet422[] = { &PokemonSprite422_ShinyPalette, &sprite_rip_008_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet423[] = { &PokemonSprite423_ShinyPalette, &sprite_rip_009_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet424[] = { &PokemonSprite424_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet425[] = { &PokemonSprite425_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet426[] = { &PokemonSprite426_ShinyPalette };
@@ -2655,7 +2657,7 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet475[] = { &PokemonSprite475_
 const RODATA_LOCATION void* PointerToShinyPaletteSet476[] = { &PokemonSprite476_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet477[] = { &PokemonSprite477_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet478[] = { &PokemonSprite478_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet479[] = { &PokemonSprite479_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet479[] = { &PokemonSprite479_ShinyPalette, &sprite_rip_010_ShinyPalette, &sprite_rip_011_ShinyPalette, &sprite_rip_012_ShinyPalette, &sprite_rip_013_ShinyPalette, &sprite_rip_014_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet480[] = { &PokemonSprite480_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet481[] = { &PokemonSprite481_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet482[] = { &PokemonSprite482_ShinyPalette };
@@ -2663,13 +2665,13 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet483[] = { &PokemonSprite483_
 const RODATA_LOCATION void* PointerToShinyPaletteSet484[] = { &PokemonSprite484_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet485[] = { &PokemonSprite485_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet486[] = { &PokemonSprite486_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet487[] = { &PokemonSprite487_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet487[] = { &PokemonSprite487_ShinyPalette, &sprite_rip_015_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet488[] = { &PokemonSprite488_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet489[] = { &PokemonSprite489_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet490[] = { &PokemonSprite490_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet491[] = { &PokemonSprite491_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet492[] = { &PokemonSprite492_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet493[] = { &PokemonSprite493_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet492[] = { &PokemonSprite492_ShinyPalette, &sprite_rip_016_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet493[] = { &PokemonSprite493_ShinyPalette, &sprite_rip_017_ShinyPalette, &sprite_rip_018_ShinyPalette, &sprite_rip_019_ShinyPalette, &sprite_rip_020_ShinyPalette, &sprite_rip_021_ShinyPalette, &sprite_rip_022_ShinyPalette, &sprite_rip_023_ShinyPalette, &sprite_rip_024_ShinyPalette, &sprite_rip_025_ShinyPalette, &sprite_rip_026_ShinyPalette, &sprite_rip_027_ShinyPalette, &sprite_rip_028_ShinyPalette, &sprite_rip_029_ShinyPalette, &sprite_rip_030_ShinyPalette, &sprite_rip_031_ShinyPalette, &sprite_rip_032_ShinyPalette, &sprite_rip_033_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet494[] = { &PokemonSprite494_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet495[] = { &PokemonSprite495_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet496[] = { &PokemonSprite496_ShinyPalette };
@@ -2726,12 +2728,12 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet546[] = { &PokemonSprite546_
 const RODATA_LOCATION void* PointerToShinyPaletteSet547[] = { &PokemonSprite547_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet548[] = { &PokemonSprite548_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet549[] = { &PokemonSprite549_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet550[] = { &PokemonSprite550_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet550[] = { &PokemonSprite550_ShinyPalette, &sprite_rip_034_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet551[] = { &PokemonSprite551_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet552[] = { &PokemonSprite552_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet553[] = { &PokemonSprite553_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet554[] = { &PokemonSprite554_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet555[] = { &PokemonSprite555_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet555[] = { &PokemonSprite555_ShinyPalette, &sprite_rip_035_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet556[] = { &PokemonSprite556_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet557[] = { &PokemonSprite557_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet558[] = { &PokemonSprite558_ShinyPalette };
@@ -2761,8 +2763,8 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet581[] = { &PokemonSprite581_
 const RODATA_LOCATION void* PointerToShinyPaletteSet582[] = { &PokemonSprite582_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet583[] = { &PokemonSprite583_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet584[] = { &PokemonSprite584_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet585[] = { &PokemonSprite585_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet586[] = { &PokemonSprite586_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet585[] = { &PokemonSprite585_ShinyPalette, &sprite_rip_036_ShinyPalette, &sprite_rip_037_ShinyPalette, &sprite_rip_038_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet586[] = { &PokemonSprite586_ShinyPalette, &sprite_rip_039_ShinyPalette, &sprite_rip_040_ShinyPalette, &sprite_rip_041_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet587[] = { &PokemonSprite587_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet588[] = { &PokemonSprite588_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet589[] = { &PokemonSprite589_ShinyPalette };
@@ -2826,7 +2828,7 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet646[] = { &PokemonSprite646_
 const RODATA_LOCATION void* PointerToShinyPaletteSet647[] = { &PokemonSprite647_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet648[] = { &PokemonSprite648_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet649[] = { &PokemonSprite649_ShinyPalette };
-/*const RODATA_LOCATION void* PointerToShinyPaletteSet650[] = { &PokemonSprite650_ShinyPalette };
+const RODATA_LOCATION void* PointerToShinyPaletteSet650[] = { &PokemonSprite650_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet651[] = { &PokemonSprite651_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet652[] = { &PokemonSprite652_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet653[] = { &PokemonSprite653_ShinyPalette };
@@ -2897,7 +2899,8 @@ const RODATA_LOCATION void* PointerToShinyPaletteSet717[] = { &PokemonSprite717_
 const RODATA_LOCATION void* PointerToShinyPaletteSet718[] = { &PokemonSprite718_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet719[] = { &PokemonSprite719_ShinyPalette };
 const RODATA_LOCATION void* PointerToShinyPaletteSet720[] = { &PokemonSprite720_ShinyPalette };
-const RODATA_LOCATION void* PointerToShinyPaletteSet721[] = { &PokemonSprite721_ShinyPalette };*/
+const RODATA_LOCATION void* PointerToShinyPaletteSet721[] = { &PokemonSprite721_ShinyPalette };
+const RODATA_LOCATION void* PointerToEggShinyPalette[] = { &EggSprite_ShinyPalette };
 
 const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet000 },
@@ -3101,7 +3104,7 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet198 },
 	{ 0x00000001, &PointerToFrontSpriteSet199 },
 	{ 0x00000001, &PointerToFrontSpriteSet200 },
-	{ 0x00000001, &PointerToFrontSpriteSet201 },
+	{ 0x0000001C, &PointerToFrontSpriteSet201 },
 	{ 0x00000001, &PointerToFrontSpriteSet202 },
 	{ 0x00000001, &PointerToFrontSpriteSet203 },
 	{ 0x00000001, &PointerToFrontSpriteSet204 },
@@ -3286,7 +3289,7 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet383 },
 	{ 0x00000001, &PointerToFrontSpriteSet384 },
 	{ 0x00000001, &PointerToFrontSpriteSet385 },
-	{ 0x00000001, &PointerToFrontSpriteSet386 },
+	{ 0x00000004, &PointerToFrontSpriteSet386 },
 	{ 0x00000001, &PointerToFrontSpriteSet387 },
 	{ 0x00000001, &PointerToFrontSpriteSet388 },
 	{ 0x00000001, &PointerToFrontSpriteSet389 },
@@ -3312,8 +3315,8 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet409 },
 	{ 0x00000001, &PointerToFrontSpriteSet410 },
 	{ 0x00000001, &PointerToFrontSpriteSet411 },
-	{ 0x00000001, &PointerToFrontSpriteSet412 },
-	{ 0x00000001, &PointerToFrontSpriteSet413 },
+	{ 0x00000003, &PointerToFrontSpriteSet412 },
+	{ 0x00000003, &PointerToFrontSpriteSet413 },
 	{ 0x00000001, &PointerToFrontSpriteSet414 },
 	{ 0x00000001, &PointerToFrontSpriteSet415 },
 	{ 0x00000001, &PointerToFrontSpriteSet416 },
@@ -3321,9 +3324,9 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet418 },
 	{ 0x00000001, &PointerToFrontSpriteSet419 },
 	{ 0x00000001, &PointerToFrontSpriteSet420 },
-	{ 0x00000001, &PointerToFrontSpriteSet421 },
-	{ 0x00000001, &PointerToFrontSpriteSet422 },
-	{ 0x00000001, &PointerToFrontSpriteSet423 },
+	{ 0x00000002, &PointerToFrontSpriteSet421 },
+	{ 0x00000002, &PointerToFrontSpriteSet422 },
+	{ 0x00000002, &PointerToFrontSpriteSet423 },
 	{ 0x00000001, &PointerToFrontSpriteSet424 },
 	{ 0x00000001, &PointerToFrontSpriteSet425 },
 	{ 0x00000001, &PointerToFrontSpriteSet426 },
@@ -3379,7 +3382,7 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet476 },
 	{ 0x00000001, &PointerToFrontSpriteSet477 },
 	{ 0x00000001, &PointerToFrontSpriteSet478 },
-	{ 0x00000001, &PointerToFrontSpriteSet479 },
+	{ 0x00000006, &PointerToFrontSpriteSet479 },
 	{ 0x00000001, &PointerToFrontSpriteSet480 },
 	{ 0x00000001, &PointerToFrontSpriteSet481 },
 	{ 0x00000001, &PointerToFrontSpriteSet482 },
@@ -3387,13 +3390,13 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet484 },
 	{ 0x00000001, &PointerToFrontSpriteSet485 },
 	{ 0x00000001, &PointerToFrontSpriteSet486 },
-	{ 0x00000001, &PointerToFrontSpriteSet487 },
+	{ 0x00000002, &PointerToFrontSpriteSet487 },
 	{ 0x00000001, &PointerToFrontSpriteSet488 },
 	{ 0x00000001, &PointerToFrontSpriteSet489 },
 	{ 0x00000001, &PointerToFrontSpriteSet490 },
 	{ 0x00000001, &PointerToFrontSpriteSet491 },
-	{ 0x00000001, &PointerToFrontSpriteSet492 },
-	{ 0x00000001, &PointerToFrontSpriteSet493 },
+	{ 0x00000002, &PointerToFrontSpriteSet492 },
+	{ 0x00000012, &PointerToFrontSpriteSet493 },
 	{ 0x00000001, &PointerToFrontSpriteSet494 },
 	{ 0x00000001, &PointerToFrontSpriteSet495 },
 	{ 0x00000001, &PointerToFrontSpriteSet496 },
@@ -3450,12 +3453,12 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet547 },
 	{ 0x00000001, &PointerToFrontSpriteSet548 },
 	{ 0x00000001, &PointerToFrontSpriteSet549 },
-	{ 0x00000001, &PointerToFrontSpriteSet550 },
+	{ 0x00000002, &PointerToFrontSpriteSet550 },
 	{ 0x00000001, &PointerToFrontSpriteSet551 },
 	{ 0x00000001, &PointerToFrontSpriteSet552 },
 	{ 0x00000001, &PointerToFrontSpriteSet553 },
 	{ 0x00000001, &PointerToFrontSpriteSet554 },
-	{ 0x00000001, &PointerToFrontSpriteSet555 },
+	{ 0x00000002, &PointerToFrontSpriteSet555 },
 	{ 0x00000001, &PointerToFrontSpriteSet556 },
 	{ 0x00000001, &PointerToFrontSpriteSet557 },
 	{ 0x00000001, &PointerToFrontSpriteSet558 },
@@ -3485,8 +3488,8 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet582 },
 	{ 0x00000001, &PointerToFrontSpriteSet583 },
 	{ 0x00000001, &PointerToFrontSpriteSet584 },
-	{ 0x00000001, &PointerToFrontSpriteSet585 },
-	{ 0x00000001, &PointerToFrontSpriteSet586 },
+	{ 0x00000004, &PointerToFrontSpriteSet585 },
+	{ 0x00000004, &PointerToFrontSpriteSet586 },
 	{ 0x00000001, &PointerToFrontSpriteSet587 },
 	{ 0x00000001, &PointerToFrontSpriteSet588 },
 	{ 0x00000001, &PointerToFrontSpriteSet589 },
@@ -3550,7 +3553,7 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet647 },
 	{ 0x00000001, &PointerToFrontSpriteSet648 },
 	{ 0x00000001, &PointerToFrontSpriteSet649 },
-	/*{ 0x00000001, &PointerToFrontSpriteSet650 },
+	{ 0x00000001, &PointerToFrontSpriteSet650 },
 	{ 0x00000001, &PointerToFrontSpriteSet651 },
 	{ 0x00000001, &PointerToFrontSpriteSet652 },
 	{ 0x00000001, &PointerToFrontSpriteSet653 },
@@ -3621,7 +3624,8 @@ const IndexTable pokemonFrontSprite[] = {
 	{ 0x00000001, &PointerToFrontSpriteSet718 },
 	{ 0x00000001, &PointerToFrontSpriteSet719 },
 	{ 0x00000001, &PointerToFrontSpriteSet720 },
-	{ 0x00000001, &PointerToFrontSpriteSet721 },*/
+	{ 0x00000001, &PointerToFrontSpriteSet721 },
+	{ 0x00000001, &PointerToEggFrontSprite }
 };
 
 const IndexTable pokemonBackSprite[] = {
@@ -3826,7 +3830,7 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet198 },
 	{ 0x00000001, &PointerToBackSpriteSet199 },
 	{ 0x00000001, &PointerToBackSpriteSet200 },
-	{ 0x00000001, &PointerToBackSpriteSet201 },
+	{ 0x0000001C, &PointerToBackSpriteSet201 },
 	{ 0x00000001, &PointerToBackSpriteSet202 },
 	{ 0x00000001, &PointerToBackSpriteSet203 },
 	{ 0x00000001, &PointerToBackSpriteSet204 },
@@ -4011,7 +4015,7 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet383 },
 	{ 0x00000001, &PointerToBackSpriteSet384 },
 	{ 0x00000001, &PointerToBackSpriteSet385 },
-	{ 0x00000001, &PointerToBackSpriteSet386 },
+	{ 0x00000004, &PointerToBackSpriteSet386 },
 	{ 0x00000001, &PointerToBackSpriteSet387 },
 	{ 0x00000001, &PointerToBackSpriteSet388 },
 	{ 0x00000001, &PointerToBackSpriteSet389 },
@@ -4037,8 +4041,8 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet409 },
 	{ 0x00000001, &PointerToBackSpriteSet410 },
 	{ 0x00000001, &PointerToBackSpriteSet411 },
-	{ 0x00000001, &PointerToBackSpriteSet412 },
-	{ 0x00000001, &PointerToBackSpriteSet413 },
+	{ 0x00000003, &PointerToBackSpriteSet412 },
+	{ 0x00000003, &PointerToBackSpriteSet413 },
 	{ 0x00000001, &PointerToBackSpriteSet414 },
 	{ 0x00000001, &PointerToBackSpriteSet415 },
 	{ 0x00000001, &PointerToBackSpriteSet416 },
@@ -4046,9 +4050,9 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet418 },
 	{ 0x00000001, &PointerToBackSpriteSet419 },
 	{ 0x00000001, &PointerToBackSpriteSet420 },
-	{ 0x00000001, &PointerToBackSpriteSet421 },
-	{ 0x00000001, &PointerToBackSpriteSet422 },
-	{ 0x00000001, &PointerToBackSpriteSet423 },
+	{ 0x00000002, &PointerToBackSpriteSet421 },
+	{ 0x00000002, &PointerToBackSpriteSet422 },
+	{ 0x00000002, &PointerToBackSpriteSet423 },
 	{ 0x00000001, &PointerToBackSpriteSet424 },
 	{ 0x00000001, &PointerToBackSpriteSet425 },
 	{ 0x00000001, &PointerToBackSpriteSet426 },
@@ -4104,7 +4108,7 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet476 },
 	{ 0x00000001, &PointerToBackSpriteSet477 },
 	{ 0x00000001, &PointerToBackSpriteSet478 },
-	{ 0x00000001, &PointerToBackSpriteSet479 },
+	{ 0x00000006, &PointerToBackSpriteSet479 },
 	{ 0x00000001, &PointerToBackSpriteSet480 },
 	{ 0x00000001, &PointerToBackSpriteSet481 },
 	{ 0x00000001, &PointerToBackSpriteSet482 },
@@ -4112,13 +4116,13 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet484 },
 	{ 0x00000001, &PointerToBackSpriteSet485 },
 	{ 0x00000001, &PointerToBackSpriteSet486 },
-	{ 0x00000001, &PointerToBackSpriteSet487 },
+	{ 0x00000002, &PointerToBackSpriteSet487 },
 	{ 0x00000001, &PointerToBackSpriteSet488 },
 	{ 0x00000001, &PointerToBackSpriteSet489 },
 	{ 0x00000001, &PointerToBackSpriteSet490 },
 	{ 0x00000001, &PointerToBackSpriteSet491 },
-	{ 0x00000001, &PointerToBackSpriteSet492 },
-	{ 0x00000001, &PointerToBackSpriteSet493 },
+	{ 0x00000002, &PointerToBackSpriteSet492 },
+	{ 0x00000012, &PointerToBackSpriteSet493 },
 	{ 0x00000001, &PointerToBackSpriteSet494 },
 	{ 0x00000001, &PointerToBackSpriteSet495 },
 	{ 0x00000001, &PointerToBackSpriteSet496 },
@@ -4175,12 +4179,12 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet547 },
 	{ 0x00000001, &PointerToBackSpriteSet548 },
 	{ 0x00000001, &PointerToBackSpriteSet549 },
-	{ 0x00000001, &PointerToBackSpriteSet550 },
+	{ 0x00000002, &PointerToBackSpriteSet550 },
 	{ 0x00000001, &PointerToBackSpriteSet551 },
 	{ 0x00000001, &PointerToBackSpriteSet552 },
 	{ 0x00000001, &PointerToBackSpriteSet553 },
 	{ 0x00000001, &PointerToBackSpriteSet554 },
-	{ 0x00000001, &PointerToBackSpriteSet555 },
+	{ 0x00000002, &PointerToBackSpriteSet555 },
 	{ 0x00000001, &PointerToBackSpriteSet556 },
 	{ 0x00000001, &PointerToBackSpriteSet557 },
 	{ 0x00000001, &PointerToBackSpriteSet558 },
@@ -4210,8 +4214,8 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet582 },
 	{ 0x00000001, &PointerToBackSpriteSet583 },
 	{ 0x00000001, &PointerToBackSpriteSet584 },
-	{ 0x00000001, &PointerToBackSpriteSet585 },
-	{ 0x00000001, &PointerToBackSpriteSet586 },
+	{ 0x00000004, &PointerToBackSpriteSet585 },
+	{ 0x00000004, &PointerToBackSpriteSet586 },
 	{ 0x00000001, &PointerToBackSpriteSet587 },
 	{ 0x00000001, &PointerToBackSpriteSet588 },
 	{ 0x00000001, &PointerToBackSpriteSet589 },
@@ -4275,7 +4279,7 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet647 },
 	{ 0x00000001, &PointerToBackSpriteSet648 },
 	{ 0x00000001, &PointerToBackSpriteSet649 },
-	/*{ 0x00000001, &PointerToBackSpriteSet650 },
+	{ 0x00000001, &PointerToBackSpriteSet650 },
 	{ 0x00000001, &PointerToBackSpriteSet651 },
 	{ 0x00000001, &PointerToBackSpriteSet652 },
 	{ 0x00000001, &PointerToBackSpriteSet653 },
@@ -4346,7 +4350,8 @@ const IndexTable pokemonBackSprite[] = {
 	{ 0x00000001, &PointerToBackSpriteSet718 },
 	{ 0x00000001, &PointerToBackSpriteSet719 },
 	{ 0x00000001, &PointerToBackSpriteSet720 },
-	{ 0x00000001, &PointerToBackSpriteSet721 },*/
+	{ 0x00000001, &PointerToBackSpriteSet721 },
+	{ 0x00000001, &PointerToEggBackSprite }
 };
 
 const IndexTable pokemonNormalPalette[] = {
@@ -4551,7 +4556,7 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet198 },
 	{ 0x00000001, &PointerToNormalPaletteSet199 },
 	{ 0x00000001, &PointerToNormalPaletteSet200 },
-	{ 0x00000001, &PointerToNormalPaletteSet201 },
+	{ 0x0000001C, &PointerToNormalPaletteSet201 },
 	{ 0x00000001, &PointerToNormalPaletteSet202 },
 	{ 0x00000001, &PointerToNormalPaletteSet203 },
 	{ 0x00000001, &PointerToNormalPaletteSet204 },
@@ -4736,7 +4741,7 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet383 },
 	{ 0x00000001, &PointerToNormalPaletteSet384 },
 	{ 0x00000001, &PointerToNormalPaletteSet385 },
-	{ 0x00000001, &PointerToNormalPaletteSet386 },
+	{ 0x00000004, &PointerToNormalPaletteSet386 },
 	{ 0x00000001, &PointerToNormalPaletteSet387 },
 	{ 0x00000001, &PointerToNormalPaletteSet388 },
 	{ 0x00000001, &PointerToNormalPaletteSet389 },
@@ -4762,8 +4767,8 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet409 },
 	{ 0x00000001, &PointerToNormalPaletteSet410 },
 	{ 0x00000001, &PointerToNormalPaletteSet411 },
-	{ 0x00000001, &PointerToNormalPaletteSet412 },
-	{ 0x00000001, &PointerToNormalPaletteSet413 },
+	{ 0x00000003, &PointerToNormalPaletteSet412 },
+	{ 0x00000003, &PointerToNormalPaletteSet413 },
 	{ 0x00000001, &PointerToNormalPaletteSet414 },
 	{ 0x00000001, &PointerToNormalPaletteSet415 },
 	{ 0x00000001, &PointerToNormalPaletteSet416 },
@@ -4771,9 +4776,9 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet418 },
 	{ 0x00000001, &PointerToNormalPaletteSet419 },
 	{ 0x00000001, &PointerToNormalPaletteSet420 },
-	{ 0x00000001, &PointerToNormalPaletteSet421 },
-	{ 0x00000001, &PointerToNormalPaletteSet422 },
-	{ 0x00000001, &PointerToNormalPaletteSet423 },
+	{ 0x00000002, &PointerToNormalPaletteSet421 },
+	{ 0x00000002, &PointerToNormalPaletteSet422 },
+	{ 0x00000002, &PointerToNormalPaletteSet423 },
 	{ 0x00000001, &PointerToNormalPaletteSet424 },
 	{ 0x00000001, &PointerToNormalPaletteSet425 },
 	{ 0x00000001, &PointerToNormalPaletteSet426 },
@@ -4829,7 +4834,7 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet476 },
 	{ 0x00000001, &PointerToNormalPaletteSet477 },
 	{ 0x00000001, &PointerToNormalPaletteSet478 },
-	{ 0x00000001, &PointerToNormalPaletteSet479 },
+	{ 0x00000006, &PointerToNormalPaletteSet479 },
 	{ 0x00000001, &PointerToNormalPaletteSet480 },
 	{ 0x00000001, &PointerToNormalPaletteSet481 },
 	{ 0x00000001, &PointerToNormalPaletteSet482 },
@@ -4837,13 +4842,13 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet484 },
 	{ 0x00000001, &PointerToNormalPaletteSet485 },
 	{ 0x00000001, &PointerToNormalPaletteSet486 },
-	{ 0x00000001, &PointerToNormalPaletteSet487 },
+	{ 0x00000002, &PointerToNormalPaletteSet487 },
 	{ 0x00000001, &PointerToNormalPaletteSet488 },
 	{ 0x00000001, &PointerToNormalPaletteSet489 },
 	{ 0x00000001, &PointerToNormalPaletteSet490 },
 	{ 0x00000001, &PointerToNormalPaletteSet491 },
-	{ 0x00000001, &PointerToNormalPaletteSet492 },
-	{ 0x00000001, &PointerToNormalPaletteSet493 },
+	{ 0x00000002, &PointerToNormalPaletteSet492 },
+	{ 0x00000012, &PointerToNormalPaletteSet493 },
 	{ 0x00000001, &PointerToNormalPaletteSet494 },
 	{ 0x00000001, &PointerToNormalPaletteSet495 },
 	{ 0x00000001, &PointerToNormalPaletteSet496 },
@@ -4900,12 +4905,12 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet547 },
 	{ 0x00000001, &PointerToNormalPaletteSet548 },
 	{ 0x00000001, &PointerToNormalPaletteSet549 },
-	{ 0x00000001, &PointerToNormalPaletteSet550 },
+	{ 0x00000002, &PointerToNormalPaletteSet550 },
 	{ 0x00000001, &PointerToNormalPaletteSet551 },
 	{ 0x00000001, &PointerToNormalPaletteSet552 },
 	{ 0x00000001, &PointerToNormalPaletteSet553 },
 	{ 0x00000001, &PointerToNormalPaletteSet554 },
-	{ 0x00000001, &PointerToNormalPaletteSet555 },
+	{ 0x00000002, &PointerToNormalPaletteSet555 },
 	{ 0x00000001, &PointerToNormalPaletteSet556 },
 	{ 0x00000001, &PointerToNormalPaletteSet557 },
 	{ 0x00000001, &PointerToNormalPaletteSet558 },
@@ -4935,8 +4940,8 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet582 },
 	{ 0x00000001, &PointerToNormalPaletteSet583 },
 	{ 0x00000001, &PointerToNormalPaletteSet584 },
-	{ 0x00000001, &PointerToNormalPaletteSet585 },
-	{ 0x00000001, &PointerToNormalPaletteSet586 },
+	{ 0x00000004, &PointerToNormalPaletteSet585 },
+	{ 0x00000004, &PointerToNormalPaletteSet586 },
 	{ 0x00000001, &PointerToNormalPaletteSet587 },
 	{ 0x00000001, &PointerToNormalPaletteSet588 },
 	{ 0x00000001, &PointerToNormalPaletteSet589 },
@@ -5000,7 +5005,7 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet647 },
 	{ 0x00000001, &PointerToNormalPaletteSet648 },
 	{ 0x00000001, &PointerToNormalPaletteSet649 },
-	/*{ 0x00000001, &PointerToNormalPaletteSet650 },
+	{ 0x00000001, &PointerToNormalPaletteSet650 },
 	{ 0x00000001, &PointerToNormalPaletteSet651 },
 	{ 0x00000001, &PointerToNormalPaletteSet652 },
 	{ 0x00000001, &PointerToNormalPaletteSet653 },
@@ -5071,7 +5076,8 @@ const IndexTable pokemonNormalPalette[] = {
 	{ 0x00000001, &PointerToNormalPaletteSet718 },
 	{ 0x00000001, &PointerToNormalPaletteSet719 },
 	{ 0x00000001, &PointerToNormalPaletteSet720 },
-	{ 0x00000001, &PointerToNormalPaletteSet721 },*/
+	{ 0x00000001, &PointerToNormalPaletteSet721 },
+	{ 0x00000001, &PointerToEggNormalPalette }
 };
 
 const IndexTable pokemonShinyPalette[] = {
@@ -5276,7 +5282,7 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet198 },
 	{ 0x00000001, &PointerToShinyPaletteSet199 },
 	{ 0x00000001, &PointerToShinyPaletteSet200 },
-	{ 0x00000001, &PointerToShinyPaletteSet201 },
+	{ 0x0000001C, &PointerToShinyPaletteSet201 },
 	{ 0x00000001, &PointerToShinyPaletteSet202 },
 	{ 0x00000001, &PointerToShinyPaletteSet203 },
 	{ 0x00000001, &PointerToShinyPaletteSet204 },
@@ -5461,7 +5467,7 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet383 },
 	{ 0x00000001, &PointerToShinyPaletteSet384 },
 	{ 0x00000001, &PointerToShinyPaletteSet385 },
-	{ 0x00000001, &PointerToShinyPaletteSet386 },
+	{ 0x00000004, &PointerToShinyPaletteSet386 },
 	{ 0x00000001, &PointerToShinyPaletteSet387 },
 	{ 0x00000001, &PointerToShinyPaletteSet388 },
 	{ 0x00000001, &PointerToShinyPaletteSet389 },
@@ -5487,8 +5493,8 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet409 },
 	{ 0x00000001, &PointerToShinyPaletteSet410 },
 	{ 0x00000001, &PointerToShinyPaletteSet411 },
-	{ 0x00000001, &PointerToShinyPaletteSet412 },
-	{ 0x00000001, &PointerToShinyPaletteSet413 },
+	{ 0x00000003, &PointerToShinyPaletteSet412 },
+	{ 0x00000003, &PointerToShinyPaletteSet413 },
 	{ 0x00000001, &PointerToShinyPaletteSet414 },
 	{ 0x00000001, &PointerToShinyPaletteSet415 },
 	{ 0x00000001, &PointerToShinyPaletteSet416 },
@@ -5496,9 +5502,9 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet418 },
 	{ 0x00000001, &PointerToShinyPaletteSet419 },
 	{ 0x00000001, &PointerToShinyPaletteSet420 },
-	{ 0x00000001, &PointerToShinyPaletteSet421 },
-	{ 0x00000001, &PointerToShinyPaletteSet422 },
-	{ 0x00000001, &PointerToShinyPaletteSet423 },
+	{ 0x00000002, &PointerToShinyPaletteSet421 },
+	{ 0x00000002, &PointerToShinyPaletteSet422 },
+	{ 0x00000002, &PointerToShinyPaletteSet423 },
 	{ 0x00000001, &PointerToShinyPaletteSet424 },
 	{ 0x00000001, &PointerToShinyPaletteSet425 },
 	{ 0x00000001, &PointerToShinyPaletteSet426 },
@@ -5554,7 +5560,7 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet476 },
 	{ 0x00000001, &PointerToShinyPaletteSet477 },
 	{ 0x00000001, &PointerToShinyPaletteSet478 },
-	{ 0x00000001, &PointerToShinyPaletteSet479 },
+	{ 0x00000006, &PointerToShinyPaletteSet479 },
 	{ 0x00000001, &PointerToShinyPaletteSet480 },
 	{ 0x00000001, &PointerToShinyPaletteSet481 },
 	{ 0x00000001, &PointerToShinyPaletteSet482 },
@@ -5562,13 +5568,13 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet484 },
 	{ 0x00000001, &PointerToShinyPaletteSet485 },
 	{ 0x00000001, &PointerToShinyPaletteSet486 },
-	{ 0x00000001, &PointerToShinyPaletteSet487 },
+	{ 0x00000002, &PointerToShinyPaletteSet487 },
 	{ 0x00000001, &PointerToShinyPaletteSet488 },
 	{ 0x00000001, &PointerToShinyPaletteSet489 },
 	{ 0x00000001, &PointerToShinyPaletteSet490 },
 	{ 0x00000001, &PointerToShinyPaletteSet491 },
-	{ 0x00000001, &PointerToShinyPaletteSet492 },
-	{ 0x00000001, &PointerToShinyPaletteSet493 },
+	{ 0x00000002, &PointerToShinyPaletteSet492 },
+	{ 0x00000012, &PointerToShinyPaletteSet493 },
 	{ 0x00000001, &PointerToShinyPaletteSet494 },
 	{ 0x00000001, &PointerToShinyPaletteSet495 },
 	{ 0x00000001, &PointerToShinyPaletteSet496 },
@@ -5625,12 +5631,12 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet547 },
 	{ 0x00000001, &PointerToShinyPaletteSet548 },
 	{ 0x00000001, &PointerToShinyPaletteSet549 },
-	{ 0x00000001, &PointerToShinyPaletteSet550 },
+	{ 0x00000002, &PointerToShinyPaletteSet550 },
 	{ 0x00000001, &PointerToShinyPaletteSet551 },
 	{ 0x00000001, &PointerToShinyPaletteSet552 },
 	{ 0x00000001, &PointerToShinyPaletteSet553 },
 	{ 0x00000001, &PointerToShinyPaletteSet554 },
-	{ 0x00000001, &PointerToShinyPaletteSet555 },
+	{ 0x00000002, &PointerToShinyPaletteSet555 },
 	{ 0x00000001, &PointerToShinyPaletteSet556 },
 	{ 0x00000001, &PointerToShinyPaletteSet557 },
 	{ 0x00000001, &PointerToShinyPaletteSet558 },
@@ -5660,8 +5666,8 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet582 },
 	{ 0x00000001, &PointerToShinyPaletteSet583 },
 	{ 0x00000001, &PointerToShinyPaletteSet584 },
-	{ 0x00000001, &PointerToShinyPaletteSet585 },
-	{ 0x00000001, &PointerToShinyPaletteSet586 },
+	{ 0x00000004, &PointerToShinyPaletteSet585 },
+	{ 0x00000004, &PointerToShinyPaletteSet586 },
 	{ 0x00000001, &PointerToShinyPaletteSet587 },
 	{ 0x00000001, &PointerToShinyPaletteSet588 },
 	{ 0x00000001, &PointerToShinyPaletteSet589 },
@@ -5725,7 +5731,7 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet647 },
 	{ 0x00000001, &PointerToShinyPaletteSet648 },
 	{ 0x00000001, &PointerToShinyPaletteSet649 },
-	/*{ 0x00000001, &PointerToShinyPaletteSet650 },
+	{ 0x00000001, &PointerToShinyPaletteSet650 },
 	{ 0x00000001, &PointerToShinyPaletteSet651 },
 	{ 0x00000001, &PointerToShinyPaletteSet652 },
 	{ 0x00000001, &PointerToShinyPaletteSet653 },
@@ -5796,7 +5802,8 @@ const IndexTable pokemonShinyPalette[] = {
 	{ 0x00000001, &PointerToShinyPaletteSet718 },
 	{ 0x00000001, &PointerToShinyPaletteSet719 },
 	{ 0x00000001, &PointerToShinyPaletteSet720 },
-	{ 0x00000001, &PointerToShinyPaletteSet721 },*/
+	{ 0x00000001, &PointerToShinyPaletteSet721 },
+	{ 0x00000001, &PointerToEggShinyPalette }
 };
 
 

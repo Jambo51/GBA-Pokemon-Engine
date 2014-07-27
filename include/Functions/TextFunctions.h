@@ -30,6 +30,7 @@ void BufferSignedShortNumber(s16 number, u8 bufferID);
 s32 CharacterComparison(u8 charOne, u8 charTwo);
 void DrawCharacter(char c, u8 x, u8 y, u8 colour);
 void DrawString(char* string, u8 x, u8 y, u8 colour);
-void InitialiseTextEngine(u32 colourWord, const TFont* font, u8 paletteSet);
+void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
+void InitialiseTextEngine(u32 textSetID);
 
 #endif /* TEXTFUNCTIONS_H_ */

@@ -1,12 +1,12 @@
-
+﻿
 @{{BLOCK(verdana9_b4)
 
 @ Verdana 9 from ' ' to '�'. 4bpp, with (i,s,p) = (1,2,4)
 
 	.section .rodata
-	.align	2
+	.align	4
 	.global	japanesePokefont_b4Font
-pokefont_b4Font:
+japanesePokefont_b4Font:
 	.word	japanesePokefont_b4Glyphs, japanesePokefont_b4Widths, 0
 	.hword	32, 224
 	.byte	8, 13
@@ -1028,7 +1028,7 @@ japanesePokefont_b4Glyphs:
 
 	.text
 	.align	2
-	.global japanesePokefont9_b4Widths		@ 224 unsigned chars
+	.global japanesePokefont_b4Widths		@ 224 unsigned chars
 japanesePokefont_b4Widths:
 	.byte 0x03,0x04,0x06,0x06,0x06,0x08,0x06,0x03,0x04,0x04,0x06,0x06,0x04,0x05,0x04,0x05
 	.byte 0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06

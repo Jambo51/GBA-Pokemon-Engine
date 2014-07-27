@@ -1550,3 +1550,22 @@ void GenerateWildPokemonFromData(Pokemon* thePokemon, WildPokemonData* wildData)
 	}
 	GeneratePokemon(thePokemon, calculatedLevel, pointer[loopCounter].species);
 }
+
+const RODATA_LOCATION char* pokeInfoScreenText[] = {
+
+};
+
+void PokemonInfoScreenInitialise()
+{
+	Pokemon* thePokemon = &temporaryHoldingPokemon;
+	char* currentString = 0;
+	u16 species = PokemonDecrypter(thePokemon, Species);
+	currentString = Buffer
+	u16 dexNumber = ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex));
+	currentString = (char*)PokemonDecrypter(thePokemon, Nickname);
+	u32 type1 = PokemonDecrypter(thePokemon, Type1);
+	u32 type2 = PokemonDecrypter(thePokemon, Type1);
+	currentString = (char*)PokemonDecrypter(thePokemon, OTName);
+	u16 itemID = PokemonDecrypter(thePokemon, HeldItem);
+	u32 nature = PokemonDecrypter(thePokemon, Nature);
+}

@@ -27,7 +27,7 @@ typedef void (*FunctionPtr)(void);
 // --- primary typedefs ---
 enum Times { Time_Day, Time_Morning, Time_Afternoon, Time_Night, Time_NumTimes };
 
-enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex = 0x801, Flag_PokemonMenu = 0x802 };
+enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex };
 
 enum Types { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None };
 

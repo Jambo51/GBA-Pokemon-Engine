@@ -3,6 +3,7 @@
 #include "Functions/Overworld.h"
 #include "Functions/Mapping.h"
 #include "Functions/MemoryManagement.h"
+#include "libtiles.h"
 
 #define Space 0
 
@@ -253,7 +254,7 @@ void DrawString(char* string, u8 x, u8 y, u8 colour)
 	}
 }
 
-void InitialiseTextEngine(u32 colourWord, const TFont* font, u8 paletteSet)
+void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)
 {
 	tte_init_chr4c(
 			0,
@@ -265,4 +266,11 @@ void InitialiseTextEngine(u32 colourWord, const TFont* font, u8 paletteSet)
 			(fnDrawg)chr4c_drawg_b4cts_fast);
 	tte_init_con();
 	textPalette = paletteSet;
+}
+
+const RODATA_LOCATION TFont* fonts[] = { &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font };
+
+void InitialiseTextEngine(u32 textSetID)
+{
+	InitialiseTextEngineInner(bytes2word(15, 3, 0, 0), fonts[textSetID], 0xE);
 }

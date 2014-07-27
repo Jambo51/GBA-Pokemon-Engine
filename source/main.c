@@ -20,7 +20,7 @@
 #define GBP 1
 
 #define TEXTSET LATIN
-#define MUSICENGINE M4A
+#define MUSICENGINE GBP
 
 void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 {
@@ -82,17 +82,7 @@ int main()
 {
 	StartTimer(2, 0, 0);
 	StartTimer(3, 1, 0);
-#if TEXTSET == LATIN
-	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &pokefont_b4Font, 0xE);
-#elif TEXTSET == CYRILLIC
-	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &cyrillicPokefont_b4Font, 0xE);
-#elif TEXTSET == JAPANESE
-	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &japanesePokefont_b4Font, 0xE);
-#elif TEXTSET == ARABIC
-	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &arabicPokefont_b4Font, 0xE);
-#elif TEXTSET == BRAILLE
-	InitialiseTextEngine(bytes2word(15, 3, 0, 0), &braillePokefont_b4Font, 0xE);
-#endif
+	InitialiseTextEngine(TEXTSET);
 	rtc_enable();
 	irq_init(NULL);
 	irq_add(II_VBLANK, NULL);
@@ -110,11 +100,7 @@ int main()
 	HandleKeyPresses = &IgnoreKeyPresses;
 	CallbackMain = &FadeToBlackPreGameStart;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
-#if MUSICENGINE == M4A
-	SetMusicEngine(M4AEngine);
-#elif MUSICENGINE == GBP
-	SetMusicEngine(GBPSoundsEngine);
-#endif
+	SetMusicEngine(MUSICENGINE);
 	u16* pRAM = (u16*)TilePaletteRAM(0);
 	pRAM[0] = 0x7FFF;
 	SetupFadeScreenSlot(2, 0, (u16*)&blackPalette);

@@ -1,12 +1,12 @@
-
+﻿
 @{{BLOCK(verdana9_b4)
 
 @ Verdana 9 from ' ' to '�'. 4bpp, with (i,s,p) = (1,2,4)
 
 	.section .rodata
-	.align	2
+	.align	4
 	.global	cyrillicPokefont_b4Font
-pokefont_b4Font:
+cyrillicPokefont_b4Font:
 	.word	cyrillicPokefont_b4Glyphs, cyrillicPokefont_b4Widths, 0
 	.hword	32, 224
 	.byte	8, 13
@@ -1028,7 +1028,7 @@ cyrillicPokefont_b4Glyphs:
 
 	.text
 	.align	2
-	.global cyrillicPokefont9_b4Widths		@ 224 unsigned chars
+	.global cyrillicPokefont_b4Widths		@ 224 unsigned chars
 cyrillicPokefont_b4Widths:
 	.byte 0x03,0x04,0x06,0x06,0x06,0x08,0x06,0x03,0x04,0x04,0x06,0x06,0x04,0x05,0x04,0x05
 	.byte 0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06,0x06

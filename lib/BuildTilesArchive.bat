@@ -1,1 +1,1 @@
-make -f tilesmake
+make -f tilesmake & pause

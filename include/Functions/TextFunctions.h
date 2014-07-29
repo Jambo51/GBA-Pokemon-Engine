@@ -17,8 +17,9 @@
 
 void StringCopy(char* stringDest, char* stringSource, u32 length);
 u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length);
-void BufferString(char* string, u8 bufferID);
+void BufferString(char* string, u8 bufferID, u32 maxLength);
 void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID);
+void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID);
 void BufferPokemonName(u8 pokemonIndex, u8 bufferID);
 void BufferRouteName(u8 mapBank, u8 mapID, u8 bufferID);
 void BufferNumber(u32 number, u32 length, u8 bufferID);

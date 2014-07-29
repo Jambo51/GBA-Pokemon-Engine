@@ -98,7 +98,7 @@ int main()
 	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
 	InitialisePaletteAllocator();
 	HandleKeyPresses = &IgnoreKeyPresses;
-	CallbackMain = &FadeToBlackPreGameStart;
+	CallbackMain = &PokemonInfoScreenInitialise;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
 	SetMusicEngine(MUSICENGINE);
 	u16* pRAM = (u16*)TilePaletteRAM(0);

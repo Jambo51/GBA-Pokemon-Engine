@@ -4,11 +4,21 @@
 #include "Functions/Mapping.h"
 #include "Functions/MemoryManagement.h"
 #include "libtiles.h"
+#include "Functions/Pokemon.h"
+#include "Data/PokemonBaseData.h"
 
 #define Space 0
 
 #define NEWLINE 0xFE
 #define END '\0'
+
+typedef struct ItemData {
+	char name[10];
+} ItemData;
+
+#define NumItems 250
+
+const RODATA_LOCATION ItemData itemData[NumItems];
 
 void StringCopy(char* stringDest, char* stringSource, u32 length)
 {
@@ -109,16 +119,52 @@ void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 	BufferString((char*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
 }
 
-void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
+void BufferItemName(u16 itemIndex, u8 bufferID)
 {
-	// Placeholder
+	BufferString((char*)(&(itemData[itemIndex].name)), bufferID, 11);
 }
 
-void BufferRouteName(u8 mapBank, u8 mapID, u8 bufferID)
+void BufferNatureName(u32 natureID, u8 bufferID)
 {
-	MapHeader* header = (MapHeader*)GetMapHeaderFromBankAndMapID(mapBank, mapID);
-	u32 mapNameIndex = header[0].mapNameID;
-	BufferString((char*)(&(mapNamesTable[mapNameIndex])), bufferID, 20);
+	BufferString((char*)(&(natureNames[natureID])), bufferID, 0);
+}
+
+void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID)
+{
+	BufferString((char*)(PokemonDecrypter(thePokemon, Nickname)), bufferID, 11);
+}
+
+void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
+{
+	Pokemon* thePokemon;
+	switch (pokemonIndex)
+	{
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+			thePokemon = &partyPokemon[pokemonIndex];
+			break;
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+			thePokemon = &enemyPokemon[pokemonIndex];
+			break;
+		default:
+			thePokemon = &temporaryHoldingPokemon;
+			break;
+	}
+	BufferString((char*)(PokemonDecrypter(thePokemon, Nickname)), bufferID, 11);
+}
+
+void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID)
+{
+	BufferString((char*)(&(mapNamesTable[mapHeaderNameID])), bufferID, 20);
 }
 
 void BufferNumber(u32 number, u32 length, u8 bufferID)

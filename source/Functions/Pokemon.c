@@ -7,7 +7,27 @@
 #include "Functions/Maths.h"
 #include "Functions/TextFunctions.h"
 
-const RODATA_LOCATION u16 numberOfPokemon = 649;
+const RODATA_LOCATION ALIGN(2) u16 numberOfPokemon = 649;
+const RODATA_LOCATION ALIGN(1) char name[] = { 0xFB, 0x00 };
+const RODATA_LOCATION ALIGN(1) char number[] = { 0xFB, 0x01 };
+const RODATA_LOCATION ALIGN(1) char otName[] = { 0xFB, 0x02 };
+const RODATA_LOCATION ALIGN(1) char itemName[] = { 0xFB, 0x03 };
+const RODATA_LOCATION ALIGN(1) char natureString[] = { 0xFB, 0x04, ' ', 'n', 'a', 't', 'u', 'r', 'e' };
+const RODATA_LOCATION ALIGN(1) char metString[] = { 'M', 'e', 't', ' ', 'i', 'n', ' ', 0xFB, 0x05, ' ', 'a', 't', ' ', 0x80, ' ', 0xFB, 0x06 };
+const RODATA_LOCATION ALIGN(1) char characteristicString[] = { 0xFB, 0x07 };
+const char* pokeInfoScreenText[] = {
+		(char*)&name,
+		(char*)&number,
+		(char*)&otName,
+		(char*)&itemName,
+		(char*)&natureString,
+		(char*)&metString,
+		(char*)&characteristicString
+};
+
+const char* characteristicStrings[] = {
+
+};
 
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
 {
@@ -1551,21 +1571,20 @@ void GenerateWildPokemonFromData(Pokemon* thePokemon, WildPokemonData* wildData)
 	GeneratePokemon(thePokemon, calculatedLevel, pointer[loopCounter].species);
 }
 
-const RODATA_LOCATION char* pokeInfoScreenText[] = {
-
-};
-
 void PokemonInfoScreenInitialise()
 {
 	Pokemon* thePokemon = &temporaryHoldingPokemon;
 	char* currentString = 0;
 	u16 species = PokemonDecrypter(thePokemon, Species);
-	currentString = Buffer
-	u16 dexNumber = ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex));
-	currentString = (char*)PokemonDecrypter(thePokemon, Nickname);
+	BufferPokemonNameFromPointer(thePokemon, 0);
+	BufferNumber(ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex)), 3, 1);
 	u32 type1 = PokemonDecrypter(thePokemon, Type1);
-	u32 type2 = PokemonDecrypter(thePokemon, Type1);
-	currentString = (char*)PokemonDecrypter(thePokemon, OTName);
-	u16 itemID = PokemonDecrypter(thePokemon, HeldItem);
-	u32 nature = PokemonDecrypter(thePokemon, Nature);
+	u32 type2 = PokemonDecrypter(thePokemon, Type2);
+	BufferString((char*)PokemonDecrypter(thePokemon, OTName), 2, 7);
+	BufferItemName(PokemonDecrypter(thePokemon, HeldItem), 3);
+	BufferNatureName(PokemonDecrypter(thePokemon, Nature), 4);
+	BufferMapHeaderName(PokemonDecrypter(thePokemon, MetLocation), 5);
+	BufferNumber(PokemonDecrypter(thePokemon, Level), 3, 6);
+	u32 characteristicID = CalculateCharacteristicIndex(thePokemon);
+	BufferString(characteristicStrings[characteristicID], 7, 0);
 }

@@ -53,6 +53,8 @@ u8 GetUnownLetterFromPID(u32 pid);
 void SetFormeByUnownLetter(Pokemon* thePokemon);
 void CheckIfCanLearnNewMoveAndLearnIfWanted(Pokemon* thePokemon);
 void SetMoves(Pokemon* thePokemon);
+void* GetPokeballSpriteFromPokemon(Pokemon* thePokemon);
+void* GetPokeballPaletteFromPokemon(Pokemon* thePokemon);
 void* GetPokemonSpritePaletteFromPokemon(Pokemon* thePokemon, u32 sideIndex);
 void* GetPokemonFrontSpriteFromPokemon(Pokemon* thePokemon);
 void* GetPokemonBackSpriteFromPokemon(Pokemon* thePokemon);

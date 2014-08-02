@@ -53,7 +53,67 @@ u32 UnsignedModulus(u32 numerator, u32 denominator)
 
 u32 ToDecimal(u32 hexValue)
 {
-	return ((UnsignedDivide(hexValue, 10) << 4) + UnsignedModulus(hexValue, 10));
+	if (hexValue <= 99999999)
+	{
+		u32 counter = 0;
+		while (hexValue >= 10000000)
+		{
+			hexValue -= 10000000;
+			counter++;
+		}
+		u32 retValue = counter << 28;
+		counter = 0;
+		while (hexValue >= 1000000)
+		{
+			hexValue -= 1000000;
+			counter++;
+		}
+		retValue |= counter << 24;
+		counter = 0;
+		while (hexValue >= 100000)
+		{
+			hexValue -= 100000;
+			counter++;
+		}
+		retValue |= counter << 20;
+		counter = 0;
+		while (hexValue >= 10000)
+		{
+			hexValue -= 10000;
+			counter++;
+		}
+		retValue |= counter << 16;
+		counter = 0;
+		while (hexValue >= 1000)
+		{
+			hexValue -= 1000;
+			counter++;
+		}
+		retValue |= counter << 12;
+		counter = 0;
+		while (hexValue >= 100)
+		{
+			hexValue -= 100;
+			counter++;
+		}
+		retValue |= counter << 8;
+		counter = 0;
+		while (hexValue >= 10)
+		{
+			hexValue -= 10;
+			counter++;
+		}
+		retValue |= counter << 4;
+		counter = 0;
+		while (hexValue > 0)
+		{
+			hexValue--;
+			counter++;
+		}
+		retValue += counter;
+		return retValue;
+	}
+	return 0;
 }
 
 u32 Absolute(s32 value) {

@@ -61,7 +61,6 @@ void UpdateOAMFromStructure()
 			oam[(i << 3)] = preOAM[i].xLocation | (preOAM[i].objShape << 14);
 			oam[(i << 3) + 1] = preOAM[i].yLocation | (preOAM[i].hFlip << 12) | (preOAM[i].vFlip << 13) | (preOAM[i].objSize << 14);
 			oam[(i << 3) + 2] = (u32)preOAM[i].tileLocation | (preOAM[i].priority << 10)| (preOAM[i].paletteSlot << 12);
-			memcpy32(preOAM[i].tileLocation, (void*)spriteTable[overworldSpriteData[preOAM[i].spriteID].dataSpriteID].frames[preOAM[i].frame], CalculateObjectSize(preOAM[i].objShape, preOAM[i].objSize));
 			preOAM[i].requiresUpdate = 0;
 		}
 	}

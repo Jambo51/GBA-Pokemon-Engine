@@ -108,13 +108,8 @@ int main()
 	SetFlag(Flag_Pokedex);
 	SetFlag(Flag_Pokegear);
 	SetFlag(Flag_PokemonMenu);
-	{
-		u32 i;
-		for (i = 0; i < 6; i++)
-		{
-			GivePokemonToPlayer(&partyPokemon[i], 5, GetDelimitedRandom32BitValue(Rapidash) + 1, 0);
-		}
-	}
+	GivePokemonToPlayer(&partyPokemon[0], 5, Unown, 0);
+	temporaryHoldingPokemon = partyPokemon[0];
 	while (1)
 	{
 		VBlankIntrWait();

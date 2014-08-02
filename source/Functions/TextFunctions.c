@@ -126,7 +126,7 @@ void BufferItemName(u16 itemIndex, u8 bufferID)
 
 void BufferNatureName(u32 natureID, u8 bufferID)
 {
-	BufferString((char*)(&(natureNames[natureID])), bufferID, 0);
+	BufferString((char*)(&(natureNames[natureID])), bufferID, 5);
 }
 
 void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID)
@@ -169,12 +169,13 @@ void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID)
 
 void BufferNumber(u32 number, u32 length, u8 bufferID)
 {
+	length++;
 	u32 chars = ToDecimal(number);
 	u32 i;
 	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
 	for (i = 0; i < length; i++)
 	{
-		u32 value = (chars & (0xF << (i << 2)) >> (i << 2));
+		u32 value = (chars & (0xF << (i << 2))) >> (i << 2);
 		if (value <= 9)
 		{
 			string[length - 1 - i] = '0' + value;
@@ -200,7 +201,7 @@ void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
 	for (i = 0; i < length; i++)
 	{
-		u32 value = (chars & (0xF << (i << 2)) >> (i << 2));
+		u32 value = (chars & (0xF << (i << 2))) >> (i << 2);
 		if (value <= 9)
 		{
 			string[length - 1 - i] = '0' + value;

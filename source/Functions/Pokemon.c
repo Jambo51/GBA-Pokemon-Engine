@@ -6,8 +6,13 @@
 #include "Data/PokeStats.h"
 #include "Functions/Maths.h"
 #include "Functions/TextFunctions.h"
+#include "Functions/Flags.h"
+#include "Functions/KeyPresses.h"
+#include "Functions/Pokedex.h"
+#include "Functions/MemoryManagement.h"
+#include "libsprites.h"
 
-const RODATA_LOCATION ALIGN(2) u16 numberOfPokemon = 649;
+const RODATA_LOCATION ALIGN(2) u16 numberOfPokemon = NumberOfPokemon - 1;
 const RODATA_LOCATION ALIGN(1) char name[] = { 0xFB, 0x00 };
 const RODATA_LOCATION ALIGN(1) char number[] = { 0xFB, 0x01 };
 const RODATA_LOCATION ALIGN(1) char otName[] = { 0xFB, 0x02 };
@@ -23,10 +28,6 @@ const char* pokeInfoScreenText[] = {
 		(char*)&natureString,
 		(char*)&metString,
 		(char*)&characteristicString
-};
-
-const char* characteristicStrings[] = {
-
 };
 
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
@@ -1073,30 +1074,33 @@ bool PokemonIsShiny(Pokemon* thePokemon)
 u32 CalculateHighestIVIndex(Pokemon* thePokemon)
 {
 	s32 highestIV = -1;
-	u32 i;
-	for (i = 0; i < 6; i++)
-	{
-		s32 currIV = PokemonDecrypter(thePokemon, HP_IV + i);
-		if (currIV > highestIV)
-		{
-			highestIV = currIV;
-		}
-	}
-	u8 whichOnes = 0;
-	u32 count = 0;
 	u32 indexOfHighest = 0;
-	for (i = 0; i < 6; i++)
+	u32 count = 0;
+	u32 whichOnes = 0;
 	{
-		s32 currIV = PokemonDecrypter(thePokemon, HP_IV + i);
-		if (currIV == highestIV)
+		u32 i;
+		for (i = 0; i < 6; i++)
 		{
-			whichOnes |= (1 << i);
-			count++;
-			indexOfHighest = i;
+			s32 currIV = InternalPokemonDecrypter(&thePokemon->mainData, HP_IV + i);
+			if (currIV > highestIV)
+			{
+				highestIV = currIV;
+				whichOnes = 0;
+				count = 1;
+				whichOnes |= (1 << i);
+				indexOfHighest = i;
+			}
+			else if (currIV == highestIV)
+			{
+				whichOnes |= (1 << i);
+				count++;
+				indexOfHighest = i;
+			}
 		}
 	}
 	if (count > 1)
 	{
+		u32 i;
 		u32 pidValue = UnsignedModulus(PokemonDecrypter(thePokemon, PersonalityID), 6);
 		for (i = 0; i < 6; i++)
 		{
@@ -1113,7 +1117,7 @@ u32 CalculateHighestIVIndex(Pokemon* thePokemon)
 u32 CalculateCharacteristicIndex(Pokemon* thePokemon)
 {
 	u32 highestIVIndex = CalculateHighestIVIndex(thePokemon);
-	u32 IVValue = PokemonDecrypter(thePokemon, HP_IV + highestIVIndex);
+	u32 IVValue = InternalPokemonDecrypter(&thePokemon->mainData, HP_IV + highestIVIndex);
 	return UnsignedModulus(IVValue, 5) + highestIVIndex;
 }
 
@@ -1372,6 +1376,22 @@ void SetMoves(Pokemon* thePokemon)
 	}
 }
 
+#define BallItemBaseID 0
+
+void* GetPokeballSpriteFromPokemon(Pokemon* thePokemon)
+{
+	u32 ballIndex = PokemonDecrypter(thePokemon, PokeBall) + BallItemBaseID;
+	void* data = &EggSprite_FrontSprite;
+	return data;
+}
+
+void* GetPokeballPaletteFromPokemon(Pokemon* thePokemon)
+{
+	u32 ballIndex = PokemonDecrypter(thePokemon, PokeBall) + BallItemBaseID;
+	void* data = &EggSprite_NormalPalette;
+	return data;
+}
+
 const void* spriteLookupFromIndices[] = { &pokemonFrontSprite, &pokemonBackSprite, &pokemonNormalPalette, &pokemonShinyPalette };
 
 void* GetPokemonSpritePaletteFromPokemon(Pokemon* thePokemon, u32 sideIndex)
@@ -1444,7 +1464,7 @@ void GeneratePokemon(Pokemon* thePokemon, u8 level, u16 species)
 	PokemonEncrypter(thePokemon, StatusAilment, 0);
 	PokemonEncrypter(thePokemon, Nickname, (u32)(&pokemonNames[species]));
 	GeneratePID(thePokemon);
-	(species != 0xC9)?PokemonEncrypter(thePokemon, FormeIndex, 0):SetFormeByUnownLetter(thePokemon);
+	(species != Unown)?PokemonEncrypter(thePokemon, FormeIndex, 0):SetFormeByUnownLetter(thePokemon);
 	PokemonEncrypter(thePokemon, HP_EV, 1);
 	SetBasicTypes(thePokemon);
 	SetBaseExperienceFromLevel(thePokemon);
@@ -1527,9 +1547,13 @@ void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIn
 {
 	GeneratePokemon(thePokemon, level, species);
 	PokemonEncrypter(thePokemon, OTID, player.completeTrainerID);
-	PokemonEncrypter(thePokemon, OTName, (u32)(&player.name));
+	PokemonEncrypter(thePokemon, OTName, *(&player.name));
 	InternalBaseData* data = (InternalBaseData*)((void**)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex];
 	PokemonEncrypter(thePokemon, Friendship, data[0].baseFriendship);
+	if (formeIndex != 0)
+	{
+		PokemonEncrypter(thePokemon, FormeIndex, formeIndex);
+	}
 }
 
 void GenerateWildPokemonFromData(Pokemon* thePokemon, WildPokemonData* wildData)
@@ -1571,20 +1595,80 @@ void GenerateWildPokemonFromData(Pokemon* thePokemon, WildPokemonData* wildData)
 	GeneratePokemon(thePokemon, calculatedLevel, pointer[loopCounter].species);
 }
 
+const RODATA_LOCATION char questionString[] = "???";
+
 void PokemonInfoScreenInitialise()
 {
 	Pokemon* thePokemon = &temporaryHoldingPokemon;
-	char* currentString = 0;
-	u16 species = PokemonDecrypter(thePokemon, Species);
-	BufferPokemonNameFromPointer(thePokemon, 0);
-	BufferNumber(ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex)), 3, 1);
-	u32 type1 = PokemonDecrypter(thePokemon, Type1);
-	u32 type2 = PokemonDecrypter(thePokemon, Type2);
+	{
+		u16 species = PokemonDecrypter(thePokemon, Species);
+		BufferPokemonNameFromPointer(thePokemon, 0);
+		u16 convertedIndex = ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex));
+		if (convertedIndex == 0)
+		{
+			BufferString((char*)&questionString, 1, 3);
+		}
+		else
+		{
+			BufferNumber(convertedIndex, 3, 1);
+		}
+	}
+	{
+		u32 type1 = PokemonDecrypter(thePokemon, Type1);
+		u32 type2 = PokemonDecrypter(thePokemon, Type2);
+		if (type2 != type1)
+		{
+			// Render secondary type
+		}
+	}
 	BufferString((char*)PokemonDecrypter(thePokemon, OTName), 2, 7);
 	BufferItemName(PokemonDecrypter(thePokemon, HeldItem), 3);
 	BufferNatureName(PokemonDecrypter(thePokemon, Nature), 4);
 	BufferMapHeaderName(PokemonDecrypter(thePokemon, MetLocation), 5);
 	BufferNumber(PokemonDecrypter(thePokemon, Level), 3, 6);
-	u32 characteristicID = CalculateCharacteristicIndex(thePokemon);
-	BufferString(characteristicStrings[characteristicID], 7, 0);
+	{
+		u32 characteristicID = CalculateCharacteristicIndex(thePokemon);
+		BufferString((char*)(characteristicsStrings[characteristicID])[0], 7, 0);
+	}
+	{
+		void* spriteRAMLocation = (void*)SpriteAllocate(64 * 64);
+		preOAM[0].tileLocation = spriteRAMLocation;
+		void* spriteROMLocation = GetPokemonFrontSpriteFromPokemon(thePokemon);
+		LZ77UnCompVram(spriteROMLocation, spriteRAMLocation);
+	}
+	{
+		preOAM[1].paletteSlot = PaletteAllocate(0);
+		void* paletteRAMLocation = (void*)ObjectPaletteRAM(preOAM[0].paletteSlot);
+		void* paletteROMLocation = GetPokemonPaletteFromPokemon(thePokemon);
+		memcpy32(paletteRAMLocation, paletteROMLocation, 8);
+	}
+	preOAM[0].isActive = 1;
+	preOAM[0].objShape = Shape_Square;
+	preOAM[0].objSize = Square_64x64;
+	preOAM[0].priority = 0;
+	preOAM[0].requiresUpdate = 1;
+	preOAM[0].xLocation = 28;
+	preOAM[0].yLocation = 20;
+	//preOAM[0].hFlip = 1;
+	{
+		void* spriteRAMLocation = (void*)SpriteAllocate(16 * 16);
+		preOAM[1].tileLocation = spriteRAMLocation;
+		void* spriteROMLocation = GetPokeballSpriteFromPokemon(thePokemon);
+		LZ77UnCompVram(spriteROMLocation, spriteRAMLocation);
+	}
+	{
+		preOAM[1].paletteSlot = PaletteAllocate(1);
+		void* paletteRAMLocation = (void*)ObjectPaletteRAM(preOAM[1].paletteSlot);
+		void* paletteROMLocation = GetPokeballPaletteFromPokemon(thePokemon);
+		memcpy32(paletteRAMLocation, paletteROMLocation, 8);
+	}
+	preOAM[1].isActive = 1;
+	preOAM[1].objShape = Shape_Square;
+	preOAM[1].objSize = Square_16x16;
+	preOAM[1].priority = 0;
+	preOAM[1].requiresUpdate = 1;
+	preOAM[1].xLocation = 90;
+	preOAM[1].yLocation = 72;
+	CallbackMain = &IgnoreKeyPresses;
+	HandleKeyPresses = &PokemonInfoScreenKeyPresses;
 }

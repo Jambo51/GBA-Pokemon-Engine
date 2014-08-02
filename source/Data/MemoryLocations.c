@@ -10,18 +10,28 @@
 
 // --- primary memory locations ---
 
-EWRAM_LOCATION ALIGN(1) u8 seenFlags[82];
+#define NumberofSeenCaughts ((NumberOfPokemon >> 8) << 8)
+#define BytesForFlagsBase (NumberOfPokemon >> 8)
+#define FlagsToBytes(n) (n >> 8)
+#define PartyLength 6
+
+#if NumberofSeenCaughts == NumberOfPokemon
+EWRAM_LOCATION ALIGN(1) u8 seenFlags[BytesForFlagsBase];
+EWRAM_LOCATION ALIGN(1) u8 caughtFlags[BytesForFlagsBase];
+#else
+EWRAM_LOCATION ALIGN(1) u8 seenFlags[BytesForFlagsBase + 1];
+EWRAM_LOCATION ALIGN(1) u8 caughtFlags[BytesForFlagsBase + 1];
+#endif
 EWRAM_LOCATION ALIGN(1) u8 formesToShowInDex[29];
-EWRAM_LOCATION ALIGN(1) u8 caughtFlags[82];
-EWRAM_LOCATION ALIGN(1) u8 mainFlagBank[1024];
+EWRAM_LOCATION ALIGN(1) u8 mainFlagBank[FlagsToBytes(0x2000)];
 EWRAM_LOCATION ALIGN(2) u16 varBank[544];
-EWRAM_LOCATION ALIGN(4) Pokemon partyPokemon[6];
+EWRAM_LOCATION ALIGN(4) Pokemon partyPokemon[PartyLength];
 EWRAM_LOCATION ALIGN(4) PokemonStorageBoxes storageBoxes;
 EWRAM_LOCATION ALIGN(4) Pokemon temporaryHoldingPokemon;
 EWRAM_LOCATION ALIGN(4) Bag bag;
 EWRAM_LOCATION ALIGN(4) Player player;
-EWRAM_LOCATION ALIGN(4) Pokemon enemyPokemon[6];
-EWRAM_LOCATION ALIGN(4) char buffers[8][20];
+EWRAM_LOCATION ALIGN(4) Pokemon enemyPokemon[PartyLength];
+EWRAM_LOCATION ALIGN(4) char buffers[16][40];
 EWRAM_LOCATION ALIGN(4) MapHeader currentMap;
 EWRAM_LOCATION ALIGN(4) u32 currentSeed;
 EWRAM_LOCATION ALIGN(4) OverworldMovementStruct movingInformation;

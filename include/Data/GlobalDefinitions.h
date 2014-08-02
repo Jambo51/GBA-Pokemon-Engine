@@ -19,6 +19,8 @@
 #define ObjectPaletteRAM(n) (0x05000200 + (n << 5))
 #define ObjectTileBase(n) (0x06010000 + (n << 5))
 
+#define NumberOfPokemon 722
+
 #include "tonc.h"
 #include <stdbool.h>
 

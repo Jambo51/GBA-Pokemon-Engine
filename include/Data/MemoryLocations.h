@@ -10,21 +10,19 @@
 #ifndef MEMORYLOCATIONS_H_
 #define MEMORYLOCATIONS_H_
 
-#define NumberOfPokemon 649
-#define NumberofSeenCaughts ((NumberOfPokemon >> 8) + 1)
 
-extern u8 seenFlags[82];
-extern u8 formesToShowInDex[29];
-extern u8 caughtFlags[82];
-extern u8 mainFlagBank[1024];
-extern u16 varBank[544];
-extern Pokemon partyPokemon[6];
+extern u8 seenFlags[];
+extern u8 caughtFlags[];
+extern u8 formesToShowInDex[];
+extern u8 mainFlagBank[];
+extern u16 varBank[];
+extern Pokemon partyPokemon[];
 extern PokemonStorageBoxes storageBoxes;
 extern Pokemon temporaryHoldingPokemon;
 extern Bag bag;
 extern Player player;
-extern Pokemon enemyPokemon[6];
-extern char buffers[8][20];
+extern Pokemon enemyPokemon[];
+extern char buffers[16][40];
 extern MapHeader currentMap;
 extern u32 currentSeed;
 extern OverworldMovementStruct movingInformation;
@@ -47,16 +45,16 @@ extern NPCData overworldSpriteData[24];
 extern u8 hardwareColumn;
 extern u8 hardwareRow;
 extern u8 textPalette;
-extern GBPMusicStruct gbpData[2];
+extern GBPMusicStruct gbpData[];
 extern KeyBuffer keyStates;
-extern PreOAMStruct preOAM[40];
+extern PreOAMStruct preOAM[];
 extern void (*HandleKeyPresses)(void);
 extern void (*CallbackMain)(void);
 extern void (*RTCPaletteUpdate)(void);
 extern void (*MusicEngine)(void);
 extern TileAnimationStruct* animStruct;
 extern ConnectionStruct* connectStruct;
-extern PaletteFadeStruct fadeStruct[32];
+extern PaletteFadeStruct fadeStruct[];
 extern FunctionPtr* pauseMenuFunctions;
 extern MemoryManagementStructure mallocData;
 extern SpriteManagementStructure sprallocData;

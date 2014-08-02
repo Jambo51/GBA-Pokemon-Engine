@@ -13,6 +13,9 @@
 void IgnoreKeyPresses()
 {
 
+}void PokemonInfoScreenKeyPresses()
+{
+
 }
 
 void SetKeyIgnored(u8 keyID, u8 framesOffDefaultDeadTime)

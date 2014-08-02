@@ -11,6 +11,7 @@
 #include "Data/GlobalDefinitions.h"
 
 void IgnoreKeyPresses();
+void PokemonInfoScreenKeyPresses();
 void SetKeyIgnored(u8 keyID, u8 framesOffDefaultDeadTime);
 extern u8 IsKeyHeld(u8 keyID);
 extern u8 IsKeyDown(u8 keyID);

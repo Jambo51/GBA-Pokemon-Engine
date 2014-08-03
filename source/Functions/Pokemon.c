@@ -270,16 +270,6 @@ u32 CountAllBoxPokemon()
 	return counter;
 }
 
-void SetOTName(AbridgedPokemon* thePokemon, char* nameString)
-{
-	StringCopy((char*)&thePokemon[0].originalTrainerName, nameString, 7);
-}
-
-void SetNickname(AbridgedPokemon* thePokemon, char* nameString)
-{
-	StringCopy((char*)&thePokemon[0].nickname, nameString, 11);
-}
-
 u16 CalculateChecksum(u16* thePokemon)
 {
 	u16 tot = 0;
@@ -347,7 +337,7 @@ void InternalPokemonEncrypter(AbridgedPokemon* thePokemon, u8 index, u32 value)
 			thePokemon[0].originalTrainerID = value;
 			break;
 		case Nickname:
-			SetNickname(thePokemon, (char*)value);
+			StringCopy((char*)&thePokemon[0].nickname, (char*)value, 11);
 			break;
 		case FormeIndex:
 			if (value <= 0x3FF)
@@ -374,7 +364,7 @@ void InternalPokemonEncrypter(AbridgedPokemon* thePokemon, u8 index, u32 value)
 			}
 			break;
 		case OTName:
-			SetOTName(thePokemon, (char*)value);
+			StringCopy((char*)&thePokemon[0].originalTrainerName, (char*)value, 7);
 			break;
 		case Mark:
 			if (value <= 0xF)
@@ -1164,7 +1154,7 @@ void SetNature(Pokemon* thePokemon, u8 forcedNatureValue)
 	(forcedNatureValue >= 25)?PokemonEncrypter(thePokemon, Nature, GetDelimitedRandom32BitValue(26)):PokemonEncrypter(thePokemon, Nature, forcedNatureValue);
 }
 
-u32 GetClampedFormeByteValue(Pokemon* thePokemon)
+u32 GetClampedFormeByteValue(Pokemon* thePokemon, IndexTable* indexToRead)
 {
 	u32 value = PokemonDecrypter(thePokemon, FormeIndex);
 	u16 species = PokemonDecrypter(thePokemon, Species);
@@ -1182,7 +1172,7 @@ u32 GetClampedFormeByteValue(Pokemon* thePokemon)
 			}
 			break;
 		case 2:
-			if (value >= pokemonBaseData[species].baseDataInfo.index)
+			if (value >= indexToRead->index)
 			{
 				value = 0;
 			}
@@ -1222,7 +1212,7 @@ u8 GetBaseStatFromIndex(u16 species, u8 statIndex, u32 formeIndex)
 
 void CalculateStats(Pokemon* thePokemon)
 {
-	u32 formeIndex = GetClampedFormeByteValue(thePokemon);
+	u32 formeIndex = GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo);
 	u16 species = PokemonDecrypter(thePokemon, Species);
 	u32 level = PokemonDecrypter(thePokemon, Level);
 	u32 sum = PokemonDecrypter(thePokemon, HP_IV);
@@ -1259,7 +1249,7 @@ void GiveHeldItemFromBaseData(Pokemon* thePokemon)
 	u32 counter = 0;
 	u32 i = 0;
 	IndexTable* indexData = &pokemonBaseData[species].baseDataInfo;
-	u32 formeIndex = GetClampedFormeByteValue(thePokemon);
+	u32 formeIndex = GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo);
 	PercentageItemPair* values = &(((PercentageItemPair*)(indexData->pointerToData))[formeIndex]);
 	item = values[i].itemID;
 	while (item != 0xFFFF && counter < 100)
@@ -1281,7 +1271,7 @@ void GivePokemonAbility(Pokemon* thePokemon, u32 isHiddenAbility)
 	InternalBaseData* indexData;
 	{
 		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
-		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
+		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo)];
 	}
 	if ((isHiddenAbility == 1) && (indexData->hiddenAbility != 0))
 	{
@@ -1306,7 +1296,7 @@ void SetBaseFriendship(Pokemon* thePokemon, u32 isBattle)
 	InternalBaseData* indexData;
 	{
 		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo.pointerToData;
-		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
+		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo)];
 	}
 	(isBattle == 1)?PokemonEncrypter(thePokemon, Friendship, 0):PokemonEncrypter(thePokemon, Friendship, indexData->baseFriendship);
 }
@@ -1324,7 +1314,7 @@ void SetBasicTypes(Pokemon* thePokemon)
 	InternalBaseData* indexData;
 	{
 		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
-		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon)];
+		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo)];
 	}
 	PokemonEncrypter(thePokemon, Type1, indexData->type1);
 	PokemonEncrypter(thePokemon, Type2, indexData->type2);
@@ -1374,6 +1364,13 @@ void SetMoves(Pokemon* thePokemon)
 		currentIndex = i & 3;
 		level = theMoveset[i].level;
 	}
+}
+
+u32 GetCatchRateFromPokemon(Pokemon* thePokemon)
+{
+	u16 species = PokemonDecrypter(thePokemon, Species);
+	u32 forme = GetClampedFormeByteValue(thePokemon, (IndexTable*)&pokemonBaseData[species].baseDataInfo);
+	return ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[forme].catchRate;
 }
 
 #define BallItemBaseID 0
@@ -1547,7 +1544,7 @@ void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIn
 {
 	GeneratePokemon(thePokemon, level, species);
 	PokemonEncrypter(thePokemon, OTID, player.completeTrainerID);
-	PokemonEncrypter(thePokemon, OTName, *(&player.name));
+	PokemonEncrypter(thePokemon, OTName, (u32)player.name);
 	InternalBaseData* data = (InternalBaseData*)((void**)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex];
 	PokemonEncrypter(thePokemon, Friendship, data[0].baseFriendship);
 	if (formeIndex != 0)

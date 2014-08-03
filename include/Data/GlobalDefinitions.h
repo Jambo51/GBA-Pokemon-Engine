@@ -19,6 +19,11 @@
 #define ObjectPaletteRAM(n) (0x05000200 + (n << 5))
 #define ObjectTileBase(n) (0x06010000 + (n << 5))
 
+#define Frozen 8
+#define Paralysed 9
+#define Burned 10
+#define Poisoned 11
+
 #define NumberOfPokemon 722
 
 #include "tonc.h"
@@ -68,6 +73,10 @@ enum EggGroups { EGG_GROUP_MONSTER,	EGG_GROUP_WATER1, EGG_GROUP_BUG, EGG_GROUP_F
 enum WildDatOrders { GrassData, WaterData, TreeData, RockSmashData, FishingRodData, NumWildDatas };
 
 enum GBPStatusFlags { ModulationActivation, ModulationStatus, PortamentoActivation, PitchBendActivation, ArpeggiationActivation, ArpeggiationStatus };
+
+enum CaptureStates { ZeroShakesFailure, SingleShakeFailure, DoubleShakeFailure, TripleShakeFailure, TripleShakeSuccess, CriticalCaptureFailure, CriticalCaptureSuccess };
+
+enum PokedexModes {	Regional, National };
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -832,6 +841,10 @@ typedef struct IncenseItemEgg {
 	u16 alternativeSpecies;
 	u16 itemID;
 } IncenseItemEgg;
+
+typedef u32 (*U32FunctionPointerVoid)(void);
+
+typedef u32 (*U32FunctionPointerU32)(u32);
 
 #endif // TOOLBOX_H
 

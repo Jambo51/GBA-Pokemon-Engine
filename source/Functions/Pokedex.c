@@ -8,12 +8,6 @@ const u16 regionalValues[722] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 
 #define REGIONAL_DEX_LENGTH 152
 #define numberOfPokemon 0x28A
 
-typedef enum
-{
-	Regional,
-	National
-} PokedexStates;
-
 const RODATA_LOCATION u16* dexModeConversionTable[] = { (u16*)&regionalValues[0] };
 const u16 dexLengths[] = { REGIONAL_DEX_LENGTH, numberOfPokemon };
 

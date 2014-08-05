@@ -616,7 +616,7 @@ void CalculateMoveDamage(u16 moveID, u32 attackerID, u32 defenderID)
 #endif
 	}
 	PokemonBattleData* attacker = &battleDataPointer[0].pokemonStats[attackerID];
-	PokemonBattleData* defender = &battleDataPointer[0].pokemonStats[attackerID];
+	PokemonBattleData* defender = &battleDataPointer[0].pokemonStats[defenderID];
 	u32 damage = attacker[0].level << 1;
 	damage += 10;
 	if (defender[0].ability == Unaware)

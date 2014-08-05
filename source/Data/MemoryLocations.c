@@ -35,8 +35,6 @@ EWRAM_LOCATION ALIGN(4) char buffers[16][40];
 EWRAM_LOCATION ALIGN(4) MapHeader currentMap;
 EWRAM_LOCATION ALIGN(4) u32 currentSeed;
 EWRAM_LOCATION ALIGN(4) OverworldMovementStruct movingInformation;
-EWRAM_LOCATION ALIGN(4) u32 battleDamage;
-EWRAM_LOCATION ALIGN(4) u32 battleDamageInformation;
 EWRAM_LOCATION ALIGN(4) u32 battleType;
 EWRAM_LOCATION ALIGN(4) u8* battleScriptPointer;
 EWRAM_LOCATION ALIGN(4) u8* overworldScriptPointer;
@@ -71,6 +69,7 @@ ALIGN(4) MemoryManagementStructure mallocData;
 ALIGN(4) SpriteManagementStructure sprallocData;
 ALIGN(4) PaletteManagementStructure pallocData;
 ALIGN(4) CallbackStruct callbackSystem;
+EWRAM_LOCATION ALIGN(4) BattleData* battleDataPointer;
 
 #endif // TOOLBOX_H
 

@@ -26,8 +26,6 @@ extern char buffers[16][40];
 extern MapHeader currentMap;
 extern u32 currentSeed;
 extern OverworldMovementStruct movingInformation;
-extern u32 battleDamage;
-extern u32 battleDamageInformation;
 extern u32 battleType;
 extern u8* battleScriptPointer;
 extern u8* overworldScriptPointer;
@@ -62,5 +60,6 @@ extern PaletteManagementStructure pallocData;
 extern PokedexData* dexPointer;
 extern MusicFadeInfo* musicFadePointer;
 extern CallbackStruct callbackSystem;
+extern BattleData* battleDataPointer;
 
 #endif /* MEMORYLOCATIONS_H_ */

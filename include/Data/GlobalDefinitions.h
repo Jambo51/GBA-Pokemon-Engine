@@ -78,6 +78,14 @@ enum CaptureStates { ZeroShakesFailure, SingleShakeFailure, DoubleShakeFailure, 
 
 enum PokedexModes {	Regional, National };
 
+enum BattleStats { BattleAttack, BattleDefence, BattleSpeed, BattleSpecialAttack, BattleSpecialDefence, Accuracy, Evasion, NumBattleStats };
+
+enum BattleBanks { Target, User, PokeballTarget, MoveTypeOverrideValue, NumBattleBanks };
+
+enum MoveCategories { Category_Physical, Category_Special, Category_Status };
+
+enum MoveEffectivenesses { NoEffect, QuarterDamage, HalfDamage, NormalDamage, DoubleDamage, QuadrupleDamage, InvertedToHeal };
+
 typedef struct U8BitField {
 	u8 bit0:1;
 	u8 bit1:1;
@@ -841,6 +849,61 @@ typedef struct IncenseItemEgg {
 	u16 alternativeSpecies;
 	u16 itemID;
 } IncenseItemEgg;
+
+typedef struct SecondaryStatusStruct {
+	u32 data;
+} SecondaryStatusStruct;
+
+typedef struct PokemonBattleData {
+	u16 species;
+	u8 type1;
+	u8 type2;
+	u32 personalityID;
+	u8 ability;
+	u8 statLevels[NumBattleStats];
+	u16 stats[5];
+	u16 effectiveStats[5];
+	u32 primaryStatus;
+	union
+	{
+		u32 secondaryStatuses;
+		SecondaryStatusStruct secondaryStatusBits;
+	};
+	u8 level;
+	u8 gender;
+	u16 currentHP;
+	u16 maximumHP;
+	u8 pp[4];
+	u16 moves[4];
+	u8 forme;
+	u8 alignment1;
+	u16 alignment2;
+} PokemonBattleData;
+
+typedef struct BattleFlagsStruct {
+	u32 attackEffectiveness:3;
+	u32 criticalHitFlag:1;
+	u32 moveTypeOverride:1;
+	u32 wonderGuardTriggered:1;
+	u32 dampTriggered:1;
+	u32 voltAbsorbTriggered:1;
+	u32 waterAbsorbTriggered:1;
+	u32 levitateTriggered:1;
+	u32 sapSipperTriggered:1;
+	u32 unused:22;
+} BattleFlagsStruct;
+
+typedef struct BattleData {
+	PokemonBattleData* pokemonStats;
+	u8 battleBanks[NumBattleBanks];
+	u32 battleTurnsCounter;
+	u32 battleDamage;
+	union
+	{
+		u32 battleFlags;
+		BattleFlagsStruct flags;
+	};
+} BattleData;
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 

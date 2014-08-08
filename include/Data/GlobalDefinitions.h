@@ -934,6 +934,7 @@ typedef struct BattleData {
 		u16 weather;
 		BattleWeatherBits weatherBits;
 	};
+	u32 battleDamageMultiplier;
 	u32 battleDamage;
 	union
 	{

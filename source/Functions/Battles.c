@@ -1,6 +1,7 @@
 #include "Functions.h"
 #include "Data.h"
 #include "Data\PokeStats.h"
+#include "Functions\BattleScriptCommands.h"
 
 #define DPSS 0
 #define ORIGINAL 1
@@ -416,6 +417,30 @@ u32 ApplyTypeBasedModifiers(u32 currentDamage, u32 moveType, PokemonBattleData* 
 	return currentDamage;
 }
 
+u32 SetCriticalHitFlagsAndValues(u32 currentDamage, u8 attackerAbility)
+{
+	battleDataPointer[0].flags.criticalHitFlag = 1;
+	if (attackerAbility == Sniper)
+	{
+		currentDamage *= 3;
+	}
+	else
+	{
+		currentDamage <<= 1;
+	}
+	return currentDamage;
+}
+
+const RODATA_LOCATION u8 criticalHitLikelihoods[] = {
+		7,
+		13,
+		25,
+		34,
+		50,
+		50,
+		100
+};
+
 u32 ApplyCriticalHitModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender)
 {
 	battleDataPointer[0].flags.criticalHitFlag = 0;
@@ -423,14 +448,49 @@ u32 ApplyCriticalHitModifiers(u32 currentDamage, PokemonBattleData* attacker, Po
 	if (defenderAbility != Battle_Armour && defenderAbility != Shell_Armour)
 	{
 		u8 attackerAbility = attacker[0].ability;
-		battleDataPointer[0].flags.criticalHitFlag = 1;
-		if (attackerAbility == Sniper)
+		u32 counter = 0;
+		if (attacker[0].battleStatusFlags.usedCritEnhancingMove)
 		{
-			currentDamage *= 3;
+			counter++;
+			attacker[0].battleStatusFlags.usedCritEnhancingMove = 0;
 		}
-		else
+		if (attackerAbility != Klutz)
 		{
-			currentDamage <<= 1;
+			u16 item = attacker[0].heldItem;
+			u16 species = attacker[0].species;
+			if (item == Item_Razor_Claw || item == Item_Scope_Lens)
+			{
+				counter++;
+			}
+			else if (item == Item_Stick && species == Farfetchd)
+			{
+				counter += 2;
+			}
+			else if (item == Item_Lucky_Punch && species == Chansey)
+			{
+				counter += 2;
+			}
+		}
+		if (attackerAbility == Super_Luck)
+		{
+			counter++;
+		}
+		if (attacker[0].battleStatusFlags.focusEnergyInEffect)
+		{
+			counter += 2;
+		}
+		else if (attacker[0].battleStatusFlags.direHitInEffect)
+		{
+			counter++;
+		}
+		u32 rand = GetDelimitedRandom32BitValue(100);
+		if (counter > 6)
+		{
+			counter = 6;
+		}
+		if (rand < criticalHitLikelihoods[counter])
+		{
+			currentDamage = SetCriticalHitFlagsAndValues(currentDamage, attackerAbility);
 		}
 	}
 	return currentDamage;
@@ -662,4 +722,9 @@ void CalculateMoveDamage(u16 moveID, u32 attackerID, u32 defenderID)
 		damage = 1;
 	}
 	battleDataPointer[0].battleDamage = damage;
+}
+
+void BattleWaitForKeyPress()
+{
+	// Move Objects Up and Down
 }

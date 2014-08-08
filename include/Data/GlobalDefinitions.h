@@ -86,6 +86,10 @@ enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 
 enum MoveEffectivenesses { NoEffect, QuarterDamage, HalfDamage, NormalDamage, DoubleDamage, QuadrupleDamage, InvertedToHeal };
 
+enum MoveSelections { Move0, Move1, Move2, Move3, UseItem };
+
+enum ScriptEndingIndices { NotEnded, Ended };
+
 typedef struct U8BitField {
 	u8 bit0:1;
 	u8 bit1:1;
@@ -854,6 +858,15 @@ typedef struct SecondaryStatusStruct {
 	u32 data;
 } SecondaryStatusStruct;
 
+typedef struct BattleStatusStruct {
+	u32 usedCritEnhancingMove:1;
+	u32 focusEnergyInEffect:1;
+	u32 direHitInEffect:1;
+	u32 protected:1;
+	u32 highPriorityProtected:1;
+	u32 data:29;
+} BattleStatusStruct;
+
 typedef struct PokemonBattleData {
 	u16 species;
 	u8 type1;
@@ -877,7 +890,12 @@ typedef struct PokemonBattleData {
 	u16 moves[4];
 	u8 forme;
 	u8 alignment1;
-	u16 alignment2;
+	u16 heldItem;
+	union
+	{
+		u32 battleFlags;
+		BattleStatusStruct battleStatusFlags;
+	};
 } PokemonBattleData;
 
 typedef struct BattleFlagsStruct {
@@ -893,16 +911,37 @@ typedef struct BattleFlagsStruct {
 	u32 unused:22;
 } BattleFlagsStruct;
 
+typedef struct BattleWeatherBits {
+	u16 rain:1;
+	u16 hail:1;
+	u16 snow:1;
+	u16 sunny:1;
+	u16 sandstorm:1;
+	u16 fog:1;
+	u16 shadowyAura:1;
+	u16 permanent:1;
+	u16 turnsRemaining:8;
+} BattleWeatherBits;
+
 typedef struct BattleData {
 	PokemonBattleData* pokemonStats;
 	u8 battleBanks[NumBattleBanks];
-	u32 battleTurnsCounter;
+	u8 moveSelections[4];
+	u8 conversionIndices[4];
+	u16 battleTurnsCounter;
+	union
+	{
+		u16 weather;
+		BattleWeatherBits weatherBits;
+	};
 	u32 battleDamage;
 	union
 	{
 		u32 battleFlags;
 		BattleFlagsStruct flags;
 	};
+	u16 moveIndex;
+	u16 itemIndex;
 } BattleData;
 
 typedef u32 (*U32FunctionPointerVoid)(void);

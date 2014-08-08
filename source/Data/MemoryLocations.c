@@ -37,6 +37,7 @@ EWRAM_LOCATION ALIGN(4) u32 currentSeed;
 EWRAM_LOCATION ALIGN(4) OverworldMovementStruct movingInformation;
 EWRAM_LOCATION ALIGN(4) u32 battleType;
 EWRAM_LOCATION ALIGN(4) u8* battleScriptPointer;
+EWRAM_LOCATION ALIGN(4) u8* returnBattleScriptPointer;
 EWRAM_LOCATION ALIGN(4) u8* overworldScriptPointer;
 EWRAM_LOCATION ALIGN(4) u8 overworldScriptWaitingToBeRun;
 ALIGN(4) RealTimeClock rtcData;

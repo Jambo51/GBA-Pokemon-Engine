@@ -28,6 +28,7 @@ extern u32 currentSeed;
 extern OverworldMovementStruct movingInformation;
 extern u32 battleType;
 extern u8* battleScriptPointer;
+extern u8* returnBattleScriptPointer;
 extern u8* overworldScriptPointer;
 extern u8 overworldScriptWaitingToBeRun;
 extern RealTimeClock rtcData;

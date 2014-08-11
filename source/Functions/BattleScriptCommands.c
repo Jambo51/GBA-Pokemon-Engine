@@ -799,7 +799,7 @@ u32 CheckForAbilityInBattle(u32 abilityID, u32 side)
 		if (side == 2 || (i & 1) == side)
 		{
 			u8 ability = battleDataPointer[0].pokemonStats[i].ability;
-			if (ComparisonRoutine(ability, abilityID, battleScriptPointer[3]) == true)
+			if (ComparisonRoutine(ability, abilityID, Equals) == true)
 			{
 				return true;
 			}

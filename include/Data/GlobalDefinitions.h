@@ -87,7 +87,7 @@ enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
 enum MoveEffects { Effects_NoSpecial, Effects_Judgement, Effects_Weather_Ball, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword };
 
-enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfArray };
+enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
 
 enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, IfAnyBitsSet, IfNoBitsSet };
 
@@ -882,7 +882,9 @@ typedef struct BattleStatusStruct {
 	u32 wideGuardProtected:1;
 	u32 craftyShieldProtected:1;
 	u32 tertiaryTypeActive:1;
-	u32 data:26;
+	u32 trappedInBattle:1;
+	u32 cannotSleep:1;
+	u32 data:24;
 } BattleStatusStruct;
 
 typedef struct PokemonBattleData {
@@ -930,7 +932,8 @@ typedef struct BattleFlagsStruct {
 	u32 waterAbsorbTriggered:1;
 	u32 levitateTriggered:1;
 	u32 sapSipperTriggered:1;
-	u32 unused:21;
+	u32 damageTypeDealt:2;
+	u32 unused:18;
 } BattleFlagsStruct;
 
 typedef struct BattleWeatherBits {
@@ -952,7 +955,7 @@ typedef struct BattleData {
 	u8 conversionIndices[4];
 	u8 battlePartyPositions[6];
 	u8 numBattlers;
-	u8 alignment;
+	u8 positionInCallStack;
 	u16 battleTurnsCounter;
 	union
 	{
@@ -968,6 +971,7 @@ typedef struct BattleData {
 	};
 	u16 moveIndex;
 	u16 itemIndex;
+	u8* callStack[0x10];
 } BattleData;
 
 typedef u32 (*U32FunctionPointerVoid)(void);

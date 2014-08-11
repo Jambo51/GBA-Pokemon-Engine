@@ -303,31 +303,7 @@ void ScriptingKeyPresses()
 
 }
 
-u8 RunOverworldScriptCommands()
-{
-	return 1;
-}
-
-u8 RunOverworldScript()
-{
-	return RunScript(overworldScriptPointer, &RunOverworldScriptCommands);
-}
-
 void SetCheckKeyPressesOverworld(void);
-
-void RunOverworldScriptingEnvironment()
-{
-	if (overworldScriptWaitingToBeRun == 1)
-	{
-		HandleKeyPresses = &ScriptingKeyPresses;
-		u8 killScriptingEnvironment = RunOverworldScript();
-		if (killScriptingEnvironment == 1)
-		{
-			SetCheckKeyPressesOverworld();
-			overworldScriptWaitingToBeRun = 0;
-		}
-	}
-}
 
 u16 SetRed(u16 original, u16 newRed)
 {

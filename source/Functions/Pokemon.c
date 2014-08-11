@@ -1313,11 +1313,12 @@ void SetBasicTypes(Pokemon* thePokemon)
 	u16 species = PokemonDecrypter(thePokemon, Species);
 	InternalBaseData* indexData;
 	{
-		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
-		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo)];
+		InternalBaseData** data = (InternalBaseData**)&pokemonBaseData[species].baseDataInfo.pointerToData[0];
+		u32 formeIndex = GetClampedFormeByteValue(thePokemon, (IndexTable*)&pokemonBaseData[PokemonDecrypter(thePokemon, Species)]);
+		indexData = (InternalBaseData*)data[formeIndex];
 	}
-	PokemonEncrypter(thePokemon, Type1, indexData->type1);
-	PokemonEncrypter(thePokemon, Type2, indexData->type2);
+	PokemonEncrypter(thePokemon, Type1, indexData[0].type1);
+	PokemonEncrypter(thePokemon, Type2, indexData[0].type2);
 }
 
 u8 GetUnownLetterFromPID(u32 pid)

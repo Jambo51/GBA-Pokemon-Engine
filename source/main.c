@@ -98,7 +98,7 @@ int main()
 	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
 	InitialisePaletteAllocator();
 	HandleKeyPresses = &IgnoreKeyPresses;
-	CallbackMain = &PokemonInfoScreenInitialise;
+	CallbackMain = &InitialiseBattleEnvironment;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
 	SetMusicEngine(MUSICENGINE);
 	u16* pRAM = (u16*)TilePaletteRAM(0);
@@ -108,7 +108,8 @@ int main()
 	SetFlag(Flag_Pokedex);
 	SetFlag(Flag_Pokegear);
 	SetFlag(Flag_PokemonMenu);
-	GivePokemonToPlayer(&partyPokemon[0], 5, Unown, 0);
+	GivePokemonToPlayer(&partyPokemon[0], 36, Charizard, 0);
+	GivePokemonToPlayer(&enemyPokemon[0], 36, Venusaur, 0);
 	temporaryHoldingPokemon = partyPokemon[0];
 	while (1)
 	{

@@ -2,26 +2,9 @@
 #include "Data.h"
 #include "Data\PokeStats.h"
 #include "Functions\BattleScriptCommands.h"
-
-const ALIGN(1) u8 typeStrengths[18][18] = { { 100, 100, 100, 100, 100, 50, 100, 0, 50, 100, 100, 100, 100, 100, 100, 100, 100, 100 },
-		{ 200, 100, 50, 50, 100, 200, 50, 0, 200, 100, 100, 100, 100, 50, 200, 100, 200, 50 },
-		{ 100, 200, 100, 100, 100, 50, 200, 100, 50, 100, 100, 200, 50, 100, 100, 100, 100, 100 },
-		{ 100, 100, 100, 50, 100, 50, 100, 50, 0, 100, 100, 200, 100, 100, 100, 100, 100, 200 },
-		{ 100, 100, 0, 200, 100, 200, 50, 100, 200, 200, 100, 50, 200, 100, 100, 100, 100, 100 },
-		{ 100, 50, 200, 100, 50, 100, 200, 100, 50, 200, 100, 100, 100, 100, 200, 100, 100, 100 },
-		{ 100, 50, 50, 50, 100, 100, 100, 50, 50, 50, 100, 200, 100, 200, 100, 100, 200, 50 },
-		{ 0, 100, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 200, 100 },
-		{ 100, 100, 100, 100, 100, 200, 100, 100, 50, 50, 50, 100, 100, 100, 200, 100, 100, 200 },
-		{ 100, 100, 100, 100, 100, 50, 200, 100, 200, 50, 50, 200, 100, 100, 200, 50, 100, 100 },
-		{ 100, 100, 100, 100, 200, 200, 100, 100, 100, 200, 50, 50, 100, 100, 100, 50, 100, 100 },
-		{ 100, 100, 50, 50, 200, 200, 50, 100, 50, 50, 200, 50, 100, 100, 100, 50, 100, 100 },
-		{ 100, 100, 200, 100, 0, 100, 100, 100, 100, 100, 200, 50, 50, 100, 100, 50, 100, 100 },
-		{ 100, 200, 100, 200, 100, 100, 100, 100, 50, 100, 100, 100, 100, 50, 100, 100, 0, 100 },
-		{ 100, 100, 200, 100, 200, 100, 100, 100, 50, 50, 50, 200, 100, 100, 50, 200, 100, 100 },
-		{ 100, 100, 100, 100, 100, 100, 100, 100, 50, 100, 100, 100, 100, 100, 100, 200, 100, 0 },
-		{ 100, 50, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 50, 50 },
-		{ 100, 200, 100, 50, 100, 100, 100, 100, 50, 50, 100, 100, 100, 100, 100, 200, 200, 100 }
-};
+#include "Functions\ScriptRunner.h"
+#include "Data\MemoryLocations.h"
+#include "libbattlescripts.h"
 
 const ALIGN(2) u16 criticalCaptureValues[6][2] = {
 		{ 30, 0 },
@@ -80,7 +63,7 @@ u32 LevelBallPokeball()
 	return retValue;
 }
 
-const RODATA_LOCATION u16 moonBallAffectedPokemon[] = {
+const u16 moonBallAffectedPokemon[] = {
 		Cleffa,
 		Clefairy,
 		Clefable,
@@ -319,7 +302,7 @@ u32 CaptureChecks(Pokemon* target, u16 itemID)
 	return TripleShakeSuccess;
 }
 
-const RODATA_LOCATION u16 statBuffEffects[] = {
+const u16 statBuffEffects[] = {
 		25,
 		29,
 		33,
@@ -335,22 +318,75 @@ const RODATA_LOCATION u16 statBuffEffects[] = {
 		400
 };
 
-void RecalculateEffectiveStat(u32 pokemonIndex, u32 statIndex)
+void RecalculateEffectiveStat(PokemonBattleData* data, u32 statIndex)
 {
-	PokemonBattleData* data = &(battleDataPointer[0].pokemonStats[pokemonIndex]);
 	data[0].effectiveStats[statIndex] = UnsignedFractionalMultiplication(data[0].stats[statIndex], statBuffEffects[data[0].statLevels[statIndex]]);
 }
 
-void RecalculateAllEffectiveStats(u32 pokemonIndex)
+void RecalculateAllEffectiveStats(PokemonBattleData* dataLocation)
 {
 	u32 i;
-	for (i = 0; i < NumBattleStats; i++)
+	for (i = 0; i < NumBattleStats - 2; i++)
 	{
-		RecalculateEffectiveStat(pokemonIndex, i);
+		RecalculateEffectiveStat(dataLocation, i);
 	}
 }
 
 void BattleWaitForKeyPress()
 {
+	RunCallbackSystem();
 	// Move Objects Up and Down
+}
+
+void CopyBattleDataFromPokemon(Pokemon* thePokemon, PokemonBattleData* dataLocation)
+{
+	memset32(dataLocation, 0, sizeof(PokemonBattleData) >> 2);
+	dataLocation[0].species = PokemonDecrypter(thePokemon, Species);
+	dataLocation[0].ability = PokemonDecrypter(thePokemon, Ability);
+	dataLocation[0].forme = PokemonDecrypter(thePokemon, FormeIndex);
+	dataLocation[0].gender = PokemonDecrypter(thePokemon, Gender);
+	dataLocation[0].heldItem = PokemonDecrypter(thePokemon, HeldItem);
+	dataLocation[0].level = PokemonDecrypter(thePokemon, Level);
+	u32 i;
+	for (i = 0; i < 4; i++)
+	{
+		dataLocation[0].moves[i] = PokemonDecrypter(thePokemon, Move1 + i);
+		dataLocation[0].pp[i] = PokemonDecrypter(thePokemon, Move1PP + i);
+	}
+	for (i = 0; i < NumBattleStats - 2; i++)
+	{
+		dataLocation[0].stats[i] = PokemonDecrypter(thePokemon, Attack + i);
+	}
+	for (i = 0; i < NumBattleStats; i++)
+	{
+		dataLocation[0].statLevels[i] = 6;
+	}
+	dataLocation[0].personalityID = PokemonDecrypter(thePokemon, PersonalityID);
+	dataLocation[0].primaryStatus = PokemonDecrypter(thePokemon, StatusAilment);
+	dataLocation[0].secondaryStatuses = 0;
+	dataLocation[0].battleFlags = 0;
+	dataLocation[0].type1 = PokemonDecrypter(thePokemon, Type1);
+	dataLocation[0].type2 = PokemonDecrypter(thePokemon, Type2);
+	dataLocation[0].type3 = Type_None;
+	dataLocation[0].currentHP = PokemonDecrypter(thePokemon, CurrentHP);
+	dataLocation[0].maximumHP = PokemonDecrypter(thePokemon, MaximumHP);
+	RecalculateAllEffectiveStats(dataLocation);
+}
+
+void InitialiseBattleEnvironment()
+{
+	battleDataPointer = (BattleData*)MemoryAllocate(sizeof(BattleData));
+	battleDataPointer[0].pokemonStats = (PokemonBattleData*)MemoryAllocate(sizeof(PokemonBattleData) * 4);
+	CopyBattleDataFromPokemon(&partyPokemon[0], &battleDataPointer[0].pokemonStats[0]);
+	CopyBattleDataFromPokemon(&enemyPokemon[0], &battleDataPointer[0].pokemonStats[1]);
+	if (battleType & 0x80000000)
+	{
+		CopyBattleDataFromPokemon(&partyPokemon[1], &battleDataPointer[0].pokemonStats[2]);
+		CopyBattleDataFromPokemon(&enemyPokemon[1], &battleDataPointer[0].pokemonStats[3]);
+	}
+	battleDataPointer[0].battleBanks[User] = 0;
+	battleDataPointer[0].battleBanks[Target] = 1;
+	battleScriptPointer = (u8*)&Script_Standard_Attack;
+	AddFunction(&RunBattleScript, 0);
+	CallbackMain = &BattleWaitForKeyPress;
 }

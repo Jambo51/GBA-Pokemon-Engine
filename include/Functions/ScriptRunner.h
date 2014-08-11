@@ -10,10 +10,8 @@
 
 #include "Data/GlobalDefinitions.h"
 
-extern u8 (*overworldScriptingCommands[0xFF])(void);
-extern u8 (*battleScriptingCommands[0xFF])(void);
-extern u8 (*animationScriptingCommands[0xFF])(void);
-
 u8 RunScript(u8* pointer, void* instructionSet);
+void RunBattleScript();
+void RunOverworldScript();
 
 #endif /* SCRIPTRUNNER_H_ */

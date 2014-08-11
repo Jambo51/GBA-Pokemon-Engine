@@ -6,20 +6,35 @@
  */
 
 #include "Data.h"
+#include "Functions\BattleScriptCommands.h"
 
-u8 RunScript(u8* pointer, u8 (*instructionSet[0xFF])(void))
+const u8 (*battleScriptCommandTable[])(void) = {
+		(u8*)&CheckForMoveCancellingStatuses,
+		(u8*)&HitMissCalculation,
+		(u8*)0,
+		(u8*)&DecrementPP,
+		(u8*)&CalculateDamage
+};
+
+void RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
 {
-	u8 i;
-	u8 scriptEnded = 0;
-	for (i = 0; i < 4; i++)
+	u8 scriptEnded = NotEnded;
+	while (scriptEnded != Ended)
 	{
-		u8 commandID = pointer[0];
+		u8* loc = pointer[0];
+		u8 commandID = loc[0];
 		u8 (*ScriptCommand)(void) = instructionSet[commandID];
 		scriptEnded = ScriptCommand();
-		if (scriptEnded == 1)
-		{
-			break;
-		}
 	}
-	return scriptEnded;
+}
+
+void RunBattleScript()
+{
+	RunScript(&battleScriptPointer, (u8 (*)(void))&battleScriptCommandTable);
+	RemoveFunctionByPointer(&RunBattleScript);
+}
+
+void RunOverworldScript()
+{
+	RunScript(&overworldScriptPointer, 0);//&overworldScriptCommandTable);
 }

@@ -874,6 +874,19 @@ u8 JumpIf()
 			}
 			break;
 		}
+		case JumpIfWeather:
+		{
+			u16 weather = battleDataPointer[0].weather;
+			if (ComparisonRoutine(weather, LoadUnalignedNumber(battleScriptPointer, 2, 2), battleScriptPointer[4]) == true)
+			{
+				battleScriptPointer = (u8*)LoadUnalignedNumber(battleScriptPointer, 5, 4);
+			}
+			else
+			{
+				battleScriptPointer += 9;
+			}
+			break;
+		}
 		case JumpIfHeldItem:
 		{
 			u16 heldItem = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[battleScriptPointer[2]]].heldItem;

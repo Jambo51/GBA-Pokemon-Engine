@@ -87,7 +87,7 @@ enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
 enum MoveEffects { Effects_NoSpecial, Effects_Judgement, Effects_Weather_Ball, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword };
 
-enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
+enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
 
 enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, IfAnyBitsSet, IfNoBitsSet };
 

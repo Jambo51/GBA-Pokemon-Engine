@@ -117,7 +117,7 @@ LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
 
 else
 
-CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O3
+CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O2
 CFLAGS		+= -Wall
 CFLAGS		+= $(INCLUDE)
 CFLAGS		+= -ffast-math -fno-strict-aliasing

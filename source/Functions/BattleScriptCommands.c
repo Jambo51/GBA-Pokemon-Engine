@@ -64,6 +64,22 @@ void SetupBattleScriptCall(u8* newPointer, u32 commandLength)
 	}
 }
 
+const u16 statBuffEffects[] = {
+		25,
+		29,
+		33,
+		40,
+		50,
+		66,
+		100,
+		150,
+		200,
+		250,
+		300,
+		350,
+		400
+};
+
 void RecalculateEffectiveStat(PokemonBattleData* data, u32 statIndex)
 {
 	data[0].effectiveStats[statIndex] = UnsignedFractionalMultiplication(data[0].stats[statIndex], statBuffEffects[data[0].statLevels[statIndex]]);
@@ -737,7 +753,7 @@ u8 StoreByte()
 u8 StoreHalfWord()
 {
 	u16* address = (u16*)LoadUnalignedNumber(battleScriptPointer, 1, 4);
-	if (((address >= 0x02000000 && address < 0x02040000) || (address >= 0x03000000 && address < 0x03008000)) && ((address & 1) == 0))
+	if (((address >= 0x02000000 && address < 0x02040000) || (address >= 0x03000000 && address < 0x03008000)) && (((u32)address & 1) == 0))
 	{
 		address[0] = (u16)LoadUnalignedNumber(battleScriptPointer, 5, 2);
 	}
@@ -748,7 +764,7 @@ u8 StoreHalfWord()
 u8 StoreWord()
 {
 	u32* address = (u32*)LoadUnalignedNumber(battleScriptPointer, 1, 4);
-	if (((address >= 0x02000000 && address < 0x02040000) || (address >= 0x03000000 && address < 0x03008000)) && ((address & 3) == 0))
+	if (((address >= 0x02000000 && address < 0x02040000) || (address >= 0x03000000 && address < 0x03008000)) && (((u32)address & 3) == 0))
 	{
 		address[0] = (u32)LoadUnalignedNumber(battleScriptPointer, 5, 4);
 	}

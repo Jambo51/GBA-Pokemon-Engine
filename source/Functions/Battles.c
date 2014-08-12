@@ -302,22 +302,6 @@ u32 CaptureChecks(Pokemon* target, u16 itemID)
 	return TripleShakeSuccess;
 }
 
-const u16 statBuffEffects[] = {
-		25,
-		29,
-		33,
-		40,
-		50,
-		66,
-		100,
-		150,
-		200,
-		250,
-		300,
-		350,
-		400
-};
-
 void BattleWaitForKeyPress()
 {
 	RunCallbackSystem();

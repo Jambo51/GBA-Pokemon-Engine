@@ -318,20 +318,6 @@ const u16 statBuffEffects[] = {
 		400
 };
 
-void RecalculateEffectiveStat(PokemonBattleData* data, u32 statIndex)
-{
-	data[0].effectiveStats[statIndex] = UnsignedFractionalMultiplication(data[0].stats[statIndex], statBuffEffects[data[0].statLevels[statIndex]]);
-}
-
-void RecalculateAllEffectiveStats(PokemonBattleData* dataLocation)
-{
-	u32 i;
-	for (i = 0; i < NumBattleStats - 2; i++)
-	{
-		RecalculateEffectiveStat(dataLocation, i);
-	}
-}
-
 void BattleWaitForKeyPress()
 {
 	RunCallbackSystem();

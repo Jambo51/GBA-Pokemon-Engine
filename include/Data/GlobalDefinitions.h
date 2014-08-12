@@ -75,7 +75,7 @@ enum PokedexModes {	Regional, National };
 
 enum BattleStats { BattleAttack, BattleDefence, BattleSpeed, BattleSpecialAttack, BattleSpecialDefence, Accuracy, Evasion, NumBattleStats };
 
-enum BattleBanks { Target, User, PokeballTarget, MoveTypeOverrideValue, NumBattleBanks };
+enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, NumBattleBanks };
 
 enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 
@@ -90,6 +90,10 @@ enum MoveEffects { Effects_NoSpecial, Effects_Judgement, Effects_Weather_Ball, E
 enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
 
 enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, IfAnyBitsSet, IfNoBitsSet };
+
+enum MoveEffectIDs { PrimaryEffect, SecondaryEffect, MaxNumEffects };
+
+enum SecondaryMoveEffects { NoSecondaryEffect, ChangeStat, Sleep, Burn, Paralyse, Poison, BadlyPoison, Freeze };
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -884,7 +888,9 @@ typedef struct BattleStatusStruct {
 	u32 tertiaryTypeActive:1;
 	u32 trappedInBattle:1;
 	u32 cannotSleep:1;
-	u32 data:24;
+	u32 safeguarded:1;
+	u32 substituted:1;
+	u32 data:22;
 } BattleStatusStruct;
 
 typedef struct PokemonBattleData {
@@ -956,6 +962,8 @@ typedef struct BattleData {
 	u8 battlePartyPositions[6];
 	u8 numBattlers;
 	u8 positionInCallStack;
+	u8 moveEffects[MaxNumEffects];
+	u8 moveEffectsExtraInfo[MaxNumEffects];
 	u16 battleTurnsCounter;
 	union
 	{

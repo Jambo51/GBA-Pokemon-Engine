@@ -54,6 +54,30 @@ const ALIGN(1) u8 criticalHitLikelihoods[] = {
 		100
 };
 
+void SetupBattleScriptCall(u8* newPointer, u32 commandLength)
+{
+	if (battleDataPointer[0].positionInCallStack < 0x10)
+	{
+		battleDataPointer[0].callStack[battleDataPointer[0].positionInCallStack] = battleScriptPointer + commandLength;
+		battleDataPointer[0].positionInCallStack++;
+		battleScriptPointer = newPointer;
+	}
+}
+
+void RecalculateEffectiveStat(PokemonBattleData* data, u32 statIndex)
+{
+	data[0].effectiveStats[statIndex] = UnsignedFractionalMultiplication(data[0].stats[statIndex], statBuffEffects[data[0].statLevels[statIndex]]);
+}
+
+void RecalculateAllEffectiveStats(PokemonBattleData* dataLocation)
+{
+	u32 i;
+	for (i = 0; i < NumBattleStats - 2; i++)
+	{
+		RecalculateEffectiveStat(dataLocation, i);
+	}
+}
+
 u8 CheckForMoveCancellingStatuses()
 {
 	battleDataPointer[0].moveIndex = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
@@ -124,8 +148,7 @@ u8 CheckForMoveCancellingStatuses()
 		}
 		if (attacker[0].primaryStatusBits.sleepTurns == 0)
 		{
-			returnBattleScriptPointer = battleScriptPointer + 1;
-			battleScriptPointer = (u8*)&Script_Wake_Up;
+			SetupBattleScriptCall((u8*)&Script_Wake_Up, 1);
 			return NotEnded;
 		}
 	}
@@ -141,8 +164,7 @@ u8 CheckForMoveCancellingStatuses()
 #endif
 		if (rand < value)
 		{
-			returnBattleScriptPointer = battleScriptPointer + 1;
-			battleScriptPointer = (u8*)&Script_Unfreeze;
+			SetupBattleScriptCall((u8*)&Script_Unfreeze, 1);
 			return NotEnded;
 		}
 	}
@@ -163,8 +185,7 @@ u8 CheckForMoveCancellingStatuses()
 		u32 value = ((battleDataPointer[0].weatherBits.snow) ? 50 : ((battleDataPointer[0].weatherBits.rain) ? 20 : 0));
 		if (rand < value)
 		{
-			returnBattleScriptPointer = battleScriptPointer + 1;
-			battleScriptPointer = (u8*)&Script_Cure_Burn;
+			SetupBattleScriptCall((u8*)&Script_Cure_Burn, 1);
 			return NotEnded;
 		}
 	}
@@ -1100,6 +1121,185 @@ u8 JumpIf()
 	return NotEnded;
 }
 
+u8 SetMovePrimaryEffect()
+{
+	battleDataPointer[0].moveEffects[0] = battleScriptPointer[1];
+	battleDataPointer[0].moveEffectsExtraInfo[0] = battleScriptPointer[2];
+	battleScriptPointer += 3;
+	return NotEnded;
+}
+
+u8 SetMoveSecondaryEffect()
+{
+	battleDataPointer[0].moveEffects[1] = battleScriptPointer[1];
+	battleDataPointer[0].moveEffectsExtraInfo[1] = battleScriptPointer[2];
+	battleScriptPointer += 3;
+	return NotEnded;
+}
+
+u8 ApplyMoveEffects()
+{
+	u32 i;
+	for (i = 0; i < MaxNumEffects; i++)
+	{
+		u32 effectID = battleDataPointer[0].moveEffects[i];
+		if (effectID != 0)
+		{
+			PokemonBattleData* target;
+			if (effectID & 0x80)
+			{
+				target = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]];
+			}
+			else
+			{
+				target = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]];
+			}
+			effectID &= 0x7F;
+			u32 chanceValue;
+			if (effectID & 0x40)
+			{
+				chanceValue = 100;
+			}
+			else
+			{
+				chanceValue = moveData[battleDataPointer[0].moveIndex].effectAccuracy;
+			}
+			effectID &= 0x3F;
+			switch (effectID)
+			{
+				case ChangeStat:
+				{
+					u32 strength = battleDataPointer[0].moveEffectsExtraInfo[i];
+					u32 stat = strength & 7;
+					u32 direction = (strength & 0x80) >> 7;
+					strength = (strength & 0x70) >> 4;
+					if (direction)
+					{
+						if (target[0].statLevels[stat] == 0)
+						{
+							// Can't go lower
+						}
+						else if (target[0].statLevels[stat] < strength)
+						{
+							target[0].statLevels[stat] = 0;
+						}
+						else
+						{
+							target[0].statLevels[stat] -= strength;
+						}
+					}
+					else
+					{
+						if (target[0].statLevels[stat] == 12)
+						{
+							// Can't go higher
+						}
+						else if (target[0].statLevels[stat] + strength > 12)
+						{
+							target[0].statLevels[stat] = 12;
+						}
+						else
+						{
+							target[0].statLevels[stat] += strength;
+						}
+					}
+					RecalculateEffectiveStat(target, stat);
+					break;
+				}
+				case Sleep:
+					if (target[0].ability == Insomnia || target[0].ability == Vital_Spirit || target[0].battleStatusFlags.cannotSleep || target[0].battleStatusFlags.safeguarded)
+					{
+						// Fails due to ability or other preventative status
+					}
+					else if (target[0].primaryStatus != 0)
+					{
+						// Fails due to existing status
+					}
+					else
+					{
+						u32 random = GetDelimitedRandom32BitValue(7) + 1;
+						target[0].primaryStatusBits.sleepTurns = random;
+						// Script to indicate sleeping status
+					}
+				case Burn:
+					if (target[0].ability == Water_Veil || PokemonHasType(target, Type_Fire) || target[0].battleStatusFlags.safeguarded)
+					{
+						// Fails due to ability or other preventative status
+					}
+					else if (target[0].primaryStatus != 0)
+					{
+						// Fails due to existing status
+					}
+					else
+					{
+						target[0].primaryStatusBits.burned = 1;
+						// Script to indicate burned status
+					}
+				case Freeze:
+					if (PokemonHasType(target, Type_Ice) || target[0].battleStatusFlags.safeguarded)
+					{
+						// Fails due to ability or other preventative status
+					}
+					else if (target[0].primaryStatus != 0)
+					{
+						// Fails due to existing status
+					}
+					else
+					{
+						target[0].primaryStatusBits.frozen = 1;
+						// Script to indicate burned status
+					}
+				case Poison:
+					if (target[0].ability == Immunity || PokemonHasType(target, Type_Poison) || PokemonHasType(target, Type_Steel) || target[0].battleStatusFlags.safeguarded || target[0].battleStatusFlags.substituted)
+					{
+						// Fails due to ability or other preventative status
+					}
+					else if (target[0].primaryStatus != 0)
+					{
+						// Fails due to existing status
+					}
+					else
+					{
+						target[0].primaryStatusBits.poisoned = 1;
+						// Script to indicate burned status
+					}
+				case BadlyPoison:
+					if (target[0].ability == Immunity || PokemonHasType(target, Type_Poison) || PokemonHasType(target, Type_Steel) || target[0].battleStatusFlags.safeguarded || target[0].battleStatusFlags.substituted)
+					{
+						// Fails due to ability or other preventative status
+					}
+					else if (target[0].primaryStatus != 0)
+					{
+						// Fails due to existing status
+					}
+					else
+					{
+						target[0].primaryStatusBits.badlyPoisoned = 1;
+						target[0].primaryStatusBits.badlyPoisonedCounter = 0;
+						// Script to indicate burned status
+					}
+				case Paralyse:
+					if (target[0].ability == Limber || PokemonHasType(target, Type_Electric) || target[0].battleStatusFlags.safeguarded || target[0].battleStatusFlags.substituted)
+					{
+						// Fails due to ability or other preventative status
+					}
+					else if (target[0].primaryStatus != 0)
+					{
+						// Fails due to existing status
+					}
+					else
+					{
+						target[0].primaryStatusBits.paralysed = 1;
+						// Script to indicate burned status
+					}
+				default:
+					break;
+			}
+		}
+	}
+	battleScriptPointer++;
+}
+
 u8 SetBattleStatusFlag()
 {
 	u32 value = battleDataPointer[0].battleBanks[battleScriptPointer[1]];
@@ -1124,12 +1324,7 @@ u8 GotoJump()
 
 u8 CallJump()
 {
-	if (battleDataPointer[0].positionInCallStack < 0x10)
-	{
-		battleDataPointer[0].callStack[battleDataPointer[0].positionInCallStack] = battleScriptPointer + 5;
-		battleDataPointer[0].positionInCallStack++;
-		battleScriptPointer = (u8*)LoadUnalignedNumber(battleScriptPointer, 1, 4);
-	}
+	SetupBattleScriptCall((u8*)LoadUnalignedNumber(battleScriptPointer, 1, 4), 5);
 	return NotEnded;
 }
 

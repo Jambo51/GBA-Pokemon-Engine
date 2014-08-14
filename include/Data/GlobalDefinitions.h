@@ -93,7 +93,7 @@ enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, Less
 
 enum MoveEffectIDs { PrimaryEffect, SecondaryEffect, MaxNumEffects };
 
-enum SecondaryMoveEffects { NoSecondaryEffect, ChangeStat, Sleep, Burn, Paralyse, Poison, BadlyPoison, Freeze };
+enum SecondaryMoveEffects { NoSecondaryEffect, ChangeStat, Sleep, Burn, Paralyse, Poison, BadlyPoison, Freeze, Recoil };
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -382,7 +382,9 @@ typedef struct Player {
 	char tertiaryRivalName[7];
 	u16 boxOutline:4;
 	u16 stereoSound:1;
-	u16 options:11;
+	u16 playAnimations:1;
+	u16 battleSwitchStyle:1;
+	u16 options:9;
 } Player;
 
 typedef struct Buffer {
@@ -539,7 +541,7 @@ typedef struct MoveData {
 	s8 priority;
 	u8 specialFlags;
 	u8 category;
-	u8 padding;
+	u8 secondaryInformation;
 } MoveData;
 
 typedef struct NPCData {
@@ -890,7 +892,8 @@ typedef struct BattleStatusStruct {
 	u32 cannotSleep:1;
 	u32 safeguarded:1;
 	u32 substituted:1;
-	u32 data:22;
+	u32 roosted:1;
+	u32 data:21;
 } BattleStatusStruct;
 
 typedef struct PokemonBattleData {
@@ -926,6 +929,7 @@ typedef struct PokemonBattleData {
 		u32 battleFlags;
 		BattleStatusStruct battleStatusFlags;
 	};
+	u8 happiness;
 } PokemonBattleData;
 
 typedef struct BattleFlagsStruct {
@@ -939,7 +943,8 @@ typedef struct BattleFlagsStruct {
 	u32 levitateTriggered:1;
 	u32 sapSipperTriggered:1;
 	u32 damageTypeDealt:2;
-	u32 unused:18;
+	u32 waitForMoveAnimation:1;
+	u32 unused:17;
 } BattleFlagsStruct;
 
 typedef struct BattleWeatherBits {

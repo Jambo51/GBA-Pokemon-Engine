@@ -25,6 +25,10 @@ void RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
 		u8 commandID = loc[0];
 		u8 (*ScriptCommand)(void) = instructionSet[commandID];
 		scriptEnded = ScriptCommand();
+		if (scriptEnded == WaitForFrames)
+		{
+			break;
+		}
 	}
 }
 

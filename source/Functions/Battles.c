@@ -340,6 +340,7 @@ void CopyBattleDataFromPokemon(Pokemon* thePokemon, PokemonBattleData* dataLocat
 	dataLocation[0].type3 = Type_None;
 	dataLocation[0].currentHP = PokemonDecrypter(thePokemon, CurrentHP);
 	dataLocation[0].maximumHP = PokemonDecrypter(thePokemon, MaximumHP);
+	dataLocation[0].happiness = PokemonDecrypter(thePokemon, Friendship);
 	RecalculateAllEffectiveStats(dataLocation);
 }
 

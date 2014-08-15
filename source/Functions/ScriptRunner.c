@@ -7,6 +7,7 @@
 
 #include "Data.h"
 #include "Functions\BattleScriptCommands.h"
+#include "Functions\CallbackSystem.h"
 
 const u8 (*battleScriptCommandTable[])(void) = {
 		(u8*)&CheckForMoveCancellingStatuses,
@@ -16,9 +17,9 @@ const u8 (*battleScriptCommandTable[])(void) = {
 		(u8*)&CalculateDamage
 };
 
-void RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
+u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
 {
-	u8 scriptEnded = NotEnded;
+	u32 scriptEnded = NotEnded;
 	while (scriptEnded != Ended)
 	{
 		u8* loc = pointer[0];
@@ -30,15 +31,32 @@ void RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
 			break;
 		}
 	}
+	return scriptEnded;
 }
 
 void RunBattleScript()
 {
-	RunScript(&battleScriptPointer, (u8 (*)(void))&battleScriptCommandTable);
-	RemoveFunctionByPointer(&RunBattleScript);
+	u32 result = RunScript(&battleScriptPointer, (u8 (*)(void))&battleScriptCommandTable);
+	if (result == Ended)
+	{
+		RemoveFunctionByPointer(&RunBattleScript);
+	}
 }
 
 void RunOverworldScript()
 {
-	RunScript(&overworldScriptPointer, 0);//&overworldScriptCommandTable);
+	u32 result = RunScript(&overworldScriptPointer, 0/*(u8 (*)(void))&battleScriptCommandTable*/);
+	if (result == Ended)
+	{
+		RemoveFunctionByPointer(&RunOverworldScript);
+	}
+}
+
+void RunAnimationScript()
+{
+	u32 result = RunScript(&animationScriptPointer, 0/*(u8 (*)(void))&battleScriptCommandTable*/);
+	if (result == Ended)
+	{
+		RemoveFunctionByPointer(&RunAnimationScript);
+	}
 }

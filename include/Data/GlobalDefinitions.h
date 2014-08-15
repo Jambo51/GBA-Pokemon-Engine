@@ -61,7 +61,7 @@ enum FormeCheckTypes { NoFormes, GenderSplit, GenericFromByte };
 
 enum PokemonSpecies { Missingno, Bulbasaur, Ivysaur, Venusaur, Charmander, Charmeleon, Charizard, Squirtle, Wartortle, Blastoise, Caterpie, Metapod, Butterfree, Weedle, Kakuna, Beedrill, Pidgey, Pidgeotto, Pidgeot, Rattata, Raticate, Spearow, Fearow, Ekans, Arbok, Pikachu, Raichu, Sandshrew, Sandslash, NidoranF, Nidorina, Nidoqueen, NidoranM, Nidorino, Nidoking, Clefairy, Clefable, Vulpix, Ninetales, Jigglypuff, Wigglytuff, Zubat, Golbat, Oddish, Gloom, Vileplume, Paras, Parasect, Venonat, Venomoth, Diglett, Dugtrio, Meowth, Persian, Psyduck, Golduck, Mankey, Primeape, Growlithe, Arcanine, Poliwag, Poliwhirl, Poliwrath, Abra, Kadabra, Alakazam, Machop, Machoke, Machamp, Bellsprout, Weepinbell, Victreebel, Tentacool, Tentacruel, Geodude, Graveler, Golem, Ponyta, Rapidash, Slowpoke, Slowbro, Magnemite, Magneton, Farfetchd, Doduo, Dodrio, Seel, Dewgong, Grimer, Muk, Shellder, Cloyster, Gastly, Haunter, Gengar, Onix, Drowzee, Hypno, Krabby, Kingler, Voltorb, Electrode, Exeggcute, Exeggutor, Cubone, Marowak, Hitmonlee, Hitmonchan, Lickitung, Koffing, Weezing, Rhyhorn, Rhydon, Chansey, Tangela, Kangaskhan, Horsea, Seadra, Goldeen, Seaking, Staryu, Starmie, Mr_Mime, Scyther, Jynx, Electabuzz, Magmar, Pinsir, Tauros, Magikarp, Gyarados, Lapras, Ditto, Eevee, Vaporeon, Jolteon, Flareon, Porygon, Omanyte, Omastar, Kabuto, Kabutops, Aerodactyl, Snorlax, Articuno, Zapdos, Moltres, Dratini, Dragonair, Dragonite, Mewtwo, Mew, Chikorita, Bayleef, Meganium, Cyndaquil, Quilava, Typhlosion, Totodile, Croconaw, Feraligatr, Sentret, Furret, Hoothoot, Noctowl, Ledyba, Ledian, Spinarak, Ariados, Crobat, Chinchou, Lanturn, Pichu, Cleffa, Igglybuff, Togepi, Togetic, Natu, Xatu, Mareep, Flaaffy, Ampharos, Bellossom, Marill, Azumarill, Sudowoodo, Politoed, Hoppip, Skiploom, Jumpluff, Aipom, Sunkern, Sunflora, Yanma, Wooper, Quagsire, Espeon, Umbreon, Murkrow, Slowking, Misdreavus, Unown, Wobbuffet, Girafarig, Pineco, Forretress, Dunsparce, Gligar, Steelix, Snubbull, Granbull, Qwilfish, Scizor, Shuckle, Heracross, Sneasel, Teddiursa, Ursaring, Slugma, Magcargo, Swinub, Piloswine, Corsola, Remoraid, Octillery, Delibird, Mantine, Skarmory, Houndour, Houndoom, Kingdra, Phanpy, Donphan, Porygon2, Stantler, Smeargle, Tyrogue, Hitmontop, Smoochum, Elekid, Magby, Miltank, Blissey, Raikou, Entei, Suicune, Larvitar, Pupitar, Tyranitar, Lugia, Ho_Oh, Celebi, Treecko, Grovyle, Sceptile, Torchic, Combusken, Blaziken, Mudkip, Marshtomp, Swampert, Poochyena, Mightyena, Zigzagoon, Linoone, Wurmple, Silcoon, Beautifly, Cascoon, Dustox, Lotad, Lombre, Ludicolo, Seedot, Nuzleaf, Shiftry, Taillow, Swellow, Wingull, Pelipper, Ralts, Kirlia, Gardevoir, Surskit, Masquerain, Shroomish, Breloom, Slakoth, Vigoroth, Slaking, Nincada, Ninjask, Shedinja, Whismur, Loudred, Exploud, Makuhita, Hariyama, Azurill, Nosepass, Skitty, Delcatty, Sableye, Mawile, Aron, Lairon, Aggron, Meditite, Medicham, Electrike, Manectric, Plusle, Minun, Volbeat, Illumise, Roselia, Gulpin, Swalot, Carvanha, Sharpedo, Wailmer, Wailord, Numel, Camerupt, Torkoal, Spoink, Grumpig, Spinda, Trapinch, Vibrava, Flygon, Cacnea, Cacturne, Swablu, Altaria, Zangoose, Seviper, Lunatone, Solrock, Barboach, Whiscash, Corphish, Crawdaunt, Baltoy, Claydol, Lileep, Cradily, Anorith, Armaldo, Feebas, Milotic, Castform, Kecleon, Shuppet, Banette, Duskull, Dusclops, Tropius, Chimecho, Absol, Wynaut, Snorunt, Glalie, Spheal, Sealeo, Walrein, Clamperl, Huntail, Gorebyss, Relicanth, Luvdisc, Bagon, Shelgon, Salamence, Beldum, Metang, Metagross, Regirock, Regice, Registeel, Latias, Latios, Kyogre, Groudon, Rayquaza, Jirachi, Deoxys, Turtwig, Grotle, Torterra, Chimchar, Monferno, Infernape, Piplup, Prinplup, Empoleon, Starly, Staravia, Staraptor, Bidoof, Bibarel, Kricketot, Kricketune, Shinx, Luxio, Luxray, Budew, Roserade, Cranidos, Rampardos, Shieldon, Bastiodon, Burmy, Wormadam, Mothim, Combee, Vespiquen, Pachirisu, Buizel, Floatzel, Cherubi, Cherrim, Shellos, Gastrodon, Ambipom, Drifloon, Drifblim, Buneary, Lopunny, Mismagius, Honchkrow, Glameow, Purugly, Chingling, Stunky, Skuntank, Bronzor, Bronzong, Bonsly, Mime_Jr, Happiny, Chatot, Spiritomb, Gible, Gabite, Garchomp, Munchlax, Riolu, Lucario, Hippopotas, Hippowdon, Skorupi, Drapion, Croagunk, Toxicroak, Carnivine, Finneon, Lumineon, Mantyke, Snover, Abomasnow, Weavile, Magnezone, Lickilicky, Rhyperior, Tangrowth, Electivire, Magmortar, Togekiss, Yanmega, Leafeon, Glaceon, Gliscor, Mamoswine, Porygon_Z, Gallade, Probopass, Dusknoir, Froslass, Rotom, Uxie, Mesprit, Azelf, Dialga, Palkia, Heatran, Regigigas, Giratina, Cresselia, Phione, Manaphy, Darkrai, Shaymin, Arceus, Victini, Snivy, Servine, Serperior, Tepig, Pignite, Emboar, Oshawott, Dewott, Samurott, Patrat, Watchog, Lillipup, Herdier, Stoutland, Purrloin, Liepard, Pansage, Simisage, Pansear, Simisear, Panpour, Simipour, Munna, Musharna, Pidove, Tranquil, Unfezant, Blitzle, Zebstrika, Roggenrola, Boldore, Gigalith, Woobat, Swoobat, Drilbur, Excadrill, Audino, Timburr, Gurdurr, Conkeldurr, Tympole, Palpitoad, Seismitoad, Throh, Sawk, Sewaddle, Swadloon, Leavanny, Venipede, Whirlipede, Scolipede, Cottonee, Whimsicott, Petilil, Lilligant, Basculin, Sandile, Krokorok, Krookodile, Darumaka, Darmanitan, Maractus, Dwebble, Crustle, Scraggy, Scrafty, Sigilyph, Yamask, Cofagrigus, Tirtouga, Carracosta, Archen, Archeops, Trubbish, Garbodor, Zorua, Zoroark, Minccino, Cinccino, Gothita, Gothorita, Gothitelle, Solosis, Duosion, Reuniclus, Ducklett, Swanna, Vanillite, Vanillish, Vanilluxe, Deerling, Sawsbuck, Emolga, Karrablast, Escavalier, Foongus, Amoonguss, Frillish, Jellicent, Alomomola, Joltik, Galvantula, Ferroseed, Ferrothorn, Klink, Klang, Klinklang, Tynamo, Eelektrik, Eelektross, Elgyem, Beheeyem, Litwick, Lampent, Chandelure, Axew, Fraxure, Haxorus, Cubchoo, Beartic, Cryogonal, Shelmet, Accelgor, Stunfisk, Mienfoo, Mienshao, Druddigon, Golett, Golurk, Pawniard, Bisharp, Bouffalant, Rufflet, Braviary, Vullaby, Mandibuzz, Heatmor, Durant, Deino, Zweilous, Hydreigon, Larvesta, Volcarona, Cobalion, Terrakion, Virizion, Tornadus, Thundurus, Reshiram, Zekrom, Landorus, Kyurem, Keldeo, Meloetta, Genesect, Chespin, Quilladin, Chesnaught, Fennekin, Braixen, Delphox, Froakie, Frogadier, Greninja, Bunnelby, Diggersby, Fletchling, Fletchinder, Talonflame, Scatterbug, Spewpa, Vivillion, Litleo, Pyroar, Flabebe, Floette, Florges, Skiddo, Gogoat, Pancham, Pangoro, Furfrou, Espurr, Meowstic, Honedge, Doublade, Aegislash, Spritze, Aromatisse, Swirlix, Slurpuff, Inkay, Malamar, Binnacle, Barbacle, Skrelp, Dragalge, Clauncher, Clawitzer, Helioptile, Heliolisk, Tyrunt, Tyrantrum, Amaura, Aurorus, Sylveon, Hawlucha, Dedenne, Carbink, Goomy, Sliggoo, Goodra, Klefki, Phantump, Trevenant, Pumpkaboo, Gourgeist, Bergmite, Avalugg, Noibat, Noivern, Xerneas, Yvetal, Zygarde, Diancie, Hoopa, Volcanion };
 
-enum Items { ITEM_NOITEM, ITEM_THUNDERSTONE, ITEM_SUNSTONE, ITEM_FIRESTONE, ITEM_LEAFSTONE, ITEM_WATERSTONE, ITEM_MOONSTONE, ITEM_DUSKSTONE, ITEM_SHINYSTONE, ITEM_DAWNSTONE, ITEM_EVERSTONE, ITEM_LAXINCENSE, ITEM_SEAINCENSE, ITEM_ODDINCENSE, ITEM_FULLINCENSE, ITEM_ROSEINCENSE, ITEM_PUREINCENSE, ITEM_ROCKINCENSE, ITEM_LUCKINCENSE, ITEM_WAVEINCENSE, ITEM_RAZORCLAW, ITEM_RAZORFANG, ITEM_KINGSROCK, ITEM_METALCOAT, ITEM_UPGRADE, ITEM_DUBIOUSDISC, ITEM_ELECTIRISER, ITEM_MAGMARISER, ITEM_PROTECTOR, ITEM_DRAGONSCALE, ITEM_PRISMSCALE, Item_Stick, Item_Razor_Claw, Item_Scope_Lens, Item_Lucky_Punch, Item_Fighting_Plate, Item_Flying_Plate, Item_Poison_Plate, Item_Ground_Plate, Item_Rock_Plate, Item_Bug_Plate, Item_Ghost_Plate, Item_Steel_Plate, Item_Fire_Plate, Item_Water_Plate, Item_Grass_Plate, Item_Electric_Plate, Item_Psychic_Plate, Item_Ice_Plate, Item_Dragon_Plate, Item_Dark_Plate, Item_Fairy_Plate };
+enum Items { ITEM_NOITEM, ITEM_THUNDERSTONE, ITEM_SUNSTONE, ITEM_FIRESTONE, ITEM_LEAFSTONE, ITEM_WATERSTONE, ITEM_MOONSTONE, ITEM_DUSKSTONE, ITEM_SHINYSTONE, ITEM_DAWNSTONE, ITEM_EVERSTONE, ITEM_LAXINCENSE, ITEM_SEAINCENSE, ITEM_ODDINCENSE, ITEM_FULLINCENSE, ITEM_ROSEINCENSE, ITEM_PUREINCENSE, ITEM_ROCKINCENSE, ITEM_LUCKINCENSE, ITEM_WAVEINCENSE, ITEM_RAZORCLAW, ITEM_RAZORFANG, ITEM_KINGSROCK, ITEM_METALCOAT, ITEM_UPGRADE, ITEM_DUBIOUSDISC, ITEM_ELECTIRISER, ITEM_MAGMARISER, ITEM_PROTECTOR, ITEM_DRAGONSCALE, ITEM_PRISMSCALE, Item_Stick, Item_Razor_Claw, Item_Scope_Lens, Item_Lucky_Punch, Item_Fighting_Plate, Item_Flying_Plate, Item_Poison_Plate, Item_Ground_Plate, Item_Rock_Plate, Item_Bug_Plate, Item_Ghost_Plate, Item_Steel_Plate, Item_Fire_Plate, Item_Water_Plate, Item_Grass_Plate, Item_Electric_Plate, Item_Psychic_Plate, Item_Ice_Plate, Item_Dragon_Plate, Item_Dark_Plate, Item_Fairy_Plate, Item_Berry_Cheri_Berry, Item_Berry_Chesto_Berry, Item_Berry_Pecha_Berry, Item_Berry_Rawst_Berry, Item_Berry_Aspear_Berry, Item_Berry_Leppa_Berry, Item_Berry_Oran_Berry, Item_Berry_Persim_Berry, Item_Berry_Lum_Berry, Item_Berry_Sitrus_Berry, Item_Berry_Figy_Berry, Item_Berry_Wiki_Berry, Item_Berry_Mago_Berry, Item_Berry_Aguav_Berry, Item_Berry_Iapapa_Berry, Item_Berry_Razz_Berry, Item_Berry_Bluk_Berry, Item_Berry_Nanab_Berry, Item_Berry_Wepear_Berry, Item_Berry_Pinap_Berry, Item_Berry_Pomeg_Berry, Item_Berry_Kelpsy_Berry, Item_Berry_Qualot_Berry, Item_Berry_Hondew_Berry, Item_Berry_Grepa_Berry, Item_Berry_Tamato_Berry, Item_Berry_Cornn_Berry, Item_Berry_Magost_Berry, Item_Berry_Rabuta_Berry, Item_Berry_Nomel_Berry, Item_Berry_Spelon_Berry, Item_Berry_Pamtre_Berry, Item_Berry_Watmel_Berry, Item_Berry_Durin_Berry, Item_Berry_Belue_Berry, Item_Berry_Apicot_Berry, Item_Berry_Lansat_Berry, Item_Berry_Starf_Berry, Item_Berry_Enigma_Berry, Item_Berry_Micle_Berry, Item_Berry_Custap_Berry, Item_Berry_Jaboca_Berry, Item_Berry_Rowap_Berry, Item_Berry_Occa_Berry, Item_Berry_Passho_Berry, Item_Berry_Wacan_Berry, Item_Berry_Rindo_Berry, Item_Berry_Yache_Berry, Item_Berry_Chople_Berry, Item_Berry_Kebia_Berry, Item_Berry_Shuca_Berry, Item_Berry_Coba_Berry, Item_Berry_Payapa_Berry, Item_Berry_Tanga_Berry, Item_Berry_Charti_Berry, Item_Berry_Kasib_Berry, Item_Berry_Haban_Berry, Item_Berry_Colbur_Berry, Item_Berry_Babiri_Berry, Item_Berry_Roseli_Berry, Item_Berry_Kee_Berry, Item_Berry_Maranga_Berry, Item_Berry_Chilan_Berry, Item_Burn_Drive, Item_Chill_Drive, Item_Douse_Drive, Item_Shock_Drive, Item_Thick_Club, Item_Deep_Sea_Tooth, Item_Light_Ball, Item_Soul_Dew, Item_Choice_Band, Item_Choice_Specs, Item_Marvel_Scale, Item_Deep_Sea_Scale, Item_Metal_Powder, Item_Eviolite };
 
 enum EggGroups { EGG_GROUP_MONSTER,	EGG_GROUP_WATER1, EGG_GROUP_BUG, EGG_GROUP_FLYING, EGG_GROUP_FIELD, EGG_GROUP_FAIRY, EGG_GROUP_GRASS, EGG_GROUP_HUMAN_LIKE, EGG_GROUP_WATER3, EGG_GROUP_MINERAL, EGG_GROUP_AMORPHOUS, EGG_GROUP_WATER2, EGG_GROUP_DITTO, EGG_GROUP_DRAGON, EGG_GROUP_UNDISCOVERED };
 
@@ -85,7 +85,7 @@ enum MoveSelections { SelectedMove0, SelectedMove1, SelectedMove2, SelectedMove3
 
 enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
-enum MoveEffects { Effects_NoSpecial, Effects_Judgement, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball };
+enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst };
 
 enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
 
@@ -530,6 +530,14 @@ typedef struct GBPTrackHeader {
 	GBPTrack theTracks[];
 } GBPTrackHeader;
 
+typedef struct MoveFlagsStruct {
+	u8 makesContact:1;
+	u8 punching:1;
+	u8 sheerForceBlockable:1;
+	u8 specialistDamageRoutine:1;
+	u8 unused:4;
+} MoveFlagsStruct;
+
 typedef struct MoveData {
 	u16 effectID;
 	u8 basePower;
@@ -539,7 +547,11 @@ typedef struct MoveData {
 	u8 effectAccuracy;
 	u8 targets;
 	s8 priority;
-	u8 specialFlags;
+	union
+	{
+		u8 specialFlags;
+		MoveFlagsStruct specialFlagsStruct;
+	};
 	u8 category;
 	u8 secondaryInformation;
 } MoveData;
@@ -876,7 +888,10 @@ typedef struct IncenseItemEgg {
 } IncenseItemEgg;
 
 typedef struct SecondaryStatusStruct {
-	u32 data;
+	u32	rolloutUses:3;
+	u32 stockpile:2;
+	u32 furyCutterCounter:3;
+	u32 unused:24;
 } SecondaryStatusStruct;
 
 typedef struct BattleStatusStruct {
@@ -893,18 +908,39 @@ typedef struct BattleStatusStruct {
 	u32 safeguarded:1;
 	u32 substituted:1;
 	u32 roosted:1;
-	u32 data:21;
+	u32 moved:1;
+	u32 damaged:1;
+	u32 chargingFly:1;
+	u32 chargingDig:1;
+	u32 chargingDive:1;
+	u32 switching:1;
+	u32 usedDefenceCurl:1;
+	u32 pledgeTriggered:1;
+	u32 retaliatePowerUp:1;
+	u32 fusionPowerUp:1;
+	u32 meFirst:1;
+	u32 charged:2;
+	u32 helpingHand:1;
+	u32 mudSport:1;
+	u32 waterSport:1;
+	u32 flashFireTriggered:1;
+	u32 transformed:1;
+	u32 data:1;
 } BattleStatusStruct;
 
 typedef struct PokemonBattleData {
-	u16 species;
-	u8 type1;
-	u8 type2;
+	Pokemon* mainPointer;
 	u32 personalityID;
-	u8 ability;
-	u8 statLevels[NumBattleStats];
+	u16 species;
+	u16 currentHP;
+	u16 maximumHP;
+	u16 heldItem;
+	u16 moves[4];
+	u8 pp[4];
 	u16 stats[5];
 	u16 effectiveStats[5];
+	u8 damaged;
+	u8 slowStartCounter;
 	union
 	{
 		u32 primaryStatus;
@@ -915,22 +951,23 @@ typedef struct PokemonBattleData {
 		u32 secondaryStatuses;
 		SecondaryStatusStruct secondaryStatusBits;
 	};
+	u8 ability;
+	u8 statLevels[NumBattleStats];
+	u8 type1;
+	u8 type2;
+	u8 type3;
+	u8 forme;
 	u8 level;
 	u8 gender;
-	u16 currentHP;
-	u16 maximumHP;
-	u8 pp[4];
-	u16 moves[4];
-	u8 forme;
-	u8 type3;
-	u16 heldItem;
+	u8 happiness;
+	u8 alignment;
 	union
 	{
 		u32 battleFlags;
 		BattleStatusStruct battleStatusFlags;
 	};
-	Pokemon* mainPointer;
-	u8 happiness;
+	u16 damageReceivedThisTurn;
+	u16 damageReceivedLastTurn;
 } PokemonBattleData;
 
 typedef struct BattleFlagsStruct {
@@ -945,7 +982,9 @@ typedef struct BattleFlagsStruct {
 	u32 sapSipperTriggered:1;
 	u32 damageTypeDealt:2;
 	u32 waitForMoveAnimation:1;
-	u32 unused:17;
+	u32 extraEffectBlock:1;
+	u32 echoedVoiceRaisedThisTurn:1;
+	u32 unused:15;
 } BattleFlagsStruct;
 
 typedef struct BattleWeatherBits {
@@ -986,7 +1025,20 @@ typedef struct BattleData {
 	u16 moveIndex;
 	u16 itemIndex;
 	u8* callStack[0x10];
+	u16 loopCounter;
+	u16 echoedVoiceCounter;
 } BattleData;
+
+typedef struct BattleTypeStruct {
+	u32 isWildBattle:1;
+	u32 isTrainerBattle:1;
+	u32 isLinkBattle:1;
+	u32 isRoamingWildBattle:1;
+	u32 isLegendaryWildBattle:1;
+	u32 isRareWildBattle:1;
+	u32 isDoubleBattle:1;
+	u32 unused:25;
+} BattleTypeStruct;
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 

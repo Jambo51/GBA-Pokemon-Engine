@@ -5,6 +5,7 @@
 
 extern u16 numberOfPokemon;
 
+u32 IsFullyEvolved(u16 species);
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index);
 u32 PokemonDecrypter(Pokemon* thePokemon, u8 index);
 u32 CountPokemon(Pokemon* location, u32 length);

@@ -20,5 +20,8 @@ extern const RODATA_LOCATION u8 Script_Wide_Guard_Triggered[];
 extern const RODATA_LOCATION u8 Script_Crafty_Shield_Triggered[];
 extern const RODATA_LOCATION u8 Script_Attack_Missed[];
 extern const RODATA_LOCATION u8 Script_Standard_Attack[];
+extern const RODATA_LOCATION u8 Battle_Script_White_Out[];
+extern const RODATA_LOCATION u8 Battle_Script_Faint_With_Battle_End[];
+extern const RODATA_LOCATION u8 Battle_Script_Faint[];
 
 #endif /* LIBBATTLESCRIPTS_H_ */

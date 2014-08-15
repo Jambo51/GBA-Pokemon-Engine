@@ -10,8 +10,9 @@
 
 #include "Data/GlobalDefinitions.h"
 
-u8 RunScript(u8* pointer, void* instructionSet);
+u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void));
 void RunBattleScript();
 void RunOverworldScript();
+void RunAnimationScript();
 
 #endif /* SCRIPTRUNNER_H_ */

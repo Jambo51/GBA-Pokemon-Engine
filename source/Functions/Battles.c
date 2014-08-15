@@ -39,7 +39,7 @@ u32 LevelBallPokeball()
 {
 	u32 retValue;
 	u8 level = battleDataPointer[0].pokemonStats[0].level;
-	if (battleType & 0x80000000)
+	if (battleType.isDoubleBattle)
 	{
 		level = ((level + battleDataPointer[0].pokemonStats[2].level) >> 1);
 	}
@@ -341,16 +341,18 @@ void CopyBattleDataFromPokemon(Pokemon* thePokemon, PokemonBattleData* dataLocat
 	dataLocation[0].currentHP = PokemonDecrypter(thePokemon, CurrentHP);
 	dataLocation[0].maximumHP = PokemonDecrypter(thePokemon, MaximumHP);
 	dataLocation[0].happiness = PokemonDecrypter(thePokemon, Friendship);
+	dataLocation[0].mainPointer = thePokemon;
 	RecalculateAllEffectiveStats(dataLocation);
 }
 
 void InitialiseBattleEnvironment()
 {
 	battleDataPointer = (BattleData*)MemoryAllocate(sizeof(BattleData));
-	battleDataPointer[0].pokemonStats = (PokemonBattleData*)MemoryAllocate(sizeof(PokemonBattleData) * 4);
+	battleDataPointer[0].numBattlers = 2 << battleType.isDoubleBattle;
+	battleDataPointer[0].pokemonStats = (PokemonBattleData*)MemoryAllocate(sizeof(PokemonBattleData) * battleDataPointer[0].numBattlers);
 	CopyBattleDataFromPokemon(&partyPokemon[0], &battleDataPointer[0].pokemonStats[0]);
 	CopyBattleDataFromPokemon(&enemyPokemon[0], &battleDataPointer[0].pokemonStats[1]);
-	if (battleType & 0x80000000)
+	if (battleType.isDoubleBattle)
 	{
 		CopyBattleDataFromPokemon(&partyPokemon[1], &battleDataPointer[0].pokemonStats[2]);
 		CopyBattleDataFromPokemon(&enemyPokemon[1], &battleDataPointer[0].pokemonStats[3]);

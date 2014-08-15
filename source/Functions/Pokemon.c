@@ -30,6 +30,15 @@ const char* pokeInfoScreenText[] = {
 		(char*)&characteristicString
 };
 
+u32 IsFullyEvolved(u16 species)
+{
+	if (evoData[species].index == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
 {
 	switch (index)

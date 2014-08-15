@@ -85,7 +85,7 @@ enum MoveSelections { SelectedMove0, SelectedMove1, SelectedMove2, SelectedMove3
 
 enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
-enum MoveEffects { Effects_NoSpecial, Effects_Judgement, Effects_Weather_Ball, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword };
+enum MoveEffects { Effects_NoSpecial, Effects_Judgement, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball };
 
 enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
 
@@ -929,6 +929,7 @@ typedef struct PokemonBattleData {
 		u32 battleFlags;
 		BattleStatusStruct battleStatusFlags;
 	};
+	Pokemon* mainPointer;
 	u8 happiness;
 } PokemonBattleData;
 

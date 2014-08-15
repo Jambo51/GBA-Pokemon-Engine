@@ -94,6 +94,25 @@ void RecalculateAllEffectiveStats(PokemonBattleData* dataLocation)
 	}
 }
 
+u8 RODATA_LOCATION naturalGiftTypes[] = {
+		Type_Fire,
+		Type_Water,
+		Type_Electric,
+		Type_Grass,
+		Type_Ice,
+		Type_Fighting,
+		Type_Poison,
+		Type_Ground,
+		Type_Flying,
+		Type_Psychic,
+		Type_Bug,
+		Type_Rock,
+		Type_Ghost,
+		Type_Dragon,
+		Type_Dark,
+		Type_Steel
+};
+
 u8 CheckForMoveCancellingStatuses()
 {
 	battleDataPointer[0].moveIndex = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
@@ -129,7 +148,40 @@ u8 CheckForMoveCancellingStatuses()
 			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Rock;
 		}
 	}
-	else if (attacker[0].ability == Normalise)
+	else if (moveInfo[0].effectID == Effects_Hidden_Power)
+	{
+		u32 i;
+		u32 counter = 0;
+		for (i = 0; i < 6; i++)
+		{
+			counter |= (PokemonDecrypter(thePokemon, HP_IV + i) & 1) << (1 << i);
+		}
+		counter *= 16;
+		counter = UnsignedDivide(counter, 63);
+		battleDataPointer[0].flags.moveTypeOverride = 1;
+		battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Fighting + counter;
+	}
+	else if (moveInfo[0].effectID == Effects_Natural_Gift)
+	{
+		u16 itemID = attacker[0].heldItem;
+		if (itemID >= Item_Berry_Cheri_Berry && itemID <= Item_Berry_Rowap_Berry)
+		{
+			itemID = UnsignedModulus(itemID - Item_Berry_Cheri_Berry, 15);
+			battleDataPointer[0].flags.moveTypeOverride = 1;
+			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = naturalGiftTypes[itemID];
+		}
+		else if (itemID >= Item_Berry_Roseli_Berry && itemID <= Item_Berry_Kee_Berry)
+		{
+			battleDataPointer[0].flags.moveTypeOverride = 1;
+			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Fairy;
+		}
+		else if (itemID == Item_Berry_Maranga_Berry)
+		{
+			battleDataPointer[0].flags.moveTypeOverride = 1;
+			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Dark;
+		}
+	}
+	if (attacker[0].ability == Normalise)
 	{
 		battleDataPointer[0].flags.moveTypeOverride = 1;
 		battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Normal;
@@ -649,6 +701,149 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 	return currentDamage;
 }
 
+u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo)
+{
+	u32 ability = attacker[0].ability;
+	if (ability == Technician && currentDamage <= 60)
+	{
+		currentDamage = UnsignedFractionalMultiplication(currentDamage, 150);
+	}
+	if (ability == Flare_Boost && attacker[0].primaryStatusBits.burned && moveInfo[0].category == Category_Physical)
+	{
+		currentDamage = UnsignedFractionalMultiplication(currentDamage, 150);
+	}
+	if (ability == Analytic)
+	{
+		// Check stuff
+	}
+	if (ability == Reckless && moveInfo[0].effectID == Effects_Recoil)
+	{
+		currentDamage = UnsignedFractionalMultiplication(currentDamage, 120);
+	}
+	if (ability == Iron_Fist & battleDataPointer[0].flags.punchingFlag)
+	{
+		currentDamage = UnsignedFractionalMultiplication(currentDamage, 120);
+	}
+	if (ability == Toxic_Boost && (attacker[0].primaryStatusBits.poisoned || attacker[0].primaryStatusBits.badlyPoisoned) && moveInfo[0].category == Category_Physical)
+	{
+		currentDamage = UnsignedFractionalMultiplication(currentDamage, 150);
+	}
+	if (ability == Rivalry)
+	{
+		u32 gender1 = attacker[0].gender;
+		u32 gender2 = defender[0].gender;
+		if (gender1 != Gender_Genderless && gender2 != Gender_Genderless)
+		{
+			if (gender1 == gender2)
+			{
+				currentDamage = UnsignedFractionalMultiplication(currentDamage, 125);
+			}
+			else
+			{
+				currentDamage = UnsignedFractionalMultiplication(currentDamage, 75);
+			}
+		}
+	}
+	{
+		u32 type = moveInfo[0].type;
+		if (battleDataPointer[0].flags.moveTypeOverride)
+		{
+			type = battleDataPointer[0].battleBanks[MoveTypeOverrideValue];
+		}
+		if (ability == Sand_Force)
+		{
+			if (type == Type_Rock || type == Type_Ground || type == Type_Steel)
+			{
+				currentDamage = UnsignedFractionalMultiplication(currentDamage, 130);
+			}
+		}
+		if (ability == Heatproof && type == Type_Fire)
+		{
+			currentDamage >>= 1;
+		}
+		if (ability == Dry_Skin && type == Type_Fire)
+		{
+			currentDamage = UnsignedFractionalMultiplication(currentDamage, 125);
+		}
+	}
+	if (ability == Sheer_Force && battleDataPointer[0].flags.extraEffect)
+	{
+		currentDamage = UnsignedFractionalMultiplication(currentDamage, 130);
+		battleDataPointer[0].flags.extraEffectBlock = 1;
+	}
+}
+
+u8 RODATA_LOCATION naturalGiftDamageValues[] = {
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		90,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		80,
+		100,
+		100
+};
+
 u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo)
 {
 	u32 returnable;
@@ -742,10 +937,203 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			// Not yet implemented, same as low kick
 			returnable = 20;
 			break;
+		case Effects_Stored_Power:
+		{
+			u32 i;
+			u32 counter = 0;
+			for (i = 0; i < NumBattleStats; i++)
+			{
+				u32 value = attacker[0].statLevels[i];
+				if (value > 6)
+				{
+					counter += value - 6;
+				}
+			}
+			returnable = moveInfo[0].basePower * (counter + 1);
+			break;
+		}
+		case Effects_Acrobatics:
+			returnable = (attacker[0].heldItem == 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			break;
+		case Effects_Flail:
+		{
+			u32 p = UnsignedDivide(48 * attacker[0].currentHP, attacker[0].maximumHP);
+			if (p < 1)
+			{
+				returnable = 200;
+			}
+			else if (p < 5)
+			{
+				returnable = 150;
+			}
+			else if (p < 10)
+			{
+				returnable = 100;
+			}
+			else if (p < 17)
+			{
+				returnable = 80;
+			}
+			else if (p < 32)
+			{
+				returnable = 40;
+			}
+			else
+			{
+				returnable = 20;
+			}
+			break;
+		}
+		case Effects_Trump_Card:
+		{
+			u32 pp = attacker[0].pp[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
+			if (pp < 2)
+			{
+				returnable = 200;
+			}
+			else if (pp < 3)
+			{
+				returnable = 80;
+			}
+			else if (pp < 4)
+			{
+				returnable = 60;
+			}
+			else if (pp < 5)
+			{
+				returnable = 50;
+			}
+			else
+			{
+				returnable = 20;
+			}
+			break;
+		}
+		case Effects_Round:
+			returnable = moveInfo[0].basePower;
+			if (battleType & 0x80000000)
+			{
+				u32 allyID = battleDataPointer[0].battleBanks[User] ^ 2;
+				if (battleDataPointer[0].pokemonStats[allyID].moves[battleDataPointer[0].moveSelections[allyID]] == battleDataPointer[0].moveIndex)
+				{
+					returnable <<= 1;
+				}
+			}
+			break;
+		case Effects_Triple_Kick:
+			returnable = (battleDataPointer[0].loopCounter + 1) * moveInfo[0].basePower;
+			break;
+		case Effects_Wake_Up_Slap:
+			returnable = (defender[0].primaryStatusBits.sleepTurns != 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			break;
+		case Effects_Smelling_Salt:
+			returnable = (defender[0].primaryStatusBits.paralysed) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			break;
+		case Effects_Weather_Ball:
+			returnable = (battleDataPointer[0].weather) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			break;
+		case Effects_Gust:
+			returnable = (defender[0].battleStatusFlags.chargingFly) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			break;
+		case Effects_Hidden_Power:
+		{
+			u32 i;
+			u32 counter = 0;
+			for (i = 0; i < 6; i++)
+			{
+				u32 value = PokemonDecrypter(attacker[0].mainPointer, HP_IV + i) >> 2;
+				if (value == 2 || value == 3)
+				{
+					counter |= (1 << i);
+				}
+			}
+			returnable = counter * 40;
+			returnable = UnsginedDivide(counter, 63) + 30;
+			break;
+		}
+		case Effects_Spit_Up:
+			returnable = moveInfo[0].basePower * defender[0].secondaryStatusBits.stockpile;
+			break;
+		case Effects_Pursuit:
+			returnable = (defender[0].battleStatusFlags.switching) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			break;
+		case Effects_Present:
+		{
+			u32 rand = GetDelimitedRandom32BitValue(80);
+			if (rand < 40)
+			{
+				returnable = moveInfo[0].basePower;
+			}
+			else if (rand < 70)
+			{
+				returnable = moveInfo[0].basePower << 1;
+			}
+			else
+			{
+				returnable = moveInfo[0].basePower * 3;
+			}
+			break;
+		}
+		case Effects_Natural_Gift:
+			u16 itemID = attacker[0].heldItem;
+			if (itemID >= Item_Berry_Cheri_Berry && item <= Item_Berry_Maranga_Berry)
+			{
+				returnable = naturalGiftDamageValues[itemID];
+			}
+			else
+			{
+				returnable = moveInfo[0].basePower;
+			}
+			break;
+		case Effects_Magnitude:
+		{
+			u32 factor = GetDelimitedRandom32BitValue(100);
+			if (factor < 5)
+			{
+				factor = 0;
+			}
+			else if (factor < 15)
+			{
+				factor = 1;
+			}
+			else if (factor < 35)
+			{
+				factor = 2;
+			}
+			else if (factor < 65)
+			{
+				factor = 3;
+			}
+			else if (factor < 85)
+			{
+				factor = 4;
+			}
+			else if (factor < 95)
+			{
+				factor = 5;
+			}
+			else
+			{
+				factor = 7;
+			}
+			battleDataPointer[0].flags.damageTypeDealt |= (factor << 0x10);
+			returnable = moveInfo[0].basePower + (moveInfo[0].secondaryInformation * factor);
+			break;
+		}
+		case Effects_Rollout:
+			returnable = moveInfo[0].basePower * (1 << (attacker[0].secondaryStatusBits.rolloutUses + attacker[0].battleStatusFlags.usedDefenceCurl));
+			break;
+		case Effects_Fling:
+			returnable = moveInfo[0].basePower * (1 << (attacker[0].secondaryStatusBits.rolloutUses + attacker[0].battleStatusFlags.usedDefenceCurl));
+			break;
+		case Effects_Pledge:
+			returnable = (battleDataPointer[0].flags.pledgeTriggered) ? moveInfo[0].secondaryInformation : moveInfo[0].basePower;
+			break;
 		default:
 			returnable = moveInfo[0].basePower;
 			break;
 	}
+	returnable = ApplyBasePowerModifiers(returnable, attacker, defender);
 	return returnable;
 }
 

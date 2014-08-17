@@ -10,11 +10,33 @@
 #include "Functions\CallbackSystem.h"
 
 const u8 (*battleScriptCommandTable[])(void) = {
-		(u8*)&CheckForMoveCancellingStatuses,
-		(u8*)&HitMissCalculation,
-		(u8*)0,
-		(u8*)&DecrementPP,
-		(u8*)&CalculateDamage
+		&CheckForMoveCancellingStatuses,
+		&HitMissCalculation,
+		0,
+		&DecrementPP,
+		&CalculateDamage,
+		&StoreByte,
+		&StoreHalfWord,
+		&StoreWord,
+		&JumpIf,
+		&SetMovePrimaryEffect,
+		&SetMoveSecondaryEffect,
+		&ExecuteMoveAnimation,
+		&ExecuteDamageReceptionAnimation,
+		&UpdateHPBar,
+		&WaitMoveAnimation,
+		&ApplyCalculatedDamage,
+		&FaintIfNecessary,
+		&ApplyMoveEffects,
+		&SetBattleStatusFlag,
+		&ClearBattleStatusFlag,
+		&GotoJump,
+		&CallJump,
+		&ReturnFromCall,
+		&PauseBattleScript,
+		&PauseBattleScriptIfTextRendering,
+		&UpdateCounters,
+		&EndScript
 };
 
 u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))

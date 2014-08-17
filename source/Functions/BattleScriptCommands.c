@@ -536,133 +536,162 @@ u32 ApplyWeatherBasedModifiers(u32 currentDamage, u32 moveType)
 	return currentDamage;
 }
 
-u32 ApplyTypeBasedModifiers(u32 currentDamage, u32 moveType, PokemonBattleData* defender)
+u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveType)
 {
 	u32 defenderType1 = defender[0].type1;
 	u32 defenderType2 = defender[0].type2;
-	if (currentDamage != 0)
+	if (moveType > Type_Fairy)
 	{
-		if (moveType > 18)
-		{
-			moveType = 0;
-		}
-		if (defenderType1 > 18)
-		{
-			defenderType1 = 0;
-		}
-		if (defenderType2 > 18)
-		{
-			defenderType2 = 0;
-		}
-		u32 typeValue = typeStrengths[moveType][defenderType1];
-		u32 currentEffectiveness = NoEffect;
+		moveType = 0;
+	}
+	if (defenderType1 > Type_Fairy)
+	{
+		defenderType1 = 0;
+	}
+	if (defenderType2 > Type_Fairy)
+	{
+		defenderType2 = 0;
+	}
+	u32 typeValue = typeStrengths[moveType][defenderType1];
+	u32 currentEffectiveness = NoEffect;
+	switch (typeValue)
+	{
+		case 50:
+			currentEffectiveness = HalfDamage;
+			break;
+		case 100:
+			currentEffectiveness = NormalDamage;
+			break;
+		case 200:
+			currentEffectiveness = DoubleDamage;
+			break;
+	}
+	if (defenderType2 != defenderType1)
+	{
+		u32 typeValue = typeStrengths[moveType][defenderType2];
 		switch (typeValue)
 		{
-			case 50:
-				currentEffectiveness = HalfDamage;
+			case 0:
+				currentEffectiveness = NoEffect;
 				break;
-			case 100:
-				currentEffectiveness = NormalDamage;
+			case 50:
+				switch (currentEffectiveness)
+				{
+					case HalfDamage:
+						currentEffectiveness = QuarterDamage;
+						break;
+					case NormalDamage:
+						currentEffectiveness = HalfDamage;
+						break;
+					case DoubleDamage:
+						currentEffectiveness = NormalDamage;
+						break;
+				}
 				break;
 			case 200:
-				currentEffectiveness = DoubleDamage;
+				switch (currentEffectiveness)
+				{
+					case HalfDamage:
+						currentEffectiveness = NormalDamage;
+						break;
+					case NormalDamage:
+						currentEffectiveness = DoubleDamage;
+						break;
+					case DoubleDamage:
+						currentEffectiveness = QuadrupleDamage;
+						break;
+				}
 				break;
 		}
-		currentDamage = UnsignedFractionalMultiplication(currentDamage, typeValue);
-		if (defenderType2 != defenderType1 && currentDamage != 0)
-		{
-			u32 typeValue = typeStrengths[moveType][defenderType2];
-			currentDamage = UnsignedFractionalMultiplication(currentDamage, typeValue);
-			switch (typeValue)
-			{
-				case 0:
-					currentEffectiveness = NoEffect;
-					break;
-				case 50:
-					switch (currentEffectiveness)
-					{
-						case HalfDamage:
-							currentEffectiveness = QuarterDamage;
-							break;
-						case NormalDamage:
-							currentEffectiveness = HalfDamage;
-							break;
-						case DoubleDamage:
-							currentEffectiveness = NormalDamage;
-							break;
-					}
-					break;
-				case 200:
-					switch (currentEffectiveness)
-					{
-						case HalfDamage:
-							currentEffectiveness = NormalDamage;
-							break;
-						case NormalDamage:
-							currentEffectiveness = DoubleDamage;
-							break;
-						case DoubleDamage:
-							currentEffectiveness = QuadrupleDamage;
-							break;
-					}
-					break;
-			}
-		}
-		u32 defenderType3 = defender[0].type3;
-		if ((currentDamage != 0) && defender[0].battleStatusFlags.tertiaryTypeActive && (defenderType1 != defenderType3))
-		{
-			u32 typeValue = typeStrengths[moveType][defenderType3];
-			currentDamage = UnsignedFractionalMultiplication(currentDamage, typeValue);
-
-			switch (typeValue)
-			{
-				case 0:
-					currentEffectiveness = NoEffect;
-					break;
-				case 50:
-					switch (currentEffectiveness)
-					{
-						case QuarterDamage:
-							currentEffectiveness = EighthDamage;
-							break;
-						case HalfDamage:
-							currentEffectiveness = QuarterDamage;
-							break;
-						case NormalDamage:
-							currentEffectiveness = HalfDamage;
-							break;
-						case DoubleDamage:
-							currentEffectiveness = NormalDamage;
-							break;
-						case QuadrupleDamage:
-							currentEffectiveness = DoubleDamage;
-							break;
-					}
-					break;
-				case 200:
-					switch (currentEffectiveness)
-					{
-						case QuarterDamage:
-							currentEffectiveness = HalfDamage;
-							break;
-						case HalfDamage:
-							currentEffectiveness = NormalDamage;
-							break;
-						case NormalDamage:
-							currentEffectiveness = DoubleDamage;
-							break;
-						case DoubleDamage:
-							currentEffectiveness = QuadrupleDamage;
-							break;
-						case QuadrupleDamage:
-							currentEffectiveness = OctupleDamage;
-							break;
-					}
-					break;
-			}
-		}
-		battleDataPointer[0].flags.attackEffectiveness = currentEffectiveness;
 	}
+	u32 defenderType3 = defender[0].type3;
+	if (defenderType3 > Type_Fairy)
+	{
+		defenderType3 = 0;
+	}
+	if (defender[0].battleStatusFlags.tertiaryTypeActive && (defenderType1 != defenderType3) && (defenderType2 != defenderType3))
+	{
+		u32 typeValue = typeStrengths[moveType][defenderType3];
+		switch (typeValue)
+		{
+			case 0:
+				currentEffectiveness = NoEffect;
+				break;
+			case 50:
+				switch (currentEffectiveness)
+				{
+					case QuarterDamage:
+						currentEffectiveness = EighthDamage;
+						break;
+					case HalfDamage:
+						currentEffectiveness = QuarterDamage;
+						break;
+					case NormalDamage:
+						currentEffectiveness = HalfDamage;
+						break;
+					case DoubleDamage:
+						currentEffectiveness = NormalDamage;
+						break;
+					case QuadrupleDamage:
+						currentEffectiveness = DoubleDamage;
+						break;
+				}
+				break;
+			case 200:
+				switch (currentEffectiveness)
+				{
+					case QuarterDamage:
+						currentEffectiveness = HalfDamage;
+						break;
+					case HalfDamage:
+						currentEffectiveness = NormalDamage;
+						break;
+					case NormalDamage:
+						currentEffectiveness = DoubleDamage;
+						break;
+					case DoubleDamage:
+						currentEffectiveness = QuadrupleDamage;
+						break;
+					case QuadrupleDamage:
+						currentEffectiveness = OctupleDamage;
+						break;
+				}
+				break;
+		}
+	}
+	return currentEffectiveness;
+}
+
+u32 ApplyTypeBasedModifiers(PokemonBattleData* defender, u32 moveType, u32 currentDamage)
+{
+	u32 effectiveness = CalculateTypeEffectivenessOnPokemon(defender, moveType);
+	switch (effectiveness)
+	{
+		case NoEffect:
+			currentDamage = 0;
+			break;
+		case EighthDamage:
+			currentDamage >>= 3;
+			break;
+		case QuarterDamage:
+			currentDamage >>= 2;
+			break;
+		case HalfDamage:
+			currentDamage >>= 1;
+			break;
+		case OctupleDamage:
+			currentDamage <<= 3;
+			break;
+		case QuadrupleDamage:
+			currentDamage <<= 2;
+			break;
+		case DoubleDamage:
+			currentDamage <<= 1;
+			break;
+		default:
+			break;
+	}
+	battleDataPointer[0].flags.attackEffectiveness = effectiveness;
 	return currentDamage;
 }
 
@@ -1583,7 +1612,7 @@ u8 CalculateDamage()
 		{
 			damage = UnsignedFractionalMultiplication(damage, 150);
 		}
-		damage = ApplyTypeBasedModifiers(damage, type, defender);
+		damage = ApplyTypeBasedModifiers(defender, type, damage);
 	}
 	if (battleDataPointer[0].flags.attackEffectiveness != NoEffect)
 	{
@@ -2050,7 +2079,6 @@ u8 ApplyMoveEffects()
 			}
 			effectID &= 0x7F;
 			u32 chanceValue;
-			u32 secondaryInformation;
 			if (effectID & 0x40)
 			{
 				chanceValue = 100;
@@ -2059,7 +2087,7 @@ u8 ApplyMoveEffects()
 			{
 				chanceValue = moveData[battleDataPointer[0].moveIndex].effectAccuracy;
 			}
-			secondaryInformation = moveData[battleDataPointer[0].moveIndex].secondaryInformation;
+			u32 secondaryInformation = moveData[battleDataPointer[0].moveIndex].secondaryInformation;
 			effectID &= 0x3F;
 			switch (effectID)
 			{

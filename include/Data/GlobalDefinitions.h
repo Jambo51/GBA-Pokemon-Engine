@@ -95,6 +95,10 @@ enum MoveEffectIDs { PrimaryEffect, SecondaryEffect, MaxNumEffects };
 
 enum SecondaryMoveEffects { NoSecondaryEffect, ChangeStat, Sleep, Burn, Paralyse, Poison, BadlyPoison, Freeze, Recoil };
 
+enum BattleTrackIDs { Track_Battle_Wild, Track_Battle_Rare_Wild, Track_Battle_Link, Track_Battle_Trainer, Track_Battle_Gym_Leader, Track_Battle_Elite_Four, Track_Battle_Champion, Track_Battle_Legendary, Track_Battle_Roaming, NumBattleTrackIDs };
+
+enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team };
+
 typedef struct U8BitField {
 	u8 bit0:1;
 	u8 bit1:1;
@@ -1039,6 +1043,11 @@ typedef struct BattleTypeStruct {
 	u32 isDoubleBattle:1;
 	u32 unused:25;
 } BattleTypeStruct;
+
+typedef struct StatChangeStruct {
+	u8 statID:4;
+	s8 strength:4;
+} StatChangeStruct;
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 

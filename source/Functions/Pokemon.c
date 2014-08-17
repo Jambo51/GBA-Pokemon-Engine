@@ -1279,8 +1279,9 @@ void GivePokemonAbility(Pokemon* thePokemon, u32 isHiddenAbility)
 	u8 abilityValue = 0;
 	InternalBaseData* indexData;
 	{
-		InternalBaseData* data = (InternalBaseData*)&pokemonBaseData[species].baseDataInfo.pointerToData;
-		indexData = (InternalBaseData*)&data[GetClampedFormeByteValue(thePokemon, &pokemonBaseData[PokemonDecrypter(thePokemon, Species)].baseDataInfo)];
+		InternalBaseData** data = (InternalBaseData**)&pokemonBaseData[species].baseDataInfo.pointerToData[0];
+		u32 formeIndex = GetClampedFormeByteValue(thePokemon, (IndexTable*)&pokemonBaseData[PokemonDecrypter(thePokemon, Species)]);
+		indexData = (InternalBaseData*)data[formeIndex];
 	}
 	if ((isHiddenAbility == 1) && (indexData->hiddenAbility != 0))
 	{

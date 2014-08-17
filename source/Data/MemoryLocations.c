@@ -46,6 +46,7 @@ ALIGN(4) RealTimeClock rtcData;
 ALIGN(2) s16 x;
 ALIGN(2) s16 y;
 ALIGN(1) u8 seasonByte;
+ALIGN(1) u8 regionByte;
 EWRAM_LOCATION ALIGN(2) u16 currentFanfareID;
 EWRAM_LOCATION ALIGN(2) u16 currentSongID;
 EWRAM_LOCATION ALIGN(2) u16 currentSongPlaybackStatus;

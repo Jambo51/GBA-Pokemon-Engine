@@ -345,8 +345,121 @@ void CopyBattleDataFromPokemon(Pokemon* thePokemon, PokemonBattleData* dataLocat
 	RecalculateAllEffectiveStats(dataLocation);
 }
 
+const RODATA_LOCATION u16 battleMusicIDs[][NumBattleTrackIDs] = {
+		{ Song_KantoWildBattle, Song_RBYWildBattle, Song_RBYTrainerBattle, Song_KantoTrainerBattle, Song_KantoGymBattle, Song_KantoGymBattle, Song_RBYChampionBattle, Song_KantoWildBattle, Song_LegendaryBeastBattle },
+		{ Song_JohtoWildBattle, Song_JohtoLegendaryBattle, Song_RBYTrainerBattle, Song_JohtoTrainerBattle, Song_JohtoGymBattle, Song_JohtoGymBattle, Song_GSCChampionBattle, Song_JohtoLegendaryBattle, Song_LegendaryBeastBattle }
+};
+
+const RODATA_LOCATION u16 classToSongList [][2] = {
+		{ Class_Evil_Team, Song_TeamRocketBattle },
+		{ 0xFFFF, 0x0000 }
+};
+
+const RODATA_LOCATION u16 speciesToSongListLegendary [][2] = {
+		{ 0xFFFF, 0x0000 }
+};
+
+const RODATA_LOCATION u16 speciesToSongListRoaming [][2] = {
+		{ 0xFFFF, 0x0000 }
+};
+
+u16 GetSongIDForBattle()
+{
+	u32 trackID = Track_Battle_Wild;
+	if (battleType.isWildBattle && (battleType.isDoubleBattle || battleType.isRareWildBattle))
+	{
+		trackID = Track_Battle_Rare_Wild;
+	}
+	else if (battleType.isLinkBattle)
+	{
+		trackID = Track_Battle_Link;
+	}
+	else if (battleType.isTrainerBattle)
+	{
+		u32 i = 0;
+		u32 trainerClass = Class_Evil_Team;
+		if (trainerClass == Class_Champion)
+		{
+			trackID = Track_Battle_Champion;
+		}
+		else if (trainerClass == Class_Gym_Leader)
+		{
+			trackID = Track_Battle_Gym_Leader;
+		}
+		else if (trainerClass == Class_Elite_Four)
+		{
+			trackID = Track_Battle_Elite_Four;
+		}
+		else
+		{
+			while (classToSongList[i][0] != 0xFFFF)
+			{
+				if (trainerClass == classToSongList[i][0])
+				{
+					return classToSongList[i][1];
+				}
+				i++;
+			}
+			trackID = Track_Battle_Trainer;
+		}
+	}
+	else if (battleType.isLegendaryWildBattle)
+	{
+		u32 i = 0;
+		u32 species = 0;
+		while (speciesToSongListLegendary[i][0] != 0xFFFF)
+		{
+			if (species == speciesToSongListLegendary[i][0])
+			{
+				return speciesToSongListLegendary[i][1];
+			}
+			i++;
+		}
+		trackID = Track_Battle_Legendary;
+	}
+	else if (battleType.isRoamingWildBattle)
+	{
+		u32 i = 0;
+		u32 species = 0;
+		while (speciesToSongListRoaming[i][0] != 0xFFFF)
+		{
+			if (species == speciesToSongListRoaming[i][0])
+			{
+				return speciesToSongListRoaming[i][1];
+			}
+			i++;
+		}
+		trackID = Track_Battle_Roaming;
+	}
+	return battleMusicIDs[regionByte][trackID];
+}
+
+#define WILDBATTLE 0
+#define TRAINERBATTLE 1
+#define DOUBLEWILD 2
+#define RAREWILD 3
+#define LEGENDARYWILD 4
+#define ROAMINGWILD 5
+
+#define TESTMODE TRAINERBATTLE
+
 void InitialiseBattleEnvironment()
 {
+#if TESTMODE == WILDBATTLE
+	battleType.isWildBattle = 1;
+#elif TESTMODE == TRAINERBATTLE
+	battleType.isTrainerBattle = 1;
+#elif TESTMODE == DOUBLEWILD
+	battleType.isWildBattle = 1;
+	battleType.isDoubleBattle = 1;
+#elif TESTMODE == RAREWILD
+	battleType.isWildBattle = 1;
+	battleType.isRareWildBattle = 1;
+#elif TESTMODE == LEGENDARYWILD
+	battleType.isLegendaryWildBattle = 1;
+#elif TESTMODE == ROAMINGWILD
+	battleType.isRoamingWildBattle = 1;
+#endif
 	battleDataPointer = (BattleData*)MemoryAllocate(sizeof(BattleData));
 	battleDataPointer[0].numBattlers = 2 << battleType.isDoubleBattle;
 	battleDataPointer[0].pokemonStats = (PokemonBattleData*)MemoryAllocate(sizeof(PokemonBattleData) * battleDataPointer[0].numBattlers);
@@ -359,6 +472,7 @@ void InitialiseBattleEnvironment()
 	}
 	battleDataPointer[0].battleBanks[User] = 0;
 	battleDataPointer[0].battleBanks[Target] = 1;
+	SetupSongForPlayback(GetSongIDForBattle(), 0);
 	battleScriptPointer = (u8*)&Script_Standard_Attack;
 	AddFunction(&RunBattleScript, 0);
 	CallbackMain = &BattleWaitForKeyPress;

@@ -109,7 +109,9 @@ int main()
 	SetFlag(Flag_Pokegear);
 	SetFlag(Flag_PokemonMenu);
 	GivePokemonToPlayer(&partyPokemon[0], 36, Charizard, 0);
-	GivePokemonToPlayer(&enemyPokemon[0], 36, Venusaur, 0);
+	GivePokemonToPlayer(&enemyPokemon[0], 40, Venusaur, 0);
+	GivePokemonToPlayer(&partyPokemon[1], 36, Raikou, 0);
+	GivePokemonToPlayer(&enemyPokemon[1], 40, Shuckle, 0);
 	temporaryHoldingPokemon = partyPokemon[0];
 	while (1)
 	{

@@ -1384,6 +1384,13 @@ u32 GetCatchRateFromPokemon(Pokemon* thePokemon)
 	return ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[forme].catchRate;
 }
 
+u32 GetBaseExperienceFromPokemon(Pokemon* thePokemon)
+{
+	u16 species = PokemonDecrypter(thePokemon, Species);
+	u32 forme = GetClampedFormeByteValue(thePokemon, (IndexTable*)&pokemonBaseData[species].baseDataInfo);
+	return ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[forme].baseExpYield;
+}
+
 #define BallItemBaseID 0
 
 void* GetPokeballSpriteFromPokemon(Pokemon* thePokemon)

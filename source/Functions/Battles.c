@@ -345,6 +345,142 @@ void CopyBattleDataFromPokemon(Pokemon* thePokemon, PokemonBattleData* dataLocat
 	RecalculateAllEffectiveStats(dataLocation);
 }
 
+u32 PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
+{
+	PokemonBattleData* pkmn1 = &battleDataPointer[0].pokemonStats[index1];
+	PokemonBattleData* pkmn2 = &battleDataPointer[0].pokemonStats[index2];
+	s32 priorityValue = 0;
+	{
+		u8 selection = battleDataPointer[0].moveSelections[index1];
+		if (selection >= Selections_Switch)
+		{
+			priorityValue = 6;
+		}
+		else if (selection == Selections_Roaming_Fleeing)
+		{
+			priorityValue = -7;
+		}
+		else
+		{
+			u16 move = pkmn1[0].moves[battleDataPointer[0].moveSelections[index1]];
+			s8 priority = moveData[move].priority;
+			if ((moveData[move].category == Category_Status && pkmn1[0].ability == Prankster) || (moveData[move].type == Type_Flying && pkmn1[0].ability == Gale_Wings))
+			{
+				priority++;
+			}
+			priorityValue = priority;
+		}
+		selection = battleDataPointer[0].moveSelections[index2];
+		if (selection >= Selections_Switch)
+		{
+			priorityValue = 0;
+		}
+		else
+		{
+			u16 move = pkmn2[0].moves[battleDataPointer[0].moveSelections[index2]];
+			s8 priority = moveData[move].priority;
+			if ((moveData[move].category == Category_Status && pkmn2[0].ability == Prankster) || (moveData[move].type == Type_Flying && pkmn2[0].ability == Gale_Wings))
+			{
+				priority++;
+			}
+			priorityValue -= priority;
+		}
+	}
+	if (priorityValue < 0)
+	{
+		return PokemonTwoFirst;
+	}
+	else if (priorityValue > 0)
+	{
+		return PokemonOneFirst;
+	}
+	else
+	{
+		u32 speed1 = (pkmn2[0].ability == Unaware) ? pkmn1[0].stats[BattleSpeed] : pkmn1[0].effectiveStats[BattleSpeed];
+		u32 speed2 = (pkmn1[0].ability == Unaware) ? pkmn2[0].stats[BattleSpeed] : pkmn2[0].effectiveStats[BattleSpeed];
+		if ((pkmn1[0].ability == Stall && pkmn2[0].ability != Stall) || (GetItemEffect(pkmn1[0].heldItem) == Item_Effect_Last_In_Priority_Bracket && GetItemEffect(pkmn2[0].heldItem) != Item_Effect_Last_In_Priority_Bracket) || (GetItemEffect(pkmn1[0].heldItem) != Item_Effect_First_In_Priority_Bracket && GetItemEffect(pkmn2[0].heldItem) == Item_Effect_First_In_Priority_Bracket))
+		{
+			return PokemonTwoFirst;
+		}
+		else if ((pkmn1[0].ability != Stall && pkmn2[0].ability == Stall) || (GetItemEffect(pkmn1[0].heldItem) != Item_Effect_Last_In_Priority_Bracket && GetItemEffect(pkmn2[0].heldItem) == Item_Effect_Last_In_Priority_Bracket) || (GetItemEffect(pkmn1[0].heldItem) == Item_Effect_First_In_Priority_Bracket && GetItemEffect(pkmn2[0].heldItem) != Item_Effect_First_In_Priority_Bracket))
+		{
+			return PokemonOneFirst;
+		}
+		if (pkmn1[0].primaryStatus)
+		{
+			if (pkmn1[0].ability == Quick_Feet)
+			{
+				speed1 = UnsignedFractionalMultiplication(speed1, 150);
+			}
+			else if (pkmn1[0].primaryStatusBits.paralysed)
+			{
+				speed1 >>= 2;
+			}
+		}
+		if (pkmn2[0].primaryStatus)
+		{
+			if (pkmn2[0].ability == Quick_Feet)
+			{
+				speed2 = UnsignedFractionalMultiplication(speed2, 150);
+			}
+			else if (pkmn2[0].primaryStatusBits.paralysed)
+			{
+				speed2 >>= 2;
+			}
+		}
+		s32 finalValue = speed1 - speed2;
+		if (battleDataPointer[0].counterBits.trickRoom)
+		{
+			if (finalValue < 0)
+			{
+				return PokemonOneFirst;
+			}
+			else if (finalValue > 0)
+			{
+				return PokemonTwoFirst;
+			}
+			else
+			{
+				return PokemonOneFirst + GetDelimitedRandom32BitValue(2);
+			}
+		}
+		else
+		{
+			if (finalValue < 0)
+			{
+				return PokemonTwoFirst;
+			}
+			else if (finalValue > 0)
+			{
+				return PokemonOneFirst;
+			}
+			else
+			{
+				return PokemonOneFirst + GetDelimitedRandom32BitValue(2);
+			}
+		}
+	}
+}
+
+void PrioritisePokemon()
+{
+	u32 numBattlers = battleDataPointer[0].numBattlers;
+	u32 i;
+	for (i = 0; i < numBattlers; i++)
+	{
+		u32 j;
+		for (j = i + 1; j < numBattlers; j++)
+		{
+			if (PrioritiseBetweenTwoPokemon(i, j) == PokemonTwoFirst)
+			{
+				u32 temp = battleDataPointer[0].battleOrder[i];
+				battleDataPointer[0].battleOrder[i] = battleDataPointer[0].battleOrder[j];
+				battleDataPointer[0].battleOrder[j] = temp;
+			}
+		}
+	}
+}
+
 const RODATA_LOCATION u16 battleMusicIDs[][NumBattleTrackIDs] = {
 		{ Song_KantoWildBattle, Song_RBYWildBattle, Song_RBYTrainerBattle, Song_KantoTrainerBattle, Song_KantoGymBattle, Song_KantoGymBattle, Song_RBYChampionBattle, Song_KantoWildBattle, Song_LegendaryBeastBattle },
 		{ Song_JohtoWildBattle, Song_JohtoLegendaryBattle, Song_RBYTrainerBattle, Song_JohtoTrainerBattle, Song_JohtoGymBattle, Song_JohtoGymBattle, Song_GSCChampionBattle, Song_JohtoLegendaryBattle, Song_LegendaryBeastBattle }
@@ -473,6 +609,8 @@ void InitialiseBattleEnvironment()
 	battleDataPointer[0].battleBanks[User] = 0;
 	battleDataPointer[0].battleBanks[Target] = 1;
 	SetupSongForPlayback(GetSongIDForBattle(), 0);
+	battleDataPointer[0].participantInfo.numParticipants = 2;
+	battleDataPointer[0].battleDamage = CalculateExperienceGain(Mode_Standard_Exp_Calc);
 	battleScriptPointer = (u8*)&Script_Standard_Attack;
 	AddFunction(&RunBattleScript, 0);
 	CallbackMain = &BattleWaitForKeyPress;

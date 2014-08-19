@@ -19,6 +19,8 @@
 #define AdditionalDefrosting TRUE
 #define AdditionalBurnCuring TRUE
 
+#define GenVExperienceMethod TRUE
+
 const ALIGN(1) u8 typeStrengths[18][18] = { { 100, 100, 100, 100, 100, 50, 100, 0, 50, 100, 100, 100, 100, 100, 100, 100, 100, 100 },
 		{ 200, 100, 50, 50, 100, 200, 50, 0, 200, 100, 100, 100, 100, 50, 200, 100, 200, 50 },
 		{ 100, 200, 100, 100, 100, 50, 200, 100, 50, 100, 100, 200, 50, 100, 100, 100, 100, 100 },
@@ -197,6 +199,78 @@ u32 CanKnockItemOff(PokemonBattleData* defender, u32 ignoreAbilities)
 		}
 	}
 	return result;
+}
+
+u32 GetItemEffect(u16 itemID)
+{
+	return Item_Effect_None;
+}
+
+u32 GetSecondaryItemEffect(u16 itemID)
+{
+	return 0;
+}
+
+u32 CalculateExperienceGain(u32 mode)
+{
+	PokemonBattleData* beneficiary = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]];
+	PokemonBattleData* victim = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]];
+	u32 expGain = GetBaseExperienceFromPokemon(victim[0].mainPointer);
+	if (battleType.isTrainerBattle)
+	{
+		expGain = UnsignedFractionalMultiplication(expGain, 150);
+	}
+	u32 victimLevel = victim[0].level;
+	expGain *= victimLevel;
+#if GenVExperienceMethod == TRUE
+	{
+		u32 levelModifier = (victimLevel << 1) + 10;
+		u32 squrt = Sqrt(levelModifier);
+		levelModifier *= levelModifier;
+		levelModifier *= squrt;
+		u32 levelModifier2 = victimLevel + beneficiary[0].level + 10;
+		squrt = Sqrt(levelModifier2);
+		levelModifier2 *= levelModifier2;
+		levelModifier2 *= squrt;
+		levelModifier = UnsignedDivide(levelModifier * 100, levelModifier2);
+		expGain = UnsignedFractionalMultiplication(expGain, levelModifier);
+	}
+	if (mode != Exp_Share_Mode)
+	{
+		expGain = UnsignedDivide(expGain, 10 * battleDataPointer[0].participantInfo.numParticipants);
+	}
+	else
+	{
+		expGain = UnsignedDivide(expGain, 10 * battleDataPointer[0].participantInfo.numExpShareHolders);
+	}
+	expGain++;
+	if (PokemonDecrypter(beneficiary[0].mainPointer, OTID) != player.completeTrainerID)
+	{
+		expGain = UnsignedFractionalMultiplication(expGain, 150);
+	}
+	if (GetItemEffect(beneficiary[0].heldItem) == Item_Effect_Boost_Exp)
+	{
+		expGain = UnsignedFractionalMultiplication(expGain, GetSecondaryItemEffect(beneficiary[0].heldItem) * 10);
+	}
+#else
+	if (PokemonDecrypter(beneficiary[0].mainPointer, OTID) != player.completeTrainerID)
+	{
+		expGain = UnsignedFractionalMultiplication(expGain, 150);
+	}
+	if (GetItemEffect(beneficiary[0].heldItem) == Item_Effect_Boost_Exp)
+	{
+		expGain = UnsignedFractionalMultiplication(expGain, GetSecondaryItemEffect(beneficiary[0].heldItem) * 10);
+	}
+	if (mode != Exp_Share_Mode)
+	{
+		expGain = UnsignedDivide(expGain, 14 * battleDataPointer[0].participantInfo.numParticipants);
+	}
+	else
+	{
+		expGain = UnsignedDivide(expGain, 14 * battleDataPointer[0].participantInfo.numExpShareHolders);
+	}
+#endif
+	return expGain;
 }
 
 u8 RODATA_LOCATION naturalGiftTypes[] = {
@@ -942,7 +1016,19 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 	}
 	if (ability == Analytic)
 	{
-		// Check stuff
+		u32 i;
+		for (i = 0; i < battleDataPointer[0].numBattlers; i++)
+		{
+			if (battleDataPointer[0].battleOrder[i] == battleDataPointer[0].battleBanks[Target])
+			{
+				currentDamage = UnsignedFractionalMultiplication(currentDamage, 130);
+				break;
+			}
+			else if (battleDataPointer[0].battleOrder[i] == battleDataPointer[0].battleBanks[User])
+			{
+				break;
+			}
+		}
 	}
 	if (ability == Reckless && moveInfo[0].effectID == Effects_Recoil)
 	{
@@ -1593,6 +1679,10 @@ u8 CalculateDamage()
 				{
 					defenderValue = UnsignedFractionalMultiplication(defenderValue, 150);
 				}
+			}
+			if (battleDataPointer[0].weatherBits.sandstorm && defenderIndex == BattleSpecialDefence && BattlePokemonHasType(defender, Type_Rock) && CheckForAbilityInBattle(Air_Lock, 2) == false && CheckForAbilityInBattle(Cloud_Nine, 2) == false)
+			{
+				defenderValue = UnsignedFractionalMultiplication(defenderValue, 150);
 			}
 			damage = UnsignedDivide(damage, defenderValue);
 		}

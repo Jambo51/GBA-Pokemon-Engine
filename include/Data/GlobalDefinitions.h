@@ -99,6 +99,14 @@ enum BattleTrackIDs { Track_Battle_Wild, Track_Battle_Rare_Wild, Track_Battle_Li
 
 enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team };
 
+enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Move3, Selections_Move4, Selections_Roaming_Fleeing, Selections_Switch, Selections_Item, Selections_Flee };
+
+enum BattleOrderIndices { PokemonOneFirst, PokemonTwoFirst };
+
+enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp };
+
+enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
+
 typedef struct U8BitField {
 	u8 bit0:1;
 	u8 bit1:1;
@@ -1003,10 +1011,28 @@ typedef struct BattleWeatherBits {
 	u16 turnsRemaining:8;
 } BattleWeatherBits;
 
+typedef struct BattleCounterBits {
+	u32 trickRoom:3;
+	u32 unused:29;
+} BattleCounterBits;
+
+typedef struct BattleParticipantBits {
+	u32 numParticipants:3;
+	u32 numExpShareHolders:3;
+	u32 participantFlags:6;
+	u32 holderFlags:6;
+	u32 unused:14;
+} BattleParticipantBits;
+
 typedef struct BattleData {
 	PokemonBattleData* pokemonStats;
 	u8 battleBanks[NumBattleBanks];
 	u8 moveSelections[4];
+	union
+	{
+		u8 battleOrder[4];
+		u32 combinedOrder;
+	};
 	u8 conversionIndices[4];
 	u8 battlePartyPositions[6];
 	u8 numBattlers;
@@ -1031,6 +1057,12 @@ typedef struct BattleData {
 	u8* callStack[0x10];
 	u16 loopCounter;
 	u16 echoedVoiceCounter;
+	union
+	{
+		u32 counters;
+		BattleCounterBits counterBits;
+	};
+	BattleParticipantBits participantInfo;
 } BattleData;
 
 typedef struct BattleTypeStruct {

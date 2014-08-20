@@ -4,6 +4,7 @@
 #include "Data/MemoryLocations.h"
 #include "Data/Fonts.h"
 #include "Functions/ObjectFunctions.h"
+#include "Functions/tittlescreen.h"
 
 #define BG_PRIORITY_THREE 3
 #define BG_PRIORITY_TWO 2
@@ -99,7 +100,7 @@ int main()
 	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
 	InitialisePaletteAllocator();
 	HandleKeyPresses = &IgnoreKeyPresses;
-	CallbackMain = &InitialiseBattleEnvironment;
+	CallbackMain = &SetupTitleScreen;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
 	SetMusicEngine(MUSICENGINE);
 	u16* pRAM = (u16*)TilePaletteRAM(0);

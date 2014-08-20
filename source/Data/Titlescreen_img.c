@@ -1,9 +1,9 @@
 
-//{{BLOCK(Tittlescreen_img)
+//{{BLOCK(Titlescreen_img)
 
 //======================================================================
 //
-//	Tittlescreen_img, 256x256@8, 
+//	Titlescreen_img, 256x256@8,
 //	+ palette 256 entries, not compressed
 //	+ 215 tiles (t|f|p reduced) lz77 compressed
 //	+ regular map (in SBBs), lz77 compressed, 32x32 
@@ -15,7 +15,7 @@
 //
 //======================================================================
 
-const unsigned short Tittlescreen_imgTiles[2342] __attribute__((aligned(4)))=
+const unsigned short Titlescreen_imgTiles[2342] __attribute__((aligned(4)))=
 {
 	0xC010,0x0035,0x003C,0xF000,0xF001,0xF001,0xF001,0x0001,
 	0x0C00,0x1515,0x1515,0x0730,0x1B30,0x1818,0x3087,0x1F23,
@@ -348,7 +348,7 @@ const unsigned short Tittlescreen_imgTiles[2342] __attribute__((aligned(4)))=
 	0xF03E,0xF001,0x9401,0xF040,0x3701,0x11EF,
 };
 
-const unsigned short Tittlescreen_imgMap[350] __attribute__((aligned(4)))=
+const unsigned short Titlescreen_imgMap[350] __attribute__((aligned(4)))=
 {
 	0x0010,0x0008,0x0030,0xF000,0xD001,0x0101,0x0210,0x0010,
 	0x1003,0x1004,0x1005,0x1006,0x0700,0x0810,0x0910,0x0A10,
@@ -401,7 +401,7 @@ const unsigned short Tittlescreen_imgMap[350] __attribute__((aligned(4)))=
 	0x01F0,0x01F0,0x01F0,0x01F0,0x01F0,0x0160,
 };
 
-const unsigned short Tittlescreen_imgPal[256] __attribute__((aligned(4)))=
+const unsigned short Titlescreen_imgPal[256] __attribute__((aligned(4)))=
 {
 	0x0000,0x51C0,0x39CE,0x7424,0x4E73,0x2080,0x17BF,0x2108,
 	0x77BD,0x3085,0x1699,0x0C40,0x5086,0x6739,0x4D4E,0x3275,
@@ -440,4 +440,4 @@ const unsigned short Tittlescreen_imgPal[256] __attribute__((aligned(4)))=
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
 };
 
-//}}BLOCK(Tittlescreen_img)
+//}}BLOCK(Titlescreen_img)

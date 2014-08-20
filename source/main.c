@@ -4,7 +4,7 @@
 #include "Data/MemoryLocations.h"
 #include "Data/Fonts.h"
 #include "Functions/ObjectFunctions.h"
-#include "Functions/tittlescreen.h"
+#include "Functions/titlescreen.h"
 
 #define BG_PRIORITY_THREE 3
 #define BG_PRIORITY_TWO 2

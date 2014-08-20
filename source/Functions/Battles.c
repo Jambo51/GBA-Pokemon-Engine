@@ -4,6 +4,7 @@
 #include "Functions\BattleScriptCommands.h"
 #include "Functions\ScriptRunner.h"
 #include "Data\MemoryLocations.h"
+#include "Functions\ObjectFunctions.h"
 #include "libbattlescripts.h"
 
 const ALIGN(2) u16 criticalCaptureValues[6][2] = {
@@ -579,6 +580,11 @@ u16 GetSongIDForBattle()
 
 #define TESTMODE TRAINERBATTLE
 
+const RODATA_LOCATION OAMData battleObjectsOAMData[] = {
+		{ 0, 0, 1, 0, 0, 0, 48, 40, 0 },
+		{ 0, 1, 1, 0, 0, 0, 8, 144, 0 }
+};
+
 void InitialiseBattleEnvironment()
 {
 #if TESTMODE == WILDBATTLE
@@ -603,8 +609,24 @@ void InitialiseBattleEnvironment()
 	CopyBattleDataFromPokemon(&enemyPokemon[0], &battleDataPointer[0].pokemonStats[1]);
 	if (battleType.isDoubleBattle)
 	{
+		battleDataPointer[0].objectPointers.battlers[0] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage(0, Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Sprite_Side_Back))];
+		memcpy32((void*)ObjectPaletteRAM(0), GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Palette_Normal + PokemonIsShiny(&partyPokemon[0])), 8);
+		battleDataPointer[0].objectPointers.battlers[1] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage(0, Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Sprite_Side_Front))];
+		memcpy32((void*)ObjectPaletteRAM(1), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Palette_Normal + PokemonIsShiny(&enemyPokemon[0])), 8);
+	}
+	else
+	{
+		battleDataPointer[0].objectPointers.battlers[0] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[0], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Sprite_Side_Back))];
+		memcpy32((void*)ObjectPaletteRAM(0), GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Palette_Normal + PokemonIsShiny(&partyPokemon[0])), 8);
+		battleDataPointer[0].objectPointers.battlers[1] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[1], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Sprite_Side_Front))];
+		memcpy32((void*)ObjectPaletteRAM(1), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Palette_Normal + PokemonIsShiny(&enemyPokemon[0])), 8);
+	}
+	if (battleType.isDoubleBattle)
+	{
 		CopyBattleDataFromPokemon(&partyPokemon[1], &battleDataPointer[0].pokemonStats[2]);
+		battleDataPointer[0].objectPointers.battlers[2] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage(0, Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[1], Sprite_Side_Back))];
 		CopyBattleDataFromPokemon(&enemyPokemon[1], &battleDataPointer[0].pokemonStats[3]);
+		battleDataPointer[0].objectPointers.battlers[3] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage(0, Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[1], Sprite_Side_Front))];
 	}
 	battleDataPointer[0].battleBanks[User] = 0;
 	battleDataPointer[0].battleBanks[Target] = 1;

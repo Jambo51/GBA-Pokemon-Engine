@@ -244,15 +244,6 @@ void SeedRNG(u32 seed)
 
 void ReseedRNG()
 {
-	u32 seed;
-	if (rtc_check() == 1)
-	{
-		rtc_update();
-		seed = (rtcData.day | (rtcData.dayOfWeek << 5) | (rtcData.hour << 8) | (rtcData.minute << 14) | (rtcData.second << 20) | (rtcData.year << 26));
-	}
-	else
-	{
-		seed = (REG_TM3D << 16) | REG_TM2D;
-	}
+	u32 seed = (REG_TM3D << 16) | REG_TM2D;
 	SeedRNG(seed);
 }

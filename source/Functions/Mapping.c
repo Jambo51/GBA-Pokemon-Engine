@@ -7,6 +7,7 @@
 #include "Functions/KeyPresses.h"
 #include "Functions/Flags.h"
 #include "Functions/MusicEngine.h"
+#include "Functions/ObjectFunctions.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -37,33 +38,6 @@ MapFooter* GetMapFooterFromBankAndMapID(u8 bank, u8 map)
 u16 GetMusicTrackIDFromBankAndMapID(u8 bank, u8 map)
 {
 	return (GetMapHeaderFromBankAndMapID(bank, map))[0].musicTrack;
-}
-
-const RODATA_LOCATION u8 sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
-
-u32 CalculateObjectSize(u8 shape, u8 size)
-{
-	return (u32)sizes[shape][size];
-}
-
-void UpdateOAMFromStructure()
-{
-	vu16* oam = (vu16*)0x07000000;
-	vu8 i;
-	for (i = 0; i < 40; i++)
-	{
-		if (preOAM[i].StateFunction != 0)
-		{
-			((void (*)(u32))(preOAM[i].StateFunction))((u32)(&preOAM[i]));
-		}
-		if (preOAM[i].isActive == 1 && preOAM[i].requiresUpdate == 1)
-		{
-			oam[(i << 3)] = preOAM[i].xLocation | (preOAM[i].objShape << 14);
-			oam[(i << 3) + 1] = preOAM[i].yLocation | (preOAM[i].hFlip << 12) | (preOAM[i].vFlip << 13) | (preOAM[i].objSize << 14);
-			oam[(i << 3) + 2] = (u32)preOAM[i].tileLocation | (preOAM[i].priority << 10)| (preOAM[i].paletteSlot << 12);
-			preOAM[i].requiresUpdate = 0;
-		}
-	}
 }
 
 void PutTilesetPalettesInMemory(u8 tilesetID, u16* paletteLocation, u8 time)
@@ -438,150 +412,6 @@ void ChangeSpriteFrame(u8 spriteID)
 	}
 }
 
-void TurnRight(u32 thing)
-{
-	PreOAMStruct* oam = (PreOAMStruct*)thing;
-	switch (oam->animationStep)
-	{
-		case 0:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 3;
-				oam->framesToChange = 3;
-				oam->animationStep = 1;
-				oam->hFlip = 1;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-		case 1:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 0;
-				oam->animationStep = 0;
-				oam->hFlip = 1;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-	}
-}
-
-void TurnLeft(u32 thing)
-{
-	PreOAMStruct* oam = (PreOAMStruct*)thing;
-	switch (oam->animationStep)
-	{
-		case 0:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 8;
-				oam->framesToChange = 3;
-				oam->animationStep = 1;
-				oam->hFlip = 0;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-		case 1:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 2;
-				oam->animationStep = 0;
-				oam->hFlip = 0;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-	}
-}
-
-void TurnUp(u32 thing)
-{
-	PreOAMStruct* oam = (PreOAMStruct*)thing;
-	switch (oam->animationStep)
-	{
-		case 0:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 6;
-				oam->framesToChange = 3;
-				oam->animationStep = 1;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-		case 1:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 1;
-				oam->animationStep = 0;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-	}
-}
-
-void TurnDown(u32 thing)
-{
-	PreOAMStruct* oam = (PreOAMStruct*)thing;
-	switch (oam->animationStep)
-	{
-		case 0:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 3;
-				oam->framesToChange = 3;
-				oam->animationStep = 1;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-		case 1:
-			if (oam->framesToChange == 0)
-			{
-				oam->StateFunction = 0;
-				oam->requiresUpdate = 1;
-				oam->frame = 0;
-				oam->animationStep = 0;
-			}
-			else
-			{
-				oam->framesToChange--;
-			}
-			break;
-	}
-}
-
 const RODATA_LOCATION u16 xLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 56 } };
 
 u16 CalculateObjectXLocation(u8 shape, u8 size)
@@ -792,12 +622,10 @@ void ApplyMovement()
 			if (vertical > 0)
 			{
 				newDirection = 1;
-				preOAM[oamID].StateFunction = &TurnUp;
 			}
 			else
 			{
 				newDirection = 0;
-				preOAM[oamID].StateFunction = &TurnDown;
 			}
 		}
 		else
@@ -806,12 +634,10 @@ void ApplyMovement()
 			if (horizontal > 0)
 			{
 				newDirection = 3;
-				preOAM[oamID].StateFunction = &TurnRight;
 			}
 			else
 			{
 				newDirection = 2;
-				preOAM[oamID].StateFunction = &TurnLeft;
 			}
 		}
 		if (newDirection != overworldSpriteData[0].directionFacing && overworldSpriteData[0].isMoving == 0)

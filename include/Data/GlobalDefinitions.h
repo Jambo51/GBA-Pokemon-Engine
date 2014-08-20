@@ -637,6 +637,7 @@ typedef struct KeyBuffer {
 
 typedef struct PreOAMStruct {
 	void (*StateFunction)(u32);
+	u32 stateFunctionInfo;
 	void* tileLocation;
 	u16* paletteLocation;
 	u16 xLocation;
@@ -646,14 +647,12 @@ typedef struct PreOAMStruct {
 	u8 paletteSlot:4;
 	u8 priority:4;
 	u8 spriteID;
-	u8 isActive:1;
-	u8 requiresUpdate:1;
-	u8 hFlip:1;
-	u8 vFlip:1;
-	u8 unused:4;
-	u8 framesToChange;
-	u8 frame;
-	u8 animationStep;
+	u32 isActive:1;
+	u32 requiresUpdate:1;
+	u32 hFlip:1;
+	u32 vFlip:1;
+	u32 slotOccupied:1;
+	u32 unused:27;
 } PreOAMStruct;
 
 typedef struct ConnectionStruct {
@@ -1024,6 +1023,10 @@ typedef struct BattleParticipantBits {
 	u32 unused:14;
 } BattleParticipantBits;
 
+typedef struct BattleObjects {
+	PreOAMStruct* battlers[4];
+} BattleObjects;
+
 typedef struct BattleData {
 	PokemonBattleData* pokemonStats;
 	u8 battleBanks[NumBattleBanks];
@@ -1063,6 +1066,7 @@ typedef struct BattleData {
 		BattleCounterBits counterBits;
 	};
 	BattleParticipantBits participantInfo;
+	BattleObjects objectPointers;
 } BattleData;
 
 typedef struct BattleTypeStruct {
@@ -1080,6 +1084,18 @@ typedef struct StatChangeStruct {
 	u8 statID:4;
 	s8 strength:4;
 } StatChangeStruct;
+
+typedef struct OAMData {
+	void (*stateFunction)(u32);
+	u8 paletteSlot;
+	u8 priority:4;
+	u8 hFlip:1;
+	u8 vFlip:1;
+	u8 unused:2;
+	u16 xLoc;
+	u16 yLoc;
+	u16 alignment;
+} OAMData;
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 

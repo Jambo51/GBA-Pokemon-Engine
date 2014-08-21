@@ -26,5 +26,6 @@
 #include "Functions/Maths.h"
 #include "Functions/MemoryManagement.h"
 #include "Functions/CallbackSystem.h"
+#include "Functions/BackgroundFunctions.h"
 
 #endif /* FUNCTIONS_H_ */

@@ -11,5 +11,6 @@
 
 extern void TitleScreen();
 extern void SetupTitleScreen();
+extern void TitleScreenKeyHandle();
 
 #endif /* TITTLESCREEN_H_ */

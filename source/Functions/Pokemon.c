@@ -1193,27 +1193,26 @@ u32 GetClampedFormeByteValue(Pokemon* thePokemon, IndexTable* indexToRead)
 u8 GetBaseStatFromIndex(u16 species, u8 statIndex, u32 formeIndex)
 {
 	u8 returnable = 0;
-	InternalBaseData* dataLoc = pokemonBaseData[species].baseDataInfo.pointerToData;
-	dataLoc = ((void**)dataLoc)[formeIndex];
+	InternalBaseData* dataLoc = ((InternalBaseData**)pokemonBaseData[species].baseDataInfo.pointerToData)[0];
 	switch (statIndex)
 	{
 		case 0:
-			returnable = dataLoc->baseHP;
+			returnable = dataLoc[formeIndex].baseHP;
 			break;
 		case 1:
-			returnable = dataLoc->baseAttack;
+			returnable = dataLoc[formeIndex].baseAttack;
 			break;
 		case 2:
-			returnable = dataLoc->baseDefence;
+			returnable = dataLoc[formeIndex].baseDefence;
 			break;
 		case 3:
-			returnable = dataLoc->baseSpeed;
+			returnable = dataLoc[formeIndex].baseSpeed;
 			break;
 		case 4:
-			returnable = dataLoc->baseSpecialAttack;
+			returnable = dataLoc[formeIndex].baseSpecialAttack;
 			break;
 		case 5:
-			returnable = dataLoc->baseSpecialDefence;
+			returnable = dataLoc[formeIndex].baseSpecialDefence;
 			break;
 	}
 	return returnable;

@@ -396,7 +396,8 @@ typedef struct Player {
 	u16 stereoSound:1;
 	u16 playAnimations:1;
 	u16 battleSwitchStyle:1;
-	u16 options:9;
+	u16 textSpeed:2;
+	u16 options:7;
 } Player;
 
 typedef struct Buffer {
@@ -1096,6 +1097,17 @@ typedef struct OAMData {
 	u16 yLoc;
 	u16 alignment;
 } OAMData;
+
+typedef struct TextOverTimeStruct {
+	char* string;
+	u32 stringPosition;
+	u8 currentX;
+	u8 currentY;
+	u8 initialX;
+	u8 framesToWait;
+	u8 textSpeed;
+	u8 colour;
+} TextOverTimeStruct;
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 

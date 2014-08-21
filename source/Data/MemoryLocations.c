@@ -74,6 +74,7 @@ ALIGN(4) SpriteManagementStructure sprallocData;
 ALIGN(4) PaletteManagementStructure pallocData;
 ALIGN(4) CallbackStruct callbackSystem;
 EWRAM_LOCATION ALIGN(4) BattleData* battleDataPointer;
+u32 pauseOutlinePalette[] = { 0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20664, 0x7B146546, 0x6F5B3529, 0x663156F5, 0x18C541AE };
 
 #endif // TOOLBOX_H
 

@@ -65,5 +65,6 @@ extern PokedexData* dexPointer;
 extern MusicFadeInfo* musicFadePointer;
 extern CallbackStruct callbackSystem;
 extern BattleData* battleDataPointer;
+u32 pauseOutlinePalette[8];
 
 #endif /* MEMORYLOCATIONS_H_ */

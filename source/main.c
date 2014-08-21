@@ -92,7 +92,7 @@ int main()
 	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
 	InitialisePaletteAllocator();
 	HandleKeyPresses = &IgnoreKeyPresses;
-	CallbackMain = &SetupTitleScreen;
+	CallbackMain = &InitialiseBattleEnvironment;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
 	SetMusicEngine(MUSICENGINE);
 	u16* pRAM = (u16*)TilePaletteRAM(0);

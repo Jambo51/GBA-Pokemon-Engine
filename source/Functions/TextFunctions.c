@@ -6,6 +6,8 @@
 #include "libtiles.h"
 #include "Functions/Pokemon.h"
 #include "Data/PokemonBaseData.h"
+#include "Functions/CallbackSystem.h"
+#include "Functions/KeyPresses.h"
 
 #define Space 0
 
@@ -281,9 +283,11 @@ s32 CharacterComparison(u8 charOne, u8 charTwo)
 	return Sign(charOne - charTwo);
 }
 
+const RODATA_LOCATION char* posString = "#{P:%d,%d}";
+
 void DrawCharacter(char c, u8 x, u8 y, u8 colour)
 {
-	tte_printf("#{P:%d,%d}", x, y);
+	tte_printf(posString, x, y);
 	char string[] = { c, '\0' };
 	tte_printf((char*)&string);
 }
@@ -295,9 +299,75 @@ void DrawString(char* string, u8 x, u8 y, u8 colour)
 		char* newString = (char*)MemoryAllocate(100 * sizeof(char));
 		StringCopyWithBufferChecks(newString, string, 0);
 		//tte_set_pos(x, y);
-		tte_printf("#{P:%d,%d}", x, y);
+		tte_printf(posString, x, y);
 		tte_printf(newString);
 		MemoryDeallocate(newString);
+	}
+}
+
+void DrawStringOverTimeMain(u32 pointer)
+{
+	TextOverTimeStruct* data = (TextOverTimeStruct*)pointer;
+	if (data[0].framesToWait == 0 || IsKeyDown(Key_A))
+	{
+		u32 currentX = data[0].currentX;
+		u32 currentY = data[0].currentY;
+		char c = data[0].string[data[0].stringPosition];
+		if (c != '\0')
+		{
+			DrawCharacter(c, currentX, currentY, data[0].colour);
+			if (c == '\n')
+			{
+				data[0].currentX = data[0].initialX;
+				currentY += 0x10;
+			}
+			else
+			{
+				data[0].currentX = currentX + pokefont_b4Font.widths[(u32)c];
+			}
+			data[0].currentY = currentY;
+			data[0].framesToWait = data[0].textSpeed;
+			data[0].stringPosition++;
+		}
+		else
+		{
+			RemoveFunctionByPointer(&DrawStringOverTimeMain);
+			MemoryDeallocate(data[0].string);
+			MemoryDeallocate(data);
+		}
+	}
+	else
+	{
+		data[0].framesToWait--;
+	}
+}
+
+void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour)
+{
+	if (string != 0)
+	{
+		u32 spd = player.textSpeed;
+		if (spd == 3)
+		{
+			DrawString(string, x, y, colour);
+		}
+		else
+		{
+			char* newString = (char*)MemoryAllocate(100 * sizeof(char));
+			StringCopyWithBufferChecks(newString, string, 0);
+			TextOverTimeStruct* data = (TextOverTimeStruct*)MemoryAllocate((sizeof(TextOverTimeStruct)));
+			data[0].string = newString;
+			data[0].currentX = x;
+			data[0].initialX = x;
+			data[0].currentY = y;
+			data[0].framesToWait = 0;
+			data[0].textSpeed = 2 << player.textSpeed;
+			data[0].stringPosition = 0;
+			data[0].colour = colour;
+			memset32((void*)0x0600C000, 0x11111111, 0x8C0);
+			memcpy32((void*)TilePaletteRAM(14), &pauseOutlinePalette, 8);
+			AddFunction(&DrawStringOverTimeMain, (u32)data);
+		}
 	}
 }
 

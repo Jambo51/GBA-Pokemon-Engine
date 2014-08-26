@@ -422,6 +422,10 @@ u32 PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 				speed1 >>= 2;
 			}
 		}
+		if (GetItemEffect(pkmn1[0].heldItem) == Item_Effect_Boost_EVs)
+		{
+			speed1 >>= 1;
+		}
 		if (pkmn2[0].primaryStatus)
 		{
 			if (pkmn2[0].ability == Quick_Feet)
@@ -432,6 +436,10 @@ u32 PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 			{
 				speed2 >>= 2;
 			}
+		}
+		if (GetItemEffect(pkmn2[0].heldItem) == Item_Effect_Boost_EVs)
+		{
+			speed2 >>= 1;
 		}
 		s32 finalValue = speed1 - speed2;
 		if (battleDataPointer[0].counterBits.trickRoom)
@@ -585,13 +593,15 @@ u16 GetSongIDForBattle()
 #define TESTMODE TRAINERBATTLE
 
 const RODATA_LOCATION OAMData battleObjectsOAMData[] = {
-		{ 0, 0, 1, 0, 0, 0, 48, 40, 0 },
-		{ 0, 1, 1, 0, 0, 0, 8, 144, 0 },
-		{ 0, 0, 1, 0, 0, 0, 8, 144, 0 },
-		{ 0, 1, 1, 0, 0, 0, 8, 144, 0 },
-		{ 0, 2, 1, 0, 0, 0, 8, 144, 0 },
-		{ 0, 3, 1, 0, 0, 0, 8, 144, 0 }
+		{ 0, 0, 0, 1, 0, 0, 0, 48, 40, 0 },
+		{ 0, 0, 1, 1, 0, 0, 0, 8, 144, 0 },
+		{ 0, 0, 0, 1, 0, 0, 0, 8, 144, 0 },
+		{ 0, 0, 1, 1, 0, 0, 0, 8, 144, 0 },
+		{ 0, 0, 2, 1, 0, 0, 0, 8, 144, 0 },
+		{ 0, 0, 3, 1, 0, 0, 0, 8, 144, 0 }
 };
+
+const RODATA_LOCATION u32 battleTextPalette[] = { 0x7FFF0000, 0x4D8A001F, 0x7FFF5E2D, 0x6B3A396D, 0x18C53D28, 0x737C7C1F, 0x0DF37C1F, 0x354526B9 };
 
 void InitialiseBattleEnvironment()
 {
@@ -638,18 +648,20 @@ void InitialiseBattleEnvironment()
 	battleDataPointer[0].battleBanks[User] = 0;
 	battleDataPointer[0].battleBanks[Target] = 1;
 	SetupSongForPlayback(GetSongIDForBattle(), 0);
-	battleDataPointer[0].participantInfo.numParticipants = 2;
-	battleDataPointer[0].battleDamage = CalculateExperienceGain(Mode_Standard_Exp_Calc);
 	battleScriptPointer = (u8*)&Script_Standard_Attack;
 	AddFunction(&RunBattleScript, 0);
-	DrawStringOverTime("Charizard used Flame Burst!", 0, 0, 15);
+	memcpy32((void*)TilePaletteRAM(0), &battleTextPalette, 8);
+	memcpy32((void*)TilePaletteRAM(1), &pauseOutlinePalette, 8);
 	REG_BG0CNT = MAIN_BG_SETTINGS2;
 	u32 i;
 	u16* address = (u16*)0x0600FBC4;
 	for (i = 0; i < 20; i++)
 	{
-		address[i] = 0xE200 + (i * 20);
-		address[0x20 + i] = 0xE201 + (i * 20);
+		address[i] = 0x200 + (i * 20);
+		address[0x20 + i] = 0x201 + (i * 20);
+		address[0x40 + i] = 0x202 + (i * 20);
+		address[0x60 + i] = 0x203 + (i * 20);
 	}
+	player.textSpeed = 2;
 	CallbackMain = &BattleWaitForKeyPress;
 }

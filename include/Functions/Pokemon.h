@@ -56,6 +56,7 @@ void CheckIfCanLearnNewMoveAndLearnIfWanted(Pokemon* thePokemon);
 void SetMoves(Pokemon* thePokemon);
 u32 GetCatchRateFromPokemon(Pokemon* thePokemon);
 u32 GetBaseExperienceFromPokemon(Pokemon* thePokemon);
+u32 GetEVGainFromPokemon(Pokemon* thePokemon);
 void* GetPokeballSpriteFromPokemon(Pokemon* thePokemon);
 void* GetPokeballPaletteFromPokemon(Pokemon* thePokemon);
 void* GetPokemonSpritePaletteFromPokemon(Pokemon* thePokemon, u32 sideIndex);

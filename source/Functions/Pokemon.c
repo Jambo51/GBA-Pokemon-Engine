@@ -190,6 +190,12 @@ u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
 		case Type2:
 			return thePokemon[0].type2;
 			break;
+		case PokerusStrain:
+			return thePokemon[0].pokerusInformationField.strain;
+			break;
+		case PokerusDuration:
+			return thePokemon[0].pokerusInformationField.duration;
+			break;
 		default:
 			return thePokemon[0].isObedient;
 			break;
@@ -307,8 +313,7 @@ u32 SumEVs(AbridgedPokemon* thePokemon)
 u32 AllowEVAddition(AbridgedPokemon* thePokemon, u32 value, u32 index)
 {
 	u32 sum = SumEVs(thePokemon);
-	u32 currentEVValue = InternalPokemonDecrypter(thePokemon, (HP_EV + index));
-	if (sum == 510 || sum + value > 510 || currentEVValue == 0xFF || currentEVValue + value > 0xFF)
+	if (sum + value > 510)
 	{
 		return false;
 	}
@@ -616,6 +621,18 @@ void InternalPokemonEncrypter(AbridgedPokemon* thePokemon, u8 index, u32 value)
 			if (value < Type_None)
 			{
 				thePokemon[0].type2 = value;
+			}
+			break;
+		case PokerusStrain:
+			if (value < 0x10)
+			{
+				thePokemon[0].pokerusInformationField.strain = value;
+			}
+			break;
+		case PokerusDuration:
+			if (value < 0x10)
+			{
+				thePokemon[0].pokerusInformationField.duration = value;
 			}
 			break;
 		default:
@@ -1390,6 +1407,13 @@ u32 GetBaseExperienceFromPokemon(Pokemon* thePokemon)
 	return ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[forme].baseExpYield;
 }
 
+u32 GetEVGainFromPokemon(Pokemon* thePokemon)
+{
+	u16 species = PokemonDecrypter(thePokemon, Species);
+	u32 forme = GetClampedFormeByteValue(thePokemon, (IndexTable*)&pokemonBaseData[species].baseDataInfo);
+	return ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[forme].EVYield;
+}
+
 #define BallItemBaseID 0
 
 void* GetPokeballSpriteFromPokemon(Pokemon* thePokemon)
@@ -1488,6 +1512,13 @@ void GeneratePokemon(Pokemon* thePokemon, u8 level, u16 species)
 	GenerateAllIVs(thePokemon);
 	SetGender(thePokemon);
 	SetNature(thePokemon, 0xFF);
+	if (GetRandom16BitValue() < 3)
+	{
+		PokemonEncrypter(thePokemon, PokerusStatus, 1);
+		u32 strain = GetDelimitedRandom32BitValue(15) + 1;
+		PokemonEncrypter(thePokemon, PokerusStrain, strain);
+		PokemonEncrypter(thePokemon, PokerusDuration, (strain & 3) + 1);
+	}
 	CalculateStats(thePokemon);
 	SetMoves(thePokemon);
 }

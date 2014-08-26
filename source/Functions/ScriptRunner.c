@@ -7,12 +7,13 @@
 
 #include "Data.h"
 #include "Functions\BattleScriptCommands.h"
+#include "Functions\BattleAnimationScriptCommands.h"
 #include "Functions\CallbackSystem.h"
 
 const u8 (*battleScriptCommandTable[])(void) = {
 		&CheckForMoveCancellingStatuses,
 		&HitMissCalculation,
-		0,
+		&PokemonUsedMessage,
 		&DecrementPP,
 		&CalculateDamage,
 		&StoreByte,
@@ -74,9 +75,13 @@ void RunOverworldScript()
 	}
 }
 
+const u8 (*battleAnimationScriptCommandTable[])(void) = {
+		&EndAnimationScript
+};
+
 void RunAnimationScript()
 {
-	u32 result = RunScript(&animationScriptPointer, 0/*(u8 (*)(void))&battleScriptCommandTable*/);
+	u32 result = RunScript(&animationScriptPointer, (u8 (*)(void))&battleAnimationScriptCommandTable);
 	if (result == Ended)
 	{
 		RemoveFunctionByPointer(&RunAnimationScript);

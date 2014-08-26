@@ -15,8 +15,10 @@
 #define NEWLINE 0xFE
 #define END 0xFF
 
+void SetTextColour(u32 colour, u32 shadowColour, u32 paperColour);
+void SetTextPaletteSlot(u32 paletteID);
 void StringCopy(char* stringDest, char* stringSource, u32 length);
-u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length);
+u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex);
 void BufferString(char* string, u8 bufferID, u32 maxLength);
 void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID);
 void BufferItemName(u16 itemIndex, u8 bufferID);
@@ -34,7 +36,7 @@ s32 CharacterComparison(u8 charOne, u8 charTwo);
 void DrawCharacter(char c, u8 x, u8 y, u8 colour);
 void DrawString(char* string, u8 x, u8 y, u8 colour);
 void DrawStringOverTimeMain(u32 pointer);
-void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour);
+void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour, void (*endFunction)(void));
 void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
 void InitialiseTextEngine(u32 textSetID);
 

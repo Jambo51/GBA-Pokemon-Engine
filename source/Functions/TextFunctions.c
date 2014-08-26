@@ -8,6 +8,7 @@
 #include "Data/PokemonBaseData.h"
 #include "Functions/CallbackSystem.h"
 #include "Functions/KeyPresses.h"
+#include "Data/PokemonBaseData.h"
 
 #define Space 0
 
@@ -19,8 +20,24 @@ typedef struct ItemData {
 } ItemData;
 
 #define NumItems 250
+#define NumMoves 617
 
 const RODATA_LOCATION ItemData itemData[NumItems];
+
+void SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
+{
+	TTC* context = tte_get_context();
+	context->cattr[TTE_INK] = colour & 0xF;
+	context->cattr[TTE_SHADOW] = shadowColour & 0xF;
+	context->cattr[TTE_PAPER] = paperColour & 0xF;
+}
+
+void SetTextPaletteSlot(u32 paletteID)
+{
+	TTC* context = tte_get_context();
+	TSurface* surface = &context->dst;
+	surface->palData = pal_bg_bank[paletteID];
+}
 
 void StringCopy(char* stringDest, char* stringSource, u32 length)
 {
@@ -41,7 +58,30 @@ void StringCopy(char* stringDest, char* stringSource, u32 length)
 
 const IndexTable localBuffersTable[] = { { 20, *(&buffers[0]) }, { 20, *(&buffers[1]) }, { 20, *(&buffers[2]) }, { 20, *(&buffers[3]) }, { 20, *(&buffers[4]) }, { 20, *(&buffers[5]) }, { 20, *(&buffers[6]) }, { 20, *(&buffers[7]) }, { 7, *(&player.name) }, { 7, *(&player.primaryRivalName) }, { 7, *(&player.secondaryRivalName) }, { 7, *(&player.tertiaryRivalName) } };
 
-u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length)
+char* statBuffStrings1[] = {
+		"Attack",
+		"Defence",
+		"Speed",
+		"Special Attack",
+		"Special Defence",
+		"Accuracy",
+		"Evasiveness"
+};
+
+char* statBuffStrings2[2][3] = {
+		{
+				"rose",
+				"rose sharply",
+				"rose drastically"
+		},
+		{
+				"fell",
+				"harshly fell",
+				"severely fell"
+		}
+};
+
+u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex)
 {
 	u32 index = 0;
 	u32 pos = 0;
@@ -62,13 +102,13 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length)
 					{
 						char* pointer = 0;
 						u32 length = 0;
-						char c = stringSource[index + 1];
+						char c = stringSource[pos + 1];
 						if (c < 12)
 						{
 							length = localBuffersTable[(u32)c].index;
 							pointer = (char*)localBuffersTable[(u32)c].pointerToData;
 						}
-						index += StringCopyWithBufferChecks(&(stringDest[index]), pointer, length);
+						index += StringCopyWithBufferChecks(stringDest, pointer, length, index);
 						pos += 2;
 						currentChar = stringSource[pos];
 						break;
@@ -81,13 +121,68 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length)
 						// Therefore this is largely a placeholder for the mean time
 						char* pointer = 0;
 						u32 length = 0;
-						char c = stringSource[index + 1];
-						if (c < 12)
+						char c = stringSource[pos + 1];
+						switch (c)
 						{
-							length = localBuffersTable[(u32)c].index;
-							pointer = (char*)localBuffersTable[(u32)c].pointerToData;
+							case 0:
+								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].mainPointer, Nickname);
+								break;
+							case 1:
+								index += StringCopyWithBufferChecks(stringDest, "Foe ", 0, index);
+								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].mainPointer, Nickname);
+								break;
+							case 2:
+								pointer = (char*)&abilityNames[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].ability][0];
+								break;
+							case 3:
+								pointer = (char*)&abilityNames[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].ability][0];
+								break;
+							case 4:
+							{
+								u16 move = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
+								if (move <= NumMoves)
+								{
+									pointer = (char*)&moveNames[move];
+								}
+								else
+								{
+									pointer = (char*)&moveNames[0];
+								}
+								break;
+							}
+							case 5:
+							{
+								u16 move = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
+								if (move <= NumMoves)
+								{
+									pointer = (char*)&moveNames[move];
+								}
+								else
+								{
+									pointer = (char*)&moveNames[0];
+								}
+								break;
+							}
+							case 6:
+							{
+								pointer = statBuffStrings1[battleDataPointer[0].battleBanks[CurrentEffectID]];
+								break;
+							}
+							case 7:
+							{
+								u32 power = battleDataPointer[0].battleBanks[CurrentEffectPower];
+								u32 direction = (power & 0x80) >> 7;
+								power = (power & 0x70) >> 4;
+								power--;
+								if (power > 2)
+								{
+									power = 0;
+								}
+								pointer = statBuffStrings2[direction][power];
+								break;
+							}
 						}
-						index += StringCopyWithBufferChecks(*(&stringDest[index]), pointer, length);
+						index += StringCopyWithBufferChecks(stringDest, pointer, length, index);
 						pos += 2;
 						currentChar = stringSource[pos];
 						break;
@@ -96,13 +191,13 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length)
 			}
 			else
 			{
-				stringDest[index] = currentChar;
+				stringDest[index + secondaryIndex] = currentChar;
 				index++;
 				pos++;
 				currentChar = stringSource[pos];
 			}
 		}
-		stringDest[index] = currentChar;
+		stringDest[index + secondaryIndex] = currentChar;
 	}
 	return index;
 }
@@ -297,7 +392,7 @@ void DrawString(char* string, u8 x, u8 y, u8 colour)
 	if (string != 0)
 	{
 		char* newString = (char*)MemoryAllocate(100 * sizeof(char));
-		StringCopyWithBufferChecks(newString, string, 0);
+		StringCopyWithBufferChecks(newString, string, 0, 0);
 		//tte_set_pos(x, y);
 		tte_printf(posString, x, y);
 		tte_printf(newString);
@@ -326,11 +421,15 @@ void DrawStringOverTimeMain(u32 pointer)
 				data[0].currentX = currentX + pokefont_b4Font.widths[(u32)c];
 			}
 			data[0].currentY = currentY;
-			data[0].framesToWait = data[0].textSpeed;
+			data[0].framesToWait = (IsKeyDown(Key_B)) ? data[0].textSpeed << 1 : data[0].textSpeed;
 			data[0].stringPosition++;
 		}
 		else
 		{
+			if (data[0].EndFunction)
+			{
+				data[0].EndFunction();
+			}
 			RemoveFunctionByPointer(&DrawStringOverTimeMain);
 			MemoryDeallocate(data[0].string);
 			MemoryDeallocate(data);
@@ -342,7 +441,7 @@ void DrawStringOverTimeMain(u32 pointer)
 	}
 }
 
-void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour)
+void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour, void (*endFunction)(void))
 {
 	if (string != 0)
 	{
@@ -354,18 +453,17 @@ void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour)
 		else
 		{
 			char* newString = (char*)MemoryAllocate(100 * sizeof(char));
-			StringCopyWithBufferChecks(newString, string, 0);
+			StringCopyWithBufferChecks(newString, string, 0, 0);
 			TextOverTimeStruct* data = (TextOverTimeStruct*)MemoryAllocate((sizeof(TextOverTimeStruct)));
 			data[0].string = newString;
 			data[0].currentX = x;
 			data[0].initialX = x;
 			data[0].currentY = y;
 			data[0].framesToWait = 0;
-			data[0].textSpeed = 2 << player.textSpeed;
+			data[0].textSpeed = 2 - player.textSpeed;
 			data[0].stringPosition = 0;
 			data[0].colour = colour;
-			memset32((void*)0x0600C000, 0x11111111, 0x8C0);
-			memcpy32((void*)TilePaletteRAM(14), &pauseOutlinePalette, 8);
+			data[0].EndFunction = endFunction;
 			AddFunction(&DrawStringOverTimeMain, (u32)data);
 		}
 	}

@@ -11,6 +11,7 @@
 #include "Functions\LoadUnalignedCode.h"
 #include "Functions\Pokemon.h"
 #include "Functions\Maths.h"
+#include "Functions\TextFunctions.h"
 #include "libbattlescripts.h"
 
 #define FALSE 0
@@ -39,6 +40,18 @@ const ALIGN(1) u8 typeStrengths[18][18] = { { 100, 100, 100, 100, 100, 50, 100, 
 		{ 100, 100, 100, 100, 100, 100, 100, 100, 50, 100, 100, 100, 100, 100, 100, 200, 100, 0 },
 		{ 100, 50, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 50, 50 },
 		{ 100, 200, 100, 50, 100, 100, 100, 100, 50, 50, 100, 100, 100, 100, 100, 200, 200, 100 }
+};
+
+const ALIGN(1) u8 foresightOverrides[][3] = {
+		{ Type_Normal, Type_Ghost, 100 },
+		{ Type_Fighting, Type_Ghost, 100 },
+		{ Type_Ghost, Type_Normal, 100 },
+		{ Type_None, Type_None, 0 }
+};
+
+const ALIGN(1) u8 miracleEyeOverrides[][3] = {
+		{ Type_Psychic, Type_Dark, 100 },
+		{ Type_None, Type_None, 0 }
 };
 
 const ALIGN(1) u8 criticalHitLikelihoods[] = {
@@ -408,14 +421,24 @@ u8 CheckForMoveCancellingStatuses()
 
 		}
 	}
-	if (attacker[0].ability == Normalise)
+	if (attacker[0].battleStatusFlagsBank2.electrified)
+	{
+		battleDataPointer[0].flags.moveTypeOverride = 1;
+		battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Electric;
+	}
+	else if (attacker[0].ability == Normalise)
 	{
 		battleDataPointer[0].flags.moveTypeOverride = 1;
 		battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Normal;
 	}
 	else if (moveInfo[0].type == Type_Normal)
 	{
-		if (attacker[0].ability == Aerilate)
+		if (battleDataPointer[0].flags.ionDeluge)
+		{
+			battleDataPointer[0].flags.moveTypeOverride = 1;
+			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Electric;
+		}
+		else if (attacker[0].ability == Aerilate)
 		{
 			battleDataPointer[0].flags.moveTypeOverride = 1;
 			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Flying;
@@ -538,6 +561,13 @@ u8 HitMissCalculation()
 	u32 accuracy = moveInfo[0].accuracy;
 	if (accuracy != 0)
 	{
+		if ((defender[0].battleStatusFlags.chargingDive && moveInfo[0].specialFlagsStruct.hitsThroughDive == 0) ||
+				(defender[0].battleStatusFlags.chargingFly && moveInfo[0].specialFlagsStruct.hitsThroughFly == 0) ||
+				(defender[0].battleStatusFlags.chargingDig && moveInfo[0].specialFlagsStruct.hitsThroughDig == 0))
+		{
+			battleScriptPointer = (u8*)LoadUnalignedNumber(battleScriptPointer, 1, 4);
+			return NotEnded;
+		}
 		accuracy *= evasionAccuracyChart[attacker[0].statLevels[Accuracy]];
 		if (moveInfo[0].effectID == Effects_Sacred_Sword)
 		{
@@ -555,6 +585,33 @@ u8 HitMissCalculation()
 	}
 	battleScriptPointer += 5;
 	return NotEnded;
+}
+
+void StopBattleScriptTextWait()
+{
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 0;
+	battleDataPointer[0].flags.battleScriptTextContinueFlag = 1;
+}
+
+const char pokemonUsedString[] = { 0xFD, 0x0, ' ', 'u', 's', 'e', 'd', ' ', 0xFD, 0x4, '!', '\0' };
+
+u8 PokemonUsedMessage()
+{
+	if (battleDataPointer[0].flags.battleScriptTextContinueFlag)
+	{
+		battleDataPointer[0].flags.battleScriptTextContinueFlag = 0;
+		battleScriptPointer++;
+		return NotEnded;
+	}
+	else if (battleDataPointer[0].flags.battleScriptTextWaitFlag)
+	{
+		return WaitForFrames;
+	}
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	SetTextColour(1, 6, 0);
+	SetTextPaletteSlot(0);
+	DrawStringOverTime((char*)&pokemonUsedString, 0, 0, 15, &StopBattleScriptTextWait);
+	return WaitForFrames;
 }
 
 u8 DecrementPP()
@@ -610,23 +667,46 @@ u32 ApplyWeatherBasedModifiers(u32 currentDamage, u32 moveType)
 	return currentDamage;
 }
 
+u32 CheckAdditionalTypeEffects(u32 defenderType, u32 moveType, u32 currentEffect, u8Array* dataArray)
+{
+	u32 i = 0;
+	while (dataArray[i][0] != Type_None)
+	{
+		if (dataArray[i][0] == moveType && defenderType == dataArray[i][1])
+		{
+			currentEffect = dataArray[i][2];
+			break;
+		}
+		i++;
+	}
+	return currentEffect;
+}
+
 u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveType)
 {
 	u32 defenderType1 = defender[0].type1;
 	u32 defenderType2 = defender[0].type2;
 	if (moveType > Type_Fairy)
 	{
-		moveType = 0;
+		moveType = Type_Normal;
 	}
 	if (defenderType1 > Type_Fairy)
 	{
-		defenderType1 = 0;
+		defenderType1 = Type_Normal;
 	}
 	if (defenderType2 > Type_Fairy)
 	{
-		defenderType2 = 0;
+		defenderType2 = Type_Normal;
 	}
 	u32 typeValue = typeStrengths[moveType][defenderType1];
+	if (defender[0].battleStatusFlags.foresight)
+	{
+		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8Array*)&foresightOverrides);
+	}
+	else if (defender[0].battleStatusFlagsBank2.miracleEye)
+	{
+		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8Array*)&miracleEyeOverrides);
+	}
 	u32 currentEffectiveness = NoEffect;
 	switch (typeValue)
 	{
@@ -643,6 +723,14 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 	if (defenderType2 != defenderType1)
 	{
 		u32 typeValue = typeStrengths[moveType][defenderType2];
+		if (defender[0].battleStatusFlags.foresight)
+		{
+			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8Array*)&foresightOverrides);
+		}
+		else if (defender[0].battleStatusFlagsBank2.miracleEye)
+		{
+			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8Array*)&miracleEyeOverrides);
+		}
 		switch (typeValue)
 		{
 			case 0:
@@ -681,11 +769,19 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 	u32 defenderType3 = defender[0].type3;
 	if (defenderType3 > Type_Fairy)
 	{
-		defenderType3 = 0;
+		defenderType3 = Type_Normal;
 	}
 	if (defender[0].battleStatusFlags.tertiaryTypeActive && (defenderType1 != defenderType3) && (defenderType2 != defenderType3))
 	{
 		u32 typeValue = typeStrengths[moveType][defenderType3];
+		if (defender[0].battleStatusFlags.foresight)
+		{
+			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8Array*)&foresightOverrides);
+		}
+		else if (defender[0].battleStatusFlagsBank2.miracleEye)
+		{
+			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8Array*)&miracleEyeOverrides);
+		}
 		switch (typeValue)
 		{
 			case 0:
@@ -2076,15 +2172,15 @@ u8 ExecuteDamageReceptionAnimation()
 			break;
 		case EighthDamage: case QuarterDamage: case HalfDamage:
 			// Play not effective SFX
-			battleDataPointer[0].flags.waitForMoveAnimation = 1;
+			//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 			break;
 		case NormalDamage:
 			// Play normal effectiveness SFX
-			battleDataPointer[0].flags.waitForMoveAnimation = 1;
+			//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 			break;
 		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
 			// Play super effective SFX
-			battleDataPointer[0].flags.waitForMoveAnimation = 1;
+			//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 			break;
 	}
 	battleScriptPointer++;
@@ -2094,9 +2190,16 @@ u8 ExecuteDamageReceptionAnimation()
 u8 ApplyCalculatedDamage()
 {
 	PokemonBattleData* defender = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]];
-	if (defender[0].currentHP < battleDataPointer[0].battleDamage)
+	if (defender[0].currentHP <= battleDataPointer[0].battleDamage)
 	{
-		defender[0].currentHP = 0;
+		if (moveData[battleDataPointer[0].moveIndex].effectID == Effects_False_Swipe)
+		{
+			defender[0].currentHP = 1;
+		}
+		else
+		{
+			defender[0].currentHP = 0;
+		}
 	}
 	else
 	{
@@ -2150,6 +2253,58 @@ u8 FaintIfNecessary()
 	return NotEnded;
 }
 
+u8 CalculateExperience()
+{
+	battleDataPointer[0].battleDamage = CalculateExperience();
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 ApplyEVs()
+{
+	PokemonBattleData* attacker = (PokemonBattleData*)&battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]];
+	PokemonBattleData* defender = (PokemonBattleData*)&battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]];
+	{
+		u32 evGain = GetEVGainFromPokemon(defender[0].mainPointer);
+		u32 i;
+		u32 primaryItemCheck = (GetItemEffect(attacker[0].heldItem) == Item_Effect_Boost_EVs);
+		u32 value = GetSecondaryItemEffect(attacker[0].heldItem);
+		for (i = 0; i < 6; i++)
+		{
+			if (SumEVs(&attacker[0].mainPointer[0].mainData) == 510)
+			{
+				break;
+			}
+			u32 evBoost = (evGain & (3 << (i << 1))) >> (i << 1);
+			if (primaryItemCheck)
+			{
+				if (value == 0)
+				{
+					evBoost <<= 1;
+				}
+				else if ((value - 1) == i)
+				{
+					evBoost += 4;
+				}
+			}
+			if (PokemonDecrypter(attacker[0].mainPointer, PokerusStatus))
+			{
+				evBoost <<= 1;
+			}
+			evBoost = min(0xFF, evBoost + PokemonDecrypter(attacker[0].mainPointer, HP_EV + i));
+			if (AllowEVAddition(&attacker[0].mainPointer[0].mainData, evBoost, i))
+			{
+				PokemonEncrypter(attacker[0].mainPointer, HP_EV + i, evBoost);
+			}
+			else
+			{
+				PokemonEncrypter(attacker[0].mainPointer, HP_EV + i, PokemonDecrypter(attacker[0].mainPointer, HP_EV + i) + (510 - SumEVs(&attacker[0].mainPointer[0].mainData)));
+			}
+		}
+	}
+	return NotEnded;
+}
+
 u8 ApplyMoveEffects()
 {
 	u32 i;
@@ -2179,11 +2334,13 @@ u8 ApplyMoveEffects()
 			}
 			u32 secondaryInformation = moveData[battleDataPointer[0].moveIndex].secondaryInformation;
 			effectID &= 0x3F;
+			battleDataPointer[0].battleBanks[CurrentEffectID] = effectID;
 			switch (effectID)
 			{
 				case ChangeStat:
 				{
 					u32 strength = battleDataPointer[0].moveEffectsExtraInfo[i];
+					battleDataPointer[0].battleBanks[CurrentEffectPower] = strength;
 					u32 stat = strength & 7;
 					u32 direction = (strength & 0x80) >> 7;
 					strength = (strength & 0x70) >> 4;
@@ -2420,8 +2577,8 @@ u8 PauseBattleScript()
 
 u8 PauseBattleScriptIfTextRendering()
 {
-	u32 textRendering = true;
-	if (battleScriptFrameWait == 0 && textRendering == true)
+	u32 textRendering = battleDataPointer[0].flags.battleScriptTextWaitFlag || battleDataPointer[0].flags.battleScriptTextContinueFlag;
+	if (battleScriptFrameWait == 0 && textRendering)
 	{
 		battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2);
 		return WaitForFrames;
@@ -2494,3 +2651,66 @@ u8 EndScript()
 {
 	return Ended;
 }
+
+const ALIGN(1) RODATA_LOCATION char* critMessage = "It's a critical hit!";
+
+u8 PrintCriticalHitMessage()
+{
+	if (battleDataPointer[0].flags.criticalHitFlag)
+	{
+		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+		DrawStringOverTime(critMessage, 0, 0, 15, &StopBattleScriptTextWait);
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+const ALIGN(1) RODATA_LOCATION char* notEffectiveMessage = "It's not very effective...";
+const ALIGN(1) RODATA_LOCATION char* superEffectiveMessage = "It's super effective!";
+const ALIGN(1) RODATA_LOCATION char* noEffectMessage = "It has no effect!";
+
+u8 PrintEffectivenessMessage()
+{
+	switch (battleDataPointer[0].flags.attackEffectiveness)
+	{
+		case NoEffect:
+			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+			DrawStringOverTime(noEffectMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			break;
+		case EighthDamage: case QuarterDamage: case HalfDamage:
+			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+			DrawStringOverTime(notEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			break;
+		case NormalDamage:
+			break;
+		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
+			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+			DrawStringOverTime(superEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			break;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 PrintMessageByPointer()
+{
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	DrawStringOverTime((char*)LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, 15, &StopBattleScriptTextWait);
+	battleScriptPointer += 5;
+	return NotEnded;
+}
+
+const ALIGN(1) char statBuffString[] = { 0xFD, 0x1, '\'', 's', ' ', 0xFD, 0x6, '\n', 0xFD, 0x7, '!', '\0' };
+
+char* textTable[] = {
+		&statBuffString
+};
+
+u8 PrintMessageByID()
+{
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	DrawStringOverTime(textTable[LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, 15, &StopBattleScriptTextWait);
+	battleScriptPointer += 2;
+	return NotEnded;
+}
+

@@ -51,7 +51,7 @@ enum ItemCategories { Category_Items, Category_KeyItems, Category_Berries, Categ
 
 enum Abilities { NoAbility, Stench, Magician, Rock_Head, Moxie, Poison_Touch, Static, Colour_Change, Shield_Dust, Rough_Skin, Effect_Spore, Synchronise, Poison_Point, Flame_Body, Cute_Charm, Steadfast, Anger_Point, Pickpocket, Cursed_Body, Weak_Armour, Mummy, Justified, Rattled, Iron_Barbs, Gooey, Aftermath, Drizzle, Drought, Sand_Stream, Snow_Warning, Trace, Forecast, Intimidate, Download, Anticipation, Forewarn, Illusion, Imposter, Volt_Absorb, Water_Absorb, Sap_Sipper, Flash_Fire, Motor_Drive, Sand_Veil, Compound_Eyes, Swift_Swim, Chlorophyll, Hustle, Plus, Minus, Marvel_Scale, Tangled_Feet, Quick_Feet, Sand_Rush, Victory_Star, Rivalry, Snow_Cloak, Unburden, Solar_Power, Grass_Pelt, Defiant, Competitive, Huge_Power, Guts, Pure_Power, Sheer_Force, Toxic_Boost, Flare_Boost, Sand_Force, Strong_Jaw, Iron_Fist, Overgrow, Blaze, Torrent, Swarm, Reckless, Technician, Analytic, Adaptability, Mega_Launcher, Tough_Claws, Dark_Aura, Fairy_Aura, Clear_Body, Keen_Eye, Hyper_Cutter, White_Smoke, Big_Pecks, Flower_Veil, Leaf_Guard, Wonder_Guard, Levitate, Soundproof, Bulletproof, Lightning_Rod, Storm_Drain, Natural_Cure, Rain_Dish, Ice_Body, Poison_Heal, Cheek_Pouch, Hydration, Healer, Regenerator, Shed_Skin, Dry_Skin, Normalise, Protean, Refrigerate, Pixilate, Aerilate, Mould_Breaker, Turboblaze, Teravolt, Stall, Prankster, Gale_Wings, Speed_Boost, Battle_Armour, Sturdy, Damp, Limber, Oblivious, Cloud_Nine, Insomnia, Immunity, Own_Tempo, Suction_Cups, Shadow_Tag, Serene_Grace, Inner_Focus, Magma_Armour, Water_Veil, Magnet_Pull, Pressure, Thick_Fat, Early_Bird, Run_Away, Pickup, Truant, Sticky_Hold, Liquid_Ooze, Arena_Trap, Vital_Spirit, Shell_Armour, Air_Lock, Gluttony, Heatproof, Simple, Skill_Link, Sniper, Magic_Guard, No_Guard, Klutz, Super_Luck, Unaware, Tinted_Lens, Filter, Solid_Rock, Slow_Start, Scrappy, Frisk, Multitype, Flower_Gift, Bad_Dreams, Contrary, Unnerve, Defeatist, Friend_Guard, Heavy_Metal, Light_Metal, Multiscale, Harvest, Telepathy, Moody, Overcoat, Wonder_Skin, Infiltrator, Magic_Bounce, Zen_Mode, Aroma_Veil, Fur_Coat, Sweet_Veil, Stance_Change, Symbiosis, Aura_Break, Illuminate, Honey_Gather };
 
-enum CryptionIndices { PersonalityID, OTID, Nickname, FormeIndex, Gender, Nature, ForcedShiny, OTName, Mark, Checksum, IsObedient, Species, HeldItem, Move1, Move2, Move3, Move4, Move1PP, Move2PP, Move3PP, Move4PP, PPBonuses, Coolness, Beauty, Cuteness, Experience, HP_EV, Attack_EV, Defence_EV, Speed_EV, Special_Attack_EV, Special_Defence_EV, Friendship, Smartness, PokerusStatus, MetLocation, CaptureLevel, IsObedient2, PokeBall, HP_IV, Attack_IV, Defence_IV, Speed_IV, Special_Attack_IV, Special_Defence_IV, IsEgg, Ability, Toughness, Feel, Type1, Type2, IsObedient3, IsObedient4, IsObedient5, IsObedient6, StatusAilment, Level, CurrentHP, MaximumHP, Attack, Defence, Speed, SpecialAttack, SpecialDefence, IsObedient7 };
+enum CryptionIndices { PersonalityID, OTID, Nickname, FormeIndex, Gender, Nature, ForcedShiny, OTName, Mark, Checksum, IsObedient, Species, HeldItem, Move1, Move2, Move3, Move4, Move1PP, Move2PP, Move3PP, Move4PP, PPBonuses, Coolness, Beauty, Cuteness, Experience, HP_EV, Attack_EV, Defence_EV, Speed_EV, Special_Attack_EV, Special_Defence_EV, Friendship, Smartness, PokerusStatus, MetLocation, CaptureLevel, IsObedient2, PokeBall, HP_IV, Attack_IV, Defence_IV, Speed_IV, Special_Attack_IV, Special_Defence_IV, IsEgg, Ability, Toughness, Feel, Type1, Type2, PokerusStrain, PokerusDuration, IsObedient5, IsObedient6, StatusAilment, Level, CurrentHP, MaximumHP, Attack, Defence, Speed, SpecialAttack, SpecialDefence, IsObedient7 };
 
 enum EvolutionTypes { NoEvolution, MaxHappiness, MaxHappinessTimeDependent, LevelUp, LevelUpWithStatBalance, LevelUpWithPersonality, LevelUpGender, LevelUpTimeDependent, LevelUpWithHeldItem, LevelUpWithHeldItemTimeDependent, LevelUpWithKnownMove, LevelUpWithKnownMoveType, LevelUpWithSpeciesInParty, LevelUpWithTypeInParty, LevelUpInMapName, LevelUpInSpecificMap, LevelUpWithWeatherOnOverworld, MaxBeauty, CreatesPokemon, Trade, TradeWhileHoldingItem, TradeWithSpecificSpecies, ItemUsed, ItemWithConditionUsed };
 
@@ -75,7 +75,7 @@ enum PokedexModes {	Regional, National };
 
 enum BattleStats { BattleAttack, BattleDefence, BattleSpeed, BattleSpecialAttack, BattleSpecialDefence, Accuracy, Evasion, NumBattleStats };
 
-enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, NumBattleBanks };
+enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, CurrentEffectID, CurrentEffectPower, NumBattleBanks };
 
 enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 
@@ -85,7 +85,7 @@ enum MoveSelections { SelectedMove0, SelectedMove1, SelectedMove2, SelectedMove3
 
 enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
-enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst };
+enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst, Effects_False_Swipe };
 
 enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
 
@@ -103,7 +103,7 @@ enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Mov
 
 enum BattleOrderIndices { PokemonOneFirst, PokemonTwoFirst };
 
-enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp };
+enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs };
 
 enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
 
@@ -548,7 +548,10 @@ typedef struct MoveFlagsStruct {
 	u8 punching:1;
 	u8 sheerForceBlockable:1;
 	u8 specialistDamageRoutine:1;
-	u8 unused:4;
+	u8 hitsThroughDig:1;
+	u8 hitsThroughFly:1;
+	u8 hitsThroughDive:1;
+	u8 unused:1;
 } MoveFlagsStruct;
 
 typedef struct MoveData {
@@ -637,7 +640,7 @@ typedef struct KeyBuffer {
 } KeyBuffer;
 
 typedef struct PreOAMStruct {
-	void (*StateFunction)(u32);
+	void (*StateFunction)(struct PreOAMStruct*);
 	u32 stateFunctionInfo;
 	void* tileLocation;
 	u16* paletteLocation;
@@ -653,7 +656,13 @@ typedef struct PreOAMStruct {
 	u32 hFlip:1;
 	u32 vFlip:1;
 	u32 slotOccupied:1;
-	u32 unused:27;
+	u32 mosaic:1;
+	u32 colourMode:1;
+	u32 mode:2;
+	u32 rotationFlag:1;
+	u32 disableDoubleFlag:1;
+	u32 rotScaleParam:5;
+	u32 unused:16;
 } PreOAMStruct;
 
 typedef struct ConnectionStruct {
@@ -706,6 +715,11 @@ typedef struct DexEntry {
 	u8* textPointer;
 } DexEntry;
 
+typedef struct PokerusField {
+	u8 duration:4;
+	u8 strain:4;
+} PokerusField;
+
 typedef struct AbridgedPokemon {
 	u32 personalityID;
 	u32 originalTrainerID;
@@ -754,7 +768,11 @@ typedef struct AbridgedPokemon {
 	u8 pokeBall:7;
 	u8 metLocation;
 	u8 catchLevel;
-	u8 originsInfo;
+	union
+	{
+		u8 pokerusInformation;
+		PokerusField pokerusInformationField;
+	};
 	u32 hpIV:5;
 	u32 attackIV:5;
 	u32 defenceIV:5;
@@ -784,7 +802,7 @@ typedef struct Pokemon {
 		PrimaryStatusStruct statusAilmentBits;
 	};
 	u8 level;
-	u8 pokerusRemaining;
+	u8 alignment;
 	u16 currentHP;
 	u16 maximumHP;
 	u16 attack;
@@ -937,8 +955,14 @@ typedef struct BattleStatusStruct {
 	u32 waterSport:1;
 	u32 flashFireTriggered:1;
 	u32 transformed:1;
-	u32 data:1;
+	u32 foresight:1;
 } BattleStatusStruct;
+
+typedef struct BattleStatusStructTwo {
+	u32 miracleEye:1;
+	u32 electrified:1;
+	u32 unused:30;
+} BattleStatusStructTwo;
 
 typedef struct PokemonBattleData {
 	Pokemon* mainPointer;
@@ -978,6 +1002,11 @@ typedef struct PokemonBattleData {
 		u32 battleFlags;
 		BattleStatusStruct battleStatusFlags;
 	};
+	union
+	{
+		u32 battleFlagsBank2;
+		BattleStatusStructTwo battleStatusFlagsBank2;
+	};
 	u16 damageReceivedThisTurn;
 	u16 damageReceivedLastTurn;
 } PokemonBattleData;
@@ -996,7 +1025,10 @@ typedef struct BattleFlagsStruct {
 	u32 waitForMoveAnimation:1;
 	u32 extraEffectBlock:1;
 	u32 echoedVoiceRaisedThisTurn:1;
-	u32 unused:15;
+	u32 battleScriptTextWaitFlag:1;
+	u32 battleScriptTextContinueFlag:1;
+	u32 ionDeluge:1;
+	u32 unused:12;
 } BattleFlagsStruct;
 
 typedef struct BattleWeatherBits {
@@ -1088,6 +1120,7 @@ typedef struct StatChangeStruct {
 
 typedef struct OAMData {
 	void (*stateFunction)(u32);
+	u32 stateFunctionData;
 	u8 paletteSlot;
 	u8 priority:4;
 	u8 hFlip:1;
@@ -1101,17 +1134,28 @@ typedef struct OAMData {
 typedef struct TextOverTimeStruct {
 	char* string;
 	u32 stringPosition;
+	void (*EndFunction)(void);
 	u8 currentX;
 	u8 currentY;
 	u8 initialX;
 	u8 framesToWait;
 	u8 textSpeed;
 	u8 colour;
+	u16 alignment;
 } TextOverTimeStruct;
+
+typedef struct UpAndDownStruct {
+	u32 frameDelayLength:8;
+	u32 frameDelay:8;
+	u32 currentPosition:1;
+	u32 unused:15;
+} UpAndDownStruct;
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 
 typedef u32 (*U32FunctionPointerU32)(u32);
+
+typedef u8 u8Array[3];
 
 #endif // TOOLBOX_H
 

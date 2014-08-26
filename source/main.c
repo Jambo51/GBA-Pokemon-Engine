@@ -76,8 +76,6 @@ void FadeToBlackPreGameStart()
 
 int main()
 {
-
-
 	StartTimer(2, 0, 0);
 	StartTimer(3, 1, 0);
 	InitialiseTextEngine(TEXTSET);

@@ -7,6 +7,7 @@ Script_Standard_Attack:
 	.byte	MoveCanceler
 	.byte	AccuracyCheck
 	.word	Script_Attack_Missed
+	.byte	PrintUseMessage
 	.byte	ReducePP
 	.byte	CalculateDamage
 	.byte	ExecuteMoveAnimation

@@ -37,7 +37,12 @@ const u8 (*battleScriptCommandTable[])(void) = {
 		&PauseBattleScript,
 		&PauseBattleScriptIfTextRendering,
 		&UpdateCounters,
-		&EndScript
+		&EndTurn,
+		&EndScript,
+		&PrintCriticalHitMessage,
+		&PrintEffectivenessMessage,
+		&PrintMessageByPointer,
+		&PrintMessageByID
 };
 
 u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))

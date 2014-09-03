@@ -125,12 +125,25 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 						switch (c)
 						{
 							case 0:
-								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].mainPointer, Nickname);
+							{
+								u32 bank = battleDataPointer[0].battleBanks[User];
+								if (bank & 1)
+								{
+									index += StringCopyWithBufferChecks(stringDest, "Foe ", 0, index);
+								}
+								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
+							}
 							case 1:
-								index += StringCopyWithBufferChecks(stringDest, "Foe ", 0, index);
-								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].mainPointer, Nickname);
+							{
+								u32 bank = battleDataPointer[0].battleBanks[Target];
+								if (bank & 1)
+								{
+									index += StringCopyWithBufferChecks(stringDest, "Foe ", 0, index);
+								}
+								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
+							}
 							case 2:
 								pointer = (char*)&abilityNames[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].ability][0];
 								break;
@@ -139,7 +152,8 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 								break;
 							case 4:
 							{
-								u16 move = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
+								u32 bank = battleDataPointer[0].battleBanks[User];
+								u16 move = battleDataPointer[0].pokemonStats[bank].moves[battleDataPointer[0].moveSelections[bank]];
 								if (move <= NumMoves)
 								{
 									pointer = (char*)&moveNames[move];

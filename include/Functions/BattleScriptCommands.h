@@ -51,6 +51,11 @@ u8 ReturnFromCall();
 u8 PauseBattleScript();
 u8 PauseBattleScriptIfTextRendering();
 u8 UpdateCounters();
+u8 EndTurn();
 u8 EndScript();
+u8 PrintCriticalHitMessage();
+u8 PrintEffectivenessMessage();
+u8 PrintMessageByPointer();
+u8 PrintMessageByID();
 
 #endif /* BATTLESCRIPTCOMMANDS_H_ */

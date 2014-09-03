@@ -554,6 +554,13 @@ typedef struct MoveFlagsStruct {
 	u8 unused:1;
 } MoveFlagsStruct;
 
+typedef struct TargetsStruct {
+	u8 targetsSelf:1;
+	u8 hitsBothInDouble:1;
+	u8 hitsAllyInDouble:1;
+	u8 unused:5;
+} TargetsStruct;
+
 typedef struct MoveData {
 	u16 effectID;
 	u8 basePower;
@@ -561,7 +568,11 @@ typedef struct MoveData {
 	u8 accuracy;
 	u8 basePP;
 	u8 effectAccuracy;
-	u8 targets;
+	union
+	{
+		u8 targets;
+		TargetsStruct targetsStruct;
+	};
 	s8 priority;
 	union
 	{
@@ -1021,14 +1032,15 @@ typedef struct BattleFlagsStruct {
 	u32 waterAbsorbTriggered:1;
 	u32 levitateTriggered:1;
 	u32 sapSipperTriggered:1;
-	u32 damageTypeDealt:2;
+	u32 damageTypeDealt:4;
 	u32 waitForMoveAnimation:1;
 	u32 extraEffectBlock:1;
 	u32 echoedVoiceRaisedThisTurn:1;
 	u32 battleScriptTextWaitFlag:1;
 	u32 battleScriptTextContinueFlag:1;
 	u32 ionDeluge:1;
-	u32 unused:12;
+	u32 waitAttack:1;
+	u32 unused:9;
 } BattleFlagsStruct;
 
 typedef struct BattleWeatherBits {
@@ -1060,10 +1072,22 @@ typedef struct BattleObjects {
 	PreOAMStruct* battlers[4];
 } BattleObjects;
 
+typedef struct BattleAIData {
+
+} BattleAIData;
+
 typedef struct BattleData {
 	PokemonBattleData* pokemonStats;
 	u8 battleBanks[NumBattleBanks];
+	u8 mainSelection;
+	u8 internalSelection;
+	union
+	{
+		u8 selectorIndex;
+		u8 currentBattlerIndex;
+	};
 	u8 moveSelections[4];
+	u8 targets[4];
 	union
 	{
 		u8 battleOrder[4];
@@ -1100,6 +1124,7 @@ typedef struct BattleData {
 	};
 	BattleParticipantBits participantInfo;
 	BattleObjects objectPointers;
+	BattleAIData* battleAIData;
 } BattleData;
 
 typedef struct BattleTypeStruct {

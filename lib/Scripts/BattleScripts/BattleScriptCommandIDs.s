@@ -24,4 +24,9 @@
 .equ	Pause,		23
 .equ	PauseIfText,	24
 .equ	UpdateTurnCounters,	25
-.equ	End,	26
+.equ	EndTurn,	26
+.equ	End,	27
+.equ	CritMessage,	28
+.equ	EffectivenessMessage,	29
+.equ	PrintMessageByPointer,	30
+.equ	PrintMessageByID,	31

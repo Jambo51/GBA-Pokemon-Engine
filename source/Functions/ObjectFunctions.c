@@ -95,8 +95,8 @@ void UpdateOAMFromStructure()
 		}
 		if (preOAM[i].isActive == 1 && preOAM[i].requiresUpdate == 1)
 		{
-			oam[(i << 3)] = preOAM[i].xLocation | (preOAM[i].disableDoubleFlag << 9) | (preOAM[i].rotationFlag << 8) | (preOAM[i].mode << 10) | (preOAM[i].mosaic << 12) | (preOAM[i].colourMode << 13) | (preOAM[i].objShape << 14);
-			oam[(i << 3) + 1] = preOAM[i].yLocation | ((preOAM[i].rotationFlag) ? (preOAM[i].rotScaleParam << 9) : (preOAM[i].hFlip << 12) | (preOAM[i].vFlip << 13)) | (preOAM[i].objSize << 14);
+			oam[(i << 3)] = preOAM[i].yLocation | (preOAM[i].disableDoubleFlag << 9) | (preOAM[i].rotationFlag << 8) | (preOAM[i].mode << 10) | (preOAM[i].mosaic << 12) | (preOAM[i].colourMode << 13) | (preOAM[i].objShape << 14);
+			oam[(i << 3) + 1] = preOAM[i].xLocation | ((preOAM[i].rotationFlag) ? (preOAM[i].rotScaleParam << 9) : (preOAM[i].hFlip << 12) | (preOAM[i].vFlip << 13)) | (preOAM[i].objSize << 14);
 			oam[(i << 3) + 2] = (u32)preOAM[i].tileLocation | (preOAM[i].priority << 10)| (preOAM[i].paletteSlot << 12);
 			preOAM[i].requiresUpdate = 0;
 		}

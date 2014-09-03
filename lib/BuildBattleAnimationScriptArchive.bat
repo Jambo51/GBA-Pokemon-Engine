@@ -1,0 +1,1 @@
+make -f battleanimationscriptmake & pause

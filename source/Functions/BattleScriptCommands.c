@@ -13,6 +13,7 @@
 #include "Functions\Maths.h"
 #include "Functions\TextFunctions.h"
 #include "libbattlescripts.h"
+#include "libbattleanimscripts.h"
 
 #define FALSE 0
 #define TRUE 1
@@ -22,24 +23,25 @@
 
 #define GenVExperienceMethod TRUE
 
-const ALIGN(1) u8 typeStrengths[18][18] = { { 100, 100, 100, 100, 100, 50, 100, 0, 50, 100, 100, 100, 100, 100, 100, 100, 100, 100 },
-		{ 200, 100, 50, 50, 100, 200, 50, 0, 200, 100, 100, 100, 100, 50, 200, 100, 200, 50 },
-		{ 100, 200, 100, 100, 100, 50, 200, 100, 50, 100, 100, 200, 50, 100, 100, 100, 100, 100 },
-		{ 100, 100, 100, 50, 100, 50, 100, 50, 0, 100, 100, 200, 100, 100, 100, 100, 100, 200 },
-		{ 100, 100, 0, 200, 100, 200, 50, 100, 200, 200, 100, 50, 200, 100, 100, 100, 100, 100 },
-		{ 100, 50, 200, 100, 50, 100, 200, 100, 50, 200, 100, 100, 100, 100, 200, 100, 100, 100 },
-		{ 100, 50, 50, 50, 100, 100, 100, 50, 50, 50, 100, 200, 100, 200, 100, 100, 200, 50 },
-		{ 0, 100, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 200, 100 },
-		{ 100, 100, 100, 100, 100, 200, 100, 100, 50, 50, 50, 100, 100, 100, 200, 100, 100, 200 },
-		{ 100, 100, 100, 100, 100, 50, 200, 100, 200, 50, 50, 200, 100, 100, 200, 50, 100, 100 },
-		{ 100, 100, 100, 100, 200, 200, 100, 100, 100, 200, 50, 50, 100, 100, 100, 50, 100, 100 },
-		{ 100, 100, 50, 50, 200, 200, 50, 100, 50, 50, 200, 50, 100, 100, 100, 50, 100, 100 },
-		{ 100, 100, 200, 100, 0, 100, 100, 100, 100, 100, 200, 50, 50, 100, 100, 50, 100, 100 },
-		{ 100, 200, 100, 200, 100, 100, 100, 100, 50, 100, 100, 100, 100, 50, 100, 100, 0, 100 },
-		{ 100, 100, 200, 100, 200, 100, 100, 100, 50, 50, 50, 200, 100, 100, 50, 200, 100, 100 },
-		{ 100, 100, 100, 100, 100, 100, 100, 100, 50, 100, 100, 100, 100, 100, 100, 200, 100, 0 },
-		{ 100, 50, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 50, 50 },
-		{ 100, 200, 100, 50, 100, 100, 100, 100, 50, 50, 100, 100, 100, 100, 100, 200, 200, 100 }
+const ALIGN(1) u8 typeStrengths[18][18] = {
+		{ 100, 100, 100, 100, 100, 50, 100, 0, 50, 100, 100, 100, 100, 100, 100, 100, 100, 100 }, // Normal
+		{ 200, 100, 50, 50, 100, 200, 50, 0, 200, 100, 100, 100, 100, 50, 200, 100, 200, 50 }, // Fighting
+		{ 100, 200, 100, 100, 100, 50, 200, 100, 50, 100, 100, 200, 50, 100, 100, 100, 100, 100 }, // Flying
+		{ 100, 100, 100, 50, 100, 50, 100, 50, 0, 100, 100, 200, 100, 100, 100, 100, 100, 200 }, // Poison
+		{ 100, 100, 0, 200, 100, 200, 50, 100, 200, 200, 100, 50, 200, 100, 100, 100, 100, 100 }, // Ground
+		{ 100, 50, 200, 100, 50, 100, 200, 100, 50, 200, 100, 100, 100, 100, 200, 100, 100, 100 }, // Rock
+		{ 100, 50, 50, 50, 100, 100, 100, 50, 50, 50, 100, 200, 100, 200, 100, 100, 200, 50 }, // Bug
+		{ 0, 100, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 200, 100 }, // Ghost
+		{ 100, 100, 100, 100, 100, 200, 100, 100, 50, 50, 50, 100, 100, 100, 200, 100, 100, 200 }, // Steel
+		{ 100, 100, 100, 100, 100, 50, 200, 100, 200, 50, 50, 200, 100, 100, 200, 50, 100, 100 }, // Fire
+		{ 100, 100, 100, 100, 200, 200, 100, 100, 100, 200, 50, 50, 100, 100, 100, 50, 100, 100 }, // Water
+		{ 100, 100, 50, 50, 200, 200, 50, 100, 50, 50, 200, 50, 100, 100, 100, 50, 100, 100 }, // Grass
+		{ 100, 100, 200, 100, 0, 100, 100, 100, 100, 100, 200, 50, 50, 100, 100, 50, 100, 100 }, // Electric
+		{ 100, 200, 100, 200, 100, 100, 100, 100, 50, 100, 100, 100, 100, 50, 100, 100, 0, 100 }, // Psychic
+		{ 100, 100, 200, 100, 200, 100, 100, 100, 50, 50, 50, 200, 100, 100, 50, 200, 100, 100 }, // Ice
+		{ 100, 100, 100, 100, 100, 100, 100, 100, 50, 100, 100, 100, 100, 100, 100, 200, 100, 0 }, // Dragon
+		{ 100, 50, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 50, 50 }, // Dark
+		{ 100, 200, 100, 50, 100, 100, 100, 100, 50, 50, 100, 100, 100, 100, 100, 200, 200, 100 } // Fairy
 };
 
 const ALIGN(1) u8 foresightOverrides[][3] = {
@@ -607,6 +609,7 @@ u8 PokemonUsedMessage()
 	{
 		return WaitForFrames;
 	}
+	memset32((void*)0x0600C000, 0, 0xc00);
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 	SetTextColour(1, 6, 0);
 	SetTextPaletteSlot(0);
@@ -1589,7 +1592,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			{
 				factor = 7;
 			}
-			battleDataPointer[0].flags.damageTypeDealt |= (factor << 0x10);
+			battleDataPointer[0].flags.damageTypeDealt = factor;
 			returnable = moveInfo[0].basePower + (moveInfo[0].secondaryInformation * factor);
 			break;
 		}
@@ -2205,13 +2208,14 @@ u8 ApplyCalculatedDamage()
 	{
 		defender[0].currentHP -= battleDataPointer[0].battleDamage;
 	}
+	PokemonEncrypter(defender[0].mainPointer, CurrentHP, defender[0].currentHP);
 	battleScriptPointer++;
 	return NotEnded;
 }
 
 u8 UpdateHPBar()
 {
-	battleDataPointer[0].flags.waitForMoveAnimation = 1;
+	//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 	battleScriptPointer++;
 	return NotEnded;
 }
@@ -2578,10 +2582,18 @@ u8 PauseBattleScript()
 u8 PauseBattleScriptIfTextRendering()
 {
 	u32 textRendering = battleDataPointer[0].flags.battleScriptTextWaitFlag || battleDataPointer[0].flags.battleScriptTextContinueFlag;
-	if (battleScriptFrameWait == 0 && textRendering)
+	if (battleScriptFrameWait == 0)
 	{
-		battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2);
-		return WaitForFrames;
+		if (textRendering)
+		{
+			battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2);
+			return WaitForFrames;
+		}
+		else
+		{
+			battleScriptPointer += 3;
+			return NotEnded;
+		}
 	}
 	else
 	{
@@ -2647,17 +2659,25 @@ u8 UpdateCounters()
 	return NotEnded;
 }
 
+u8 EndTurn()
+{
+	battleDataPointer[0].flags.waitAttack = 0;
+	battleDataPointer[0].currentBattlerIndex++;
+	return Ended;
+}
+
 u8 EndScript()
 {
 	return Ended;
 }
 
-const ALIGN(1) RODATA_LOCATION char* critMessage = "It's a critical hit!";
+ALIGN(1) RODATA_LOCATION char* critMessage = "It's a critical hit!";
 
 u8 PrintCriticalHitMessage()
 {
 	if (battleDataPointer[0].flags.criticalHitFlag)
 	{
+		memset32((void*)0x0600C000, 0, 0xc00);
 		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 		DrawStringOverTime(critMessage, 0, 0, 15, &StopBattleScriptTextWait);
 	}
@@ -2665,25 +2685,28 @@ u8 PrintCriticalHitMessage()
 	return NotEnded;
 }
 
-const ALIGN(1) RODATA_LOCATION char* notEffectiveMessage = "It's not very effective...";
-const ALIGN(1) RODATA_LOCATION char* superEffectiveMessage = "It's super effective!";
-const ALIGN(1) RODATA_LOCATION char* noEffectMessage = "It has no effect!";
+RODATA_LOCATION char* notEffectiveMessage = "It's not very effective...";
+RODATA_LOCATION char* superEffectiveMessage = "It's super effective!";
+RODATA_LOCATION char* noEffectMessage = "It has no effect!";
 
 u8 PrintEffectivenessMessage()
 {
 	switch (battleDataPointer[0].flags.attackEffectiveness)
 	{
 		case NoEffect:
+			memset32((void*)0x0600C000, 0, 0xc00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(noEffectMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
 		case EighthDamage: case QuarterDamage: case HalfDamage:
+			memset32((void*)0x0600C000, 0, 0xc00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(notEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
 		case NormalDamage:
 			break;
 		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
+			memset32((void*)0x0600C000, 0, 0xc00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(superEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
@@ -2694,6 +2717,7 @@ u8 PrintEffectivenessMessage()
 
 u8 PrintMessageByPointer()
 {
+	memset32((void*)0x0600C000, 0, 0xc00);
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 	DrawStringOverTime((char*)LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, 15, &StopBattleScriptTextWait);
 	battleScriptPointer += 5;
@@ -2708,6 +2732,7 @@ char* textTable[] = {
 
 u8 PrintMessageByID()
 {
+	memset32((void*)0x0600C000, 0, 0xc00);
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 	DrawStringOverTime(textTable[LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, 15, &StopBattleScriptTextWait);
 	battleScriptPointer += 2;

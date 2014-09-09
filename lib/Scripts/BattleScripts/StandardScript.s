@@ -1,5 +1,5 @@
 	.include "BattleScriptCommandIDs.s"
-	.section .rodata
+	.text
 	.global Script_Standard_Attack
 	.global Script_Standard_Attack_Faint
 	.global Script_Standard_Attack_End

@@ -10,9 +10,11 @@
 
 // --- primary memory locations ---
 
-#define NumberofSeenCaughts ((NumberOfPokemon >> 8) << 8)
-#define BytesForFlagsBase (NumberOfPokemon >> 8)
-#define FlagsToBytes(n) (n >> 8)
+#define NumberofSeenCaughts ((NumberOfPokemon >> 3) << 3)
+#define NumberofTrainerBytes ((NumberOfTrainers >> 3) << 3)
+#define BytesForFlagsBase (NumberOfPokemon >> 3)
+#define BytesForTrainerflagsBase (NumberOfTrainers >> 3)
+#define FlagsToBytes(n) (n >> 3)
 #define PartyLength 6
 
 #if NumberofSeenCaughts == NumberOfPokemon
@@ -21,6 +23,11 @@ EWRAM_LOCATION ALIGN(1) u8 caughtFlags[BytesForFlagsBase];
 #else
 EWRAM_LOCATION ALIGN(1) u8 seenFlags[BytesForFlagsBase + 1];
 EWRAM_LOCATION ALIGN(1) u8 caughtFlags[BytesForFlagsBase + 1];
+#endif
+#if NumberofTrainerBytes == NumberOfTrainers
+EWRAM_LOCATION ALIGN(1) u8 trainerflags[BytesForTrainerflagsBase];
+#else
+EWRAM_LOCATION ALIGN(1) u8 trainerflags[BytesForTrainerflagsBase + 1];
 #endif
 EWRAM_LOCATION ALIGN(1) u8 formesToShowInDex[29];
 EWRAM_LOCATION ALIGN(1) u8 mainFlagBank[FlagsToBytes(0x2000)];
@@ -42,6 +49,8 @@ EWRAM_LOCATION ALIGN(4) u8* overworldScriptPointer;
 EWRAM_LOCATION ALIGN(2) u16 overworldScriptFrameWait;
 EWRAM_LOCATION ALIGN(4) u8* animationScriptPointer;
 EWRAM_LOCATION ALIGN(2) u16 animationScriptFrameWait;
+EWRAM_LOCATION ALIGN(4) u8* applyMovementScriptPointer[5];
+EWRAM_LOCATION ALIGN(4) u32 applyMovementStatus[5];
 ALIGN(4) RealTimeClock rtcData;
 ALIGN(2) s16 x;
 ALIGN(2) s16 y;

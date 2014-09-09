@@ -62,7 +62,7 @@ extern void SetPlayerName(char*);
 
 void SetPlayerName(char* nameString)
 {
-	StoreTextIntoBuffer(player.name, nameString, 10);
+	StoreTextIntoBuffer(player.name, nameString, PlayerNameLength);
 }
 
 void FadeToBlackPreGameStart()
@@ -101,8 +101,7 @@ int main()
 	SetFlag(Flag_Pokegear);
 	SetFlag(Flag_PokemonMenu);
 	GivePokemonToPlayer(&partyPokemon[0], 36, Charizard, 0);
-	GivePokemonToPlayer(&enemyPokemon[0], 29, Wartortle, 0);
-	temporaryHoldingPokemon = partyPokemon[0];
+	SetPlayerName("Jambo51");
 	while (1)
 	{
 		VBlankIntrWait();

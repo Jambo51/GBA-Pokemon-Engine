@@ -20,16 +20,21 @@
 #define ObjectTileBase(n) (0x06010000 + (n << 5))
 
 #define NumberOfPokemon 722
+#define NumberOfTrainers 5
+#define NumberOfFlags 0x2000
+#define PlayerNameLength 7
+#define MaxPlayerCash 9999999
 
 #include "tonc.h"
 #include <stdbool.h>
 
 typedef void (*FunctionPtr)(void);
+typedef char* String;
 
 // --- primary typedefs ---
 enum Times { Time_Day, Time_Morning, Time_Afternoon, Time_Night, Time_NumTimes };
 
-enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex };
+enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex, Flag_MumBank };
 
 enum Types { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None };
 
@@ -67,7 +72,7 @@ enum EggGroups { EGG_GROUP_MONSTER,	EGG_GROUP_WATER1, EGG_GROUP_BUG, EGG_GROUP_F
 
 enum WildDatOrders { GrassData, WaterData, TreeData, RockSmashData, FishingRodData, NumWildDatas };
 
-enum GBPStatusFlags { ModulationActivation, ModulationStatus, PortamentoActivation, PitchBendActivation, ArpeggiationActivation, ArpeggiationStatus };
+enum GBPStatusFlags { ModulationActivation, ModulationStatus, PortamentoActivation, PitchBendActivation, ArpeggiationActivation, ArpeggiationStatus, NumGBPEngineFlags };
 
 enum CaptureStates { ZeroShakesFailure, SingleShakeFailure, DoubleShakeFailure, TripleShakeFailure, TripleShakeSuccess, CriticalCaptureFailure, CriticalCaptureSuccess };
 
@@ -85,9 +90,9 @@ enum MoveSelections { SelectedMove0, SelectedMove1, SelectedMove2, SelectedMove3
 
 enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
-enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst, Effects_False_Swipe };
+enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst, Effects_False_Swipe, Effects_Max };
 
-enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfArray };
+enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfMoveEffect, JumpIfArray };
 
 enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, IfAnyBitsSet, IfNoBitsSet };
 
@@ -97,13 +102,13 @@ enum SecondaryMoveEffects { NoSecondaryEffect, ChangeStat, Sleep, Burn, Paralyse
 
 enum BattleTrackIDs { Track_Battle_Wild, Track_Battle_Rare_Wild, Track_Battle_Link, Track_Battle_Trainer, Track_Battle_Gym_Leader, Track_Battle_Elite_Four, Track_Battle_Champion, Track_Battle_Legendary, Track_Battle_Roaming, NumBattleTrackIDs };
 
-enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team };
+enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team, Class_Evil_Team_Duo, Class_Elite_Trainer };
 
 enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Move3, Selections_Move4, Selections_Roaming_Fleeing, Selections_Switch, Selections_Item, Selections_Flee };
 
 enum BattleOrderIndices { PokemonOneFirst, PokemonTwoFirst };
 
-enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs };
+enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs, Item_Effect_Double_Cash_Gain };
 
 enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
 
@@ -388,16 +393,18 @@ typedef struct Player {
 	u8 secondsPlayed;
 	u8 framesPlayed;
 	u8 gender;
-	char name[7];
-	char primaryRivalName[7];
-	char secondaryRivalName[7];
-	char tertiaryRivalName[7];
+	char name[PlayerNameLength];
+	char primaryRivalName[PlayerNameLength];
+	char secondaryRivalName[PlayerNameLength];
+	char tertiaryRivalName[PlayerNameLength];
 	u16 boxOutline:4;
 	u16 stereoSound:1;
 	u16 playAnimations:1;
 	u16 battleSwitchStyle:1;
 	u16 textSpeed:2;
 	u16 options:7;
+	u32 balance;
+	u32 mumBalance;
 } Player;
 
 typedef struct Buffer {
@@ -732,58 +739,58 @@ typedef struct PokerusField {
 } PokerusField;
 
 typedef struct AbridgedPokemon {
-	u32 personalityID;
-	u32 originalTrainerID;
-	char nickname[11];
-	u8 ability;
-	char originalTrainerName[7];
-	u8 mark;
-	u16 checksum;
-	u8 gender;
-	u8 nature;
-	u16 species;
-	u16 heldItem;
+	u32 personalityID; // 4
+	u32 originalTrainerID; // 8
+	char nickname[11]; // 19
+	u8 ability; // 20
+	char originalTrainerName[PlayerNameLength]; // 27
+	u8 mark; // 28
+	u16 checksum; // 30
+	u8 gender; // 31
+	u8 nature; // 32
+	u16 species; // 34
+	u16 heldItem; // 36
 	u32 experience:21;
 	u32 formeValue:9;
 	u32 forceShiny:1;
-	u32 hasHiddenAbility:1;
-	u8 ppBonuses;
+	u32 hasHiddenAbility:1; // 40
+	u8 ppBonuses; // 41
 	union
 	{
 		u8 friendship;
 		u8 eggCycleCounter;
-	};
-	u8 type1;
-	u8 type2;
-	u16 move1;
-	u16 move2;
-	u16 move3;
-	u16 move4;
-	u8 move1PP;
-	u8 move2PP;
-	u8 move3PP;
-	u8 move4PP;
-	u8 hpEV;
-	u8 attackEV;
-	u8 defenceEV;
-	u8 speedEV;
-	u8 specialAttackEV;
-	u8 specialDefenceEV;
-	u8 coolness;
-	u8 beauty;
-	u8 cuteness;
-	u8 smartness;
-	u8 toughness;
-	u8 feel;
+	}; // 42
+	u8 type1; // 43
+	u8 type2; // 44
+	u16 move1; // 46
+	u16 move2; // 48
+	u16 move3; // 50
+	u16 move4; // 52
+	u8 move1PP; // 53
+	u8 move2PP; // 54
+	u8 move3PP; // 55
+	u8 move4PP; // 56
+	u8 hpEV; // 57
+	u8 attackEV; // 58
+	u8 defenceEV; // 59
+	u8 speedEV; // 60
+	u8 specialAttackEV; // 61
+	u8 specialDefenceEV; // 62
+	u8 coolness; // 63
+	u8 beauty; // 64
+	u8 cuteness; // 65
+	u8 smartness; // 66
+	u8 toughness; // 67
+	u8 feel; // 68
 	u8 pokerusStatus:1;
-	u8 pokeBall:7;
-	u8 metLocation;
-	u8 catchLevel;
+	u8 pokeBall:7; // 69
+	u8 metLocation; // 70
+	u8 catchLevel; // 71
 	union
 	{
 		u8 pokerusInformation;
 		PokerusField pokerusInformationField;
-	};
+	}; // 72
 	u32 hpIV:5;
 	u32 attackIV:5;
 	u32 defenceIV:5;
@@ -791,8 +798,8 @@ typedef struct AbridgedPokemon {
 	u32 specialAttackIV:5;
 	u32 specialDefenceIV:5;
 	u32 isEgg:1;
-	u32 isObedient:1;
-	u32 ribbons;
+	u32 isObedient:1; // 76
+	u32 ribbons; // 80
 } AbridgedPokemon;
 
 typedef struct PrimaryStatusStruct {
@@ -802,25 +809,25 @@ typedef struct PrimaryStatusStruct {
 	u32 burned:1;
 	u32 poisoned:1;
 	u32 badlyPoisoned:1;
-	u32 badlyPoisonedCounter:21;
+	u32 badlyPoisonedCounter:19;
 } PrimaryStatusStruct;
 
 typedef struct Pokemon {
-	AbridgedPokemon mainData;
+	AbridgedPokemon mainData; // 80
 	union
 	{
 		u32 statusAilment;
 		PrimaryStatusStruct statusAilmentBits;
-	};
-	u8 level;
-	u8 alignment;
-	u16 currentHP;
-	u16 maximumHP;
-	u16 attack;
-	u16 defence;
-	u16 speed;
-	u16 specialAttack;
-	u16 specialDefence;
+	}; // 84
+	u8 level; // 85
+	u8 alignment; // 86
+	u16 currentHP; // 88
+	u16 maximumHP; // 90
+	u16 attack; // 92
+	u16 defence; // 94
+	u16 speed; // 96
+	u16 specialAttack; // 98
+	u16 specialDefence; // 100
 } Pokemon;
 
 #define NUMBOXES 25
@@ -1057,7 +1064,9 @@ typedef struct BattleWeatherBits {
 
 typedef struct BattleCounterBits {
 	u32 trickRoom:3;
-	u32 unused:29;
+	u32 wonderRoom:3;
+	u32 magicRoom:3;
+	u32 payDay:23;
 } BattleCounterBits;
 
 typedef struct BattleParticipantBits {
@@ -1075,6 +1084,44 @@ typedef struct BattleObjects {
 typedef struct BattleAIData {
 
 } BattleAIData;
+
+typedef struct BattleVarietyBitsStruct {
+	u8 isDoubleBattle:1;
+	u8 isMovesetBattle:1;
+	u8 isHeldItemsBattle:1;
+	u8 unused:5;
+} BattleVarietyBitsStruct;
+
+typedef struct TrainerPokemonData {
+	u16 species;
+	u16 level;
+	u16 EVSpread;
+	u16 heldItem;
+} TrainerPokemonData;
+
+typedef struct TrainerPokemonDataWithMoves {
+	TrainerPokemonData mainData;
+	u16 moves[4];
+} TrainerPokemonDataWithMoves;
+
+typedef struct TrainerData {
+	u8 numPokemon;
+	u8 introThemeSlot:6;
+	u8 genderBits:2;
+	u8 trainerClass;
+	BattleVarietyBitsStruct battleVarietyBits;
+	char name[16];
+	union
+	{
+		TrainerPokemonData* pokemonData;
+		TrainerPokemonDataWithMoves* pokemonDataMoves;
+	};
+} TrainerData;
+
+typedef struct TrainerBattleData {
+	TrainerData* pointerToData;
+	char* afterBattleText;
+} TrainerBattleData;
 
 typedef struct BattleData {
 	PokemonBattleData* pokemonStats;
@@ -1125,6 +1172,7 @@ typedef struct BattleData {
 	BattleParticipantBits participantInfo;
 	BattleObjects objectPointers;
 	BattleAIData* battleAIData;
+	TrainerBattleData* trainerData;
 } BattleData;
 
 typedef struct BattleTypeStruct {

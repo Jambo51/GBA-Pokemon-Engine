@@ -50,12 +50,23 @@ u8 CallJump();
 u8 ReturnFromCall();
 u8 PauseBattleScript();
 u8 PauseBattleScriptIfTextRendering();
-u8 UpdateCounters();
 u8 EndTurn();
 u8 EndScript();
 u8 PrintCriticalHitMessage();
 u8 PrintEffectivenessMessage();
 u8 PrintMessageByPointer();
 u8 PrintMessageByID();
+u8 PlayBattleEndFanfare();
+u8 PrintFaintMessage();
+u8 WaitKeyPressTextBattle();
+u8 CalculateExperience();
+u8 PrintExperienceMessage();
+u8 PrintTrainerVictoryMessage();
+u8 PrintTrainerAfterMessage();
+u8 CalculateTrainerWinnings();
+u8 PrintTrainerCashGainMessage();
+u8 CalculatePickupWinnings();
+u8 PrintPayDayCashGainMessage();
+u8 PrintMumCashGainMessage();
 
 #endif /* BATTLESCRIPTCOMMANDS_H_ */

@@ -36,13 +36,24 @@ const u8 (*battleScriptCommandTable[])(void) = {
 		&ReturnFromCall,
 		&PauseBattleScript,
 		&PauseBattleScriptIfTextRendering,
-		&UpdateCounters,
 		&EndTurn,
 		&EndScript,
 		&PrintCriticalHitMessage,
 		&PrintEffectivenessMessage,
 		&PrintMessageByPointer,
-		&PrintMessageByID
+		&PrintMessageByID,
+		&PlayBattleEndFanfare,
+		&PrintFaintMessage,
+		&WaitKeyPressTextBattle,
+		&CalculateExperience,
+		&PrintExperienceMessage,
+		&PrintTrainerVictoryMessage,
+		&PrintTrainerAfterMessage,
+		&CalculateTrainerWinnings,
+		&CalculatePickupWinnings,
+		&PrintTrainerCashGainMessage,
+		&PrintPayDayCashGainMessage,
+		&PrintMumCashGainMessage
 };
 
 u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
@@ -64,7 +75,7 @@ u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))
 
 void RunBattleScript()
 {
-	u32 result = RunScript(&battleScriptPointer, (u8 (*)(void))&battleScriptCommandTable);
+	u32 result = RunScript(&battleScriptPointer, (u8 (**)(void))&battleScriptCommandTable);
 	if (result == Ended)
 	{
 		RemoveFunctionByPointer(&RunBattleScript);
@@ -90,5 +101,18 @@ void RunAnimationScript()
 	if (result == Ended)
 	{
 		RemoveFunctionByPointer(&RunAnimationScript);
+	}
+}
+
+void RunApplyMovementScript()
+{
+	u32 i;
+	for (i = 0; i < 5; i++)
+	{
+		u32 result = RunScript(&applyMovementScriptPointer[i], 0/*(u8 (*)(void))&battleAnimationScriptCommandTable*/);
+		if (result == Ended)
+		{
+			RemoveFunctionByPointer(&RunApplyMovementScript);
+		}
 	}
 }

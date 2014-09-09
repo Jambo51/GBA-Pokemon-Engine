@@ -14,6 +14,8 @@
 #include "Functions\TextFunctions.h"
 #include "libbattlescripts.h"
 #include "libbattleanimscripts.h"
+#include "Functions\MusicEngine.h"
+#include "Functions\KeyPresses.h"
 
 #define FALSE 0
 #define TRUE 1
@@ -609,7 +611,7 @@ u8 PokemonUsedMessage()
 	{
 		return WaitForFrames;
 	}
-	memset32((void*)0x0600C000, 0, 0xc00);
+	memset32((void*)0x0600C000, 0, 0xD00);
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 	SetTextColour(1, 6, 0);
 	SetTextPaletteSlot(0);
@@ -2126,6 +2128,18 @@ u8 JumpIf()
 			}
 			break;
 		}
+		case JumpIfMoveEffect:
+		{
+			if (BattleComparisonRoutine(moveData[battleDataPointer[0].moveIndex].effectID, LoadUnalignedNumber(battleScriptPointer, 2, 2), battleScriptPointer[4]) == true)
+			{
+				battleScriptPointer = (u8*)LoadUnalignedNumber(battleScriptPointer, 5, 4);
+			}
+			else
+			{
+				battleScriptPointer += 9;
+			}
+			break;
+		}
 	}
 	return NotEnded;
 }
@@ -2259,7 +2273,7 @@ u8 FaintIfNecessary()
 
 u8 CalculateExperience()
 {
-	battleDataPointer[0].battleDamage = CalculateExperience();
+	battleDataPointer[0].battleDamage = CalculateExperienceGain(0);
 	battleScriptPointer++;
 	return NotEnded;
 }
@@ -2600,63 +2614,12 @@ u8 PauseBattleScriptIfTextRendering()
 		battleScriptFrameWait--;
 		if (battleScriptFrameWait == 0)
 		{
+			battleDataPointer[0].flags.battleScriptTextContinueFlag = 0;
 			battleScriptPointer += 3;
 			return NotEnded;
 		}
 		return WaitForFrames;
 	}
-}
-
-u8 UpdateCounters()
-{
-	battleDataPointer[0].battleTurnsCounter++;
-	if (battleDataPointer[0].weatherBits.permanent == 0)
-	{
-		u32 turns = battleDataPointer[0].weatherBits.turnsRemaining;
-		turns--;
-		if (turns == 0)
-		{
-			battleDataPointer[0].weather = 0;
-			// Script to clear weather here
-		}
-		else
-		{
-			battleDataPointer[0].weatherBits.turnsRemaining = turns;
-			// Script to indicate continued weather
-		}
-	}
-	u32 i;
-	for (i = 0; i < battleDataPointer[0].numBattlers; i++)
-	{
-		PokemonBattleData* pkmn = &battleDataPointer[0].pokemonStats[i];
-		if (pkmn[0].currentHP != 0)
-		{
-			Pokemon* thePokemon = pkmn[0].mainPointer;
-			if (pkmn[0].battleStatusFlags.roosted)
-			{
-				SetBasicTypes(thePokemon);
-				pkmn[0].type1 = PokemonDecrypter(thePokemon, Type1);
-				pkmn[0].type2 = PokemonDecrypter(thePokemon, Type2);
-				pkmn[0].battleStatusFlags.roosted = 0;
-			}
-			if (pkmn[0].primaryStatusBits.badlyPoisoned)
-			{
-				pkmn[0].primaryStatusBits.badlyPoisonedCounter++;
-				PokemonEncrypter(thePokemon, StatusAilment, pkmn[0].primaryStatus);
-			}
-		}
-		if (pkmn[0].battleStatusFlags.charged)
-		{
-			pkmn[0].battleStatusFlags.charged--;
-		}
-		if (pkmn[0].ability == Slow_Start && pkmn[0].slowStartCounter < 4)
-		{
-			pkmn[0].slowStartCounter++;
-		}
-		pkmn[0].damageReceivedLastTurn = pkmn[0].damageReceivedThisTurn;
-		pkmn[0].damageReceivedThisTurn = 0;
-	}
-	return NotEnded;
 }
 
 u8 EndTurn()
@@ -2677,7 +2640,7 @@ u8 PrintCriticalHitMessage()
 {
 	if (battleDataPointer[0].flags.criticalHitFlag)
 	{
-		memset32((void*)0x0600C000, 0, 0xc00);
+		memset32((void*)0x0600C000, 0, 0xD00);
 		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 		DrawStringOverTime(critMessage, 0, 0, 15, &StopBattleScriptTextWait);
 	}
@@ -2694,19 +2657,19 @@ u8 PrintEffectivenessMessage()
 	switch (battleDataPointer[0].flags.attackEffectiveness)
 	{
 		case NoEffect:
-			memset32((void*)0x0600C000, 0, 0xc00);
+			memset32((void*)0x0600C000, 0, 0xD00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(noEffectMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
 		case EighthDamage: case QuarterDamage: case HalfDamage:
-			memset32((void*)0x0600C000, 0, 0xc00);
+			memset32((void*)0x0600C000, 0, 0xD00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(notEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
 		case NormalDamage:
 			break;
 		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
-			memset32((void*)0x0600C000, 0, 0xc00);
+			memset32((void*)0x0600C000, 0, 0xD00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(superEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
@@ -2717,7 +2680,7 @@ u8 PrintEffectivenessMessage()
 
 u8 PrintMessageByPointer()
 {
-	memset32((void*)0x0600C000, 0, 0xc00);
+	memset32((void*)0x0600C000, 0, 0xD00);
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 	DrawStringOverTime((char*)LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, 15, &StopBattleScriptTextWait);
 	battleScriptPointer += 5;
@@ -2727,15 +2690,289 @@ u8 PrintMessageByPointer()
 const ALIGN(1) char statBuffString[] = { 0xFD, 0x1, '\'', 's', ' ', 0xFD, 0x6, '\n', 0xFD, 0x7, '!', '\0' };
 
 char* textTable[] = {
-		&statBuffString
+		(char*)&statBuffString
 };
 
 u8 PrintMessageByID()
 {
-	memset32((void*)0x0600C000, 0, 0xc00);
+	memset32((void*)0x0600C000, 0, 0xD00);
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 	DrawStringOverTime(textTable[LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, 15, &StopBattleScriptTextWait);
 	battleScriptPointer += 2;
 	return NotEnded;
 }
 
+const u16 victoryFanfares[][2] = {
+		{ Class_Evil_Team, Song_GSCTrainerVictoryFanfare },
+		{ Class_Champion, Song_GSCGymVictoryFanfare },
+		{ Class_Gym_Leader, Song_GSCGymVictoryFanfare },
+		{ Class_Elite_Four, Song_GSCGymVictoryFanfare },
+		{ 0xFFFF, 0x0000 }
+};
+
+u8 PlayBattleEndFanfare()
+{
+	if (battleType.isWildBattle)
+	{
+		SetupSongForPlayback(Song_GSCWildVictoryFanfare, 0);
+	}
+	else
+	{
+		u32 trainerClass = battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass;
+		u32 i = 0;
+		u32 found = false;
+		while (victoryFanfares[i][0] != 0xFFFF)
+		{
+			if (trainerClass == victoryFanfares[i][0])
+			{
+				SetupSongForPlayback(victoryFanfares[i][1], 0);
+				found = true;
+				break;
+			}
+			i++;
+		}
+		if (found == false)
+		{
+			SetupSongForPlayback(Song_GSCTrainerVictoryFanfare, 0);
+		}
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+void CheckForTextContinuePressBattle()
+{
+	if (IsKeyDownButNotHeld(Key_A) || IsKeyDownButNotHeld(Key_B))
+	{
+		battleDataPointer[0].flags.battleScriptTextWaitFlag = 0;
+		battleDataPointer[0].flags.battleScriptTextContinueFlag = 1;
+		HandleKeyPresses = &IgnoreKeyPresses;
+	}
+}
+
+const char pokemonFaintedString[] = { 0xFD, 0x1, ' ', 'f', 'a', 'i', 'n', 't', 'e', 'd', '!', '\0' };
+const char experienceGainStringTwo[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'e', 'x', 'p', 'e', 'r', 'i', 'e', 'n', 'c', 'e', ' ', 'p', 'o', 'i', 'n', 't', 's', '.', '\0' };
+const char experienceGainStringOne[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'e', 'x', 'p', 'e', 'r', 'i', 'e', 'n', 'c', 'e', ' ', 'p', 'o', 'i', 'n', 't', '.', '\0' };
+
+u8 PrintFaintMessage()
+{
+	memset32((void*)0x0600C000, 0, 0xD00);
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	SetTextColour(1, 6, 0);
+	SetTextPaletteSlot(0);
+	DrawStringOverTime((char*)&pokemonFaintedString, 0, 0, 15, 0);
+	HandleKeyPresses = &CheckForTextContinuePressBattle;
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 PrintExperienceMessage()
+{
+	memset32((void*)0x0600C000, 0, 0xD00);
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	SetTextColour(1, 6, 0);
+	SetTextPaletteSlot(0);
+	char* string = (char*)&experienceGainStringTwo;
+	if (battleDataPointer[0].battleDamage == 1)
+	{
+		string = (char*)&experienceGainStringOne;
+	}
+	DrawStringOverTime(string, 0, 0, 15, 0);
+	HandleKeyPresses = &CheckForTextContinuePressBattle;
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 WaitKeyPressTextBattle()
+{
+	if (battleDataPointer[0].flags.battleScriptTextWaitFlag == 0 && battleDataPointer[0].flags.battleScriptTextContinueFlag == 0)
+	{
+		battleScriptPointer++;
+		return NotEnded;
+	}
+	if (battleDataPointer[0].flags.battleScriptTextContinueFlag)
+	{
+		battleDataPointer[0].flags.battleScriptTextContinueFlag = 0;
+		battleScriptPointer++;
+		return NotEnded;
+	}
+	return WaitForFrames;
+}
+
+const char trainerVictoryMessage[] = { 0xFD, 0x09, ' ', 'd', 'e', 'f', 'e', 'a', 't', 'e', 'd', '\n', 0xFD, 0x0A, ' ', 0xFD, 0x0B, '!', '\0' };
+
+u8 PrintTrainerVictoryMessage()
+{
+	memset32((void*)0x0600C000, 0, 0xD00);
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	SetTextColour(1, 6, 0);
+	SetTextPaletteSlot(0);
+	DrawStringOverTime((char*)&trainerVictoryMessage, 0, 0, 15, 0);
+	HandleKeyPresses = &CheckForTextContinuePressBattle;
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 PrintTrainerAfterMessage()
+{
+	char* theString = battleDataPointer[0].trainerData[0].afterBattleText;
+	if (theString)
+	{
+		memset32((void*)0x0600C000, 0, 0xD00);
+		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+		SetTextColour(1, 6, 0);
+		SetTextPaletteSlot(0);
+		DrawStringOverTime(theString, 0, 0, 15, 0);
+		HandleKeyPresses = &CheckForTextContinuePressBattle;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+const u8 trainerClassMoneyRates[] = {
+		25,
+		25,
+		25,
+		12
+};
+
+u8 CalculateTrainerWinnings()
+{
+	u32 calculatedValue = 0;
+	if (battleType.isTrainerBattle)
+	{
+		calculatedValue = trainerClassMoneyRates[battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass];
+		TrainerData* baseData = battleDataPointer[0].trainerData[0].pointerToData;
+		TrainerPokemonData* data;
+		if (baseData[0].battleVarietyBits.isMovesetBattle)
+		{
+			data = (TrainerPokemonData*)&baseData[0].pokemonDataMoves[baseData[0].numPokemon - 1];
+		}
+		else
+		{
+			data = (TrainerPokemonData*)&baseData[0].pokemonData[baseData[0].numPokemon - 1];
+		}
+		calculatedValue *= data[0].level;
+	}
+	if (calculatedValue > 0)
+	{
+		u32 i;
+		for (i = 0; i < 6; i++)
+		{
+			if ((battleDataPointer[0].participantInfo.participantFlags & (1 << i)) && GetItemEffect(PokemonDecrypter((Pokemon*)&partyPokemon[i], HeldItem)) == Item_Effect_Double_Cash_Gain)
+			{
+				calculatedValue <<= 1;
+				break;
+			}
+		}
+	}
+	battleDataPointer[0].battleDamage = calculatedValue;
+	if (CheckFlag(Flag_MumBank) && (player.mumBalance != MaxPlayerCash))
+	{
+		calculatedValue *= 3;
+		calculatedValue >>= 2;
+	}
+	player.balance += calculatedValue;
+	if (player.balance > MaxPlayerCash)
+	{
+		player.balance = MaxPlayerCash;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+const char trainerCashGainString[] = { 0xFD, 0x09, ' ', 'g', 'o', 't', ' ', '$', 0xFD, 0x08, '\n', 'f', 'o', 'r', ' ', 'w', 'i', 'n', 'n', 'i', 'n', 'g', '!', '\0' };
+
+u8 PrintTrainerCashGainMessage()
+{
+	if (battleDataPointer[0].battleDamage)
+	{
+		memset32((void*)0x0600C000, 0, 0xD00);
+		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+		SetTextColour(1, 6, 0);
+		SetTextPaletteSlot(0);
+		DrawStringOverTime((char*)&trainerCashGainString, 0, 0, 15, 0);
+		HandleKeyPresses = &CheckForTextContinuePressBattle;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+const char mumCashGainString[] = { 'S', 'e', 'n', 't', ' ', '$', 0xFD, 0x08, ' ', 't', 'o', ' ', 'm', 'u', 'm', '.', '\0' };
+
+u8 PrintMumCashGainMessage()
+{
+	if (CheckFlag(Flag_MumBank))
+	{
+		if (player.mumBalance != MaxPlayerCash)
+		{
+			u32 originalValue = battleDataPointer[0].battleDamage;
+			u32 value = originalValue >> 2;
+			u32 value2 = originalValue * 3;
+			value2 >>= 2;
+			if (value + value2 != originalValue)
+			{
+				player.balance += (originalValue - value);
+				if (player.balance > MaxPlayerCash)
+				{
+					player.balance = MaxPlayerCash;
+				}
+			}
+			player.mumBalance += value;
+			if (player.mumBalance > MaxPlayerCash)
+			{
+				player.mumBalance = MaxPlayerCash;
+			}
+			battleDataPointer[0].battleDamage = value;
+			if (battleDataPointer[0].battleDamage)
+			{
+				memset32((void*)0x0600C000, 0, 0xD00);
+				battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+				SetTextColour(1, 6, 0);
+				SetTextPaletteSlot(0);
+				DrawStringOverTime((char*)&mumCashGainString, 0, 0, 15, 0);
+				HandleKeyPresses = &CheckForTextContinuePressBattle;
+			}
+		}
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 CalculatePickupWinnings()
+{
+	battleDataPointer[0].battleDamage = battleDataPointer[0].counterBits.payDay * 5;
+	u32 i;
+	for (i = 0; i < 6; i++)
+	{
+		if ((battleDataPointer[0].participantInfo.participantFlags & (1 << i)) && GetItemEffect(PokemonDecrypter((Pokemon*)&partyPokemon[i], HeldItem)) == Item_Effect_Double_Cash_Gain)
+		{
+			battleDataPointer[0].battleDamage <<= 1;
+			break;
+		}
+	}
+	player.balance += battleDataPointer[0].battleDamage;
+	if (player.balance > MaxPlayerCash)
+	{
+		player.balance = MaxPlayerCash;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+const char pickupCashGainString[] = { 0xFD, 0x09, ' ', 'p', 'i', 'c', 'k', 'e', 'd', ' ', 'u', 'p', '\n', '$', 0xFD, 0x08, '!', '\0' };
+
+u8 PrintPayDayCashGainMessage()
+{
+	if (battleDataPointer[0].battleDamage)
+	{
+		memset32((void*)0x0600C000, 0, 0xD00);
+		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+		SetTextColour(1, 6, 0);
+		SetTextPaletteSlot(0);
+		DrawStringOverTime((char*)&pickupCashGainString, 0, 0, 15, 0);
+		HandleKeyPresses = &CheckForTextContinuePressBattle;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}

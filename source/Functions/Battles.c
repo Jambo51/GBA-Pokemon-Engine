@@ -13,6 +13,19 @@
 #define MAJORITY (BG_4BPP | BG_REG_32x32 | BG_MOSAIC | BG_SBB(31) | BG_PRIORITY_ZERO)
 #define MAIN_BG_SETTINGS2 (BG_CBB(2) | MAJORITY)
 
+#define WILDBATTLE 0
+#define TRAINERBATTLE 1
+#define DOUBLEWILD 2
+#define RAREWILD 3
+#define LEGENDARYWILD 4
+#define ROAMINGWILD 5
+#define GYMBATTLE 6
+#define EVILBATTLE 7
+#define CHAMPIONBATTLE 8
+#define EVILDUOBATTLE 9
+
+#define TESTMODE CHAMPIONBATTLE
+
 const ALIGN(2) u16 criticalCaptureValues[6][2] = {
 		{ 30, 0 },
 		{ 150, 50 },
@@ -501,6 +514,7 @@ const RODATA_LOCATION u16 battleMusicIDs[][NumBattleTrackIDs] = {
 
 const RODATA_LOCATION u16 classToSongList [][2] = {
 		{ Class_Evil_Team, Song_TeamRocketBattle },
+		{ Class_Evil_Team_Duo, Song_TeamRocketBattle },
 		{ 0xFFFF, 0x0000 }
 };
 
@@ -526,7 +540,7 @@ u16 GetSongIDForBattle()
 	else if (battleType.isTrainerBattle)
 	{
 		u32 i = 0;
-		u32 trainerClass = Class_Evil_Team;
+		u32 trainerClass = battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass;
 		if (trainerClass == Class_Champion)
 		{
 			trackID = Track_Battle_Champion;
@@ -583,15 +597,6 @@ u16 GetSongIDForBattle()
 	return battleMusicIDs[regionByte][trackID];
 }
 
-#define WILDBATTLE 0
-#define TRAINERBATTLE 1
-#define DOUBLEWILD 2
-#define RAREWILD 3
-#define LEGENDARYWILD 4
-#define ROAMINGWILD 5
-
-#define TESTMODE TRAINERBATTLE
-
 const RODATA_LOCATION OAMData battleObjectsOAMData[] = {
 		{ 0, 0, 0, 1, 0, 0, 0, 40, 48, 0 },
 		{ 0, 0, 1, 1, 0, 0, 0, 144, 8, 0 },
@@ -609,6 +614,57 @@ u8* moveScriptsTable[] = {
 
 };
 
+void UpdateCounters()
+{
+	battleDataPointer[0].battleTurnsCounter++;
+	if (battleDataPointer[0].weatherBits.permanent == 0)
+	{
+		u32 turns = battleDataPointer[0].weatherBits.turnsRemaining;
+		turns--;
+		if (turns == 0)
+		{
+			battleDataPointer[0].weather = 0;
+			// Script to clear weather here
+		}
+		else
+		{
+			battleDataPointer[0].weatherBits.turnsRemaining = turns;
+			// Script to indicate continued weather
+		}
+	}
+	u32 i;
+	for (i = 0; i < battleDataPointer[0].numBattlers; i++)
+	{
+		PokemonBattleData* pkmn = &battleDataPointer[0].pokemonStats[i];
+		if (pkmn[0].currentHP != 0)
+		{
+			Pokemon* thePokemon = pkmn[0].mainPointer;
+			if (pkmn[0].battleStatusFlags.roosted)
+			{
+				SetBasicTypes(thePokemon);
+				pkmn[0].type1 = PokemonDecrypter(thePokemon, Type1);
+				pkmn[0].type2 = PokemonDecrypter(thePokemon, Type2);
+				pkmn[0].battleStatusFlags.roosted = 0;
+			}
+			if (pkmn[0].primaryStatusBits.badlyPoisoned)
+			{
+				pkmn[0].primaryStatusBits.badlyPoisonedCounter++;
+				PokemonEncrypter(thePokemon, StatusAilment, pkmn[0].primaryStatus);
+			}
+			if (pkmn[0].battleStatusFlags.charged)
+			{
+				pkmn[0].battleStatusFlags.charged--;
+			}
+			if (pkmn[0].ability == Slow_Start && pkmn[0].slowStartCounter < 4)
+			{
+				pkmn[0].slowStartCounter++;
+			}
+			pkmn[0].damageReceivedLastTurn = pkmn[0].damageReceivedThisTurn;
+			pkmn[0].damageReceivedThisTurn = 0;
+		}
+	}
+}
+
 void MainBattleSelectionKeyPresses(void);
 
 void RunBattleScripts()
@@ -620,26 +676,36 @@ void RunBattleScripts()
 	else if (battleDataPointer[0].flags.waitAttack == 0 && (battleDataPointer[0].currentBattlerIndex < battleDataPointer[0].numBattlers))
 	{
 		battleDataPointer[0].battleBanks[User] = battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex];
-		battleDataPointer[0].battleBanks[Target] = battleDataPointer[0].targets[battleDataPointer[0].currentBattlerIndex];
-		//battleScriptPointer = moveScriptsTable[moveData[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex]]]].effectID];
-		battleScriptPointer = (u8*)&Script_Standard_Attack;
+		battleDataPointer[0].battleBanks[Target] = battleDataPointer[0].targets[battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex]];
+		{
+			//u16 moveID = battleDataPointer[0].moveIndex;
+			//MoveData* moveInfo = (MoveData*)&moveData[moveIndex];
+			//u32 effectID = moveInfo[0].effectID;
+//			if (effectID >= Effects_Max)
+//			{
+//				effectID = 0;
+//			}
+			//battleScriptPointer = moveScriptsTable[effectID];
+			battleScriptPointer = (u8*)&Script_Standard_Attack;
+		}
 		AddFunction(&RunBattleScript, 0);
 		battleDataPointer[0].flags.waitAttack = 1;
 		RunCallbackSystem();
 	}
 	else
 	{
-		memset32((void*)0x0600C000, 0, 0xc00);
+		memset32((void*)0x0600C000, 0, 0xD00);
 		battleDataPointer[0].objectPointers.battlers[0]->StateFunction = &MoveUpAndDown;
 		battleDataPointer[0].objectPointers.battlers[0]->stateFunctionInfo = 16;
-		DrawString(whatToDoString, 0, 0, 0);
-		DrawString((char*)&whatToDoString2, 0, 0x10, 0);
-		CallbackMain = &BattleWaitForKeyPress;
-		HandleKeyPresses = &MainBattleSelectionKeyPresses;
 		battleDataPointer[0].mainSelection = 0;
 		battleDataPointer[0].internalSelection = 0;
 		battleDataPointer[0].battleBanks[User] = 0;
 		battleDataPointer[0].currentBattlerIndex = 0;
+		UpdateCounters();
+		DrawString(whatToDoString, 0, 0, 0);
+		DrawString((char*)&whatToDoString2, 0, 0x10, 0);
+		CallbackMain = &BattleWaitForKeyPress;
+		HandleKeyPresses = &MainBattleSelectionKeyPresses;
 	}
 }
 
@@ -655,7 +721,7 @@ void RunAI(BattleAIData* battleAIData)
 		// enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Move3, Selections_Move4, Selections_Roaming_Fleeing, Selections_Switch, Selections_Item, Selections_Flee };
 		// The roaming flee is for AI and Flee is for players
 		// as these require 2 completely separate handlers
-		battleDataPointer[0].moveSelections[(i << 1) + 1] = GetDelimitedRandom32BitValue(4);
+		battleDataPointer[0].moveSelections[(i << 1) + 1] = 0;
 		// this next line tells the rest of the battle system who the AI is choosing to target
 		battleDataPointer[0].targets[(i << 1) + 1] = 0;//target here
 	}
@@ -826,12 +892,38 @@ void MainBattleSelectionKeyPresses()
 	}
 }
 
+const TrainerPokemonData weezing1 = {
+		Weezing, 40, 0, 0
+};
+
+const TrainerPokemonData golem1 = {
+		Golem, 40, 0, 0
+};
+
+const TrainerPokemonData pidgeot1 = {
+		Pidgeot, 40, 0, 0
+};
+
+const TrainerPokemonData ekans1 = {
+		Arbok, 40, 0, 0
+};
+
+const TrainerPokemonData alakazam1 = {
+		Alakazam, 40, 0, 0
+};
+
+const TrainerData trainerBattleDataTable[] = {
+		{ 1, 0, 0, Class_Elite_Trainer, { 0, 0, 0, 0 }, { 'J', 'e', 'r', 'e', 'm', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&pidgeot1 },
+		{ 1, 0, 0, Class_Champion, { 0, 0, 0, 0 }, { 'G', 'a', 'r', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&alakazam1 },
+		{ 1, 0, 0, Class_Gym_Leader, { 0, 0, 0, 0 }, { 'E', 'r', 'i', 'k', 'a', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&golem1 },
+		{ 1, 0, 0, Class_Evil_Team, { 0, 0, 0, 0 }, { 'J', 'a', 'm', 'e', 's', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&ekans1 },
+		{ 1, 0, 0, Class_Evil_Team_Duo, { 0, 0, 0, 0 }, { 'J', 'e', 's', 's', 'i', 'e', ' ', '&', ' ', 'J', 'a', 'm', 'e', 's', '\0', 0 }, (TrainerPokemonData*)&weezing1 }
+};
+
 void InitialiseBattleEnvironment()
 {
 #if TESTMODE == WILDBATTLE
 	battleType.isWildBattle = 1;
-#elif TESTMODE == TRAINERBATTLE
-	battleType.isTrainerBattle = 1;
 #elif TESTMODE == DOUBLEWILD
 	battleType.isWildBattle = 1;
 	battleType.isDoubleBattle = 1;
@@ -839,13 +931,70 @@ void InitialiseBattleEnvironment()
 	battleType.isWildBattle = 1;
 	battleType.isRareWildBattle = 1;
 #elif TESTMODE == LEGENDARYWILD
+	battleType.isWildBattle = 1;
 	battleType.isLegendaryWildBattle = 1;
 #elif TESTMODE == ROAMINGWILD
+	battleType.isWildBattle = 1;
 	battleType.isRoamingWildBattle = 1;
+#else
+	battleType.isTrainerBattle = 1;
 #endif
 	battleDataPointer = (BattleData*)MemoryAllocate(sizeof(BattleData));
 	battleDataPointer[0].numBattlers = 2 << battleType.isDoubleBattle;
 	battleDataPointer[0].pokemonStats = (PokemonBattleData*)MemoryAllocate(sizeof(PokemonBattleData) * battleDataPointer[0].numBattlers);
+	if (battleType.isTrainerBattle)
+	{
+		battleDataPointer[0].trainerData = (TrainerBattleData*)MemoryAllocate(sizeof(TrainerBattleData));
+#if TESTMODE == GYMBATTLE
+		u16 trainerID = 2;
+#elif TESTMODE == EVILBATTLE
+		u16 trainerID = 3;
+#elif TESTMODE == EVILDUOBATTLE
+		u16 trainerID = 4;
+#elif TESTMODE == CHAMPIONBATTLE
+		u16 trainerID = 1;
+#else
+		u16 trainerID = 0;
+#endif
+		TrainerData* data = (TrainerData*)&trainerBattleDataTable[trainerID];
+		u32 i;
+		u32 upperLimit = data[0].numPokemon;
+		for (i = 0; i < upperLimit; i++)
+		{
+			Pokemon* thePokemon = (Pokemon*)&enemyPokemon[i];
+			GivePokemonToPlayer(thePokemon, data[0].pokemonData[i].level, data[0].pokemonData[i].species, 0);
+			if (data[0].battleVarietyBits.isHeldItemsBattle)
+			{
+				if (data[0].battleVarietyBits.isMovesetBattle)
+				{
+					u32 j;
+					for (j = 0; j < 4; j++)
+					{
+						u16 moveID = data[0].pokemonDataMoves[i].moves[j];
+						PokemonEncrypter(thePokemon, Move1 + j, moveID);
+						PokemonEncrypter(thePokemon, Move1PP + j, moveData[moveID].basePP);
+					}
+					PokemonEncrypter(thePokemon, HeldItem, data[0].pokemonDataMoves[i].mainData.heldItem);
+				}
+				else
+				{
+					PokemonEncrypter(thePokemon, HeldItem, data[0].pokemonData[i].heldItem);
+				}
+			}
+			else if (data[0].battleVarietyBits.isMovesetBattle)
+			{
+				u32 j;
+				for (j = 0; j < 4; j++)
+				{
+					u16 moveID = data[0].pokemonDataMoves[i].moves[j];
+					PokemonEncrypter(thePokemon, Move1 + j, moveID);
+					PokemonEncrypter(thePokemon, Move1PP + j, moveData[moveID].basePP);
+				}
+			}
+		}
+		battleDataPointer[0].trainerData[0].pointerToData = data;
+		battleDataPointer[0].trainerData[0].afterBattleText = "Congratulations!";
+	}
 	CopyBattleDataFromPokemon(&partyPokemon[0], &battleDataPointer[0].pokemonStats[0]);
 	CopyBattleDataFromPokemon(&enemyPokemon[0], &battleDataPointer[0].pokemonStats[1]);
 	if (battleType.isDoubleBattle)

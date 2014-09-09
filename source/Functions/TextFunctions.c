@@ -81,6 +81,15 @@ char* statBuffStrings2[2][3] = {
 		}
 };
 
+char* foeString = "Foe ";
+char* trainerClasses[] = { "Gym Leader", "Elite Four", "Champion", "Rocket Grunt", "Rocket Duo", "Elite Trainer" };
+char* playerNameLoc = *(&player.name);
+char* rival1NameLoc = *(&player.primaryRivalName);
+char* rival2NameLoc = *(&player.secondaryRivalName);
+char* rival3NameLoc = *(&player.tertiaryRivalName);
+
+void BufferUnsignedLongNumber(u32, u8);
+
 u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex)
 {
 	u32 index = 0;
@@ -129,7 +138,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 								u32 bank = battleDataPointer[0].battleBanks[User];
 								if (bank & 1)
 								{
-									index += StringCopyWithBufferChecks(stringDest, "Foe ", 0, index);
+									index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
 								}
 								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
@@ -139,7 +148,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 								u32 bank = battleDataPointer[0].battleBanks[Target];
 								if (bank & 1)
 								{
-									index += StringCopyWithBufferChecks(stringDest, "Foe ", 0, index);
+									index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
 								}
 								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
@@ -195,11 +204,39 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 								pointer = statBuffStrings2[direction][power];
 								break;
 							}
+							case 8:
+							{
+								BufferUnsignedLongNumber(battleDataPointer[0].battleDamage, 0);
+								pointer = (char*)&buffers[0];
+								break;
+							}
+							case 9:
+							{
+								pointer = playerNameLoc;
+								break;
+							}
+							case 10:
+							{
+								pointer = trainerClasses[battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass];
+								break;
+							}
+							case 11:
+							{
+								pointer = (char*)&battleDataPointer[0].trainerData[0].pointerToData[0].name;
+								break;
+							}
 						}
 						index += StringCopyWithBufferChecks(stringDest, pointer, length, index);
 						pos += 2;
 						currentChar = stringSource[pos];
 						break;
+					}
+					case 0xFE - 0xF8:
+					{
+						stringDest[index + secondaryIndex] = currentChar;
+						index++;
+						pos++;
+						currentChar = stringSource[pos];
 					}
 				}
 			}
@@ -424,19 +461,34 @@ void DrawStringOverTimeMain(u32 pointer)
 		char c = data[0].string[data[0].stringPosition];
 		if (c != '\0')
 		{
-			DrawCharacter(c, currentX, currentY, data[0].colour);
 			if (c == '\n')
 			{
-				data[0].currentX = data[0].initialX;
+				currentX = data[0].initialX;
 				currentY += 0x10;
+				data[0].stringPosition++;
+				c = data[0].string[data[0].stringPosition];
+				DrawCharacter(c, currentX, currentY, data[0].colour);
+				data[0].stringPosition++;
+				data[0].currentX = currentX + pokefont_b4Font.widths[(u32)c];
+			}
+			else if (c == 0xFE)
+			{
+				if (IsKeyDownButNotHeld(Key_A) || IsKeyDownButNotHeld(Key_B))
+				{
+					memset32((void*)0x0600C000, 0, 0xD00);
+					data[0].currentX = data[0].initialX;
+					currentY = 0;
+					data[0].stringPosition++;
+				}
 			}
 			else
 			{
+				DrawCharacter(c, currentX, currentY, data[0].colour);
 				data[0].currentX = currentX + pokefont_b4Font.widths[(u32)c];
+				data[0].stringPosition++;
 			}
 			data[0].currentY = currentY;
 			data[0].framesToWait = (IsKeyDown(Key_B)) ? data[0].textSpeed << 1 : data[0].textSpeed;
-			data[0].stringPosition++;
 		}
 		else
 		{

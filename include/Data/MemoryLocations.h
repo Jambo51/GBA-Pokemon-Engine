@@ -13,6 +13,7 @@
 
 extern u8 seenFlags[];
 extern u8 caughtFlags[];
+extern u8 trainerflags[];
 extern u8 formesToShowInDex[];
 extern u8 mainFlagBank[];
 extern u16 varBank[];
@@ -33,6 +34,8 @@ extern u8* overworldScriptPointer;
 extern u16 overworldScriptFrameWait;
 extern u8* animationScriptPointer;
 extern u16 animationScriptFrameWait;
+extern u8* applyMovementScriptPointer[5];
+extern u32 applyMovementStatus[5];
 extern RealTimeClock rtcData;
 extern s16 x;
 extern s16 y;

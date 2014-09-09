@@ -1,8 +1,5 @@
 #include "Data/MemoryLocations.h"
 
-#define upperMainFlagLimit 0x2000
-#define numberOfPokemon 0x28A
-
 u8* FlagDecryption(u32 flagID, u8* ramLocation, u32 upperFlagLimit)
 {
 	if (flagID >= upperFlagLimit)
@@ -20,11 +17,11 @@ u32 GetSeenCaughtStatus(u32 pokemonIndex, u32 modeIndex)
 	u8* location;
 	if ((modeIndex & 2) == 0)
 	{
-		location = FlagDecryption(pokemonIndex, (u8*)(&seenFlags), numberOfPokemon);
+		location = FlagDecryption(pokemonIndex, (u8*)(&seenFlags), NumberOfPokemon - 1);
 	}
 	else
 	{
-		location = FlagDecryption(pokemonIndex, (u8*)(&caughtFlags), numberOfPokemon);
+		location = FlagDecryption(pokemonIndex, (u8*)(&caughtFlags), NumberOfPokemon - 1);
 	}
 	if ((modeIndex & 1) == 0)
 	{
@@ -34,24 +31,29 @@ u32 GetSeenCaughtStatus(u32 pokemonIndex, u32 modeIndex)
 	return 0;
 }
 
-u32 GenericCheckFlag(u32 flagID, u8* flagLocation)
+u32 GenericCheckFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit)
 {
-	u8* location = FlagDecryption(flagID, flagLocation, upperMainFlagLimit);
+	u8* location = FlagDecryption(flagID, flagLocation, upperFlagLimit);
 	if (location == 0)
 	{
 		return 0;
 	}
-	return ((location[0] >> (flagID & 7)) & 1);
+	return ((location[0] >> (flagID & 7)) & 1) != 0;
 }
 
 u32 CheckFlag(u32 flagID)
 {
-	return GenericCheckFlag(flagID, (u8*)(&mainFlagBank));
+	return GenericCheckFlag(flagID, (u8*)(&mainFlagBank), NumberOfFlags);
 }
 
-void GenericSetFlag(u32 flagID, u8* flagLocation)
+u32 CheckTrainerflag(u32 flagID)
 {
-	u8* location = FlagDecryption(flagID, flagLocation, upperMainFlagLimit);
+	return GenericCheckFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
+}
+
+void GenericSetFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit)
+{
+	u8* location = FlagDecryption(flagID, flagLocation, upperFlagLimit);
 	if (location == 0)
 	{
 		return;
@@ -61,12 +63,17 @@ void GenericSetFlag(u32 flagID, u8* flagLocation)
 
 void SetFlag(u32 flagID)
 {
-	GenericSetFlag(flagID, (u8*)(&mainFlagBank));
+	GenericSetFlag(flagID, (u8*)(&mainFlagBank), NumberOfFlags);
 }
 
-void GenericClearFlag(u32 flagID, u8* flagLocation)
+void SetTrainerflag(u32 flagID)
 {
-	u8* location = FlagDecryption(flagID, flagLocation, upperMainFlagLimit);
+	GenericSetFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
+}
+
+void GenericClearFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit)
+{
+	u8* location = FlagDecryption(flagID, flagLocation, upperFlagLimit);
 	if (location == 0)
 	{
 		return;
@@ -76,5 +83,10 @@ void GenericClearFlag(u32 flagID, u8* flagLocation)
 
 void ClearFlag(u32 flagID)
 {
-	GenericClearFlag(flagID, (u8*)(&mainFlagBank));
+	GenericClearFlag(flagID, (u8*)(&mainFlagBank), NumberOfFlags);
+}
+
+void ClearTrainerflag(u32 flagID)
+{
+	GenericClearFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
 }

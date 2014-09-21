@@ -1,0 +1,14 @@
+.equ	StatBuffString,	0
+.equ	ParalysedString,	1
+.equ	SleepingString,	2
+.equ	WakingUpString,	3
+.equ	FrozenString,	4
+.equ	DefrostingString,	5
+.equ	CureBurnString,	6
+.equ	FailedString,	7
+.equ	MissedString,	8
+.equ	ItemUsedString,	9
+.equ	BallThrownString,	10
+.equ	CallString,	11
+.equ	WokenByCall,	12
+.equ	FledString,	13

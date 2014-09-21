@@ -113,21 +113,24 @@ void* SpriteAllocate(u32 requestedLength) {
 
 void SpriteDeallocate(void* pointerToData) {
 	u8 i;
-	for (i = 0; i < SPRALLOCLENGTH; i++) {
-		if (sprallocData.data[i].pointerToData == pointerToData) {
-			vu32 dataSize = sprallocData.data[i].index;
-			memset32(pointerToData, 0, dataSize >> 2);
-			u32 leftOver = dataSize & 3;
-			dataSize >>= 2;
-			dataSize <<= 2;
-			u8 j;
-			for (j = 0; j < leftOver; j++) {
-				((u8*) pointerToData)[dataSize + j] = 0;
+	if (pointerToData)
+	{
+		for (i = 0; i < SPRALLOCLENGTH; i++) {
+			if (sprallocData.data[i].pointerToData == pointerToData) {
+				vu32 dataSize = sprallocData.data[i].index;
+				memset32(pointerToData, 0, dataSize >> 2);
+				u32 leftOver = dataSize & 3;
+				dataSize >>= 2;
+				dataSize <<= 2;
+				u8 j;
+				for (j = 0; j < leftOver; j++) {
+					((u8*) pointerToData)[dataSize + j] = 0;
+				}
+				sprallocData.data[i].pointerToData = 0;
+				sprallocData.data[i].index = 0;
+				sprallocData.filledEntries--;
+				break;
 			}
-			sprallocData.data[i].pointerToData = 0;
-			sprallocData.data[i].index = 0;
-			sprallocData.filledEntries--;
-			break;
 		}
 	}
 }

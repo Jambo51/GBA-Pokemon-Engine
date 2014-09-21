@@ -68,5 +68,7 @@ u8 PrintTrainerCashGainMessage();
 u8 CalculatePickupWinnings();
 u8 PrintPayDayCashGainMessage();
 u8 PrintMumCashGainMessage();
+u8 PrintItemEffectMessage();
+u8 CalculateFleeResult();
 
 #endif /* BATTLESCRIPTCOMMANDS_H_ */

@@ -1,4 +1,5 @@
 	.include "BattleScriptCommandIDs.s"
+	.include "BattleScriptStringIDs.s"
 	.text
 	.global Battle_Script_White_Out
 	.global Battle_Script_Faint_With_Battle_End
@@ -17,9 +18,18 @@ Battle_Script_White_Out:
 	.byte	0x00
 
 Battle_Script_End_Wild_Battle:
-	.byte	0x00
+	.byte	PlayBattleEndFanfare
+	.byte	Call
+	.word	Battle_Script_Faint_Main
+	.byte	Goto
+	.word	Battle_Script_End_Battle_Victory
 
 Battle_Script_Faint_With_Battle_End:
+	.byte	JumpIf
+	.byte	0x14
+	.word	0x00000001
+	.byte	0x06
+	.word	Battle_Script_End_Wild_Battle
 	.byte	Call
 	.word	Battle_Script_Faint_Main
 	.byte	PlayBattleEndFanfare
@@ -32,6 +42,7 @@ Battle_Script_Faint_With_Battle_End:
 	.byte	WaitKeyPressTextBattle
 	.byte	PrintMumCashGainMessage
 	.byte	WaitKeyPressTextBattle
+Battle_Script_End_Battle_Victory:
 	.byte	CalculatePickupWinnings
 	.byte	PrintPayDayCashGainMessage
 	.byte	WaitKeyPressTextBattle

@@ -28,7 +28,7 @@
 .equ	CritMessage,	27
 .equ	EffectivenessMessage,	28
 .equ	PrintMessageByPointer,	29
-.equ	PrintMessageByID,	30
+.equ	MessageByID,	30
 .equ	PlayBattleEndFanfare,	31
 .equ	PrintFaintMessage,	32
 .equ	WaitKeyPressTextBattle,	33
@@ -41,3 +41,7 @@
 .equ	PrintTrainerCashGainMessage,	40
 .equ	PrintPayDayCashGainMessage,	41
 .equ	PrintMumCashGainMessage,	42
+.equ	PrintAndExecuteItemEffectMessage,	43
+.equ	CalculateRunSuccess,	44
+.equ	PrintAndExecuteCallEffectMessage,	45
+.equ	PrintAndExecuteRunResultMessage,	46

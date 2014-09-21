@@ -53,7 +53,9 @@ const u8 (*battleScriptCommandTable[])(void) = {
 		&CalculatePickupWinnings,
 		&PrintTrainerCashGainMessage,
 		&PrintPayDayCashGainMessage,
-		&PrintMumCashGainMessage
+		&PrintMumCashGainMessage,
+		&PrintItemEffectMessage,
+		&CalculateFleeResult
 };
 
 u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))

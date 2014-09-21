@@ -531,8 +531,10 @@ void SetPauseMenuFunctions()
 
 void CheckKeyPressesOverworld()
 {
-	if (movingInformation.isMoving == 0 && IsKeyDown(Key_Start) == true && IsKeyHeld(Key_Start) == false)
+	if (movingInformation.isMoving == 0 && IsKeyDownButNotHeld(Key_Start))
 	{
+		SetTextColour(15, 3, 0);
+		SetTextPaletteSlot(14);
 		SetPauseMenuFunctions();
 		PlaceMenuBox((u16*)0x0600F82A, (CountMenuRows() << 1) + 1, 9);
 		HandleKeyPresses = &StartMenuKeyPresses;
@@ -548,11 +550,8 @@ void SetCheckKeyPressesOverworld()
 	HandleKeyPresses = &CheckKeyPressesOverworld;
 }
 
-const char* playerName = "Jambo51";
-
 void LoadOverworld()
 {
-	SetPlayerName(playerName);
 	player.stereoSound = 1;
 	SetFlag(Flag_UsingGBP);
 	animStruct = (TileAnimationStruct*)MemoryAllocate(sizeof(TileAnimationStruct) * 10);

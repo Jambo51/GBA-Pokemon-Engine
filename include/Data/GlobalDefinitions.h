@@ -34,7 +34,7 @@ typedef char* String;
 // --- primary typedefs ---
 enum Times { Time_Day, Time_Morning, Time_Afternoon, Time_Night, Time_NumTimes };
 
-enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex, Flag_MumBank };
+enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex, Flag_MumBank, Flag_Badge1, Flag_Badge2, Flag_Badge3, Flag_Badge4, Flag_Badge5, Flag_Badge6, Flag_Badge7, Flag_Badge8 };
 
 enum Types { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None };
 
@@ -80,7 +80,7 @@ enum PokedexModes {	Regional, National };
 
 enum BattleStats { BattleAttack, BattleDefence, BattleSpeed, BattleSpecialAttack, BattleSpecialDefence, Accuracy, Evasion, NumBattleStats };
 
-enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, CurrentEffectID, CurrentEffectPower, NumBattleBanks };
+enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, GenericBufferByte, GenericBufferByte2, CurrentEffectID, CurrentEffectPower, NumBattleBanks };
 
 enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 
@@ -92,7 +92,7 @@ enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
 enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst, Effects_False_Swipe, Effects_Max };
 
-enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfMoveEffect, JumpIfArray };
+enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfMoveEffect, JumpIfBattleType, JumpIfArray };
 
 enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, IfAnyBitsSet, IfNoBitsSet };
 
@@ -104,13 +104,15 @@ enum BattleTrackIDs { Track_Battle_Wild, Track_Battle_Rare_Wild, Track_Battle_Li
 
 enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team, Class_Evil_Team_Duo, Class_Elite_Trainer };
 
-enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Move3, Selections_Move4, Selections_Roaming_Fleeing, Selections_Switch, Selections_Item, Selections_Flee };
+enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Move3, Selections_Move4, Selections_AI_Fleeing, Selections_Switch, Selections_Item, Selections_Flee };
 
 enum BattleOrderIndices { PokemonOneFirst, PokemonTwoFirst };
 
 enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs, Item_Effect_Double_Cash_Gain };
 
 enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
+
+enum FleeResults { Flee_Result_Failed, Flee_Result_Failed_Trapped_Ability, Flee_Result_Failed_Trapped_Move, Flee_Result_Cannot_Flee, Flee_Result_Succeeded, Flee_Result_Run_Away };
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -809,7 +811,8 @@ typedef struct PrimaryStatusStruct {
 	u32 burned:1;
 	u32 poisoned:1;
 	u32 badlyPoisoned:1;
-	u32 badlyPoisonedCounter:19;
+	u32 hyper:1;
+	u32 badlyPoisonedCounter:18;
 } PrimaryStatusStruct;
 
 typedef struct Pokemon {
@@ -833,8 +836,12 @@ typedef struct Pokemon {
 #define NUMBOXES 25
 #define POKEMONPERBOX 30
 
-typedef struct PokemonStorageBoxes {
+typedef struct StorageBoxInfo {
 	u32 currentBoxID;
+} StorageBoxInfo;
+
+typedef struct PokemonStorageBoxes {
+	StorageBoxInfo info;
 	AbridgedPokemon boxData[NUMBOXES][POKEMONPERBOX];
 } PokemonStorageBoxes;
 
@@ -939,7 +946,8 @@ typedef struct SecondaryStatusStruct {
 	u32	rolloutUses:3;
 	u32 stockpile:2;
 	u32 furyCutterCounter:3;
-	u32 unused:24;
+	u32 confusion:3;
+	u32 unused:21;
 } SecondaryStatusStruct;
 
 typedef struct BattleStatusStruct {
@@ -1047,7 +1055,8 @@ typedef struct BattleFlagsStruct {
 	u32 battleScriptTextContinueFlag:1;
 	u32 ionDeluge:1;
 	u32 waitAttack:1;
-	u32 unused:9;
+	u32 endBattle:1;
+	u32 unused:8;
 } BattleFlagsStruct;
 
 typedef struct BattleWeatherBits {
@@ -1067,6 +1076,7 @@ typedef struct BattleCounterBits {
 	u32 wonderRoom:3;
 	u32 magicRoom:3;
 	u32 payDay:23;
+	u32 escapeAttempts;
 } BattleCounterBits;
 
 typedef struct BattleParticipantBits {
@@ -1166,7 +1176,7 @@ typedef struct BattleData {
 	u16 echoedVoiceCounter;
 	union
 	{
-		u32 counters;
+		u32 counters[2];
 		BattleCounterBits counterBits;
 	};
 	BattleParticipantBits participantInfo;
@@ -1175,7 +1185,7 @@ typedef struct BattleData {
 	TrainerBattleData* trainerData;
 } BattleData;
 
-typedef struct BattleTypeStruct {
+typedef struct InternalBattleTypeStruct {
 	u32 isWildBattle:1;
 	u32 isTrainerBattle:1;
 	u32 isLinkBattle:1;
@@ -1183,7 +1193,15 @@ typedef struct BattleTypeStruct {
 	u32 isLegendaryWildBattle:1;
 	u32 isRareWildBattle:1;
 	u32 isDoubleBattle:1;
-	u32 unused:25;
+	u32 wildBattleVariety:25;
+} InternalBattleTypeStruct;
+
+typedef struct BattleTypeStruct {
+	union
+	{
+		InternalBattleTypeStruct info;
+		u32 basicInfo;
+	};
 } BattleTypeStruct;
 
 typedef struct StatChangeStruct {

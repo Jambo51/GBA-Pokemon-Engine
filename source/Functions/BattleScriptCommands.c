@@ -16,6 +16,7 @@
 #include "libbattleanimscripts.h"
 #include "Functions\MusicEngine.h"
 #include "Functions\KeyPresses.h"
+#include "Functions\Flags.h"
 
 #define FALSE 0
 #define TRUE 1
@@ -183,6 +184,7 @@ u32 CheckForAbilityInBattle(u32 abilityID, u32 side)
 			u8 ability = battleDataPointer[0].pokemonStats[i].ability;
 			if (BattleComparisonRoutine(ability, abilityID, Equals) == true)
 			{
+				battleDataPointer[0].battleBanks[GenericBufferByte2] = i;
 				return true;
 			}
 		}
@@ -233,7 +235,7 @@ u32 CalculateExperienceGain(u32 mode)
 	PokemonBattleData* beneficiary = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]];
 	PokemonBattleData* victim = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]];
 	u32 expGain = GetBaseExperienceFromPokemon(victim[0].mainPointer);
-	if (battleType.isTrainerBattle)
+	if (battleType.info.isTrainerBattle)
 	{
 		expGain = UnsignedFractionalMultiplication(expGain, 150);
 	}
@@ -290,7 +292,7 @@ u32 CalculateExperienceGain(u32 mode)
 	return expGain;
 }
 
-u8 RODATA_LOCATION naturalGiftTypes[] = {
+const u8 RODATA_LOCATION naturalGiftTypes[] = {
 		Type_Fire,
 		Type_Water,
 		Type_Electric,
@@ -309,13 +311,107 @@ u8 RODATA_LOCATION naturalGiftTypes[] = {
 		Type_Steel
 };
 
+const u16 badgeLevelEffects[][2] = {
+		{ Flag_Badge8, 100 },
+		{ Flag_Badge7, 90 },
+		{ Flag_Badge6, 80 },
+		{ Flag_Badge5, 70 },
+		{ Flag_Badge4, 60 },
+		{ Flag_Badge3, 50 },
+		{ Flag_Badge2, 40 },
+		{ Flag_Badge1, 30 }
+};
+
 u8 CheckForMoveCancellingStatuses()
 {
 	battleDataPointer[0].moveIndex = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
 	u32 userBank = battleDataPointer[0].battleBanks[User];
 	PokemonBattleData* attacker = &battleDataPointer[0].pokemonStats[userBank];
 	PokemonBattleData* defender = &battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]];
+	u32 obedienceFlag = true;
+	if (PokemonDecrypter(attacker[0].mainPointer, OTID) != player.completeTrainerID && PokemonDecrypter(attacker[0].mainPointer, IsObedient) == false)
+	{
+		u32 upperLimit = 10;
+		u32 i;
+		for (i = 0; i < 8; i++)
+		{
+			if (CheckFlag(badgeLevelEffects[i][0]))
+			{
+				upperLimit = badgeLevelEffects[i][1];
+			}
+		}
+		if (attacker[0].level > upperLimit)
+		{
+			s32 levelDifference = 100 - ((attacker[0].level - upperLimit) << 3);
+			if (levelDifference <= (s32)GetDelimitedRandom32BitValue(100))
+			{
+				obedienceFlag = false;
+			}
+		}
+	}
+	if (obedienceFlag == false)
+	{
+		// do obedience stuff
+	}
 	MoveData* moveInfo = &moveData[battleDataPointer[0].moveIndex];
+	if (attacker[0].primaryStatusBits.sleepTurns > 0)
+	{
+		if (attacker[0].ability == Early_Bird && attacker[0].primaryStatusBits.sleepTurns > 1)
+		{
+			attacker[0].primaryStatusBits.sleepTurns -= 2;
+		}
+		else
+		{
+			attacker[0].primaryStatusBits.sleepTurns--;
+		}
+		if (attacker[0].primaryStatusBits.sleepTurns == 0)
+		{
+			SetupBattleScriptCall((u8*)&Script_Wake_Up, 1);
+			return NotEnded;
+		}
+		else
+		{
+			battleScriptPointer = (u8*)&Script_Fast_Asleep;
+		}
+	}
+	else if (attacker[0].primaryStatusBits.frozen)
+	{
+		u32 rand = GetDelimitedRandom32BitValue(100);
+#if AdditionalDefrosting == TRUE
+		// 50% chance if sunny, 10% chance if hail / diamond dust and 20% chance otherwise
+		u32 value = ((battleDataPointer[0].weatherBits.sunny) ? 50 : ((battleDataPointer[0].weatherBits.hail || battleDataPointer[0].weatherBits.snow) ? 10 : 20));
+#else
+		// Flat 20% chance
+		u32 value = 20;
+#endif
+		if (rand < value)
+		{
+			SetupBattleScriptCall((u8*)&Script_Unfreeze, 1);
+			return NotEnded;
+		}
+	}
+	else if (attacker[0].primaryStatusBits.paralysed)
+	{
+		u32 rand = GetDelimitedRandom32BitValue(100);
+		if (rand < 25)
+		{
+			battleScriptPointer = (u8*)&Script_Fully_Paralysed;
+			return NotEnded;
+		}
+	}
+#if AdditionalBurnCuring == TRUE
+	else if (attacker[0].primaryStatusBits.burned)
+	{
+		// 50% chance of curing if snowing, 20% chance if raining and 0% chance otherwise
+		u32 rand = GetDelimitedRandom32BitValue(100);
+		u32 value = ((battleDataPointer[0].weatherBits.snow) ? 50 : ((battleDataPointer[0].weatherBits.rain) ? 20 : 0));
+		if (rand < value)
+		{
+			SetupBattleScriptCall((u8*)&Script_Cure_Burn, 1);
+			return NotEnded;
+		}
+	}
+#endif
 	if (moveInfo[0].effectID == Effects_Echoed_Voice)
 	{
 		if (battleDataPointer[0].flags.echoedVoiceRaisedThisTurn == 0)
@@ -458,60 +554,6 @@ u8 CheckForMoveCancellingStatuses()
 			battleDataPointer[0].battleBanks[MoveTypeOverrideValue] = Type_Ice;
 		}
 	}
-	if (attacker[0].primaryStatusBits.sleepTurns > 0)
-	{
-		if (attacker[0].ability == Early_Bird && attacker[0].primaryStatusBits.sleepTurns > 1)
-		{
-			attacker[0].primaryStatusBits.sleepTurns -= 2;
-		}
-		else
-		{
-			attacker[0].primaryStatusBits.sleepTurns--;
-		}
-		if (attacker[0].primaryStatusBits.sleepTurns == 0)
-		{
-			SetupBattleScriptCall((u8*)&Script_Wake_Up, 1);
-			return NotEnded;
-		}
-	}
-	else if (attacker[0].primaryStatusBits.frozen)
-	{
-		u32 rand = GetDelimitedRandom32BitValue(100);
-#if AdditionalDefrosting == TRUE
-		// 50% chance if sunny, 10% chance if hail / diamond dust and 20% chance otherwise
-		u32 value = ((battleDataPointer[0].weatherBits.sunny) ? 50 : ((battleDataPointer[0].weatherBits.hail || battleDataPointer[0].weatherBits.snow) ? 10 : 20));
-#else
-		// Flat 20% chance
-		u32 value = 20;
-#endif
-		if (rand < value)
-		{
-			SetupBattleScriptCall((u8*)&Script_Unfreeze, 1);
-			return NotEnded;
-		}
-	}
-	else if (attacker[0].primaryStatusBits.paralysed)
-	{
-		u32 rand = GetDelimitedRandom32BitValue(100);
-		if (rand < 25)
-		{
-			battleScriptPointer = (u8*)&Script_Fully_Paralysed;
-			return NotEnded;
-		}
-	}
-#if AdditionalBurnCuring == TRUE
-	else if (attacker[0].primaryStatusBits.burned)
-	{
-		// 50% chance of curing if snowing, 20% chance if raining and 0% chance otherwise
-		u32 rand = GetDelimitedRandom32BitValue(100);
-		u32 value = ((battleDataPointer[0].weatherBits.snow) ? 50 : ((battleDataPointer[0].weatherBits.rain) ? 20 : 0));
-		if (rand < value)
-		{
-			SetupBattleScriptCall((u8*)&Script_Cure_Burn, 1);
-			return NotEnded;
-		}
-	}
-#endif
 	if (moveInfo[0].effectID != Effects_Hits_Through_Protect)
 	{
 		if (defender[0].battleStatusFlags.protected)
@@ -964,7 +1006,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 				currentDamage >>= 1;
 			}
 		}
-		if (battleType.isDoubleBattle)
+		if (battleType.info.isDoubleBattle)
 		{
 			if (attackerAbility == Plus)
 			{
@@ -1005,7 +1047,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 		{
 			currentDamage = UnsignedFractionalMultiplication(currentDamage, 150);
 		}
-		if (battleType.isDoubleBattle && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User] ^ 2].species == Cherrim && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User] ^ 2].ability == Flower_Gift && moveInfo[0].category == Category_Physical)
+		if (battleType.info.isDoubleBattle && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User] ^ 2].species == Cherrim && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User] ^ 2].ability == Flower_Gift && moveInfo[0].category == Category_Physical)
 		{
 			currentDamage = UnsignedFractionalMultiplication(currentDamage, 150);
 		}
@@ -1097,7 +1139,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 			}
 		}
 	}
-	if (battleType.isDoubleBattle && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target] ^ 2].species == Cherrim && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target] ^ 2].ability == Flower_Gift && moveInfo[0].category == Category_Physical)
+	if (battleType.info.isDoubleBattle && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target] ^ 2].species == Cherrim && battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target] ^ 2].ability == Flower_Gift && moveInfo[0].category == Category_Physical)
 	{
 		currentDamage = UnsignedFractionalMultiplication(currentDamage, 67);
 	}
@@ -1249,7 +1291,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 	return currentDamage;
 }
 
-u8 RODATA_LOCATION naturalGiftDamageValues[] = {
+u8 naturalGiftDamageValues[] = {
 		80,
 		80,
 		80,
@@ -1487,7 +1529,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 		}
 		case Effects_Round:
 			returnable = moveInfo[0].basePower;
-			if (battleType.isDoubleBattle)
+			if (battleType.info.isDoubleBattle)
 			{
 				u32 allyID = battleDataPointer[0].battleBanks[User] ^ 2;
 				if (battleDataPointer[0].pokemonStats[allyID].moves[battleDataPointer[0].moveSelections[allyID]] == battleDataPointer[0].moveIndex)
@@ -2140,6 +2182,18 @@ u8 JumpIf()
 			}
 			break;
 		}
+		case JumpIfBattleType:
+		{
+			if (BattleComparisonRoutine(battleType.basicInfo, LoadUnalignedNumber(battleScriptPointer, 2, 4), battleScriptPointer[6]) == true)
+			{
+				battleScriptPointer = (u8*)LoadUnalignedNumber(battleScriptPointer, 7, 4);
+			}
+			else
+			{
+				battleScriptPointer += 9;
+			}
+			break;
+		}
 	}
 	return NotEnded;
 }
@@ -2631,10 +2685,12 @@ u8 EndTurn()
 
 u8 EndScript()
 {
+	battleDataPointer[0].flags.waitAttack = 0;
+	battleDataPointer[0].flags.endBattle = 1;
 	return Ended;
 }
 
-ALIGN(1) RODATA_LOCATION char* critMessage = "It's a critical hit!";
+ALIGN(1) char* critMessage = "It's a critical hit!";
 
 u8 PrintCriticalHitMessage()
 {
@@ -2648,9 +2704,10 @@ u8 PrintCriticalHitMessage()
 	return NotEnded;
 }
 
-RODATA_LOCATION char* notEffectiveMessage = "It's not very effective...";
-RODATA_LOCATION char* superEffectiveMessage = "It's super effective!";
-RODATA_LOCATION char* noEffectMessage = "It has no effect!";
+
+ALIGN(1) char notEffectiveMessage[] = { 'I', 't', ' ', 'w', 'a', 's', 'n', '\'', 't', ' ', 'v', 'e', 'r', 'y', ' ', 'e', 'f', 'f', 'e', 'c', 't', 'i', 'v', 'e', 0x85, '\0' };
+char* superEffectiveMessage = "It's super effective!";
+char* noEffectMessage = "It has no effect!";
 
 u8 PrintEffectivenessMessage()
 {
@@ -2664,7 +2721,7 @@ u8 PrintEffectivenessMessage()
 		case EighthDamage: case QuarterDamage: case HalfDamage:
 			memset32((void*)0x0600C000, 0, 0xD00);
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-			DrawStringOverTime(notEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			DrawStringOverTime((char*)&notEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
 			break;
 		case NormalDamage:
 			break;
@@ -2687,10 +2744,36 @@ u8 PrintMessageByPointer()
 	return NotEnded;
 }
 
-const ALIGN(1) char statBuffString[] = { 0xFD, 0x1, '\'', 's', ' ', 0xFD, 0x6, '\n', 0xFD, 0x7, '!', '\0' };
+const ALIGN(1) char statBuffString[] = { 0xFD, 0x01, '\'', 's', ' ', 0xFD, 0x06, '\n', 0xFD, 0x07, '!', '\0' };
+const ALIGN(1) char paralysedString[] = { 0xFD, 0x00, ' ', 'i', 's', ' ', 'u', 'n', 'a', 'b', 'l', 'e', '\n', 't', 'o', ' ', 'm', 'o', 'v', 'e', '!', '\0' };
+const ALIGN(1) char sleepingString[] = { 0xFD, 0x00, ' ', 'i', 's', ' ', 'f', 'a', 's', 't', ' ', 'a', 's', 'l', 'e', 'e', 'p', '!', '\0' };
+const ALIGN(1) char wakingUpString[] = { 0xFD, 0x00, ' ', 'w', 'o', 'k', 'e', ' ', 'u', 'p', '!', '\0' };
+const ALIGN(1) char frozenString[] = { 0xFD, 0x00, ' ', 'i', 's', ' ', 'f', 'r', 'o', 'z', 'e', 'n', ' ', 's', 'o', 'l', 'i', 'd', '!', '\0' };
+const ALIGN(1) char defrostingString[] = { 0xFD, 0x00, ' ', 'd', 'e', 'f', 'r', 'o', 's', 't', 'e', 'd', '!', '\0' };
+const ALIGN(1) char cureBurnString[] = { 0xFD, 0x00, ' ', 'w', 'a', 's', ' ', 'c', 'u', 'r', 'e', 'd', '\n', 'o', 'f', ' ', 'i', 't', 's', ' ', 'b', 'u', 'r', 'n', '!', '\0' };
+const ALIGN(1) char failedString[] = { 'B', 'u', 't', ' ', 'i', 't', ' ', 'f', 'a', 'i', 'l', 'e', 'd', 0x85, '\0' };
+const ALIGN(1) char missedString[] = { 0xFD, 0x00, '\'', 's', '\n', 'a', 't', 't', 'a', 'c', 'k', ' ', 'm', 'i', 's', 's', 'e', 'd', '!', '\0' };
+const ALIGN(1) char itemUsedString[] = { 0xFD, 0x09, ' ', 'u', 's', 'e', 'd', ' ', 0xFD, 0x0C, '\n', 'o', 'n', ' ', 0xFD, 0x00, '!', '\0' };
+const ALIGN(1) char ballThrownString[] = { 0xFD, 0x09, ' ', 't', 'h', 'r', 'e', 'w', '\n', 'a', ' ', 0xFD, 0x0C, '!', '\0' };
+const ALIGN(1) char callString[] = { 0xFD, 0x09, ' ', 'c', 'a', 'l', 'l', 'e', 'd', '\n', 0xFD, 0x00, '!', '\0' };
+const ALIGN(1) char wokenByCall[] = { 0xFD, 0x09, '\'', 's', ' ', 'c', 'a', 'l', 'l', '\n', 'w', 'o', 'k', 'e', ' ', 0xFD, 0x00, '!', '\0' };
+const ALIGN(1) char fledString[] = { 0xFD, 0x00, ' ', 'f', 'l', 'e', 'd', '!', '\0' };
 
 char* textTable[] = {
-		(char*)&statBuffString
+		(char*)&statBuffString,
+		(char*)&paralysedString,
+		(char*)&sleepingString,
+		(char*)&wakingUpString,
+		(char*)&frozenString,
+		(char*)&defrostingString,
+		(char*)&cureBurnString,
+		(char*)&failedString,
+		(char*)&missedString,
+		(char*)&itemUsedString,
+		(char*)&ballThrownString,
+		(char*)&callString,
+		(char*)&wokenByCall,
+		(char*)&fledString
 };
 
 u8 PrintMessageByID()
@@ -2710,9 +2793,14 @@ const u16 victoryFanfares[][2] = {
 		{ 0xFFFF, 0x0000 }
 };
 
+const u16 afterTrainerBattleFanfares[] = {
+		Song_GSCTrainerVictoryFanfare,
+		Song_RBYTrainerVictoryFanfare
+};
+
 u8 PlayBattleEndFanfare()
 {
-	if (battleType.isWildBattle)
+	if (battleType.info.isWildBattle)
 	{
 		SetupSongForPlayback(Song_GSCWildVictoryFanfare, 0);
 	}
@@ -2733,7 +2821,7 @@ u8 PlayBattleEndFanfare()
 		}
 		if (found == false)
 		{
-			SetupSongForPlayback(Song_GSCTrainerVictoryFanfare, 0);
+			SetupSongForPlayback(afterTrainerBattleFanfares[regionByte], 0);
 		}
 	}
 	battleScriptPointer++;
@@ -2750,9 +2838,9 @@ void CheckForTextContinuePressBattle()
 	}
 }
 
-const char pokemonFaintedString[] = { 0xFD, 0x1, ' ', 'f', 'a', 'i', 'n', 't', 'e', 'd', '!', '\0' };
-const char experienceGainStringTwo[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'e', 'x', 'p', 'e', 'r', 'i', 'e', 'n', 'c', 'e', ' ', 'p', 'o', 'i', 'n', 't', 's', '.', '\0' };
-const char experienceGainStringOne[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'e', 'x', 'p', 'e', 'r', 'i', 'e', 'n', 'c', 'e', ' ', 'p', 'o', 'i', 'n', 't', '.', '\0' };
+const char pokemonFaintedString[] = { 0xFD, 0x01, ' ', 'f', 'a', 'i', 'n', 't', 'e', 'd', '!', '\0' };
+const char experienceGainStringTwo[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'E', 'x', 'p', '.', ' ', 'P', 'o', 'i', 'n', 't', 's', '!', '\0' };
+const char experienceGainStringOne[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'E', 'x', 'p', '.', ' ', 'P', 'o', 'i', 'n', 't', '!', '\0' };
 
 u8 PrintFaintMessage()
 {
@@ -2839,7 +2927,7 @@ const u8 trainerClassMoneyRates[] = {
 u8 CalculateTrainerWinnings()
 {
 	u32 calculatedValue = 0;
-	if (battleType.isTrainerBattle)
+	if (battleType.info.isTrainerBattle)
 	{
 		calculatedValue = trainerClassMoneyRates[battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass];
 		TrainerData* baseData = battleDataPointer[0].trainerData[0].pointerToData;
@@ -2960,7 +3048,7 @@ u8 CalculatePickupWinnings()
 	return NotEnded;
 }
 
-const char pickupCashGainString[] = { 0xFD, 0x09, ' ', 'p', 'i', 'c', 'k', 'e', 'd', ' ', 'u', 'p', '\n', '$', 0xFD, 0x08, '!', '\0' };
+const char pickupCashGainString[] = { 0xFD, 0x09, ' ', 'p', 'i', 'c', 'k', 'e', 'd', ' ', 'u', 'p', ' ', '$', 0xFD, 0x08, '!', '\0' };
 
 u8 PrintPayDayCashGainMessage()
 {
@@ -2972,6 +3060,193 @@ u8 PrintPayDayCashGainMessage()
 		SetTextPaletteSlot(0);
 		DrawStringOverTime((char*)&pickupCashGainString, 0, 0, 15, 0);
 		HandleKeyPresses = &CheckForTextContinuePressBattle;
+	}
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 PrintItemEffectMessage()
+{
+	battleScriptPointer++;
+	return NotEnded;
+}
+
+u32 CalculateFleeProbabilityValue(u32 speed1, u32 speed2)
+{
+	speed1 *= 32;
+	speed1 = UnsignedDivide(speed1, speed2 >> 2);
+	speed1 += (30 * battleDataPointer[0].counterBits.escapeAttempts);
+	speed1 &= 0xFF;
+	return speed1;
+}
+
+u8 CalculateFleeResult()
+{
+	if (battleType.info.isWildBattle || battleType.info.isLinkBattle)
+	{
+		if (battleType.info.isDoubleBattle)
+		{
+			if (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[0], Type_Ghost)
+					|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[2], Type_Ghost))
+			{
+				battleDataPointer[0].battleDamage = Flee_Result_Succeeded;
+			}
+			else if (battleDataPointer[0].pokemonStats[0].ability == Run_Away || battleDataPointer[0].pokemonStats[2].ability == Run_Away)
+			{
+				battleDataPointer[0].battleDamage = Flee_Result_Run_Away;
+			}
+			else
+			{
+				if (CheckForAbilityInBattle(Magnet_Pull, 1)
+					&& (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[0], Type_Steel)
+					|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[2], Type_Steel)))
+				{
+					battleDataPointer[0].battleDamage = Flee_Result_Failed_Trapped_Ability;
+					battleDataPointer[0].battleBanks[GenericBufferByte] = Magnet_Pull;
+				}
+				else if (CheckForAbilityInBattle(Arena_Trap, 1)
+						&& (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[0], Type_Flying) == false
+						|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[2], Type_Flying) == false)
+						&& (battleDataPointer[0].pokemonStats[0].ability != Levitate
+						|| battleDataPointer[0].pokemonStats[2].ability != Levitate))
+				{
+					battleDataPointer[0].battleDamage = Flee_Result_Failed_Trapped_Ability;
+					battleDataPointer[0].battleBanks[GenericBufferByte] = Arena_Trap;
+				}
+				else if (CheckForAbilityInBattle(Shadow_Tag, 0) == false
+						&& CheckForAbilityInBattle(Shadow_Tag, 1))
+				{
+					battleDataPointer[0].battleDamage = Flee_Result_Failed_Trapped_Ability;
+					battleDataPointer[0].battleBanks[GenericBufferByte] = Shadow_Tag;
+				}
+				else
+				{
+					u32 meanSpeed;
+					if (CheckForAbilityInBattle(Unaware, 1))
+					{
+						meanSpeed = (battleDataPointer[0].pokemonStats[0].stats[BattleSpeed] + battleDataPointer[0].pokemonStats[2].stats[BattleSpeed]) >> 1;
+					}
+					else
+					{
+						meanSpeed = (battleDataPointer[0].pokemonStats[0].effectiveStats[BattleSpeed] + battleDataPointer[0].pokemonStats[2].effectiveStats[BattleSpeed]) >> 1;
+					}
+					u32 meanOpponentSpeed;
+					if (CheckForAbilityInBattle(Unaware, 0))
+					{
+						meanOpponentSpeed = (battleDataPointer[0].pokemonStats[1].stats[BattleSpeed] + battleDataPointer[0].pokemonStats[3].stats[BattleSpeed]) >> 1;
+					}
+					else
+					{
+						meanOpponentSpeed = (battleDataPointer[0].pokemonStats[1].effectiveStats[BattleSpeed] + battleDataPointer[0].pokemonStats[3].effectiveStats[BattleSpeed]) >> 1;
+					}
+					if (GetDelimitedRandom32BitValue(0x100) < CalculateFleeProbabilityValue(meanSpeed, meanOpponentSpeed))
+					{
+						battleDataPointer[0].battleDamage = Flee_Result_Succeeded;
+					}
+					else
+					{
+						battleDataPointer[0].battleDamage = Flee_Result_Failed;
+					}
+				}
+			}
+		}
+		else
+		{
+			if (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[0], Type_Ghost))
+			{
+				battleDataPointer[0].battleDamage = Flee_Result_Succeeded;
+			}
+			else if (battleDataPointer[0].pokemonStats[0].ability == Run_Away)
+			{
+				battleDataPointer[0].battleDamage = Flee_Result_Run_Away;
+			}
+			else
+			{
+				if (CheckForAbilityInBattle(Magnet_Pull, 1)
+					&& (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[0], Type_Steel)
+					|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[2], Type_Steel)))
+				{
+					battleDataPointer[0].battleDamage = Flee_Result_Failed_Trapped_Ability;
+					battleDataPointer[0].battleBanks[GenericBufferByte] = Magnet_Pull;
+				}
+				else if (CheckForAbilityInBattle(Arena_Trap, 1)
+						&& BattlePokemonHasType((PokemonBattleData*)&battleDataPointer[0].pokemonStats[0], Type_Flying) == false
+						&& battleDataPointer[0].pokemonStats[0].ability != Levitate)
+				{
+					battleDataPointer[0].battleDamage = Flee_Result_Failed_Trapped_Ability;
+					battleDataPointer[0].battleBanks[GenericBufferByte] = Arena_Trap;
+				}
+				else if (CheckForAbilityInBattle(Shadow_Tag, 0) == false
+						&& CheckForAbilityInBattle(Shadow_Tag, 1))
+				{
+					battleDataPointer[0].battleDamage = Flee_Result_Failed_Trapped_Ability;
+					battleDataPointer[0].battleBanks[GenericBufferByte] = Shadow_Tag;
+				}
+				else
+				{
+					u32 meanSpeed;
+					if (CheckForAbilityInBattle(Unaware, 1))
+					{
+						meanSpeed = battleDataPointer[0].pokemonStats[0].stats[BattleSpeed];
+					}
+					else
+					{
+						meanSpeed = battleDataPointer[0].pokemonStats[0].effectiveStats[BattleSpeed];
+					}
+					u32 meanOpponentSpeed;
+					if (CheckForAbilityInBattle(Unaware, 0))
+					{
+						meanOpponentSpeed = battleDataPointer[0].pokemonStats[1].stats[BattleSpeed];
+					}
+					else
+					{
+						meanOpponentSpeed = battleDataPointer[0].pokemonStats[1].effectiveStats[BattleSpeed];
+					}
+					if (GetDelimitedRandom32BitValue(0x100) < CalculateFleeProbabilityValue(meanSpeed, meanOpponentSpeed))
+					{
+						battleDataPointer[0].battleDamage = Flee_Result_Succeeded;
+					}
+					else
+					{
+						battleDataPointer[0].battleDamage = Flee_Result_Failed;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		battleDataPointer[0].battleDamage = Flee_Result_Cannot_Flee;
+	}
+	return NotEnded;
+}
+
+const ALIGN(1) char clearHyperMode[] = { 0xFD, 0x00, ' ', 'w', 'a', 's', ' ', 'c', 'a', 'l', 'l', 'e', 'd', '\n', 't', 'o', ' ', 'i', 't', 's', ' ', 's', 'e', 'n', 's', 'e', 's', '!', '\0' };
+const ALIGN(1) char callNoEffect[] = { 'T', 'h', 'e', ' ', 'c', 'a', 'l', 'l', ' ', 'h', 'a', 'd', ' ', 'n', 'o', ' ', 'e', 'f', 'f', 'e', 'c', 't', '!', '\0' };
+
+u8 PrintCallEffectMessage()
+{
+	memset32((void*)0x0600C000, 0, 0xD00);
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	SetTextColour(1, 6, 0);
+	SetTextPaletteSlot(0);
+	PokemonBattleData* data = (PokemonBattleData*)&battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]];
+	if (data[0].primaryStatusBits.sleepTurns)
+	{
+		DrawStringOverTime((char*)&wokenByCall, 0, 0, 15, 0);
+		data[0].primaryStatusBits.sleepTurns = 0;
+		// Graphical update
+	}
+	else if (data[0].primaryStatusBits.hyper || data[0].secondaryStatusBits.confusion)
+	{
+		DrawStringOverTime((char*)&callString, 0, 0, 15, 0);
+		data[0].primaryStatusBits.hyper = 0;
+		data[0].secondaryStatusBits.confusion = 0;
+		// Graphical update for hyper
+	}
+	else
+	{
+		DrawStringOverTime((char*)&callNoEffect, 0, 0, 15, 0);
 	}
 	battleScriptPointer++;
 	return NotEnded;

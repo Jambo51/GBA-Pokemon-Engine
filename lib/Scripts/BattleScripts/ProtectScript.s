@@ -1,4 +1,6 @@
-	.section .rodata
+	.text
+	.include "BattleScriptStringIDs.s"
+	.include "BattleScriptCommandIDs.s"
 	.global Script_Protect_Triggered
 	.align 1
 

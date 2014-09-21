@@ -100,8 +100,9 @@ int main()
 	SetFlag(Flag_Pokedex);
 	SetFlag(Flag_Pokegear);
 	SetFlag(Flag_PokemonMenu);
-	GivePokemonToPlayer(&partyPokemon[0], 36, Charizard, 0);
+	player.completeTrainerID = GetRandom32BitValue();
 	SetPlayerName("Jambo51");
+	GivePokemonToPlayer(&partyPokemon[0], 36, Charizard, 0);
 	while (1)
 	{
 		VBlankIntrWait();

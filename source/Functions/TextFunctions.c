@@ -82,11 +82,41 @@ char* statBuffStrings2[2][3] = {
 };
 
 char* foeString = "Foe ";
+char* wildString = "Wild ";
 char* trainerClasses[] = { "Gym Leader", "Elite Four", "Champion", "Rocket Grunt", "Rocket Duo", "Elite Trainer" };
 char* playerNameLoc = *(&player.name);
 char* rival1NameLoc = *(&player.primaryRivalName);
 char* rival2NameLoc = *(&player.secondaryRivalName);
 char* rival3NameLoc = *(&player.tertiaryRivalName);
+
+char ToUpper(char c)
+{
+	if (c >= 'a' && c <= 'z')
+	{
+		c -= ('a' - 'A');
+	}
+	return c;
+}
+
+char ToLower(char c)
+{
+	if (c >= 'A' && c <= 'Z')
+	{
+		c += ('a' - 'A');
+	}
+	return c;
+}
+
+u32 StartsWithVowel(char* pointer)
+{
+	char c = pointer[0];
+	c = ToUpper(c);
+	if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')
+	{
+		return true;
+	}
+	return false;
+}
 
 void BufferUnsignedLongNumber(u32, u8);
 
@@ -124,10 +154,6 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 					}
 					case 0xFD - 0xF8:
 					{
-						// Note that this is battle specific
-						// However, many of the indices required for this to operate
-						// Are currently not implemented
-						// Therefore this is largely a placeholder for the mean time
 						char* pointer = 0;
 						u32 length = 0;
 						char c = stringSource[pos + 1];
@@ -138,7 +164,14 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 								u32 bank = battleDataPointer[0].battleBanks[User];
 								if (bank & 1)
 								{
-									index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
+									if (battleType.info.isWildBattle)
+									{
+										index += StringCopyWithBufferChecks(stringDest, wildString, 0, index);
+									}
+									else
+									{
+										index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
+									}
 								}
 								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
@@ -148,7 +181,14 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 								u32 bank = battleDataPointer[0].battleBanks[Target];
 								if (bank & 1)
 								{
-									index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
+									if (battleType.info.isWildBattle)
+									{
+										index += StringCopyWithBufferChecks(stringDest, wildString, 0, index);
+									}
+									else
+									{
+										index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
+									}
 								}
 								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
@@ -223,6 +263,33 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 							case 11:
 							{
 								pointer = (char*)&battleDataPointer[0].trainerData[0].pointerToData[0].name;
+								break;
+							}
+							case 12:
+							{
+								pointer = "Item";
+								if (StartsWithVowel(pointer))
+								{
+									index += StringCopyWithBufferChecks(stringDest, "an ", 0, index);
+								}
+								else
+								{
+									index += StringCopyWithBufferChecks(stringDest, "a ", 0, index);
+								}
+							}
+							case 13:
+							{
+								pointer = rival1NameLoc;
+								break;
+							}
+							case 14:
+							{
+								pointer = rival2NameLoc;
+								break;
+							}
+							case 15:
+							{
+								pointer = rival3NameLoc;
 								break;
 							}
 						}

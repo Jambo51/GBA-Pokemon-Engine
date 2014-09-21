@@ -212,10 +212,16 @@ const MapConnection connections3_19 = { 1, (MapConnectionData*)(&connectionData3
 const RODATA_LOCATION Tileset tileset0 = { 0x1, &Tileset0Tiles, &Tileset0Pal, &Tileset0MapBlock, &Tileset0AnimStruct, &Tileset0BlockInformation };
 const RODATA_LOCATION Tileset tileset1 = { 0x101, &Tileset1Tiles, &Tileset1Pal, &Tileset1MapBlock, 0, &Tileset1BlockInformation };
 
+const WildPokemonEntry wildData[] = { { 75, 3, 6, Caterpie }, { 25, 7, 9, Metapod } };
+
+const WildPokemonData wildDataInner = { { 20, 20, 20, 20 }, { (WildPokemonEntry*)&wildData, 0, 0, 0 } };
+
+const WildData mapWildData = { { (WildPokemonData*)&wildDataInner, 0, 0, 0, 0 } };
+
 const MapFooter mapFooter3_0 = { 24, 20, &map3_0BorderData, &map3_0, &tileset0, &tileset1, 2, 2 };
-const MapHeader mapHeader3_0 = { &mapFooter3_0, 0, 0, &connections3_0, Song_GSCPalletTown, 3, 0, 0, 0, 0 };
+const MapHeader mapHeader3_0 = { &mapFooter3_0, 0, 0, &connections3_0, Song_GSCPalletTown, { 3, 0 }, 0, 0, 0, 0, 0, 0, 0, 0, (WildData*)0 };
 
 const MapFooter mapFooter3_19 = { 24, 40, &map3_0BorderData, &map3_19, &tileset0, &tileset1, 2, 2 };
-const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, 3, 19, 0, 0, 0 };
+const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, { 3, 19 }, 0, 0, 0, 0, 0, 0, 0, 0, (WildData*)&mapWildData };
 
 const MapHeader* maps[][2] = { { 0x00000000, 0x00000000 }, { 0x00000000, 0x00000000 }, { 0x00000000, 0x00000000 }, { (MapHeader*)(&mapHeader3_0), (MapHeader*)(&mapHeader3_19) } };

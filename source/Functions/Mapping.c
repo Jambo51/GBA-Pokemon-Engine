@@ -412,14 +412,14 @@ void ChangeSpriteFrame(u8 spriteID)
 	}
 }
 
-const RODATA_LOCATION u16 xLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 56 } };
+const RODATA_LOCATION u16 xLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 112 } };
 
 u16 CalculateObjectXLocation(u8 shape, u8 size)
 {
 	return xLocs[shape][size];
 }
 
-const RODATA_LOCATION u16 yLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 112 } };
+const RODATA_LOCATION u16 yLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 56 } };
 
 u16 CalculateObjectYLocation(u8 shape, u8 size)
 {

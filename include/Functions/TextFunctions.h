@@ -40,4 +40,6 @@ void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour, void (*endFunction)
 void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
 void InitialiseTextEngine(u32 textSetID);
 
+extern char* playerNameLoc;
+
 #endif /* TEXTFUNCTIONS_H_ */

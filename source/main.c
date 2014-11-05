@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "Functions.h"
 #include "Data/GlobalDefinitions.h"
 #include "Data/MemoryLocations.h"

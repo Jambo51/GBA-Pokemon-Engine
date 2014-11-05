@@ -29,5 +29,6 @@ extern const RODATA_LOCATION u8 Script_Item_Used[];
 extern const RODATA_LOCATION u8 Script_Pokemon_Switched[];
 extern const RODATA_LOCATION u8 Script_Player_Call[];
 extern const RODATA_LOCATION u8 Script_Fast_Asleep[];
+extern const RODATA_LOCATION u8 Script_Unable_To_Flee[];
 
 #endif /* LIBBATTLESCRIPTS_H_ */

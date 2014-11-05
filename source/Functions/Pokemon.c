@@ -1604,10 +1604,10 @@ void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIn
 	}
 }
 
-void GivePokemonToTrainer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIndex, char* trainerName)
+void GivePokemonToTrainer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIndex, char* trainerName, u32 id)
 {
 	GeneratePokemon(thePokemon, level, species);
-	PokemonEncrypter(thePokemon, OTID, GetRandom32BitValue());
+	PokemonEncrypter(thePokemon, OTID, id);
 	PokemonEncrypter(thePokemon, OTName, (u32)trainerName);
 	InternalBaseData* data = (InternalBaseData*)((void**)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex];
 	PokemonEncrypter(thePokemon, Friendship, data[0].baseFriendship);

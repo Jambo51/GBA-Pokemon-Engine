@@ -8,11 +8,10 @@
 #include "Functions\ObjectFunctions.h"
 #include "Functions\KeyPresses.h"
 #include "Functions\Pokemon.h"
+#include "Data\BattleStrings.h"
 #include "libbattlescripts.h"
 
-#define BG_PRIORITY_ZERO 0
-#define MAJORITY (BG_4BPP | BG_REG_32x32 | BG_MOSAIC | BG_SBB(31) | BG_PRIORITY_ZERO)
-#define MAIN_BG_SETTINGS2 (BG_CBB(2) | MAJORITY)
+#define BATTLE_LAYER_0_SETTINGS (BG_4BPP | BG_REG_32x64 | BG_MOSAIC | BG_SBB(14) | BG_CBB(2))
 
 #define WILDBATTLE 0
 #define TRAINERBATTLE 1
@@ -25,7 +24,7 @@
 #define CHAMPIONBATTLE 8
 #define EVILDUOBATTLE 9
 
-#define TESTMODE WILDBATTLE
+#define TESTMODE TRAINERBATTLE
 
 const ALIGN(2) u16 criticalCaptureValues[6][2] = {
 		{ 30, 0 },
@@ -268,6 +267,86 @@ const U32FunctionPointerU32 StatusBonusRates[] = {
 		&HalfAgainLikelihood,
 		&HalfAgainLikelihood
 };
+
+const RODATA_LOCATION u32 battleTextPalette[] = { 0x7FFF0000, 0x4D8A001F, 0x7FFF5E2D, 0x6B3A396D, 0x18C53D28, 0x737C7C1F, 0x0DF37C1F, 0x354526B9 };
+
+void DrawMainSelectionMenu()
+{
+	u32 i;
+	u16* address = (u16*)0x060073C2;
+	memset32((void*)0x0600C000, BATTLEBGCOLOUR, 0x7C0);
+	memset32((void*)0x0600E000, WHITETEXTBG, 0x6C0);
+	for (i = 0; i < 11; i++)
+	{
+		address[(i + 14)] = 0x1200 + ((i + 13) * 20);
+		address[0x20 + (i + 14)] = 0x1201 + ((i + 13) * 20);
+		address[0x40 + (i + 14)] = 0x1202 + ((i + 13) * 20);
+		address[0x60 + (i + 14)] = 0x1203 + ((i + 13) * 20);
+	}
+	for (i = 0; i < 14; i++)
+	{
+		address[i] = 0x200 + (i * 20);
+		address[0x20 + i] = 0x201 + (i * 20);
+		address[0x40 + i] = 0x202 + (i * 20);
+		address[0x60 + i] = 0x203 + (i * 20);
+	}
+	SetTextColour(1, 6, 15);
+	DrawString((char*)&whatToDoString, 8, 0);
+	DrawString((char*)&whatToDoString2, 8, 0x10);
+	SetTextColour(15, 3, 1);
+	DrawCharacter(ARROWCHAR, (0x30 * (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] >> 1));
+	DrawString("Battle", 0x78, 0);
+	DrawString("Bag", 0xA8, 0);
+	DrawString("Party", 0x78, 0x10);
+	if (battleType.info.isWildBattle || battleType.info.isLinkBattle)
+	{
+		DrawString("Flee", 0xA8, 0x10);
+	}
+	else
+	{
+		DrawString("Call", 0xA8, 0x10);
+	}
+}
+
+void MoveSelectionRender()
+{
+	SetTextColour(15, 3, 1);
+	u16* address = (u16*)0x060073C2;
+	memset32((void*)0x0600C000, WHITETEXTBG, 0xF0C);
+	u32 i;
+	for (i = 0; i < 20; i++)
+	{
+		address[i] = 0x1200 + (i * 20);
+		address[0x20 + i] = 0x1201 + (i * 20);
+		address[0x40 + i] = 0x1202 + (i * 20);
+		address[0x60 + i] = 0x1203 + (i * 20);
+	}
+	for (i = 0; i < 7; i++)
+	{
+		address[i + 22] = 0x1200 + (i * 20);
+		address[0x20 + i + 22] = 0x1201 + (i * 20);
+		address[0x40 + i + 22] = 0x1202 + (i * 20);
+		address[0x60 + i + 22] = 0x1203 + (i * 20);
+	}
+	PokemonBattleData* data = (PokemonBattleData*)&battleDataPointer[0].pokemonStats[battleDataPointer[0].currentBattlerIndex];
+	for (i = 0; i < 2; i++)
+	{
+		u32 j;
+		for (j = 0; j < 2; j++)
+		{
+			u16 moveID = data[0].moves[(i * 2) + j];
+			if (moveID)
+			{
+				DrawString((char*)&moveNames[moveID], j * 80 + 16, i * 0x10);
+			}
+			else
+			{
+				DrawString("-", j * 80 + 16, i * 0x10);
+			}
+		}
+	}
+	DrawCharacter(ARROWCHAR, (80 * (battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] & 1)) + 8, 0x10 * (battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] >> 1));
+}
 
 u32 CaptureChecks(Pokemon* target, u16 itemID)
 {
@@ -540,7 +619,6 @@ u16 GetSongIDForBattle()
 	}
 	else if (battleType.info.isTrainerBattle)
 	{
-		u32 i = 0;
 		u32 trainerClass = battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass;
 		if (trainerClass == Class_Champion)
 		{
@@ -556,6 +634,7 @@ u16 GetSongIDForBattle()
 		}
 		else
 		{
+			u32 i = 0;
 			while (classToSongList[i][0] != 0xFFFF)
 			{
 				if (trainerClass == classToSongList[i][0])
@@ -606,10 +685,6 @@ const RODATA_LOCATION OAMData battleObjectsOAMData[] = {
 		{ 0, 0, 2, 1, 0, 0, 0, 8, 144, 0 },
 		{ 0, 0, 3, 1, 0, 0, 0, 8, 144, 0 }
 };
-
-const RODATA_LOCATION u32 battleTextPalette[] = { 0x7FFF0000, 0x4D8A001F, 0x7FFF5E2D, 0x6B3A396D, 0x18C53D28, 0x737C7C1F, 0x0DF37C1F, 0x354526B9 };
-char* whatToDoString = "What should";
-const RODATA_LOCATION char whatToDoString2[] = { 0xFD, 0x0, ' ', 'd', 'o', '?', '\0' };
 
 u8* moveScriptsTable[] = {
 
@@ -676,7 +751,7 @@ void RunBattleScripts()
 	}
 	else if (battleDataPointer[0].flags.endBattle)
 	{
-		memset32((void*)0x0600C000, 0, 0xD00);
+		SetTilesForTextRender();
 		{
 			u32 i;
 			for (i = 0; i < 4; i++)
@@ -702,7 +777,7 @@ void RunBattleScripts()
 	}
 	else if (battleDataPointer[0].flags.waitAttack == 0 && (battleDataPointer[0].currentBattlerIndex < battleDataPointer[0].numBattlers))
 	{
-		u32 index = battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex];
+		u32 index = battleDataPointer[0].moveSelections[battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex]];
 		switch (index)
 		{
 			case Selections_Move1:
@@ -710,8 +785,8 @@ void RunBattleScripts()
 			case Selections_Move3:
 			case Selections_Move4:
 			{
-				battleDataPointer[0].battleBanks[User] = index;
-				battleDataPointer[0].battleBanks[Target] = battleDataPointer[0].targets[index];
+				battleDataPointer[0].battleBanks[User] = battleDataPointer[0].currentBattlerIndex;
+				battleDataPointer[0].battleBanks[Target] = battleDataPointer[0].targets[battleDataPointer[0].currentBattlerIndex];
 				{
 					//u16 moveID = battleDataPointer[0].moveIndex;
 					//MoveData* moveInfo = (MoveData*)&moveData[moveIndex];
@@ -759,16 +834,12 @@ void RunBattleScripts()
 	}
 	else
 	{
-		memset32((void*)0x0600C000, 0, 0xD00);
 		battleDataPointer[0].objectPointers.battlers[0]->StateFunction = &MoveUpAndDown;
 		battleDataPointer[0].objectPointers.battlers[0]->stateFunctionInfo = 16;
-		battleDataPointer[0].mainSelection = 0;
-		battleDataPointer[0].internalSelection = 0;
 		battleDataPointer[0].battleBanks[User] = 0;
 		battleDataPointer[0].currentBattlerIndex = 0;
 		UpdateCounters();
-		DrawString(whatToDoString, 0, 0, 0);
-		DrawString((char*)&whatToDoString2, 0, 0x10, 0);
+		DrawMainSelectionMenu();
 		CallbackMain = &BattleWaitForKeyPress;
 		HandleKeyPresses = &MainBattleSelectionKeyPresses;
 	}
@@ -852,7 +923,7 @@ void MainBattleSelectionKeyPresses(void);
 void MoveSelectionKeyPresses()
 {
 	u32 selectorIndex = battleDataPointer[0].selectorIndex;
-	MoveData* moveInfo = (MoveData*)&moveData[battleDataPointer[0].pokemonStats[selectorIndex].moves[battleDataPointer[0].internalSelection]];
+	MoveData* moveInfo = (MoveData*)&moveData[battleDataPointer[0].pokemonStats[selectorIndex].moves[battleDataPointer[0].internalSelection[selectorIndex]]];
 	if (IsKeyDownButNotHeld(Key_A))
 	{
 		if (moveInfo[0].targetsStruct.targetsSelf)
@@ -865,7 +936,7 @@ void MoveSelectionKeyPresses()
 			{
 				battleDataPointer[0].targets[selectorIndex] = selectorIndex;
 			}
-			battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection;
+			battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection[selectorIndex];
 			selectorIndex += 2;
 		}
 		else if (moveInfo[0].targetsStruct.hitsBothInDouble)
@@ -878,7 +949,7 @@ void MoveSelectionKeyPresses()
 			{
 				battleDataPointer[0].targets[selectorIndex] = 4 | ((selectorIndex ^ 1) & 1);
 			}
-			battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection;
+			battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection[selectorIndex];
 			selectorIndex += 2;
 		}
 		else
@@ -887,12 +958,12 @@ void MoveSelectionKeyPresses()
 			{
 				battleDataPointer[0].targets[selectorIndex] = ((selectorIndex ^ 1) & 1);
 				HandleKeyPresses = &ChooseTargetBattleKeyPress;
-				battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection;
+				battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection[selectorIndex >> 1];
 			}
 			else
 			{
 				battleDataPointer[0].targets[selectorIndex] = selectorIndex ^ 1;
-				battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection;
+				battleDataPointer[0].moveSelections[selectorIndex] = battleDataPointer[0].internalSelection[selectorIndex >> 1];
 				selectorIndex += 2;
 			}
 		}
@@ -916,22 +987,27 @@ void MoveSelectionKeyPresses()
 	else if (IsKeyDownButNotHeld(Key_B))
 	{
 		HandleKeyPresses = &MainBattleSelectionKeyPresses;
+		DrawMainSelectionMenu();
 		// Return to original graphics
 	}
 	else if (IsKeyDownButNotHeld(Key_Left) || IsKeyDownButNotHeld(Key_Right))
 	{
-		u32 newPos = battleDataPointer[0].internalSelection ^ 1;
+		u32 newPos = battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] ^ 1;
 		if (battleDataPointer[0].pokemonStats[battleDataPointer[0].selectorIndex].moves[newPos])
 		{
-			battleDataPointer[0].internalSelection = newPos;
+			memset32((void*)(0x0600C280 + ((battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] >> 1) * 0x40) + ((battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] & 1) * 0x1900)), WHITETEXTBG, 16);
+			battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] = newPos;
+			DrawCharacter(ARROWCHAR, (80 * (battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] & 1)) + 8, 0x10 * (battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] >> 1));
 		}
 	}
 	else if (IsKeyDownButNotHeld(Key_Up) || IsKeyDownButNotHeld(Key_Down))
 	{
-		u32 newPos = battleDataPointer[0].internalSelection ^ 2;
+		u32 newPos = battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] ^ 2;
 		if (battleDataPointer[0].pokemonStats[battleDataPointer[0].selectorIndex].moves[newPos])
 		{
-			battleDataPointer[0].internalSelection = newPos;
+			memset32((void*)(0x0600C280 + ((battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] >> 1) * 0x40) + ((battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] & 1) * 0x1900)), WHITETEXTBG, 16);
+			battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] = newPos;
+			DrawCharacter(ARROWCHAR, (80 * (battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] & 1)) + 8, 0x10 * (battleDataPointer[0].internalSelection[battleDataPointer[0].selectorIndex >> 1] >> 1));
 		}
 	}
 }
@@ -940,9 +1016,10 @@ void MainBattleSelectionKeyPresses()
 {
 	if (IsKeyDownButNotHeld(Key_A))
 	{
-		switch (battleDataPointer[0].mainSelection)
+		switch (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1])
 		{
 			case 0:
+				MoveSelectionRender();
 				HandleKeyPresses = &MoveSelectionKeyPresses;
 				break;
 			case 1:
@@ -955,7 +1032,31 @@ void MainBattleSelectionKeyPresses()
 				break;
 			case 3:
 				battleDataPointer[0].moveSelections[battleDataPointer[0].selectorIndex] = Selections_Flee;
-				HandleKeyPresses = &BattleAISelections;
+				if (battleType.info.isWildBattle || battleType.info.isLinkBattle)
+				{
+					HandleKeyPresses = &IgnoreKeyPresses;
+					CallbackMain = &BattleAISelections;
+				}
+				else
+				{
+					u32 selectorIndex = battleDataPointer[0].selectorIndex;
+					selectorIndex += 2;
+					if (selectorIndex == battleDataPointer[0].numBattlers)
+					{
+						HandleKeyPresses = &IgnoreKeyPresses;
+						CallbackMain = &BattleAISelections;
+						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
+						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
+					}
+					else
+					{
+						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
+						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
+						battleDataPointer[0].objectPointers.battlers[selectorIndex]->StateFunction = &MoveUpAndDown;
+						battleDataPointer[0].objectPointers.battlers[selectorIndex]->stateFunctionInfo = 16;
+					}
+					battleDataPointer[0].selectorIndex = selectorIndex;
+				}
 				break;
 		}
 	}
@@ -965,15 +1066,15 @@ void MainBattleSelectionKeyPresses()
 	}
 	else if (IsKeyDownButNotHeld(Key_Left) || IsKeyDownButNotHeld(Key_Right))
 	{
-		memset32((void*)(0x0600E300 + ((battleDataPointer[0].mainSelection >> 1) * 0x40) + ((battleDataPointer[0].mainSelection & 1) * 0xF00)), 0, 16);
-		battleDataPointer[0].mainSelection ^= 1;
-		DrawCharacter('~' + 1, (0x30 * (battleDataPointer[0].mainSelection & 1)) + 0x70, 0x10 * (battleDataPointer[0].mainSelection >> 1), 0);
+		memset32((void*)(0x0600E300 + ((battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] >> 1) * 0x40) + ((battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] & 1) * 0xF00)), WHITETEXTBG, 16);
+		battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] ^= 1;
+		DrawCharacter(ARROWCHAR, (0x30 * (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] >> 1));
 	}
 	else if (IsKeyDownButNotHeld(Key_Up) || IsKeyDownButNotHeld(Key_Down))
 	{
-		memset32((void*)(0x0600E300 + ((battleDataPointer[0].mainSelection >> 1) * 0x40) + ((battleDataPointer[0].mainSelection & 1) * 0xF00)), 0, 16);
-		battleDataPointer[0].mainSelection ^= 2;
-		DrawCharacter('~' + 1, (0x30 * (battleDataPointer[0].mainSelection & 1)) + 0x70, 0x10 * (battleDataPointer[0].mainSelection >> 1), 0);
+		memset32((void*)(0x0600E300 + ((battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] >> 1) * 0x40) + ((battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] & 1) * 0xF00)), WHITETEXTBG, 16);
+		battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] ^= 2;
+		DrawCharacter(ARROWCHAR, (0x30 * (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleDataPointer[0].mainSelection[battleDataPointer[0].selectorIndex >> 1] >> 1));
 	}
 }
 
@@ -1010,7 +1111,6 @@ void InitialiseBattleEnvironment()
 	currentMap = GetMapHeaderFromBankAndMapID(3, 1)[0];
 #if TESTMODE == WILDBATTLE
 	battleType.info.isWildBattle = 1;
-	GenerateWildPokemonFromData((Pokemon*)&enemyPokemon[0], currentMap.wildDataLocation);
 #elif TESTMODE == DOUBLEWILD
 	battleType.info.isWildBattle = 1;
 	battleType.info.isDoubleBattle = 1;
@@ -1032,6 +1132,7 @@ void InitialiseBattleEnvironment()
 	if (battleType.info.isTrainerBattle)
 	{
 		battleDataPointer[0].trainerData = (TrainerBattleData*)MemoryAllocate(sizeof(TrainerBattleData));
+		battleDataPointer[0].trainerData[0].trainerID = GetRandom32BitValue();
 #if TESTMODE == GYMBATTLE
 		u16 trainerID = 2;
 #elif TESTMODE == EVILBATTLE
@@ -1049,7 +1150,7 @@ void InitialiseBattleEnvironment()
 		for (i = 0; i < upperLimit; i++)
 		{
 			Pokemon* thePokemon = (Pokemon*)&enemyPokemon[i];
-			GivePokemonToPlayer(thePokemon, data[0].pokemonData[i].level, data[0].pokemonData[i].species, 0);
+			GivePokemonToTrainer(thePokemon, data[0].pokemonData[i].level, data[0].pokemonData[i].species, 0, (char*)&data[0].name, battleDataPointer[0].trainerData[0].trainerID);
 			if (data[0].battleVarietyBits.isHeldItemsBattle)
 			{
 				if (data[0].battleVarietyBits.isMovesetBattle)
@@ -1082,62 +1183,33 @@ void InitialiseBattleEnvironment()
 		battleDataPointer[0].trainerData[0].pointerToData = data;
 		battleDataPointer[0].trainerData[0].afterBattleText = "Congratulations!";
 	}
+	else
+	{
+		GenerateWildPokemonFromData((Pokemon*)&enemyPokemon[0], currentMap.wildDataLocation);
+	}
 	CopyBattleDataFromPokemon(&partyPokemon[0], &battleDataPointer[0].pokemonStats[0]);
 	CopyBattleDataFromPokemon(&enemyPokemon[0], &battleDataPointer[0].pokemonStats[1]);
+	battleDataPointer[0].objectPointers.battlers[0] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[0], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Sprite_Side_Back))];
+	memcpy32((void*)ObjectPaletteRAM(0), GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Palette_Normal + PokemonIsShiny(&partyPokemon[0])), 8);
+	battleDataPointer[0].objectPointers.battlers[1] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[1], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Sprite_Side_Front))];
+	memcpy32((void*)ObjectPaletteRAM(1), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Palette_Normal + PokemonIsShiny(&enemyPokemon[0])), 8);
+	battleDataPointer[0].objectPointers.battlers[0]->StateFunction = &MoveUpAndDown;
+	battleDataPointer[0].objectPointers.battlers[0]->stateFunctionInfo = 16;
 	if (battleType.info.isDoubleBattle)
 	{
 		CopyBattleDataFromPokemon(&partyPokemon[1], &battleDataPointer[0].pokemonStats[2]);
 		CopyBattleDataFromPokemon(&enemyPokemon[1], &battleDataPointer[0].pokemonStats[3]);
-		battleDataPointer[0].objectPointers.battlers[0] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[2], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Sprite_Side_Back))];
-		memcpy32((void*)ObjectPaletteRAM(0), GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Palette_Normal + PokemonIsShiny(&partyPokemon[0])), 8);
-		battleDataPointer[0].objectPointers.battlers[1] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[3], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Sprite_Side_Front))];
-		memcpy32((void*)ObjectPaletteRAM(1), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Palette_Normal + PokemonIsShiny(&enemyPokemon[0])), 8);
 		battleDataPointer[0].objectPointers.battlers[2] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[4], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[1], Sprite_Side_Back))];
 		memcpy32((void*)ObjectPaletteRAM(2), GetPokemonSpritePaletteFromPokemon(&partyPokemon[1], Palette_Normal + PokemonIsShiny(&partyPokemon[1])), 8);
 		battleDataPointer[0].objectPointers.battlers[3] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[5], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[1], Sprite_Side_Front))];
 		memcpy32((void*)ObjectPaletteRAM(3), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[1], Palette_Normal + PokemonIsShiny(&enemyPokemon[1])), 8);
 	}
-	else
-	{
-		battleDataPointer[0].objectPointers.battlers[0] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[0], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Sprite_Side_Back))];
-		memcpy32((void*)ObjectPaletteRAM(0), GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Palette_Normal + PokemonIsShiny(&partyPokemon[0])), 8);
-		battleDataPointer[0].objectPointers.battlers[1] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[1], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Sprite_Side_Front))];
-		memcpy32((void*)ObjectPaletteRAM(1), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Palette_Normal + PokemonIsShiny(&enemyPokemon[0])), 8);
-	}
+	DrawMainSelectionMenu();
 	SetupSongForPlayback(GetSongIDForBattle(), 0);
 	memcpy32((void*)TilePaletteRAM(0), &battleTextPalette, 8);
 	memcpy32((void*)TilePaletteRAM(1), &pauseOutlinePalette, 8);
-	REG_BG0CNT = MAIN_BG_SETTINGS2;
-	u32 i;
-	u16* address = (u16*)0x0600FBC4;
-	for (i = 0; i < 24; i++)
-	{
-		address[i] = 0x200 + (i * 20);
-		address[0x20 + i] = 0x201 + (i * 20);
-		address[0x40 + i] = 0x202 + (i * 20);
-		address[0x60 + i] = 0x203 + (i * 20);
-	}
+	REG_BG0CNT = BATTLE_LAYER_0_SETTINGS;
 	player.textSpeed = 2;
-	battleDataPointer[0].objectPointers.battlers[0]->StateFunction = &MoveUpAndDown;
-	battleDataPointer[0].objectPointers.battlers[0]->stateFunctionInfo = 16;
-	SetTextPaletteSlot(0);
-	SetTextColour(1, 6, 0);
-	DrawString(whatToDoString, 0, 0, 0);
-	DrawString((char*)&whatToDoString2, 0, 0x10, 0);
-	SetTextPaletteSlot(1);
-	SetTextColour(15, 3, 0);
-	DrawCharacter('~' + 1, 0x70, 0, 0);
-	DrawString("Battle", 0x78, 0, 0);
-	DrawString("Bag", 0xA8, 0, 0);
-	DrawString("Pokémon", 0x78, 0x10, 0);
-	if (battleType.info.isWildBattle || battleType.info.isLinkBattle)
-	{
-		DrawString("Flee", 0xA8, 0x10, 0);
-	}
-	else
-	{
-		DrawString("Call", 0xA8, 0x10, 0);
-	}
 	CallbackMain = &BattleWaitForKeyPress;
 	HandleKeyPresses = &MainBattleSelectionKeyPresses;
 }

@@ -1,5 +1,6 @@
 #include "Functions.h"
 #include "Data.h"
+#include "Classes\Vector.h"
 
 u32 ToHex(u32 decimalValue)
 {
@@ -235,6 +236,74 @@ u32 WeightedRandom(u8* probabilities, u8 length)
 		}
 	}
 	return 0;
+}
+
+u32 Mean(u32* array, u32 numItems)
+{
+	u32 counter = 0;
+	u32 i;
+	for (i = 0; i < numItems; i++)
+	{
+		counter += array[i];
+	}
+	return UnsignedDivide(counter, numItems);
+}
+
+u32 Mode(u32* array, u32 numItems)
+{
+	Vector* vect = CreateVector();
+	u32 i;
+	for (i = 0; i < numItems; i++)
+	{
+		u32 found = false;
+		u32 j;
+		for (j = 0; j < VectorGetSize(vect); j++)
+		{
+			IndexTable* val = (IndexTable*)VectorGetAt(vect, j);
+			if ((u32)val->pointerToData == array[i])
+			{
+				val->index++;
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			IndexTable* val = (IndexTable*)MemoryAllocate(sizeof(IndexTable));
+			val->index = 1;
+			val->pointerToData = (void*)array[i];
+			VectorPushBack(vect, (u32)val);
+		}
+	}
+	u32 currentHighestIndex = 0;
+	u32 currentHighestVal = 0;
+	for (i = 0; i < VectorGetSize(vect); i++)
+	{
+		IndexTable* val = (IndexTable*)VectorGetAt(vect, i);
+		if (val->index > currentHighestIndex)
+		{
+			currentHighestIndex = val->index;
+			currentHighestVal = (u32)val->pointerToData;
+		}
+	}
+	DeleteVector(vect);
+	return currentHighestVal;
+}
+
+u32 Factorial(u32 value)
+{
+	if (value >= 13)
+	{
+		return U32Max;
+	}
+	else if (value == 1)
+	{
+		return 1;
+	}
+	else
+	{
+		return Factorial(value - 1) * value;
+	}
 }
 
 void SeedRNG(u32 seed)

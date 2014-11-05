@@ -11,6 +11,7 @@
 void SetupBattleScriptCall(u8* newPointer, u32 commandLength);
 void RecalculateEffectiveStat(PokemonBattleData* data, u32 statIndex);
 void RecalculateAllEffectiveStats(PokemonBattleData* dataLocation);
+void SetTilesForTextRender();
 u32 CheckForAbilityInBattle(u32 abilityID, u32 side);
 u32 CanItemBeUsed(PokemonBattleData* attacker, PokemonBattleData* defender);
 u32 CanKnockItemOff(PokemonBattleData* defender, u32 ignoreAbilities);
@@ -70,5 +71,7 @@ u8 PrintPayDayCashGainMessage();
 u8 PrintMumCashGainMessage();
 u8 PrintItemEffectMessage();
 u8 CalculateFleeResult();
+u8 PrintCallEffectMessage();
+u8 PrintFleeEffectMessage();
 
 #endif /* BATTLESCRIPTCOMMANDS_H_ */

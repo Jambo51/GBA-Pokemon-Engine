@@ -42,6 +42,7 @@ u32 DoubleLikelihood(u32 initialValue);
 u32 HalfAgainLikelihood(u32 initialValue);
 u32 NoChangeLikelihood(u32 initialValue);
 u32 CaptureChecks(Pokemon* target, u16 itemID);
+void MoveSelectionRender();
 void RecalculateEffectiveStat(PokemonBattleData* data, u32 statIndex);
 void RecalculateAllEffectiveStats(PokemonBattleData* dataLocation);
 void CalculateMoveDamage(u16 moveID, u32 attackerID, u32 defenderID);

@@ -226,13 +226,13 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 			{
 				pointer = (char*)MemoryAllocate(12);
 				StringCopy(pointer + 1, menuItems[i].string, 0);
-				pointer[0] = '~' + 1;
-				DrawString(pointer, 0, currentPosition << 4, 0x8);
+				pointer[0] = ARROWCHAR;
+				DrawString(pointer, 0, currentPosition << 4);
 				MemoryDeallocate(pointer);
 			}
 			else if (pointer != 0)
 			{
-				DrawString(pointer, 8, currentPosition << 4, 0x8);
+				DrawString(pointer, 8, currentPosition << 4);
 			}
 			currentPosition++;
 		}
@@ -459,7 +459,7 @@ void HandleMenuMoveRequest(u8 direction)
 		}
 	}
 	memset32((void*)(0x0600C000 + (currentLocation << 6)), 0x11111111, 16);
-	DrawCharacter('~' + 1, 0, newLocation << 4, 0);
+	DrawCharacter(ARROWCHAR, 0, newLocation << 4);
 	pauseMenuLocation = (u8)newLocation;
 }
 

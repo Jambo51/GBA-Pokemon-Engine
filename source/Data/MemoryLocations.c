@@ -29,6 +29,7 @@ EWRAM_LOCATION ALIGN(1) u8 trainerflags[BytesForTrainerflagsBase];
 #else
 EWRAM_LOCATION ALIGN(1) u8 trainerflags[BytesForTrainerflagsBase + 1];
 #endif
+EWRAM_LOCATION ALIGN(1) u8 textPalette;
 EWRAM_LOCATION ALIGN(1) u8 formesToShowInDex[29];
 EWRAM_LOCATION ALIGN(1) u8 mainFlagBank[FlagsToBytes(0x2000)];
 EWRAM_LOCATION ALIGN(2) u16 varBank[544];
@@ -64,7 +65,6 @@ EWRAM_LOCATION ALIGN(1) u8 pauseMenuLocation;
 EWRAM_LOCATION ALIGN(4) NPCData overworldSpriteData[24];
 ALIGN(1) u8 hardwareColumn;
 ALIGN(1) u8 hardwareRow;
-ALIGN(1) u8 textPalette;
 ALIGN(4) GBPMusicStruct gbpData[2];
 ALIGN(2) KeyBuffer keyStates;
 EWRAM_LOCATION ALIGN(4) PreOAMStruct preOAM[40];

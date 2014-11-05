@@ -6,12 +6,13 @@
 	.global Script_AI_Flee
 	.global Script_Player_Flee
 	.global Script_Player_Call
+	.global	Script_Unable_To_Flee
 	.align 1
 
 Script_Item_Used:
 	.byte	MessageByID
 	.short	ItemUsedString
-	.byte	Pause
+	.byte	PauseIfText
 	.short	0x0020
 	.byte	PrintAndExecuteItemEffectMessage
 	.byte	PauseIfText
@@ -27,6 +28,11 @@ Script_AI_Flee:
 	.byte	WaitKeyPressTextBattle
 	.byte	End
 
+Script_Unable_To_Flee:
+	.byte	PauseIfText
+	.short	0x0040
+	.byte	EndTurn
+
 Script_Player_Flee:
 	.byte	CalculateRunSuccess
 	.byte	PrintAndExecuteRunResultMessage
@@ -36,7 +42,7 @@ Script_Player_Flee:
 Script_Player_Call:
 	.byte	MessageByID
 	.short	CallString
-	.byte	Pause
+	.byte	PauseIfText
 	.short	0x0020
 	.byte	PrintAndExecuteCallEffectMessage
 	.byte	PauseIfText

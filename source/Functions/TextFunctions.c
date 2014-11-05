@@ -39,13 +39,25 @@ void SetTextPaletteSlot(u32 paletteID)
 	surface->palData = pal_bg_bank[paletteID];
 }
 
+const TFont* GetFont()
+{
+	TTC* context = tte_get_context();
+	return context->font;
+}
+
+void SetFont(const TFont* font)
+{
+	TTC* context = tte_get_context();
+	context->font = font;
+}
+
 void StringCopy(char* stringDest, char* stringSource, u32 length)
 {
 	char currentChar = stringSource[0];
 	u32 index = 0;
 	if (length == 0)
 	{
-		length = 0xFFFFFFFF;
+		length = U32Max;
 	}
 	while (currentChar != END && index <= length)
 	{
@@ -129,7 +141,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 		u8 currentChar = stringSource[pos];
 		if (length == 0)
 		{
-			length = 0xFFFFFFFF;
+			length = U32Max;
 		}
 		while (currentChar != END && index <= length)
 		{
@@ -290,6 +302,24 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 							case 15:
 							{
 								pointer = rival3NameLoc;
+								break;
+							}
+							case 16:
+							{
+								pointer = (char*)&abilityNames[battleDataPointer[0].battleBanks[GenericBufferByte]][0];
+								break;
+							}
+							case 17:
+							{
+								u16 move = battleDataPointer[0].battleBanks[GenericBufferByte] | (battleDataPointer[0].battleBanks[GenericBufferByte2] << 8);
+								if (move <= NumMoves)
+								{
+									pointer = (char*)&moveNames[move];
+								}
+								else
+								{
+									pointer = (char*)&moveNames[0];
+								}
 								break;
 							}
 						}
@@ -498,14 +528,14 @@ s32 CharacterComparison(u8 charOne, u8 charTwo)
 
 const RODATA_LOCATION char* posString = "#{P:%d,%d}";
 
-void DrawCharacter(char c, u8 x, u8 y, u8 colour)
+void DrawCharacter(char c, u8 x, u8 y)
 {
 	tte_printf(posString, x, y);
 	char string[] = { c, '\0' };
 	tte_printf((char*)&string);
 }
 
-void DrawString(char* string, u8 x, u8 y, u8 colour)
+void DrawString(char* string, u8 x, u8 y)
 {
 	if (string != 0)
 	{
@@ -521,6 +551,7 @@ void DrawString(char* string, u8 x, u8 y, u8 colour)
 void DrawStringOverTimeMain(u32 pointer)
 {
 	TextOverTimeStruct* data = (TextOverTimeStruct*)pointer;
+	const TFont* font = GetFont();
 	if (data[0].framesToWait == 0 || IsKeyDown(Key_A))
 	{
 		u32 currentX = data[0].currentX;
@@ -534,9 +565,9 @@ void DrawStringOverTimeMain(u32 pointer)
 				currentY += 0x10;
 				data[0].stringPosition++;
 				c = data[0].string[data[0].stringPosition];
-				DrawCharacter(c, currentX, currentY, data[0].colour);
+				DrawCharacter(c, currentX, currentY);
 				data[0].stringPosition++;
-				data[0].currentX = currentX + pokefont_b4Font.widths[(u32)c];
+				data[0].currentX = currentX + font[0].widths[(u32)c - font[0].charOffset];
 			}
 			else if (c == 0xFE)
 			{
@@ -550,8 +581,8 @@ void DrawStringOverTimeMain(u32 pointer)
 			}
 			else
 			{
-				DrawCharacter(c, currentX, currentY, data[0].colour);
-				data[0].currentX = currentX + pokefont_b4Font.widths[(u32)c];
+				DrawCharacter(c, currentX, currentY);
+				data[0].currentX = currentX + font[0].widths[(u32)c - font[0].charOffset];
 				data[0].stringPosition++;
 			}
 			data[0].currentY = currentY;
@@ -574,14 +605,14 @@ void DrawStringOverTimeMain(u32 pointer)
 	}
 }
 
-void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour, void (*endFunction)(void))
+void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void))
 {
 	if (string != 0)
 	{
 		u32 spd = player.textSpeed;
 		if (spd == 3)
 		{
-			DrawString(string, x, y, colour);
+			DrawString(string, x, y);
 		}
 		else
 		{
@@ -595,7 +626,6 @@ void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour, void (*endFunction)
 			data[0].framesToWait = 0;
 			data[0].textSpeed = 2 - player.textSpeed;
 			data[0].stringPosition = 0;
-			data[0].colour = colour;
 			data[0].EndFunction = endFunction;
 			AddFunction(&DrawStringOverTimeMain, (u32)data);
 		}
@@ -613,10 +643,18 @@ void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)
 			font,
 			(fnDrawg)chr4c_drawg_b4cts_fast);
 	tte_init_con();
-	textPalette = paletteSet;
 }
 
 const RODATA_LOCATION TFont* fonts[] = { &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font };
+
+void SetFontByID(u32 id)
+{
+	if (id > 4)
+	{
+		id = 0;
+	}
+	SetFont(fonts[id]);
+}
 
 void InitialiseTextEngine(u32 textSetID)
 {

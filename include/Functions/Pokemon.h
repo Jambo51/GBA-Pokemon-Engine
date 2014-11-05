@@ -65,6 +65,7 @@ void* GetPokemonBackSpriteFromPokemon(Pokemon* thePokemon);
 void* GetPokemonPaletteFromPokemon(Pokemon* thePokemon);
 void GeneratePokemon(Pokemon* thePokemon, u8 level, u16 species);
 void GivePokemonToPlayer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIndex);
+void GivePokemonToTrainer(Pokemon* thePokemon, u8 level, u16 species, u32 formeIndex, char* trainerName, u32 id);
 void GenerateWildPokemonFromData(Pokemon* thePokemon, WildData* initData);
 void PokemonInfoScreenInitialise();
 

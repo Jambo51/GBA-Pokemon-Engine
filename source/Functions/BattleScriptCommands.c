@@ -8,6 +8,7 @@
 #include "Data\GlobalDefinitions.h"
 #include "Data\MemoryLocations.h"
 #include "Data\PokemonBaseData.h"
+#include "Data\BattleStrings.h"
 #include "Functions\LoadUnalignedCode.h"
 #include "Functions\Pokemon.h"
 #include "Functions\Maths.h"
@@ -68,6 +69,21 @@ const ALIGN(1) u8 criticalHitLikelihoods[] = {
 		70,
 		100
 };
+
+void SetTilesForTextRender()
+{
+	SetTextColour(1, 6, 15);
+	u16* address = (u16*)0x060073C2;
+	memset32((void*)0x0600C000, BATTLEBGCOLOUR, 0xF0C);
+	u32 i;
+	for (i = 0; i < 28; i++)
+	{
+		address[i] = 0x200 + (i * 20);
+		address[0x20 + i] = 0x201 + (i * 20);
+		address[0x40 + i] = 0x202 + (i * 20);
+		address[0x60 + i] = 0x203 + (i * 20);
+	}
+}
 
 void SetupBattleScriptCall(u8* newPointer, u32 commandLength)
 {
@@ -216,6 +232,10 @@ u32 CanKnockItemOff(PokemonBattleData* defender, u32 ignoreAbilities)
 		{
 			result = false;
 		}
+		else if (defender[0].species == Giratina && item == Item_Griseous_Orb)
+		{
+			result = false;
+		}
 	}
 	return result;
 }
@@ -338,6 +358,7 @@ u8 CheckForMoveCancellingStatuses()
 			if (CheckFlag(badgeLevelEffects[i][0]))
 			{
 				upperLimit = badgeLevelEffects[i][1];
+				break;
 			}
 		}
 		if (attacker[0].level > upperLimit)
@@ -639,8 +660,6 @@ void StopBattleScriptTextWait()
 	battleDataPointer[0].flags.battleScriptTextContinueFlag = 1;
 }
 
-const char pokemonUsedString[] = { 0xFD, 0x0, ' ', 'u', 's', 'e', 'd', ' ', 0xFD, 0x4, '!', '\0' };
-
 u8 PokemonUsedMessage()
 {
 	if (battleDataPointer[0].flags.battleScriptTextContinueFlag)
@@ -653,11 +672,9 @@ u8 PokemonUsedMessage()
 	{
 		return WaitForFrames;
 	}
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	SetTextColour(1, 6, 0);
-	SetTextPaletteSlot(0);
-	DrawStringOverTime((char*)&pokemonUsedString, 0, 0, 15, &StopBattleScriptTextWait);
+	DrawStringOverTime((char*)&pokemonUsedString, 0, 0, &StopBattleScriptTextWait);
 	return WaitForFrames;
 }
 
@@ -714,7 +731,7 @@ u32 ApplyWeatherBasedModifiers(u32 currentDamage, u32 moveType)
 	return currentDamage;
 }
 
-u32 CheckAdditionalTypeEffects(u32 defenderType, u32 moveType, u32 currentEffect, u8Array* dataArray)
+u32 CheckAdditionalTypeEffects(u32 defenderType, u32 moveType, u32 currentEffect, u8TripleArray* dataArray)
 {
 	u32 i = 0;
 	while (dataArray[i][0] != Type_None)
@@ -748,11 +765,11 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 	u32 typeValue = typeStrengths[moveType][defenderType1];
 	if (defender[0].battleStatusFlags.foresight)
 	{
-		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8Array*)&foresightOverrides);
+		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8TripleArray*)&foresightOverrides);
 	}
 	else if (defender[0].battleStatusFlagsBank2.miracleEye)
 	{
-		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8Array*)&miracleEyeOverrides);
+		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides);
 	}
 	u32 currentEffectiveness = NoEffect;
 	switch (typeValue)
@@ -772,11 +789,11 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 		u32 typeValue = typeStrengths[moveType][defenderType2];
 		if (defender[0].battleStatusFlags.foresight)
 		{
-			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8Array*)&foresightOverrides);
+			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8TripleArray*)&foresightOverrides);
 		}
 		else if (defender[0].battleStatusFlagsBank2.miracleEye)
 		{
-			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8Array*)&miracleEyeOverrides);
+			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides);
 		}
 		switch (typeValue)
 		{
@@ -823,11 +840,11 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 		u32 typeValue = typeStrengths[moveType][defenderType3];
 		if (defender[0].battleStatusFlags.foresight)
 		{
-			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8Array*)&foresightOverrides);
+			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8TripleArray*)&foresightOverrides);
 		}
 		else if (defender[0].battleStatusFlagsBank2.miracleEye)
 		{
-			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8Array*)&miracleEyeOverrides);
+			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides);
 		}
 		switch (typeValue)
 		{
@@ -2632,7 +2649,7 @@ u8 PauseBattleScript()
 {
 	if (battleScriptFrameWait == 0)
 	{
-		battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2);
+		battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2) - 1;
 		return WaitForFrames;
 	}
 	else
@@ -2649,12 +2666,12 @@ u8 PauseBattleScript()
 
 u8 PauseBattleScriptIfTextRendering()
 {
-	u32 textRendering = battleDataPointer[0].flags.battleScriptTextWaitFlag || battleDataPointer[0].flags.battleScriptTextContinueFlag;
+	u32 textRendering = battleDataPointer[0].flags.battleScriptTextWaitFlag;
 	if (battleScriptFrameWait == 0)
 	{
 		if (textRendering)
 		{
-			battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2);
+			battleScriptFrameWait = (u16)LoadUnalignedNumber(battleScriptPointer, 1, 2) - 1;
 			return WaitForFrames;
 		}
 		else
@@ -2665,6 +2682,10 @@ u8 PauseBattleScriptIfTextRendering()
 	}
 	else
 	{
+		if (textRendering)
+		{
+			return WaitForFrames;
+		}
 		battleScriptFrameWait--;
 		if (battleScriptFrameWait == 0)
 		{
@@ -2690,45 +2711,38 @@ u8 EndScript()
 	return Ended;
 }
 
-ALIGN(1) char* critMessage = "It's a critical hit!";
-
 u8 PrintCriticalHitMessage()
 {
 	if (battleDataPointer[0].flags.criticalHitFlag)
 	{
-		memset32((void*)0x0600C000, 0, 0xD00);
+		SetTilesForTextRender();
 		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-		DrawStringOverTime(critMessage, 0, 0, 15, &StopBattleScriptTextWait);
+		DrawStringOverTime(critMessage, 0, 0, &StopBattleScriptTextWait);
 	}
 	battleScriptPointer++;
 	return NotEnded;
 }
-
-
-ALIGN(1) char notEffectiveMessage[] = { 'I', 't', ' ', 'w', 'a', 's', 'n', '\'', 't', ' ', 'v', 'e', 'r', 'y', ' ', 'e', 'f', 'f', 'e', 'c', 't', 'i', 'v', 'e', 0x85, '\0' };
-char* superEffectiveMessage = "It's super effective!";
-char* noEffectMessage = "It has no effect!";
 
 u8 PrintEffectivenessMessage()
 {
 	switch (battleDataPointer[0].flags.attackEffectiveness)
 	{
 		case NoEffect:
-			memset32((void*)0x0600C000, 0, 0xD00);
+			SetTilesForTextRender();
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-			DrawStringOverTime(noEffectMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			DrawStringOverTime(noEffectMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 		case EighthDamage: case QuarterDamage: case HalfDamage:
-			memset32((void*)0x0600C000, 0, 0xD00);
+			SetTilesForTextRender();
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-			DrawStringOverTime((char*)&notEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			DrawStringOverTime((char*)&notEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 		case NormalDamage:
 			break;
 		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
-			memset32((void*)0x0600C000, 0, 0xD00);
+			SetTilesForTextRender();
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-			DrawStringOverTime(superEffectiveMessage, 0, 0, 15, &StopBattleScriptTextWait);
+			DrawStringOverTime(superEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 	}
 	battleScriptPointer++;
@@ -2737,51 +2751,19 @@ u8 PrintEffectivenessMessage()
 
 u8 PrintMessageByPointer()
 {
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	DrawStringOverTime((char*)LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, 15, &StopBattleScriptTextWait);
+	DrawStringOverTime((char*)LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, &StopBattleScriptTextWait);
 	battleScriptPointer += 5;
 	return NotEnded;
 }
 
-const ALIGN(1) char statBuffString[] = { 0xFD, 0x01, '\'', 's', ' ', 0xFD, 0x06, '\n', 0xFD, 0x07, '!', '\0' };
-const ALIGN(1) char paralysedString[] = { 0xFD, 0x00, ' ', 'i', 's', ' ', 'u', 'n', 'a', 'b', 'l', 'e', '\n', 't', 'o', ' ', 'm', 'o', 'v', 'e', '!', '\0' };
-const ALIGN(1) char sleepingString[] = { 0xFD, 0x00, ' ', 'i', 's', ' ', 'f', 'a', 's', 't', ' ', 'a', 's', 'l', 'e', 'e', 'p', '!', '\0' };
-const ALIGN(1) char wakingUpString[] = { 0xFD, 0x00, ' ', 'w', 'o', 'k', 'e', ' ', 'u', 'p', '!', '\0' };
-const ALIGN(1) char frozenString[] = { 0xFD, 0x00, ' ', 'i', 's', ' ', 'f', 'r', 'o', 'z', 'e', 'n', ' ', 's', 'o', 'l', 'i', 'd', '!', '\0' };
-const ALIGN(1) char defrostingString[] = { 0xFD, 0x00, ' ', 'd', 'e', 'f', 'r', 'o', 's', 't', 'e', 'd', '!', '\0' };
-const ALIGN(1) char cureBurnString[] = { 0xFD, 0x00, ' ', 'w', 'a', 's', ' ', 'c', 'u', 'r', 'e', 'd', '\n', 'o', 'f', ' ', 'i', 't', 's', ' ', 'b', 'u', 'r', 'n', '!', '\0' };
-const ALIGN(1) char failedString[] = { 'B', 'u', 't', ' ', 'i', 't', ' ', 'f', 'a', 'i', 'l', 'e', 'd', 0x85, '\0' };
-const ALIGN(1) char missedString[] = { 0xFD, 0x00, '\'', 's', '\n', 'a', 't', 't', 'a', 'c', 'k', ' ', 'm', 'i', 's', 's', 'e', 'd', '!', '\0' };
-const ALIGN(1) char itemUsedString[] = { 0xFD, 0x09, ' ', 'u', 's', 'e', 'd', ' ', 0xFD, 0x0C, '\n', 'o', 'n', ' ', 0xFD, 0x00, '!', '\0' };
-const ALIGN(1) char ballThrownString[] = { 0xFD, 0x09, ' ', 't', 'h', 'r', 'e', 'w', '\n', 'a', ' ', 0xFD, 0x0C, '!', '\0' };
-const ALIGN(1) char callString[] = { 0xFD, 0x09, ' ', 'c', 'a', 'l', 'l', 'e', 'd', '\n', 0xFD, 0x00, '!', '\0' };
-const ALIGN(1) char wokenByCall[] = { 0xFD, 0x09, '\'', 's', ' ', 'c', 'a', 'l', 'l', '\n', 'w', 'o', 'k', 'e', ' ', 0xFD, 0x00, '!', '\0' };
-const ALIGN(1) char fledString[] = { 0xFD, 0x00, ' ', 'f', 'l', 'e', 'd', '!', '\0' };
-
-char* textTable[] = {
-		(char*)&statBuffString,
-		(char*)&paralysedString,
-		(char*)&sleepingString,
-		(char*)&wakingUpString,
-		(char*)&frozenString,
-		(char*)&defrostingString,
-		(char*)&cureBurnString,
-		(char*)&failedString,
-		(char*)&missedString,
-		(char*)&itemUsedString,
-		(char*)&ballThrownString,
-		(char*)&callString,
-		(char*)&wokenByCall,
-		(char*)&fledString
-};
-
 u8 PrintMessageByID()
 {
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	DrawStringOverTime(textTable[LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, 15, &StopBattleScriptTextWait);
-	battleScriptPointer += 2;
+	DrawStringOverTime(textTable[LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, &StopBattleScriptTextWait);
+	battleScriptPointer += 3;
 	return NotEnded;
 }
 
@@ -2838,17 +2820,11 @@ void CheckForTextContinuePressBattle()
 	}
 }
 
-const char pokemonFaintedString[] = { 0xFD, 0x01, ' ', 'f', 'a', 'i', 'n', 't', 'e', 'd', '!', '\0' };
-const char experienceGainStringTwo[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'E', 'x', 'p', '.', ' ', 'P', 'o', 'i', 'n', 't', 's', '!', '\0' };
-const char experienceGainStringOne[] = { 0xFD, 0x00, ' ', 'g', 'a', 'i', 'n', 'e', 'd', '\n', 0xFD, 0x08, ' ', 'E', 'x', 'p', '.', ' ', 'P', 'o', 'i', 'n', 't', '!', '\0' };
-
 u8 PrintFaintMessage()
 {
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	SetTextColour(1, 6, 0);
-	SetTextPaletteSlot(0);
-	DrawStringOverTime((char*)&pokemonFaintedString, 0, 0, 15, 0);
+	DrawStringOverTime((char*)&pokemonFaintedString, 0, 0, 0);
 	HandleKeyPresses = &CheckForTextContinuePressBattle;
 	battleScriptPointer++;
 	return NotEnded;
@@ -2856,16 +2832,14 @@ u8 PrintFaintMessage()
 
 u8 PrintExperienceMessage()
 {
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	SetTextColour(1, 6, 0);
-	SetTextPaletteSlot(0);
 	char* string = (char*)&experienceGainStringTwo;
 	if (battleDataPointer[0].battleDamage == 1)
 	{
 		string = (char*)&experienceGainStringOne;
 	}
-	DrawStringOverTime(string, 0, 0, 15, 0);
+	DrawStringOverTime(string, 0, 0, 0);
 	HandleKeyPresses = &CheckForTextContinuePressBattle;
 	battleScriptPointer++;
 	return NotEnded;
@@ -2887,15 +2861,11 @@ u8 WaitKeyPressTextBattle()
 	return WaitForFrames;
 }
 
-const char trainerVictoryMessage[] = { 0xFD, 0x09, ' ', 'd', 'e', 'f', 'e', 'a', 't', 'e', 'd', '\n', 0xFD, 0x0A, ' ', 0xFD, 0x0B, '!', '\0' };
-
 u8 PrintTrainerVictoryMessage()
 {
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	SetTextColour(1, 6, 0);
-	SetTextPaletteSlot(0);
-	DrawStringOverTime((char*)&trainerVictoryMessage, 0, 0, 15, 0);
+	DrawStringOverTime((char*)&trainerVictoryMessage, 0, 0, 0);
 	HandleKeyPresses = &CheckForTextContinuePressBattle;
 	battleScriptPointer++;
 	return NotEnded;
@@ -2906,11 +2876,9 @@ u8 PrintTrainerAfterMessage()
 	char* theString = battleDataPointer[0].trainerData[0].afterBattleText;
 	if (theString)
 	{
-		memset32((void*)0x0600C000, 0, 0xD00);
+		SetTilesForTextRender();
 		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-		SetTextColour(1, 6, 0);
-		SetTextPaletteSlot(0);
-		DrawStringOverTime(theString, 0, 0, 15, 0);
+		DrawStringOverTime(theString, 0, 0, 0);
 		HandleKeyPresses = &CheckForTextContinuePressBattle;
 	}
 	battleScriptPointer++;
@@ -2969,24 +2937,18 @@ u8 CalculateTrainerWinnings()
 	return NotEnded;
 }
 
-const char trainerCashGainString[] = { 0xFD, 0x09, ' ', 'g', 'o', 't', ' ', '$', 0xFD, 0x08, '\n', 'f', 'o', 'r', ' ', 'w', 'i', 'n', 'n', 'i', 'n', 'g', '!', '\0' };
-
 u8 PrintTrainerCashGainMessage()
 {
 	if (battleDataPointer[0].battleDamage)
 	{
-		memset32((void*)0x0600C000, 0, 0xD00);
+		SetTilesForTextRender();
 		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-		SetTextColour(1, 6, 0);
-		SetTextPaletteSlot(0);
-		DrawStringOverTime((char*)&trainerCashGainString, 0, 0, 15, 0);
+		DrawStringOverTime((char*)&trainerCashGainString, 0, 0, 0);
 		HandleKeyPresses = &CheckForTextContinuePressBattle;
 	}
 	battleScriptPointer++;
 	return NotEnded;
 }
-
-const char mumCashGainString[] = { 'S', 'e', 'n', 't', ' ', '$', 0xFD, 0x08, ' ', 't', 'o', ' ', 'm', 'u', 'm', '.', '\0' };
 
 u8 PrintMumCashGainMessage()
 {
@@ -3014,11 +2976,9 @@ u8 PrintMumCashGainMessage()
 			battleDataPointer[0].battleDamage = value;
 			if (battleDataPointer[0].battleDamage)
 			{
-				memset32((void*)0x0600C000, 0, 0xD00);
+				SetTilesForTextRender();
 				battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-				SetTextColour(1, 6, 0);
-				SetTextPaletteSlot(0);
-				DrawStringOverTime((char*)&mumCashGainString, 0, 0, 15, 0);
+				DrawStringOverTime((char*)&mumCashGainString, 0, 0, 0);
 				HandleKeyPresses = &CheckForTextContinuePressBattle;
 			}
 		}
@@ -3048,17 +3008,13 @@ u8 CalculatePickupWinnings()
 	return NotEnded;
 }
 
-const char pickupCashGainString[] = { 0xFD, 0x09, ' ', 'p', 'i', 'c', 'k', 'e', 'd', ' ', 'u', 'p', ' ', '$', 0xFD, 0x08, '!', '\0' };
-
 u8 PrintPayDayCashGainMessage()
 {
 	if (battleDataPointer[0].battleDamage)
 	{
-		memset32((void*)0x0600C000, 0, 0xD00);
+		SetTilesForTextRender();
 		battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-		SetTextColour(1, 6, 0);
-		SetTextPaletteSlot(0);
-		DrawStringOverTime((char*)&pickupCashGainString, 0, 0, 15, 0);
+		DrawStringOverTime((char*)&pickupCashGainString, 0, 0, 0);
 		HandleKeyPresses = &CheckForTextContinuePressBattle;
 	}
 	battleScriptPointer++;
@@ -3218,36 +3174,64 @@ u8 CalculateFleeResult()
 	{
 		battleDataPointer[0].battleDamage = Flee_Result_Cannot_Flee;
 	}
+	battleScriptPointer++;
 	return NotEnded;
 }
 
-const ALIGN(1) char clearHyperMode[] = { 0xFD, 0x00, ' ', 'w', 'a', 's', ' ', 'c', 'a', 'l', 'l', 'e', 'd', '\n', 't', 'o', ' ', 'i', 't', 's', ' ', 's', 'e', 'n', 's', 'e', 's', '!', '\0' };
-const ALIGN(1) char callNoEffect[] = { 'T', 'h', 'e', ' ', 'c', 'a', 'l', 'l', ' ', 'h', 'a', 'd', ' ', 'n', 'o', ' ', 'e', 'f', 'f', 'e', 'c', 't', '!', '\0' };
-
 u8 PrintCallEffectMessage()
 {
-	memset32((void*)0x0600C000, 0, 0xD00);
+	SetTilesForTextRender();
 	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
-	SetTextColour(1, 6, 0);
-	SetTextPaletteSlot(0);
 	PokemonBattleData* data = (PokemonBattleData*)&battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]];
 	if (data[0].primaryStatusBits.sleepTurns)
 	{
-		DrawStringOverTime((char*)&wokenByCall, 0, 0, 15, 0);
+		DrawStringOverTime((char*)&wokenByCall, 0, 0, &StopBattleScriptTextWait);
 		data[0].primaryStatusBits.sleepTurns = 0;
 		// Graphical update
 	}
 	else if (data[0].primaryStatusBits.hyper || data[0].secondaryStatusBits.confusion)
 	{
-		DrawStringOverTime((char*)&callString, 0, 0, 15, 0);
+		DrawStringOverTime((char*)&callString, 0, 0, &StopBattleScriptTextWait);
 		data[0].primaryStatusBits.hyper = 0;
 		data[0].secondaryStatusBits.confusion = 0;
 		// Graphical update for hyper
 	}
 	else
 	{
-		DrawStringOverTime((char*)&callNoEffect, 0, 0, 15, 0);
+		DrawStringOverTime((char*)&callNoEffect, 0, 0, &StopBattleScriptTextWait);
 	}
 	battleScriptPointer++;
+	return NotEnded;
+}
+
+u8 PrintFleeEffectMessage()
+{
+	SetTilesForTextRender();
+	battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
+	switch (battleDataPointer[0].battleDamage)
+	{
+		case Flee_Result_Cannot_Flee:
+			DrawStringOverTime((char*)&noFlee, 0, 0, &StopBattleScriptTextWait);
+			battleScriptPointer = (u8*)&Script_Unable_To_Flee;
+			break;
+		case Flee_Result_Failed_Trapped_Ability:
+			DrawStringOverTime((char*)&abilityTrap, 0, 0, &StopBattleScriptTextWait);
+			battleScriptPointer = (u8*)&Script_Unable_To_Flee;
+			break;
+		case Flee_Result_Failed_Trapped_Move:
+			DrawStringOverTime((char*)&moveTrap, 0, 0, &StopBattleScriptTextWait);
+			battleScriptPointer = (u8*)&Script_Unable_To_Flee;
+			break;
+		case Flee_Result_Run_Away:
+			DrawStringOverTime((char*)&abilityFlee, 0, 0, 0);
+			HandleKeyPresses = &CheckForTextContinuePressBattle;
+			battleScriptPointer++;
+			break;
+		case Flee_Result_Succeeded:
+			DrawStringOverTime((char*)&fled, 0, 0, 0);
+			HandleKeyPresses = &CheckForTextContinuePressBattle;
+			battleScriptPointer++;
+			break;
+	}
 	return NotEnded;
 }

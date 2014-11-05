@@ -33,10 +33,10 @@ void BufferUnsignedShortNumber(u16 number, u8 bufferID);
 void BufferSignedLongNumber(s32 number, u8 bufferID);
 void BufferSignedShortNumber(s16 number, u8 bufferID);
 s32 CharacterComparison(u8 charOne, u8 charTwo);
-void DrawCharacter(char c, u8 x, u8 y, u8 colour);
-void DrawString(char* string, u8 x, u8 y, u8 colour);
+void DrawCharacter(char c, u8 x, u8 y);
+void DrawString(char* string, u8 x, u8 y);
 void DrawStringOverTimeMain(u32 pointer);
-void DrawStringOverTime(char* string, u8 x, u8 y, u8 colour, void (*endFunction)(void));
+void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void));
 void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
 void InitialiseTextEngine(u32 textSetID);
 

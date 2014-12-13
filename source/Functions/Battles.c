@@ -687,12 +687,49 @@ const RODATA_LOCATION OAMData battleObjectsOAMData[] = {
 };
 
 u8* moveScriptsTable[] = {
-
+		&Script_Standard_Attack,
+		&Script_Recoil,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Perish_Song,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Triple_Kick,
+		&Script_Wake_Up_Slap,
+		&Script_Smelling_Salt,
+		&Script_Standard_Attack,
+		&Script_Standard_Attack,
+		&Script_Spit_Up,
+		&Script_Standard_Attack,
+		&Script_Present
 };
 
 void UpdateCounters()
 {
 	battleDataPointer[0].battleTurnsCounter++;
+	u32 weatherEnded = false;
 	if (battleDataPointer[0].weatherBits.permanent == 0)
 	{
 		u32 turns = battleDataPointer[0].weatherBits.turnsRemaining;
@@ -700,13 +737,14 @@ void UpdateCounters()
 		if (turns == 0)
 		{
 			battleDataPointer[0].weather = 0;
+			weatherEnded = true;
 			// Script to clear weather here
 		}
-		else
-		{
-			battleDataPointer[0].weatherBits.turnsRemaining = turns;
-			// Script to indicate continued weather
-		}
+	}
+	if (weatherEnded == false)
+	{
+		battleDataPointer[0].weatherBits.turnsRemaining--;
+		// Script to indicate continued weather
 	}
 	u32 i;
 	for (i = 0; i < battleDataPointer[0].numBattlers; i++)
@@ -734,6 +772,14 @@ void UpdateCounters()
 			if (pkmn[0].ability == Slow_Start && pkmn[0].slowStartCounter < 4)
 			{
 				pkmn[0].slowStartCounter++;
+			}
+			if (pkmn[0].secondaryStatusBits.perishSongCounter)
+			{
+				pkmn[0].secondaryStatusBits.perishSongCounter--;
+				if (pkmn[0].secondaryStatusBits.perishSongCounter == 0)
+				{
+					// faint as a result of perish song
+				}
 			}
 			pkmn[0].damageReceivedLastTurn = pkmn[0].damageReceivedThisTurn;
 			pkmn[0].damageReceivedThisTurn = 0;
@@ -777,6 +823,12 @@ void RunBattleScripts()
 	}
 	else if (battleDataPointer[0].flags.waitAttack == 0 && (battleDataPointer[0].currentBattlerIndex < battleDataPointer[0].numBattlers))
 	{
+		battleDataPointer[0].loopCounter = 0;
+		battleDataPointer[0].moveEffects[0] = 0;
+		battleDataPointer[0].moveEffectsExtraInfo[0] = 0;
+		battleDataPointer[0].moveEffects[1] = 0;
+		battleDataPointer[0].moveEffectsExtraInfo[1] = 0;
+		battleDataPointer[0].battleDamageMultiplier = 100;
 		u32 index = battleDataPointer[0].moveSelections[battleDataPointer[0].battleOrder[battleDataPointer[0].currentBattlerIndex]];
 		switch (index)
 		{
@@ -788,15 +840,14 @@ void RunBattleScripts()
 				battleDataPointer[0].battleBanks[User] = battleDataPointer[0].currentBattlerIndex;
 				battleDataPointer[0].battleBanks[Target] = battleDataPointer[0].targets[battleDataPointer[0].currentBattlerIndex];
 				{
-					//u16 moveID = battleDataPointer[0].moveIndex;
-					//MoveData* moveInfo = (MoveData*)&moveData[moveIndex];
-					//u32 effectID = moveInfo[0].effectID;
-		//			if (effectID >= Effects_Max)
-		//			{
-		//				effectID = 0;
-		//			}
-					//battleScriptPointer = moveScriptsTable[effectID];
-					battleScriptPointer = (u8*)&Script_Standard_Attack;
+					u16 moveID = battleDataPointer[0].moveIndex;
+					MoveData* moveInfo = (MoveData*)&moveData[moveID];
+					u32 effectID = moveInfo[0].effectID;
+					if (effectID >= Effects_Max)
+					{
+						effectID = 0;
+					}
+					battleScriptPointer = moveScriptsTable[effectID];
 				}
 				break;
 			}
@@ -1062,7 +1113,7 @@ void MainBattleSelectionKeyPresses()
 	}
 	else if (IsKeyDownButNotHeld(Key_B))
 	{
-
+		SetupFanfareForPlayback(Song_MagnetTrainFanfare);
 	}
 	else if (IsKeyDownButNotHeld(Key_Left) || IsKeyDownButNotHeld(Key_Right))
 	{

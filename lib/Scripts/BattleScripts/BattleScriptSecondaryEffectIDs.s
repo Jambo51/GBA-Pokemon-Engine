@@ -1,0 +1,12 @@
+.equ	HitsTarget,	0x0
+.equ	CanMiss,	0x0
+.equ	AlwaysHits,	0x40
+.equ	HitsUser,	0x80
+.equ	ChangeStat,	0x1
+.equ	Sleep,	0x2
+.equ	Burn,	0x3
+.equ	Paralyse,	0x4
+.equ	Poison,	0x5
+.equ	BadlyPoison,	0x6
+.equ	Freeze,	0x7
+.equ	Recoil,	0x8

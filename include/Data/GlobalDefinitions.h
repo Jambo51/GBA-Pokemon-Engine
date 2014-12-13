@@ -83,7 +83,7 @@ enum PokedexModes {	Regional, National };
 
 enum BattleStats { BattleAttack, BattleDefence, BattleSpeed, BattleSpecialAttack, BattleSpecialDefence, Accuracy, Evasion, NumBattleStats };
 
-enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, GenericBufferByte, GenericBufferByte2, CurrentEffectID, CurrentEffectPower, NumBattleBanks };
+enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, GenericCounter, GenericCounter2, GenericBufferByte, GenericBufferByte2, CurrentEffectID, CurrentEffectPower, NumBattleBanks };
 
 enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 
@@ -95,7 +95,7 @@ enum ScriptEndingIndices { NotEnded, Ended, WaitForFrames };
 
 enum MoveEffects { Effects_NoSpecial, Effects_Recoil, Effects_Judgement, Effects_Techno_Blast, Effects_Hits_Through_Protect, Effects_Perish_Song, Effects_Special_Physical, Effects_Sacred_Sword, Effects_Weather_Ball, Effects_Frustration, Effects_Payback, Effects_Return, Effects_Electro_Ball, Effects_Avalanche, Effects_Gyro_Ball, Effects_Eruption, Effects_Punishment, Effects_Fury_Cutter, Effects_Low_Kick, Effects_Echoed_Voice, Effects_Hex, Effects_Wring_Out, Effects_Assurance, Effects_Heat_Crash, Effects_Stored_Power, Effects_Acrobatics, Effects_Flail, Effects_Trump_Card, Effects_Round, Effects_Triple_Kick, Effects_Wake_Up_Slap, Effects_Smelling_Salt, Effects_Gust, Effects_Hidden_Power, Effects_Spit_Up, Effects_Pursuit, Effects_Present, Effects_Natural_Gift, Effects_Magnitude, Effects_Rollout, Effects_Fling, Effects_Pledge, Effects_Knock_Off, Effects_Facade, Effects_Brine, Effects_Venoshock, Effects_Retaliate, Effects_Fusion_Move, Effects_SolarBeam, Effects_Self_Destruct, Effects_Foul_Play, Effects_Chip_Away, Effects_Psywave, Effects_Night_Shade, Effects_Sonic_Boom, Effects_Super_Fang, Effects_Endeavour, Effects_Final_Gambit, Effects_Counter, Effects_Mirror_Coat, Effects_Bide, Effects_Metal_Burst, Effects_False_Swipe, Effects_Max };
 
-enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfMoveEffect, JumpIfBattleType, JumpIfArray };
+enum BattleScriptJumpIfContexts { JumpIfByte, JumpIfHalfWord, JumpIfWord, JumpIfWeather, JumpIfSpecies, JumpIfHeldItem, JumpIfAbility, JumpIfStatLevel, JumpIfStatus, JumpIfSecondaryStatus, JumpIfSpecialStatus, JumpIfPrimaryType, JumpIfSecondaryType, JumpIfTertiaryType, JumpIfAbilityPresent, JumpIfCannotSwitch, JumpIfTurnCounter, JumpIfCannotSleep, JumpIfDamageType, JumpIfMoveEffect, JumpIfBattleType, JumpIfLoopCounter, JumpIfGeneralCounter, JumpIfArray };
 
 enum BattleScriptComparisonModes { Equals, NotEqual, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, IfAnyBitsSet, IfNoBitsSet };
 
@@ -118,6 +118,22 @@ enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
 enum FleeResults { Flee_Result_Failed, Flee_Result_Failed_Trapped_Ability, Flee_Result_Failed_Trapped_Move, Flee_Result_Cannot_Flee, Flee_Result_Succeeded, Flee_Result_Run_Away };
 
 enum BattleAIMethods { Battle_AI_Sweeper, Battle_AI_Soemthing };
+
+enum GBPSoundsEngineSets { GBP_Set_BGM, GBP_Set_Fanfare, GBP_Set_SFX, GBP_Set_Max };
+
+enum GBPSoundsCaseIDs { DoNothing, StartSong, ContinueSong, FadeToSilence, FadeIn, FadeToSong, Pause, FadeInSecond, MaxCase };
+
+typedef u32 (*U32FunctionPointerVoid)(void);
+
+typedef void (*VoidFunctionPointerVoid)(void);
+
+typedef u32 (*U32FunctionPointerU32)(u32);
+
+typedef u8 u8TripleArray[3];
+
+typedef u8 u8DoubleArray[2];
+
+typedef char* string;
 
 typedef struct U8BitField {
 	u8 bit0:1;
@@ -150,38 +166,38 @@ typedef struct U16BitField {
 } U16BitField;
 
 typedef struct U32BitField {
-	u16 bit0:1;
-	u16 bit1:1;
-	u16 bit2:1;
-	u16 bit3:1;
-	u16 bit4:1;
-	u16 bit5:1;
-	u16 bit6:1;
-	u16 bit7:1;
-	u16 bit8:1;
-	u16 bit9:1;
-	u16 bit10:1;
-	u16 bit11:1;
-	u16 bit12:1;
-	u16 bit13:1;
-	u16 bit14:1;
-	u16 bit15:1;
-	u16 bit16:1;
-	u16 bit17:1;
-	u16 bit18:1;
-	u16 bit19:1;
-	u16 bit20:1;
-	u16 bit21:1;
-	u16 bit22:1;
-	u16 bit23:1;
-	u16 bit24:1;
-	u16 bit25:1;
-	u16 bit26:1;
-	u16 bit27:1;
-	u16 bit28:1;
-	u16 bit29:1;
-	u16 bit30:1;
-	u16 bit31:1;
+	u32 bit0:1;
+	u32 bit1:1;
+	u32 bit2:1;
+	u32 bit3:1;
+	u32 bit4:1;
+	u32 bit5:1;
+	u32 bit6:1;
+	u32 bit7:1;
+	u32 bit8:1;
+	u32 bit9:1;
+	u32 bit10:1;
+	u32 bit11:1;
+	u32 bit12:1;
+	u32 bit13:1;
+	u32 bit14:1;
+	u32 bit15:1;
+	u32 bit16:1;
+	u32 bit17:1;
+	u32 bit18:1;
+	u32 bit19:1;
+	u32 bit20:1;
+	u32 bit21:1;
+	u32 bit22:1;
+	u32 bit23:1;
+	u32 bit24:1;
+	u32 bit25:1;
+	u32 bit26:1;
+	u32 bit27:1;
+	u32 bit28:1;
+	u32 bit29:1;
+	u32 bit30:1;
+	u32 bit31:1;
 } U32BitField;
 
 typedef struct SaveBlockFooter {
@@ -529,11 +545,13 @@ typedef struct GBPMusicStruct {
 	u16 tone2update:1;
 	u16 waveupdate:1;
 	u16 noiseupdate:1;
-	u16 unused:8;
+	u16 isPlaying:1;
+	u16 unused:7;
 	GBPToneData tone1;
 	GBPToneData tone2;
 	GBPWaveData wave;
 	GBPNoiseData noise;
+	VoidFunctionPointerVoid onEndFunction;
 } GBPMusicStruct;
 
 typedef struct GBPTrack {
@@ -952,7 +970,8 @@ typedef struct SecondaryStatusStruct {
 	u32 stockpile:2;
 	u32 furyCutterCounter:3;
 	u32 confusion:3;
-	u32 unused:21;
+	u32 perishSongCounter:2;
+	u32 unused:19;
 } SecondaryStatusStruct;
 
 typedef struct BattleStatusStruct {
@@ -1254,19 +1273,7 @@ typedef struct Vector {
 	u32* dataLocation;
 } Vector;
 
-typedef u32 (*U32FunctionPointerVoid)(void);
-
-typedef void (*VoidFunctionPointerVoid)(void);
-
-typedef u32 (*U32FunctionPointerU32)(u32);
-
 typedef u32 (*U32FunctionPointerIBattleAIData)(BattleAIData*);
-
-typedef u8 u8TripleArray[3];
-
-typedef u8 u8DoubleArray[2];
-
-typedef char* string;
 
 typedef struct NeuralLayer {
 	u32 numNeurons;

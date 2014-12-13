@@ -73,5 +73,14 @@ u8 PrintItemEffectMessage();
 u8 CalculateFleeResult();
 u8 PrintCallEffectMessage();
 u8 PrintFleeEffectMessage();
+u8 IncrementLoopCounter();
+u8 SetLoopCounter();
+u8 CopyLoopCounterTo();
+u8 SetBattleDamageMultiplier();
+u8 SetSecondaryStatus();
+u8 SetSpecialBattleStatus();
+u8 IncrementGeneralCounter();
+u8 SetGeneralCounter();
+u8 GetRandomValue();
 
 #endif /* BATTLESCRIPTCOMMANDS_H_ */

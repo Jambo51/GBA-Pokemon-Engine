@@ -11,7 +11,7 @@
 
 # --- Tonc paths ---
 # If not defined as environment variable, assumed to be 2 dirs up
-export TONCCODE	?= $(CURDIR)/../..
+export TONCCODE	?= $(CURDIR)/../tonc-code/code/
 
 include $(TONCCODE)/tonc_rules
 

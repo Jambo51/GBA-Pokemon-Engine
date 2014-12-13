@@ -26,9 +26,9 @@ Battle_Script_End_Wild_Battle:
 
 Battle_Script_Faint_With_Battle_End:
 	.byte	JumpIf
-	.byte	0x14
+	.byte	JumpIfBattleType
 	.word	0x00000001
-	.byte	0x06
+	.byte	JumpIfComparisonIfAnyBitsSet
 	.word	Battle_Script_End_Wild_Battle
 	.byte	Call
 	.word	Battle_Script_Faint_Main

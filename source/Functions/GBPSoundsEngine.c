@@ -59,9 +59,17 @@ typedef enum SoundEngineCommands
 	End
 } SoundEngineCommands;
 
-void ClearMusicPlaybackData()
+void SetOnTrackEndFunction(VoidFunctionPointerVoid functionPtr, int channelNumber)
 {
-	memset32(&(gbpData[currentMusicEngineSet]), 0, sizeof(GBPMusicStruct) >> 2);
+	if (channelNumber < GBP_Set_Max)
+	{
+		gbpData[channelNumber].onEndFunction = functionPtr;
+	}
+}
+
+void ClearMusicPlaybackData(u32 channelSet)
+{
+	memset32(&(gbpData[channelSet]), 0, sizeof(GBPMusicStruct) >> 2);
 }
 
 u16 CalculateLengthOfTone(u8 frameDelay, u16 tempo, u8 bitLength, u16 previousLeftover)
@@ -98,13 +106,13 @@ u16 CalculateWavePitchFromMidiNumber(u8 commandID, s8 keyShift, u8 octave, u16 t
 	return (u16)(freq[note] + tone);
 }
 
-void ExecuteToneModifications(GBPToneData* theData, u8 trackID, u8 commandID)
+void ExecuteToneModifications(GBPToneData* theData, u8 trackID, u8 commandID, u16 tempo)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	u16 activationValue = 0;
 	u16 firstValue = 0;
 	u16 secondValue = 0;
-	u16 noteLength = CalculateLengthOfTone(theData[0].frameDelay, gbpData[currentMusicEngineSet].tempo, (commandID & 0xF), theData[0].noteLength2);
+	u16 noteLength = CalculateLengthOfTone(theData[0].frameDelay, tempo, (commandID & 0xF), theData[0].noteLength2);
 	theData[0].noteLength1 = (noteLength & 0xFF00) >> 8;
 	theData[0].noteLength2 = noteLength & 0xFF;
 	if ((commandID & 0xF0) != 0)
@@ -142,13 +150,13 @@ void ExecuteToneModifications(GBPToneData* theData, u8 trackID, u8 commandID)
 	theData[0].nextInstruction++;
 }
 
-void ExecuteWaveModifications(GBPWaveData* theData, u8 commandID)
+void ExecuteWaveModifications(GBPWaveData* theData, u8 commandID, u16 tempo)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	u16 velocity = 0;
 	u16 pitch = 0;
 	u16 activationValue = 0;
-	u16 noteLength = CalculateLengthOfTone(theData[0].frameDelay, gbpData[currentMusicEngineSet].tempo, (commandID & 0xF), theData[0].noteLength2);
+	u16 noteLength = CalculateLengthOfTone(theData[0].frameDelay, tempo, (commandID & 0xF), theData[0].noteLength2);
 	theData[0].noteLength1 = (noteLength & 0xFF00) >> 8;
 	theData[0].noteLength2 = noteLength & 0xFF;
 	if ((commandID & 0xF0) != 0)
@@ -173,38 +181,38 @@ void ExecuteWaveModifications(GBPWaveData* theData, u8 commandID)
 	tone1Controller[10] = pitch;
 }
 
-void WriteNoisePattern()
+void WriteNoisePattern(GBPNoiseData* theData)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
-	u16 value1 = (gbpData[currentMusicEngineSet].noise.samplePointer[0] & 0xF);
-	gbpData[currentMusicEngineSet].noise.noiseFrameDelay = value1;
-	u16 value2 = (gbpData[currentMusicEngineSet].noise.samplePointer[1] << 8) | 0x3F;
-	u16 value3 = gbpData[currentMusicEngineSet].noise.samplePointer[2] | 0x8000;
-	gbpData[currentMusicEngineSet].noise.samplePointer += 3;
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
+	u16 value1 = (theData[0].samplePointer[0] & 0xF);
+	theData[0].noiseFrameDelay = value1;
+	u16 value2 = (theData[0].samplePointer[1] << 8) | 0x3F;
+	u16 value3 = theData[0].samplePointer[2] | 0x8000;
+	theData[0].samplePointer += 3;
 	tone1Controller[12] = value2;
 	tone1Controller[14] = value3;
 }
 
-void ExecuteNoiseModifications(u8 commandID)
+void ExecuteNoiseModifications(GBPNoiseData* theData, u8 commandID, u16 tempo)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
-	u16 noteLength = CalculateLengthOfTone(gbpData[currentMusicEngineSet].noise.frameDelay, gbpData[currentMusicEngineSet].tempo, (commandID & 0xF), gbpData[currentMusicEngineSet].noise.noteLength2);
-	gbpData[currentMusicEngineSet].noise.noteLength1 = (noteLength & 0xFF00) >> 8;
-	gbpData[currentMusicEngineSet].noise.noteLength2 = noteLength & 0xFF;
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
+	u16 noteLength = CalculateLengthOfTone(theData[0].frameDelay, tempo, (commandID & 0xF), theData[0].noteLength2);
+	theData[0].noteLength1 = (noteLength & 0xFF00) >> 8;
+	theData[0].noteLength2 = noteLength & 0xFF;
 	if (player.stereoSound == 1)
 	{
-		u8 pan = gbpData[currentMusicEngineSet].noise.pan & 0x88;
+		u8 pan = theData[0].pan & 0x88;
 		u16 valueToWrite = (tone1Controller[0x10] & 0x77FF) | (pan << 0x8);
 		tone1Controller[0x10] = valueToWrite;
 	}
 	if ((commandID & 0xF0) != 0)
 	{
-		u32 engineSet = gbpData[currentMusicEngineSet].noise.noiseSet;
+		u32 engineSet = theData[0].noiseSet;
 		u32* location = (u32*)((u32*)noiseDataPointers)[engineSet];
 		location = (u32*)(location[(commandID & 0xF0) >> 4]);
-		gbpData[currentMusicEngineSet].noise.samplePointer = (u8*)location;
-		gbpData[currentMusicEngineSet].noise.noiseActive = 1;
-		WriteNoisePattern();
+		theData[0].samplePointer = (u8*)location;
+		theData[0].noiseActive = 1;
+		WriteNoisePattern(theData);
 	}
 	else
 	{
@@ -215,62 +223,27 @@ void ExecuteNoiseModifications(u8 commandID)
 
 void NullifyHardware()
 {
-	ExecuteToneModifications(&(gbpData[currentMusicEngineSet].tone1), 0, 0);
-	ExecuteToneModifications(&(gbpData[currentMusicEngineSet].tone2), 1, 0);
-	ExecuteWaveModifications(&(gbpData[currentMusicEngineSet].wave), 0);
-	ExecuteNoiseModifications(0);
+	memset32((void*)(&gbpBuffer), 0, 9);
 }
 
-void StopPlayback()
+void StopSongPlayback()
 {
-	ClearMusicPlaybackData();
+	ClearMusicPlaybackData(GBP_Set_BGM);
 	NullifyHardware();
-	currentSongPlaybackStatus = 0;
+	currentSongPlaybackStatus = DoNothing;
 	currentSongID = 0;
 }
 
-void PausePlayback()
+void PauseSongPlayback()
 {
-	currentSongPlaybackStatus = 6;
+	gbpData[GBP_Set_BGM].isPlaying = false;
+	NullifyHardware();
 }
 
-void ResumePlayback()
+void ResumeSongPlayback()
 {
-	currentSongPlaybackStatus = 2;
-}
-
-void SetupSongForPlayback(u16 songID, u8 songStartMode)
-{
-	if (songID == 0)
-	{
-		StopPlayback();
-	}
-	else
-	{
-		currentSongID = songID;
-		u8 valueToWrite = 1;
-		switch (songStartMode)
-		{
-			case 0:
-				valueToWrite = 1;
-				break;
-			case 1:
-				valueToWrite = 5;
-				break;
-		}
-		currentSongPlaybackStatus = valueToWrite;
-		currentMusicEngineSet = 0;
-	}
-}
-
-void SetupFanfareForPlayback(u16 songID)
-{
-	if (songID != 0)
-	{
-		currentFanfareID = songID;
-		currentSongPlaybackStatus = 1;
-		currentMusicEngineSet = 1;
-	}
+	gbpData[GBP_Set_BGM].isPlaying = true;
+	currentSongPlaybackStatus = ContinueSong;
 }
 
 u16 U16LittleEndianToBigEndian(u16 input)
@@ -279,9 +252,9 @@ u16 U16LittleEndianToBigEndian(u16 input)
 	return (input >> 8) | temp;
 }
 
-u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
+u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID, u32 musicSetIndex)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	u8 commandLength = 1;
 	if (commandID >= SetOctave7 && commandID < SetOctave0)
 	{
@@ -311,7 +284,7 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 				break;
 			}
 			case SetTempo:
-				gbpData[currentMusicEngineSet].tempo = U16LittleEndianToBigEndian(LoadUShortNumber(theData[0].nextInstruction, 1));
+				gbpData[musicSetIndex].tempo = U16LittleEndianToBigEndian(LoadUShortNumber(theData[0].nextInstruction, 1));
 				commandLength = 3;
 				break;
 			case SetDutyCycle: case SetDutyCycle2:
@@ -456,11 +429,11 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID)
 				{
 					if (trackID == 0)
 					{
-						gbpData[currentMusicEngineSet].tone1Included = 0;
+						gbpData[musicSetIndex].tone1Included = 0;
 					}
 					else
 					{
-						gbpData[currentMusicEngineSet].tone2Included = 0;
+						gbpData[musicSetIndex].tone2Included = 0;
 					}
 					return 0xFF;
 				}
@@ -488,7 +461,7 @@ void SwitchWavePattern(u8 patternID)
 	}
 }
 
-u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID)
+u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID, u32 musicSetIndex)
 {
 	u8 commandLength = 1;
 	if (commandID >= 0xD0 && commandID < 0xD8)
@@ -641,7 +614,7 @@ u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID)
 				commandLength = 0;
 				if (theData[0].returnLocation == 0)
 				{
-					gbpData[currentMusicEngineSet].waveIncluded = 0;
+					gbpData[musicSetIndex].waveIncluded = 0;
 					return 0xFF;
 				}
 				else
@@ -656,7 +629,7 @@ u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID)
 	return theData[0].nextInstruction[0];
 }
 
-u8 ExecuteCommandsNoise(GBPNoiseData* theData, u8 commandID)
+u8 ExecuteCommandsNoise(GBPNoiseData* theData, u8 commandID, u32 musicSetIndex)
 {
 	u8 commandLength = 2;
 	commandID -= 0xD8;
@@ -705,7 +678,7 @@ u8 ExecuteCommandsNoise(GBPNoiseData* theData, u8 commandID)
 		commandLength = 0;
 		if (theData[0].returnLocation == 0)
 		{
-			gbpData[currentMusicEngineSet].noiseIncluded = 0;
+			gbpData[musicSetIndex].noiseIncluded = 0;
 			return 0xFF;
 		}
 		else
@@ -771,7 +744,7 @@ u16 GetModulationPitchAndUpdateData(GBPToneData* theData)
 
 void ModulateToneTrack(GBPToneData* theData, u8 trackID)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	if (GenericCheckFlag(PitchBendActivation, (u8*)&theData[0].statusFlags, NumGBPEngineFlags)  == 1)
 	{
 		theData[0].pitch += theData[0].pitchBendRate;
@@ -811,7 +784,8 @@ void ModulateToneTrack(GBPToneData* theData, u8 trackID)
 		{
 			if (theData[0].modulationSpeedDelay == 0 && theData[0].pitch != 0)
 			{
-				tone1Controller[2 + (trackID << 2)] = GetModulationPitchAndUpdateData(theData);
+				tone1Controller[2 + (trackID << 2)] &= 0x8000;
+				tone1Controller[2 + (trackID << 2)] |= GetModulationPitchAndUpdateData(theData);
 			}
 			else
 			{
@@ -838,7 +812,7 @@ void ResetToneModulationArpeggiationCounters(GBPToneData* theData, u8 trackID)
 
 void ModulateWaveTrack(GBPWaveData* theData)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	if (GenericCheckFlag(PitchBendActivation, (u8*)&theData[0].statusFlags, NumGBPEngineFlags) == 1)
 	{
 		theData[0].pitch += theData[0].pitchBendRate;
@@ -895,7 +869,8 @@ void ModulateWaveTrack(GBPWaveData* theData)
 						break;
 				}
 				(theValue) ? GenericSetFlag(ModulationStatus, (u8*)&theData[0].statusFlags, NumGBPEngineFlags) : GenericClearFlag(ModulationStatus, (u8*)&theData[0].statusFlags, NumGBPEngineFlags);
-				tone1Controller[10] = pitch;
+				tone1Controller[10] &= 0x8000;
+				tone1Controller[10] |= pitch;
 			}
 			else
 			{
@@ -907,7 +882,7 @@ void ModulateWaveTrack(GBPWaveData* theData)
 
 void ArpeggiateToneTrack(GBPToneData* theData, u8 trackID)
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	if (GenericCheckFlag(ArpeggiationActivation, (u8*)&theData[0].statusFlags, NumGBPEngineFlags) == 1)
 	{
 		if (theData[0].arpeggiationCountdown > 0)
@@ -926,252 +901,304 @@ void ArpeggiateToneTrack(GBPToneData* theData, u8 trackID)
 
 void UpdateCurrentlyPlayingSong()
 {
-	if (currentMusicEngineSet < 2)
+	u32 i;
+	for (i = 0; i < GBP_Set_Max; i++)
 	{
-		u8 counter = 0;
-		if (gbpData[currentMusicEngineSet].tone1Included != 0)
+		if (gbpData[i].isPlaying)
 		{
-			counter++;
-			if (gbpData[currentMusicEngineSet].tone1.noteLength1 < 2)
+			u32 counter = 0;
+			if (gbpData[i].tone1Included != 0)
 			{
-				u8 commandID = gbpData[currentMusicEngineSet].tone1.nextInstruction[0];
-				while (commandID >= 0xD0)
+				counter++;
+				if (gbpData[i].tone1.noteLength1 < 2)
 				{
-					commandID = ExecuteCommandsTone(&(gbpData[currentMusicEngineSet].tone1), commandID, 0);
-					if (commandID == 0xFF && gbpData[currentMusicEngineSet].tone1.returnLocation == 0)
+					u32 commandID = gbpData[i].tone1.nextInstruction[0];
+					while (commandID >= 0xD0)
 					{
-						ExecuteToneModifications(&(gbpData[currentMusicEngineSet].tone1), 0, 0);
-						break;
+						commandID = ExecuteCommandsTone(&(gbpData[i].tone1), commandID, 0, i);
+						if (commandID == 0xFF && gbpData[i].tone1.returnLocation == 0)
+						{
+							ExecuteToneModifications(&(gbpData[i].tone1), 0, 0, gbpData[i].tempo);
+							break;
+						}
 					}
-				}
-				if (commandID != 0xFF)
-				{
-					ExecuteToneModifications(&(gbpData[currentMusicEngineSet].tone1), 0, commandID);
-					ResetToneModulationArpeggiationCounters(&(gbpData[currentMusicEngineSet].tone1), 0);
-				}
-			}
-			else
-			{
-				gbpData[currentMusicEngineSet].tone1.noteLength1--;
-				GBPToneData* theData = &(gbpData[currentMusicEngineSet].tone1);
-				ModulateToneTrack(theData, 0);
-				ArpeggiateToneTrack(theData, 0);
-			}
-		}
-		if (gbpData[currentMusicEngineSet].tone2Included != 0)
-		{
-			counter++;
-			if (gbpData[currentMusicEngineSet].tone2.noteLength1 < 2)
-			{
-				u8 commandID = gbpData[currentMusicEngineSet].tone2.nextInstruction[0];
-				while (commandID >= 0xD0)
-				{
-					commandID = ExecuteCommandsTone(&(gbpData[currentMusicEngineSet].tone2), commandID, 1);
-					if (commandID == 0xFF && gbpData[currentMusicEngineSet].tone2.returnLocation == 0)
+					if (commandID != 0xFF)
 					{
-						ExecuteToneModifications(&(gbpData[currentMusicEngineSet].tone2), 1, 0);
-						break;
+						ExecuteToneModifications(&(gbpData[i].tone1), 0, commandID, gbpData[i].tempo);
+						ResetToneModulationArpeggiationCounters(&(gbpData[i].tone1), 0);
 					}
-				}
-				if (commandID != 0xFF)
-				{
-					ExecuteToneModifications(&(gbpData[currentMusicEngineSet].tone2), 1, commandID);
-					ResetToneModulationArpeggiationCounters(&(gbpData[currentMusicEngineSet].tone2), 1);
-				}
-			}
-			else
-			{
-				gbpData[currentMusicEngineSet].tone2.noteLength1--;
-				GBPToneData* theData = &(gbpData[currentMusicEngineSet].tone2);
-				ModulateToneTrack(theData, 1);
-				ArpeggiateToneTrack(theData, 1);
-			}
-		}
-		if (gbpData[currentMusicEngineSet].waveIncluded != 0)
-		{
-			counter++;
-			if (gbpData[currentMusicEngineSet].wave.noteLength1 < 2)
-			{
-				u8 commandID = gbpData[currentMusicEngineSet].wave.nextInstruction[0];
-				while (commandID >= 0xD0)
-				{
-					commandID = ExecuteCommandsWave(&(gbpData[currentMusicEngineSet].wave), commandID);
-					if (commandID == 0xFF && gbpData[currentMusicEngineSet].wave.returnLocation == 0)
-					{
-						ExecuteWaveModifications(&(gbpData[currentMusicEngineSet].wave), 0);
-						break;
-					}
-				}
-				if (commandID != 0xFF)
-				{
-					ExecuteWaveModifications(&(gbpData[currentMusicEngineSet].wave), commandID);
-					gbpData[currentMusicEngineSet].wave.nextInstruction++;
-					gbpData[currentMusicEngineSet].wave.modulationCountdown = gbpData[currentMusicEngineSet].wave.modulationDelay;
-					GenericClearFlag(ModulationStatus, (u8*)&gbpData[currentMusicEngineSet].wave.statusFlags, NumGBPEngineFlags);
-					gbpData[currentMusicEngineSet].wave.modulationSpeedDelay = gbpData[currentMusicEngineSet].wave.modulationSpeed;
-					if (gbpData[currentMusicEngineSet].wave.modulationCountdown == 0)
-					{
-						ModulateWaveTrack(&(gbpData[currentMusicEngineSet].wave));
-					}
-				}
-			}
-			else
-			{
-				gbpData[currentMusicEngineSet].wave.noteLength1--;
-				ModulateWaveTrack(&(gbpData[currentMusicEngineSet].wave));
-			}
-		}
-		if (gbpData[currentMusicEngineSet].noiseIncluded != 0)
-		{
-			counter++;
-			if (gbpData[currentMusicEngineSet].noise.noteLength1 < 2)
-			{
-				u8 commandID = gbpData[currentMusicEngineSet].noise.nextInstruction[0];
-				while (commandID >= 0xD0)
-				{
-					commandID = ExecuteCommandsNoise(&(gbpData[currentMusicEngineSet].noise), commandID);
-					if (commandID == 0xFF && gbpData[currentMusicEngineSet].noise.returnLocation == 0)
-					{
-						ExecuteNoiseModifications(0);
-						break;
-					}
-				}
-				if (commandID != 0xFF)
-				{
-					ExecuteNoiseModifications(commandID);
-					gbpData[currentMusicEngineSet].noise.nextInstruction++;
 				}
 				else
 				{
-					gbpData[currentMusicEngineSet].noise.noiseActive = 0;
-					gbpData[currentMusicEngineSet].noise.noiseFrameDelay = 0;
-					gbpData[currentMusicEngineSet].noiseIncluded = 0;
+					gbpData[i].tone1.noteLength1--;
+					GBPToneData* theData = &(gbpData[i].tone1);
+					ModulateToneTrack(theData, 0);
+					ArpeggiateToneTrack(theData, 0);
 				}
 			}
-			else
+			if (gbpData[i].tone2Included != 0)
 			{
-				gbpData[currentMusicEngineSet].noise.noteLength1--;
-				if (gbpData[currentMusicEngineSet].noise.noiseActive == 1)
+				counter++;
+				if (gbpData[i].tone2.noteLength1 < 2)
 				{
-					if (gbpData[currentMusicEngineSet].noise.noiseFrameDelay == 0 && gbpData[currentMusicEngineSet].noise.samplePointer[0] != 0xFF)
+					u32 commandID = gbpData[i].tone2.nextInstruction[0];
+					while (commandID >= 0xD0)
 					{
-						WriteNoisePattern();
+						commandID = ExecuteCommandsTone(&(gbpData[i].tone2), commandID, 1, i);
+						if (commandID == 0xFF && gbpData[i].tone2.returnLocation == 0)
+						{
+							ExecuteToneModifications(&(gbpData[i].tone2), 1, 0, gbpData[i].tempo);
+							break;
+						}
 					}
-					else if (gbpData[currentMusicEngineSet].noise.samplePointer[0] == 0xFF)
+					if (commandID != 0xFF)
 					{
-						gbpData[currentMusicEngineSet].noise.noiseActive = 0;
-						gbpData[currentMusicEngineSet].noise.noiseFrameDelay = 0;
+						ExecuteToneModifications(&(gbpData[i].tone2), 1, commandID, gbpData[i].tempo);
+						ResetToneModulationArpeggiationCounters(&(gbpData[i].tone2), 1);
+					}
+				}
+				else
+				{
+					gbpData[i].tone2.noteLength1--;
+					GBPToneData* theData = &(gbpData[i].tone2);
+					ModulateToneTrack(theData, 1);
+					ArpeggiateToneTrack(theData, 1);
+				}
+			}
+			if (gbpData[i].waveIncluded != 0)
+			{
+				counter++;
+				if (gbpData[i].wave.noteLength1 < 2)
+				{
+					u32 commandID = gbpData[i].wave.nextInstruction[0];
+					while (commandID >= 0xD0)
+					{
+						commandID = ExecuteCommandsWave(&(gbpData[i].wave), commandID, i);
+						if (commandID == 0xFF && gbpData[i].wave.returnLocation == 0)
+						{
+							ExecuteWaveModifications(&(gbpData[i].wave), 0, gbpData[i].tempo);
+							break;
+						}
+					}
+					if (commandID != 0xFF)
+					{
+						ExecuteWaveModifications(&(gbpData[i].wave), commandID, gbpData[i].tempo);
+						gbpData[i].wave.nextInstruction++;
+						gbpData[i].wave.modulationCountdown = gbpData[i].wave.modulationDelay;
+						GenericClearFlag(ModulationStatus, (u8*)&gbpData[i].wave.statusFlags, NumGBPEngineFlags);
+						gbpData[i].wave.modulationSpeedDelay = gbpData[i].wave.modulationSpeed;
+						if (gbpData[i].wave.modulationCountdown == 0)
+						{
+							ModulateWaveTrack(&(gbpData[i].wave));
+						}
+					}
+				}
+				else
+				{
+					gbpData[i].wave.noteLength1--;
+					ModulateWaveTrack(&(gbpData[i].wave));
+				}
+			}
+			if (gbpData[i].noiseIncluded != 0)
+			{
+				counter++;
+				if (gbpData[i].noise.noteLength1 < 2)
+				{
+					u32 commandID = gbpData[i].noise.nextInstruction[0];
+					while (commandID >= 0xD0)
+					{
+						commandID = ExecuteCommandsNoise(&(gbpData[i].noise), commandID, i);
+						if (commandID == 0xFF && gbpData[i].noise.returnLocation == 0)
+						{
+							ExecuteNoiseModifications((GBPNoiseData*)(&gbpData[i].noise), 0, gbpData[i].tempo);
+							break;
+						}
+					}
+					if (commandID != 0xFF)
+					{
+						ExecuteNoiseModifications((GBPNoiseData*)(&gbpData[i].noise), commandID, gbpData[i].tempo);
+						gbpData[i].noise.nextInstruction++;
 					}
 					else
 					{
-						gbpData[currentMusicEngineSet].noise.noiseFrameDelay--;
+						gbpData[i].noise.noiseActive = 0;
+						gbpData[i].noise.noiseFrameDelay = 0;
+						gbpData[i].noiseIncluded = 0;
+					}
+				}
+				else
+				{
+					gbpData[i].noise.noteLength1--;
+					if (gbpData[i].noise.noiseActive == 1)
+					{
+						if (gbpData[i].noise.noiseFrameDelay == 0 && gbpData[i].noise.samplePointer[0] != 0xFF)
+						{
+							WriteNoisePattern((GBPNoiseData*)(&gbpData[i].noise));
+						}
+						else if (gbpData[i].noise.samplePointer[0] == 0xFF)
+						{
+							gbpData[i].noise.noiseActive = 0;
+							gbpData[i].noise.noiseFrameDelay = 0;
+						}
+						else
+						{
+							gbpData[i].noise.noiseFrameDelay--;
+						}
 					}
 				}
 			}
-		}
-		if (currentMusicEngineSet == 1 && counter == 0)
-		{
-			currentMusicEngineSet = 0;
+			if (!counter)
+			{
+				if (gbpData[i].onEndFunction)
+				{
+					gbpData[i].onEndFunction();
+				}
+			}
 		}
 	}
 }
 
 void InitialiseGBPSoundsEngine()
 {
-	*((vu16*)0x04000082) = 0x2;
 	*((vu32*)0x04000084) = 0x80;
 	*((vu16*)0x04000088) = 0xC200;
 	*((vu16*)0x04000074) = 0x8000;
 	*((vu16*)0x04000070) = 0x80;
-	*((vu16*)0x04000080) = 0xFF77;
+	gbpBuffer[0x10] = 0xFF77;
+	gbpBuffer[0x11] = 0x2;
 	SwitchWavePattern(0);
 }
 
-GBPTrackHeader* ClearGBPData(u16 id)
+GBPTrackHeader* ClearGBPData(u16 id, u32 channelSet)
 {
-	InitialiseGBPSoundsEngine();
 	NullifyHardware();
-	ClearMusicPlaybackData();
+	InitialiseGBPSoundsEngine();
+	ClearMusicPlaybackData(channelSet);
 	return gbpSongs[id];
 }
 
-void PutTrackDataIntoIWRAMAndStartPlayback(u16 songID)
+void PutTrackDataIntoIWRAM(u16 songID, u32 channelSet)
 {
-	GBPTrackHeader* header = ClearGBPData(songID);
-	vu32 i;
-	for (i = 0; i < header->numberOfTracks; i++)
+	GBPTrackHeader* header = ClearGBPData(songID, channelSet);
+	switch(header->trackType)
 	{
-		if (i == 0)
+		case 0:
+			gbpData[channelSet].tone1Included = 1;
+			gbpData[channelSet].tone1.nextInstruction = header->songData;
+			gbpData[channelSet].tone1.pan = 0xFF;
+			break;
+		case 1:
+			gbpData[channelSet].tone2Included = 1;
+			gbpData[channelSet].tone2.nextInstruction = header->songData;
+			gbpData[channelSet].tone2.pan = 0xFF;
+			break;
+		case 2:
+			gbpData[channelSet].waveIncluded = 1;
+			gbpData[channelSet].wave.nextInstruction = header->songData;
+			gbpData[channelSet].wave.pan = 0xFF;
+			break;
+		case 3:
+			gbpData[channelSet].noiseIncluded = 1;
+			gbpData[channelSet].noise.nextInstruction = header->songData;
+			gbpData[channelSet].noise.pan = 0xFF;
+			break;
+	}
+	u32 i;
+	for (i = 1; i < header->numberOfTracks; i++)
+	{
+		switch(header->theTracks[i - 1].trackType)
 		{
-			switch(header->trackType)
-			{
-				case 0:
-					gbpData[currentMusicEngineSet].tone1Included = 1;
-					gbpData[currentMusicEngineSet].tone1.nextInstruction = header->songData;
-					gbpData[currentMusicEngineSet].tone1.pan = 0xFF;
-					break;
-				case 1:
-					gbpData[currentMusicEngineSet].tone2Included = 1;
-					gbpData[currentMusicEngineSet].tone2.nextInstruction = header->songData;
-					gbpData[currentMusicEngineSet].tone2.pan = 0xFF;
-					break;
-				case 2:
-					gbpData[currentMusicEngineSet].waveIncluded = 1;
-					gbpData[currentMusicEngineSet].wave.nextInstruction = header->songData;
-					gbpData[currentMusicEngineSet].wave.pan = 0xFF;
-					break;
-				case 3:
-					gbpData[currentMusicEngineSet].noiseIncluded = 1;
-					gbpData[currentMusicEngineSet].noise.nextInstruction = header->songData;
-					gbpData[currentMusicEngineSet].noise.pan = 0xFF;
-					break;
-			}
-		}
-		else
-		{
-			switch(header->theTracks[i - 1].trackType)
-			{
-				case 0:
-					gbpData[currentMusicEngineSet].tone1Included = 1;
-					gbpData[currentMusicEngineSet].tone1.nextInstruction = header->theTracks[i - 1].songData;
-					gbpData[currentMusicEngineSet].tone1.pan = 0xFF;
-					break;
-				case 1:
-					gbpData[currentMusicEngineSet].tone2Included = 1;
-					gbpData[currentMusicEngineSet].tone2.nextInstruction = header->theTracks[i - 1].songData;
-					gbpData[currentMusicEngineSet].tone2.pan = 0xFF;
-					break;
-				case 2:
-					gbpData[currentMusicEngineSet].waveIncluded = 1;
-					gbpData[currentMusicEngineSet].wave.nextInstruction = header->theTracks[i - 1].songData;
-					gbpData[currentMusicEngineSet].wave.pan = 0xFF;
-					break;
-				case 3:
-					gbpData[currentMusicEngineSet].noiseIncluded = 1;
-					gbpData[currentMusicEngineSet].noise.nextInstruction = header->theTracks[i - 1].songData;
-					gbpData[currentMusicEngineSet].noise.pan = 0xFF;
-					break;
-			}
+			case 0:
+				gbpData[channelSet].tone1Included = 1;
+				gbpData[channelSet].tone1.nextInstruction = header->theTracks[i - 1].songData;
+				gbpData[channelSet].tone1.pan = 0xFF;
+				break;
+			case 1:
+				gbpData[channelSet].tone2Included = 1;
+				gbpData[channelSet].tone2.nextInstruction = header->theTracks[i - 1].songData;
+				gbpData[channelSet].tone2.pan = 0xFF;
+				break;
+			case 2:
+				gbpData[channelSet].waveIncluded = 1;
+				gbpData[channelSet].wave.nextInstruction = header->theTracks[i - 1].songData;
+				gbpData[channelSet].wave.pan = 0xFF;
+				break;
+			case 3:
+				gbpData[channelSet].noiseIncluded = 1;
+				gbpData[channelSet].noise.nextInstruction = header->theTracks[i - 1].songData;
+				gbpData[channelSet].noise.pan = 0xFF;
+				break;
 		}
 	}
-	gbpData[currentMusicEngineSet].tempo = 0x100;
-	currentSongPlaybackStatus = 2;
-	UpdateCurrentlyPlayingSong();
+	gbpData[channelSet].tempo = 0x100;
 }
 
 void StartNewSongImmediately()
 {
-	PutTrackDataIntoIWRAMAndStartPlayback(currentSongID - 1);
+	PutTrackDataIntoIWRAM(currentSongID - 1, GBP_Set_BGM);
+	gbpData[GBP_Set_BGM].isPlaying = true;
+	UpdateCurrentlyPlayingSong();
+	currentSongPlaybackStatus = ContinueSong;
 }
 
 void StartNewFanfareImmediately()
 {
-	PutTrackDataIntoIWRAMAndStartPlayback(currentFanfareID - 1);
+	PutTrackDataIntoIWRAM(currentFanfareID - 1, GBP_Set_Fanfare);
+	gbpData[GBP_Set_Fanfare].isPlaying = true;
+	PauseSongPlayback();
+	SetOnTrackEndFunction(&ResumeSongPlayback, GBP_Set_Fanfare);
+}
+
+void StartNewSFXImmediately()
+{
+	PutTrackDataIntoIWRAM(currentSFXID - 1, GBP_Set_SFX);
+	gbpData[GBP_Set_SFX].isPlaying = true;
+}
+
+void SetupSongForPlayback(u16 songID, u8 songStartMode)
+{
+	if (songID == 0)
+	{
+		StopSongPlayback();
+	}
+	else
+	{
+		currentSongID = songID;
+		u8 valueToWrite = 1;
+		switch (songStartMode)
+		{
+			case 0:
+				valueToWrite = StartSong;
+				break;
+			case 1:
+				valueToWrite = FadeToSong;
+				break;
+		}
+		currentSongPlaybackStatus = valueToWrite;
+	}
+}
+
+void SetupFanfareForPlayback(u16 songID)
+{
+	if (songID)
+	{
+		currentFanfareID = songID;
+		PutTrackDataIntoIWRAM(songID, GBP_Set_Fanfare);
+	}
+}
+
+void SetupSFXForPlayback(u16 sfxID)
+{
+	if (sfxID)
+	{
+		currentSFXID = sfxID;
+		PutTrackDataIntoIWRAM(sfxID, GBP_Set_SFX);
+	}
 }
 
 void FadeSong()
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	UpdateCurrentlyPlayingSong();
 	if (musicFadePointer != 0 && musicFadePointer[0].active == 1)
 	{
@@ -1181,7 +1208,7 @@ void FadeSong()
 			u8 currentValue = tone1Controller[0x10] & 0xFF;
 			if (currentValue == target)
 			{
-				switch (currentSongPlaybackStatus - 3)
+				switch (currentSongPlaybackStatus - FadeToSilence)
 				{
 					case 0:
 						NullifyHardware();
@@ -1248,43 +1275,50 @@ void FadeSongIn()
 
 void GBPSoundsMainEngine()
 {
-	vu16* tone1Controller = (vu16*)(0x04000060);
+	vu16* tone1Controller = (vu16*)(&gbpBuffer);
 	switch (currentSongPlaybackStatus)
 	{
-		case 0:
-			break;
-		case 1:
-			StartNewSongImmediately();
-			break;
-		case 2:
+		case DoNothing:
 			UpdateCurrentlyPlayingSong();
 			break;
-		case 3:
+		case StartSong:
+			StartNewSongImmediately();
+			break;
+		case ContinueSong:
+			UpdateCurrentlyPlayingSong();
+			break;
+		case FadeToSilence:
 			FadeSongOut();
 			break;
-		case 4:
+		case FadeIn:
 			StartNewSongImmediately();
 			tone1Controller[0x10] &= 0xFF00;
 			FadeSongIn();
-			currentSongPlaybackStatus = 7;
+			currentSongPlaybackStatus = FadeInSecond;
 			break;
-		case 5:
+		case FadeToSong:
 			FadeSongOut();
-			if (currentSongPlaybackStatus == 1)
+			if (currentSongPlaybackStatus == StartSong)
 			{
 				StartNewSongImmediately();
 			}
 			break;
-		case 6:
+		case Pause:
 			NullifyHardware();
-			currentSongPlaybackStatus = 0;
+			currentSongPlaybackStatus = DoNothing;
+			UpdateCurrentlyPlayingSong();
 			break;
-		case 7:
+		case FadeInSecond:
 			FadeSongIn();
 			break;
 		default:
 			UpdateCurrentlyPlayingSong();
-			currentSongPlaybackStatus = 2;
+			currentSongPlaybackStatus = ContinueSong;
 			break;
 	}
+	memcpy32((void*)(0x04000060), (void*)tone1Controller, 9);
+	tone1Controller[2] &= 0x7FFF;
+	tone1Controller[6] &= 0x7FFF;
+	tone1Controller[10] &= 0x7FFF;
+	tone1Controller[14] &= 0x7FFF;
 }

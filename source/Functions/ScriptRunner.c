@@ -57,7 +57,16 @@ const u8 (*battleScriptCommandTable[])(void) = {
 		&PrintItemEffectMessage,
 		&CalculateFleeResult,
 		&PrintCallEffectMessage,
-		&PrintFleeEffectMessage
+		&PrintFleeEffectMessage,
+		&IncrementLoopCounter,
+		&SetLoopCounter,
+		&CopyLoopCounterTo,
+		&SetBattleDamageMultiplier,
+		&SetSecondaryStatus,
+		&SetSpecialBattleStatus,
+		&IncrementGeneralCounter,
+		&SetGeneralCounter,
+		&GetRandomValue
 };
 
 u32 RunScript(u8** pointer, u8 (*instructionSet[0xFF])(void))

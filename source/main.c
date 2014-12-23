@@ -90,6 +90,7 @@ int main()
 	InitialisePaletteAllocator();
 	HandleKeyPresses = &IgnoreKeyPresses;
 	CallbackMain = &InitialiseBattleEnvironment;
+	//CallbackMain = &SetupTitleScreen;
 	RTCPaletteUpdate = &IgnoreKeyPresses;
 	SetMusicEngine(MUSICENGINE);
 	u16* pRAM = (u16*)TilePaletteRAM(0);

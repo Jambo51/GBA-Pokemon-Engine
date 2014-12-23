@@ -29,24 +29,25 @@
 #define GenVIHiddenPower FALSE
 
 const ALIGN(1) u8 typeStrengths[18][18] = {
-		{ 100, 100, 100, 100, 100, 50, 100, 0, 50, 100, 100, 100, 100, 100, 100, 100, 100, 100 }, // Normal
-		{ 200, 100, 50, 50, 100, 200, 50, 0, 200, 100, 100, 100, 100, 50, 200, 100, 200, 50 }, // Fighting
-		{ 100, 200, 100, 100, 100, 50, 200, 100, 50, 100, 100, 200, 50, 100, 100, 100, 100, 100 }, // Flying
-		{ 100, 100, 100, 50, 100, 50, 100, 50, 0, 100, 100, 200, 100, 100, 100, 100, 100, 200 }, // Poison
-		{ 100, 100, 0, 200, 100, 200, 50, 100, 200, 200, 100, 50, 200, 100, 100, 100, 100, 100 }, // Ground
-		{ 100, 50, 200, 100, 50, 100, 200, 100, 50, 200, 100, 100, 100, 100, 200, 100, 100, 100 }, // Rock
-		{ 100, 50, 50, 50, 100, 100, 100, 50, 50, 50, 100, 200, 100, 200, 100, 100, 200, 50 }, // Bug
-		{ 0, 100, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 200, 100 }, // Ghost
-		{ 100, 100, 100, 100, 100, 200, 100, 100, 50, 50, 50, 100, 100, 100, 200, 100, 100, 200 }, // Steel
-		{ 100, 100, 100, 100, 100, 50, 200, 100, 200, 50, 50, 200, 100, 100, 200, 50, 100, 100 }, // Fire
-		{ 100, 100, 100, 100, 200, 200, 100, 100, 100, 200, 50, 50, 100, 100, 100, 50, 100, 100 }, // Water
-		{ 100, 100, 50, 50, 200, 200, 50, 100, 50, 50, 200, 50, 100, 100, 100, 50, 100, 100 }, // Grass
-		{ 100, 100, 200, 100, 0, 100, 100, 100, 100, 100, 200, 50, 50, 100, 100, 50, 100, 100 }, // Electric
-		{ 100, 200, 100, 200, 100, 100, 100, 100, 50, 100, 100, 100, 100, 50, 100, 100, 0, 100 }, // Psychic
-		{ 100, 100, 200, 100, 200, 100, 100, 100, 50, 50, 50, 200, 100, 100, 50, 200, 100, 100 }, // Ice
-		{ 100, 100, 100, 100, 100, 100, 100, 100, 50, 100, 100, 100, 100, 100, 100, 200, 100, 0 }, // Dragon
-		{ 100, 50, 100, 100, 100, 100, 100, 200, 50, 100, 100, 100, 100, 200, 100, 100, 50, 50 }, // Dark
-		{ 100, 200, 100, 50, 100, 100, 100, 100, 50, 50, 100, 100, 100, 100, 100, 200, 200, 100 } // Fairy
+		//Nor  Fig  Fly  Poi  Grd  Roc  Bug  Gho  Ste  Fir  Wat  Grs  Ele  Psy  Ice  Dra  Dar  Fai
+		{ 100, 100, 100, 100, 100, 050, 100, 000, 050, 100, 100, 100, 100, 100, 100, 100, 100, 100 }, // Normal
+		{ 200, 100, 050, 050, 100, 200, 050, 000, 200, 100, 100, 100, 100, 050, 200, 100, 200, 050 }, // Fighting
+		{ 100, 200, 100, 100, 100, 050, 200, 100, 050, 100, 100, 200, 050, 100, 100, 100, 100, 100 }, // Flying
+		{ 100, 100, 100, 050, 100, 050, 100, 050, 000, 100, 100, 200, 100, 100, 100, 100, 100, 200 }, // Poison
+		{ 100, 100, 000, 200, 100, 200, 050, 100, 200, 200, 100, 050, 200, 100, 100, 100, 100, 100 }, // Ground
+		{ 100, 050, 200, 100, 050, 100, 200, 100, 050, 200, 100, 100, 100, 100, 200, 100, 100, 100 }, // Rock
+		{ 100, 050, 050, 050, 100, 100, 100, 050, 050, 050, 100, 200, 100, 200, 100, 100, 200, 050 }, // Bug
+		{ 000, 100, 100, 100, 100, 100, 100, 200, 050, 100, 100, 100, 100, 200, 100, 100, 200, 100 }, // Ghost
+		{ 100, 100, 100, 100, 100, 200, 100, 100, 050, 050, 050, 100, 100, 100, 200, 100, 100, 200 }, // Steel
+		{ 100, 100, 100, 100, 100, 050, 200, 100, 200, 050, 050, 200, 100, 100, 200, 050, 100, 100 }, // Fire
+		{ 100, 100, 100, 100, 200, 200, 100, 100, 100, 200, 050, 050, 100, 100, 100, 050, 100, 100 }, // Water
+		{ 100, 100, 050, 050, 200, 200, 050, 100, 050, 050, 200, 050, 100, 100, 100, 050, 100, 100 }, // Grass
+		{ 100, 100, 200, 100, 000, 100, 100, 100, 100, 100, 200, 050, 050, 100, 100, 050, 100, 100 }, // Electric
+		{ 100, 200, 100, 200, 100, 100, 100, 100, 050, 100, 100, 100, 100, 050, 100, 100, 000, 100 }, // Psychic
+		{ 100, 100, 200, 100, 200, 100, 100, 100, 050, 050, 050, 200, 100, 100, 050, 200, 100, 100 }, // Ice
+		{ 100, 100, 100, 100, 100, 100, 100, 100, 050, 100, 100, 100, 100, 100, 100, 200, 100, 000 }, // Dragon
+		{ 100, 050, 100, 100, 100, 100, 100, 200, 050, 100, 100, 100, 100, 200, 100, 100, 050, 050 }, // Dark
+		{ 100, 200, 100, 050, 100, 100, 100, 100, 050, 050, 100, 100, 100, 100, 100, 200, 200, 100 } // Fairy
 };
 
 const ALIGN(1) u8 foresightOverrides[][3] = {
@@ -684,20 +685,24 @@ u8 DecrementPP()
 	u32 userBank = battleDataPointer[0].battleBanks[User];
 	u32 defenderBank = battleDataPointer[0].battleBanks[Target];
 	PokemonBattleData* attacker = &battleDataPointer[0].pokemonStats[userBank];
-	PokemonBattleData* defender = &battleDataPointer[0].pokemonStats[defenderBank];
-	u32 moveIndex = battleDataPointer[0].moveSelections[userBank];
-	u32 ppValue = battleDataPointer[0].pokemonStats[userBank].pp[moveIndex];
-	if (defender[0].ability == Pressure && ppValue > 1)
+	if (!attacker[0].secondaryStatusBits.ppReduced)
 	{
-		ppValue -= 2;
+		PokemonBattleData* defender = &battleDataPointer[0].pokemonStats[defenderBank];
+		u32 moveIndex = battleDataPointer[0].moveSelections[userBank];
+		u32 ppValue = battleDataPointer[0].pokemonStats[userBank].pp[moveIndex];
+		if (defender[0].ability == Pressure && ppValue > 1)
+		{
+			ppValue -= 2;
+		}
+		else
+		{
+			ppValue--;
+		}
+		attacker[0].pp[moveIndex] = ppValue;
+		attacker[0].secondaryStatusBits.ppReduced = 1;
+		Pokemon* thePokemon = attacker[0].mainPointer;
+		PokemonEncrypter(thePokemon, Move1PP + moveIndex, ppValue);
 	}
-	else
-	{
-		ppValue--;
-	}
-	attacker[0].pp[moveIndex] = ppValue;
-	Pokemon* thePokemon = attacker[0].mainPointer;
-	PokemonEncrypter(thePokemon, Move1PP + moveIndex, ppValue);
 	battleScriptPointer++;
 	return NotEnded;
 }
@@ -751,6 +756,7 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 {
 	u32 defenderType1 = defender[0].type1;
 	u32 defenderType2 = defender[0].type2;
+	u32 defenderType3 = defender[0].type3;
 	if (moveType > Type_Fairy)
 	{
 		moveType = Type_Normal;
@@ -763,170 +769,69 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 	{
 		defenderType2 = Type_Normal;
 	}
-	u32 typeValue = typeStrengths[moveType][defenderType1];
-	if (defender[0].battleStatusFlags.foresight)
-	{
-		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8TripleArray*)&foresightOverrides);
-	}
-	else if (defender[0].battleStatusFlagsBank2.miracleEye)
-	{
-		typeValue = CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides);
-	}
-	u32 currentEffectiveness = NoEffect;
-	switch (typeValue)
-	{
-		case 50:
-			currentEffectiveness = HalfDamage;
-			break;
-		case 100:
-			currentEffectiveness = NormalDamage;
-			break;
-		case 200:
-			currentEffectiveness = DoubleDamage;
-			break;
-	}
-	if (defenderType2 != defenderType1)
-	{
-		u32 typeValue = typeStrengths[moveType][defenderType2];
-		if (defender[0].battleStatusFlags.foresight)
-		{
-			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8TripleArray*)&foresightOverrides);
-		}
-		else if (defender[0].battleStatusFlagsBank2.miracleEye)
-		{
-			typeValue = CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides);
-		}
-		switch (typeValue)
-		{
-			case 0:
-				currentEffectiveness = NoEffect;
-				break;
-			case 50:
-				switch (currentEffectiveness)
-				{
-					case HalfDamage:
-						currentEffectiveness = QuarterDamage;
-						break;
-					case NormalDamage:
-						currentEffectiveness = HalfDamage;
-						break;
-					case DoubleDamage:
-						currentEffectiveness = NormalDamage;
-						break;
-				}
-				break;
-			case 200:
-				switch (currentEffectiveness)
-				{
-					case HalfDamage:
-						currentEffectiveness = NormalDamage;
-						break;
-					case NormalDamage:
-						currentEffectiveness = DoubleDamage;
-						break;
-					case DoubleDamage:
-						currentEffectiveness = QuadrupleDamage;
-						break;
-				}
-				break;
-		}
-	}
-	u32 defenderType3 = defender[0].type3;
 	if (defenderType3 > Type_Fairy)
 	{
 		defenderType3 = Type_Normal;
 	}
-	if (defender[0].battleStatusFlags.tertiaryTypeActive && (defenderType1 != defenderType3) && (defenderType2 != defenderType3))
+	u32 typeValue = battleDataPointer[0].typeChartCallback(typeStrengths[moveType][defenderType1]);
+	if (defender[0].battleStatusFlags.foresight)
 	{
-		u32 typeValue = typeStrengths[moveType][defenderType3];
+		typeValue = battleDataPointer[0].typeChartCallback(CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8TripleArray*)&foresightOverrides));
+	}
+	else if (defender[0].battleStatusFlagsBank2.miracleEye)
+	{
+		typeValue = battleDataPointer[0].typeChartCallback(CheckAdditionalTypeEffects(defenderType1, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides));
+	}
+	if (typeValue && defenderType2 != defenderType1)
+	{
+		u32 secondaryTypeValue = battleDataPointer[0].typeChartCallback(typeStrengths[moveType][defenderType2]);
 		if (defender[0].battleStatusFlags.foresight)
 		{
-			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8TripleArray*)&foresightOverrides);
+			secondaryTypeValue = battleDataPointer[0].typeChartCallback(CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8TripleArray*)&foresightOverrides));
 		}
 		else if (defender[0].battleStatusFlagsBank2.miracleEye)
 		{
-			typeValue = CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides);
+			secondaryTypeValue = battleDataPointer[0].typeChartCallback(CheckAdditionalTypeEffects(defenderType2, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides));
 		}
-		switch (typeValue)
-		{
-			case 0:
-				currentEffectiveness = NoEffect;
-				break;
-			case 50:
-				switch (currentEffectiveness)
-				{
-					case QuarterDamage:
-						currentEffectiveness = EighthDamage;
-						break;
-					case HalfDamage:
-						currentEffectiveness = QuarterDamage;
-						break;
-					case NormalDamage:
-						currentEffectiveness = HalfDamage;
-						break;
-					case DoubleDamage:
-						currentEffectiveness = NormalDamage;
-						break;
-					case QuadrupleDamage:
-						currentEffectiveness = DoubleDamage;
-						break;
-				}
-				break;
-			case 200:
-				switch (currentEffectiveness)
-				{
-					case QuarterDamage:
-						currentEffectiveness = HalfDamage;
-						break;
-					case HalfDamage:
-						currentEffectiveness = NormalDamage;
-						break;
-					case NormalDamage:
-						currentEffectiveness = DoubleDamage;
-						break;
-					case DoubleDamage:
-						currentEffectiveness = QuadrupleDamage;
-						break;
-					case QuadrupleDamage:
-						currentEffectiveness = OctupleDamage;
-						break;
-				}
-				break;
-		}
+		typeValue = UnsignedFractionalMultiplication(typeValue, secondaryTypeValue);
 	}
-	return currentEffectiveness;
+	if (defender[0].battleStatusFlags.tertiaryTypeActive && (defenderType1 != defenderType3) && (defenderType2 != defenderType3))
+	{
+		u32 secondaryTypeValue = battleDataPointer[0].typeChartCallback(typeStrengths[moveType][defenderType3]);
+		if (defender[0].battleStatusFlags.foresight)
+		{
+			secondaryTypeValue = battleDataPointer[0].typeChartCallback(CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8TripleArray*)&foresightOverrides));
+		}
+		else if (defender[0].battleStatusFlagsBank2.miracleEye)
+		{
+			secondaryTypeValue = battleDataPointer[0].typeChartCallback(CheckAdditionalTypeEffects(defenderType3, moveType, typeValue, (u8TripleArray*)&miracleEyeOverrides));
+		}
+		typeValue = UnsignedFractionalMultiplication(typeValue, secondaryTypeValue);
+	}
+	return typeValue;
 }
 
 u32 ApplyTypeBasedModifiers(PokemonBattleData* defender, u32 moveType, u32 currentDamage)
 {
 	u32 effectiveness = CalculateTypeEffectivenessOnPokemon(defender, moveType);
-	switch (effectiveness)
+	currentDamage = UnsignedFractionalMultiplication(currentDamage, effectiveness);
+	u32 value = NoEffect;
+	if (effectiveness)
 	{
-		case NoEffect:
-			currentDamage = 0;
-			break;
-		case EighthDamage:
-			currentDamage >>= 3;
-			break;
-		case QuarterDamage:
-			currentDamage >>= 2;
-			break;
-		case HalfDamage:
-			currentDamage >>= 1;
-			break;
-		case OctupleDamage:
-			currentDamage <<= 3;
-			break;
-		case QuadrupleDamage:
-			currentDamage <<= 2;
-			break;
-		case DoubleDamage:
-			currentDamage <<= 1;
-			break;
-		default:
-			break;
+		if (effectiveness < 100)
+		{
+			value = Ineffective;
+		}
+		else if (effectiveness > 100)
+		{
+			value = SuperEffective;
+		}
+		else
+		{
+			value = NormalDamage;
+		}
 	}
-	battleDataPointer[0].flags.attackEffectiveness = effectiveness;
+	battleDataPointer[0].flags.attackEffectiveness = value;
 	return currentDamage;
 }
 
@@ -1074,7 +979,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 			switch (defenderAbility)
 			{
 				case Wonder_Guard:
-					if (battleDataPointer[0].flags.attackEffectiveness < DoubleDamage)
+					if (battleDataPointer[0].flags.attackEffectiveness < SuperEffective)
 					{
 						battleDataPointer[0].flags.attackEffectiveness = NoEffect;
 						battleDataPointer[0].flags.wonderGuardTriggered = 1;
@@ -2298,7 +2203,7 @@ u8 ExecuteDamageReceptionAnimation()
 	{
 		case NoEffect:
 			break;
-		case EighthDamage: case QuarterDamage: case HalfDamage:
+		case Ineffective:
 			// Play not effective SFX
 			//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 			break;
@@ -2306,7 +2211,7 @@ u8 ExecuteDamageReceptionAnimation()
 			// Play normal effectiveness SFX
 			//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 			break;
-		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
+		case SuperEffective:
 			// Play super effective SFX
 			//battleDataPointer[0].flags.waitForMoveAnimation = 1;
 			break;
@@ -2825,14 +2730,14 @@ u8 PrintEffectivenessMessage()
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(noEffectMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
-		case EighthDamage: case QuarterDamage: case HalfDamage:
+		case Ineffective:
 			SetTilesForTextRender();
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime((char*)&notEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 		case NormalDamage:
 			break;
-		case OctupleDamage: case QuadrupleDamage: case DoubleDamage:
+		case SuperEffective:
 			SetTilesForTextRender();
 			battleDataPointer[0].flags.battleScriptTextWaitFlag = 1;
 			DrawStringOverTime(superEffectiveMessage, 0, 0, &StopBattleScriptTextWait);

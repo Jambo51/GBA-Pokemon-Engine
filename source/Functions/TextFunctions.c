@@ -465,6 +465,37 @@ void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 	MemoryDeallocate(string);
 }
 
+void BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecimalPoint)
+{
+	if (number > 99999999)
+	{
+		// Since the decimalisation code only has 32 bits to return to
+		// the maximum value for this is as above
+		// Therefore, to prevent errors, the value is clamped between
+		// 0 and the maximum decimal value available in a 32 bit value
+		number = 0;
+	}
+	BufferNumber(number, 8, bufferID);
+	u32 i = 39;
+	while (i != 0)
+	{
+		if (buffers[bufferID][i] != '/0')
+		{
+			break;
+		}
+		i--;
+	}
+	if (i)
+	{
+		u32 j;
+		for (j = 0; j < positionOfDecimalPoint; j++)
+		{
+			buffers[bufferID][i - j + 1] = buffers[bufferID][i - j];
+		}
+		buffers[bufferID][i - j] = '.';
+	}
+}
+
 void BufferUnsignedLongNumber(u32 number, u8 bufferID)
 {
 	if (number > 99999999)

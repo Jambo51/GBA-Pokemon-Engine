@@ -23,6 +23,7 @@ Script_Attack_Missed:
 	.byte	PrintUseMessage
 	.byte	PauseIfText
 	.short	0x0020
+	.byte	ReducePP
 	.byte	MessageByID
 	.short	MissedString
 	.byte	PauseIfText
@@ -32,6 +33,7 @@ Script_Attack_Missed:
 Script_It_Failed:
 	.byte	Pause
 	.short	0x0020
+	.byte	ReducePP
 	.byte	MessageByID
 	.short	FailedString
 	.byte	PauseIfText
@@ -58,10 +60,10 @@ Script_Callable_Standard_Attack:
 
 Script_Standard_Attack:
 	.byte	MoveCanceler
-	.byte	ReducePP
 	.byte	AccuracyCheck
 	.word	Script_Attack_Missed
 	.byte	PrintUseMessage
+	.byte	ReducePP
 Script_Standard_Attack_Damage_Calculation:
 	.byte	CalculateDamage
 	.byte	ExecuteMoveAnimation

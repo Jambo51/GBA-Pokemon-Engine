@@ -24,7 +24,12 @@
 #define CHAMPIONBATTLE 8
 #define EVILDUOBATTLE 9
 
-#define TESTMODE TRAINERBATTLE
+#define TESTMODE WILDBATTLE
+
+#define FALSE 0
+#define TRUE 1
+
+#define GEN2MOONBALL FALSE
 
 const ALIGN(2) u16 criticalCaptureValues[6][2] = {
 		{ 30, 0 },
@@ -83,35 +88,23 @@ u32 LevelBallPokeball()
 	return retValue;
 }
 
-const u16 moonBallAffectedPokemon[] = {
-		Cleffa,
-		Clefairy,
-		Clefable,
-		Igglybuff,
-		Jigglypuff,
-		Wigglytuff,
-		Munna,
-		Musharna,
-		NidoranM,
-		Nidorino,
-		Nidoking,
-		NidoranF,
-		Nidorina,
-		Nidoqueen,
-		Skitty,
-		Delcatty
-};
-
 u32 MoonBallPokeball()
 {
 	u32 retValue = 100;
-	u16 opponentSpecies = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[PokeballTarget]].species;
+	IndexTable* data = (IndexTable*)&evoData[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[PokeballTarget]].species];
+	EvolutionData* innerData = (EvolutionData*)data[0].pointerToData;
 	u32 i;
-	for (i = 0; i < 16; i++)
+	for (i = 0; i < data[0].index; i++)
 	{
-		if (opponentSpecies == moonBallAffectedPokemon[i])
+		if (innerData[0].evolutionType == ItemUsed
+#if GEN2MOONBALL == TRUE
+				&& innerData[0].condition1 == Item_BurnHeal
+#else
+				&& innerData[0].condition1 == ITEM_MOONSTONE
+#endif
+				)
 		{
-			retValue = 300;
+			retValue = 400;
 			break;
 		}
 	}
@@ -138,7 +131,24 @@ u32 LoveBallPokeball()
 u32 HeavyBallPokeball()
 {
 	u32 retValue = 100;
-	// Logic absent form this as Pokédex data not yet created
+	PokedexData* data = (PokedexData*)&pokedexData[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[PokeballTarget]].species];
+	u16 weight = data[0].weight;
+	if (weight < 2048)
+	{
+		retValue -= 20;
+	}
+	else if (weight < 3072)
+	{
+		retValue += 20;
+	}
+	else if (weight < 4096)
+	{
+		retValue += 30;
+	}
+	else
+	{
+		retValue += 40;
+	}
 	return retValue;
 }
 
@@ -269,6 +279,47 @@ const U32FunctionPointerU32 StatusBonusRates[] = {
 };
 
 const RODATA_LOCATION u32 battleTextPalette[] = { 0x7FFF0000, 0x4D8A001F, 0x7FFF5E2D, 0x6B3A396D, 0x18C53D28, 0x737C7C1F, 0x0DF37C1F, 0x354526B9 };
+
+u32 NoEffectTypeChartCallback(u32 incomingValue)
+{
+	return incomingValue;
+}
+
+u32 TiltEffectTypeChartCallback(u32 incomingValue)
+{
+	if (incomingValue < 100)
+	{
+		incomingValue >>= 1;
+	}
+	else if (incomingValue > 100)
+	{
+		incomingValue <<= 1;
+	}
+	return incomingValue;
+}
+
+u32 InversionEffectTypeChartCallback(u32 incomingValue)
+{
+	if (incomingValue < 100)
+	{
+		incomingValue = 200;
+	}
+	else if (incomingValue > 100)
+	{
+		incomingValue = 50;
+	}
+	return incomingValue;
+}
+
+u32 TiltedInversionTypeChartCallback(u32 incomingValue)
+{
+	return TiltEffectTypeChartCallback(InversionEffectTypeChartCallback(incomingValue));
+}
+
+u32 DoubleTiltedTypeChartCallback(u32 incomingValue)
+{
+	return TiltEffectTypeChartCallback(TiltEffectTypeChartCallback(incomingValue));
+}
 
 void DrawMainSelectionMenu()
 {
@@ -750,6 +801,7 @@ void UpdateCounters()
 	for (i = 0; i < battleDataPointer[0].numBattlers; i++)
 	{
 		PokemonBattleData* pkmn = &battleDataPointer[0].pokemonStats[i];
+		pkmn[0].secondaryStatusBits.ppReduced = 0;
 		if (pkmn[0].currentHP != 0)
 		{
 			Pokemon* thePokemon = pkmn[0].mainPointer;
@@ -788,6 +840,12 @@ void UpdateCounters()
 }
 
 void MainBattleSelectionKeyPresses(void);
+
+U32FunctionPointerU32 typeChartCallbackFunctions[(Item_Effect_Inversion - Item_Effect_Double_Cash_Gain) + 1][(Item_Effect_Inversion - Item_Effect_Double_Cash_Gain) + 1] = {
+		{ &NoEffectTypeChartCallback, &TiltEffectTypeChartCallback, &InversionEffectTypeChartCallback },
+		{ &TiltEffectTypeChartCallback, &DoubleTiltedTypeChartCallback, &TiltedInversionTypeChartCallback },
+		{ &InversionEffectTypeChartCallback, &TiltedInversionTypeChartCallback, &NoEffectTypeChartCallback }
+};
 
 void RunBattleScripts()
 {
@@ -848,6 +906,19 @@ void RunBattleScripts()
 						effectID = 0;
 					}
 					battleScriptPointer = moveScriptsTable[effectID];
+					{
+						u16 itemEffect1 = GetItemEffect(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].heldItem) - Item_Effect_Double_Cash_Gain;
+						u16 itemEffect2 = GetItemEffect(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].heldItem) - Item_Effect_Double_Cash_Gain;
+						if (itemEffect1 > (Item_Effect_Inversion - Item_Effect_Double_Cash_Gain))
+						{
+							itemEffect1 = 0;
+						}
+						if (itemEffect2 > (Item_Effect_Inversion - Item_Effect_Double_Cash_Gain))
+						{
+							itemEffect2 = 0;
+						}
+						battleDataPointer[0].typeChartCallback = typeChartCallbackFunctions[itemEffect1][itemEffect2];
+					}
 				}
 				break;
 			}
@@ -1110,10 +1181,6 @@ void MainBattleSelectionKeyPresses()
 				}
 				break;
 		}
-	}
-	else if (IsKeyDownButNotHeld(Key_B))
-	{
-		SetupFanfareForPlayback(Song_MagnetTrainFanfare);
 	}
 	else if (IsKeyDownButNotHeld(Key_Left) || IsKeyDownButNotHeld(Key_Right))
 	{

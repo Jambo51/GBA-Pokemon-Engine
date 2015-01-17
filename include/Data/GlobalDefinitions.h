@@ -28,7 +28,6 @@
 #define ARROWCHAR ('~' + 1)
 #define BATTLEBGCOLOUR U32Max
 #define WHITETEXTBG 0x11111111
-<<<<<<< HEAD
 #define MAXDEXENTRYLENGTH 50
 #define BASESPRITETILELOCATION 0x06010000
 #define NUMBUFFERS 16
@@ -38,8 +37,6 @@
 #define RIVAL2NAMEBUFFER NUMBUFFERS + 3
 #define RIVAL3NAMEBUFFER NUMBUFFERS + 4
 #define PLAYERNAMELENGTH 7
-=======
->>>>>>> parent of 13be0f2... Type Chart Callback Addition
 
 #include "tonc.h"
 

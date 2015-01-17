@@ -65,7 +65,7 @@ extern FunctionPtr* pauseMenuFunctions;
 extern MemoryManagementStructure mallocData;
 extern SpriteManagementStructure sprallocData;
 extern PaletteManagementStructure pallocData;
-extern PokedexMemoryData* dexPointer;
+extern PokedexData* dexPointer;
 extern MusicFadeInfo* musicFadePointer;
 extern CallbackStruct callbackSystem;
 extern BattleData* battleDataPointer;

@@ -28,6 +28,7 @@
 #define ARROWCHAR ('~' + 1)
 #define BATTLEBGCOLOUR U32Max
 #define WHITETEXTBG 0x11111111
+<<<<<<< HEAD
 #define MAXDEXENTRYLENGTH 50
 #define BASESPRITETILELOCATION 0x06010000
 #define NUMBUFFERS 16
@@ -37,6 +38,8 @@
 #define RIVAL2NAMEBUFFER NUMBUFFERS + 3
 #define RIVAL3NAMEBUFFER NUMBUFFERS + 4
 #define PLAYERNAMELENGTH 7
+=======
+>>>>>>> parent of 13be0f2... Type Chart Callback Addition
 
 #include "tonc.h"
 
@@ -96,7 +99,7 @@ enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeO
 
 enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 
-enum MoveEffectivenesses { NoEffect, Ineffective, NormalDamage, SuperEffective, InvertedToHeal };
+enum MoveEffectivenesses { NoEffect, EighthDamage, QuarterDamage, HalfDamage, NormalDamage, DoubleDamage, QuadrupleDamage, OctupleDamage, InvertedToHeal };
 
 enum MoveSelections { SelectedMove0, SelectedMove1, SelectedMove2, SelectedMove3, UseItem, Flee };
 
@@ -120,7 +123,7 @@ enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Mov
 
 enum BattleOrderIndices { PokemonOneFirst, PokemonTwoFirst };
 
-enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs, Item_Effect_Double_Cash_Gain, Item_Effect_Tilt, Item_Effect_Inversion };
+enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs, Item_Effect_Double_Cash_Gain };
 
 enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
 
@@ -131,8 +134,6 @@ enum BattleAIMethods { Battle_AI_Sweeper, Battle_AI_Soemthing };
 enum GBPSoundsEngineSets { GBP_Set_BGM, GBP_Set_Fanfare, GBP_Set_SFX, GBP_Set_Max };
 
 enum GBPSoundsCaseIDs { DoNothing, StartSong, ContinueSong, FadeToSilence, FadeIn, FadeToSong, Pause, FadeInSecond, MaxCase };
-
-enum TypeChartSettings { Standard, Tilt, Invert, UnusedTypeChartSetting };
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 
@@ -436,9 +437,7 @@ typedef struct Player {
 	u16 playAnimations:1;
 	u16 battleSwitchStyle:1;
 	u16 textSpeed:2;
-	u16 useImperialUnits:1;
-	u16 typeValues:2;
-	u16 options:4;
+	u16 options:7;
 	u32 balance;
 	u32 mumBalance;
 } Player;
@@ -935,11 +934,11 @@ typedef struct BaseData {
 	u8 formeType;
 } BaseData;
 
-typedef struct PokedexMemoryData {
+typedef struct PokedexData {
 	DexEntry* data;
 	u32 mode;
 	u32 currentUpperLimit;
-} PokedexMemoryData;
+} PokedexData;
 
 typedef struct MusicFadeInfo {
 	u8 stepNumber;
@@ -985,8 +984,7 @@ typedef struct SecondaryStatusStruct {
 	u32 furyCutterCounter:3;
 	u32 confusion:3;
 	u32 perishSongCounter:2;
-	u32 ppReduced:1;
-	u32 unused:18;
+	u32 unused:19;
 } SecondaryStatusStruct;
 
 typedef struct BattleStatusStruct {
@@ -1223,7 +1221,6 @@ typedef struct BattleData {
 	BattleObjects objectPointers;
 	BattleAIData* battleAIData;
 	TrainerBattleData* trainerData;
-	u32 (*typeChartCallback)(u32);
 } BattleData;
 
 typedef struct InternalBattleTypeStruct {
@@ -1288,19 +1285,6 @@ typedef struct Vector {
 	u32 currentSize;
 	u32* dataLocation;
 } Vector;
-
-typedef struct PokedexData {
-	char speciesName[16];
-	u16 height;
-	u16 weight;
-	char* entry;
-	u16 pokemonScale;
-	u8 pokemonXOffset;
-	u8 pokemonYOffset;
-	u16 trainerScale;
-	u8 trainerXOffset;
-	u8 trainerYOffset;
-} PokedexData;
 
 typedef u32 (*U32FunctionPointerIBattleAIData)(BattleAIData*);
 

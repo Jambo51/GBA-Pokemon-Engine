@@ -11,37 +11,6 @@ const u16 regionalValues[722] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 
 const RODATA_LOCATION u16* dexModeConversionTable[] = { (u16*)&regionalValues[0] };
 const u16 dexLengths[] = { REGIONAL_DEX_LENGTH, numberOfPokemon };
 
-u32 ImperialiseWeight(u32 weightInDecigrams)
-{
-	return UnsignedFractionalMultiplication(weightInDecigrams, 2205);
-}
-
-u32 ImperialiseHeight(u32 heightInDecimetres)
-{
-	return UnsignedFractionalMultiplication(heightInDecimetres, 3281);
-}
-
-u32 GetInchesFromImperialHeight(u32 imperialHeight)
-{
-	imperialHeight = UnsignedModulus(imperialHeight, 10);
-	return UnsignedFractionalMultiplication(imperialHeight, 120);
-}
-
-void BufferHeight(u32 height)
-{
-	if (player.useImperialUnits)
-	{
-		height = ImperialiseHeight(height);
-		u32 inches = GetInchesFromImperialHeight(height);
-		BufferUnsignedLongNumber(height, 0);
-		BufferUnsignedLongNumber(inches, 1);
-	}
-	else
-	{
-		BufferUnsignedFractionalNumber(height, 0, 1);
-	}
-}
-
 int ConvertNationalIDToRegionalID(u32 index, u32 mode)
 {
 	if (mode < National)
@@ -120,12 +89,12 @@ void DestroyPokedex()
 {
 	MemoryDeallocate((void*)dexPointer->data);
 	MemoryDeallocate((void*)dexPointer);
-	dexPointer = (PokedexMemoryData*)0;
+	dexPointer = (PokedexData*)0;
 }
 
 void ConstructPokedex(u32 mode)
 {
-	dexPointer = (PokedexMemoryData*)MemoryAllocate(sizeof(PokedexMemoryData));
+	dexPointer = (PokedexData*)MemoryAllocate(sizeof(PokedexData));
 	if (dexPointer != 0)
 	{
 		dexPointer->mode = mode;

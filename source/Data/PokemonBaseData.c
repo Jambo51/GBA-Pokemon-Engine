@@ -791,7 +791,3 @@ const RODATA_LOCATION u16 pokedexFormeLookup[] = {
 		Gourgeist,
 		Xerneas
 };
-
-const RODATA_LOCATION PokedexData pokedexData[] = {
-		{ { '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '\0' }, 0, 0, (char*)0, 0, 0, 0, 0, 0, 0 }
-};

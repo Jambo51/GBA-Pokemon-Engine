@@ -1582,7 +1582,7 @@ u16 FindBabySpeciesInner(u16 sourceSpecies)
 	for (i = 0; i <= numberOfPokemon; i++)
 	{
 		u32 length = evoData[i].index;
-		if (length)
+		if (length != 0)
 		{
 			EvolutionData* dataLoc = (EvolutionData*)evoData[i].pointerToData;
 			u32 j;

@@ -77,7 +77,7 @@ EWRAM_LOCATION ALIGN(4) TileAnimationStruct* animStruct;
 EWRAM_LOCATION ALIGN(4) ConnectionStruct* connectStruct;
 EWRAM_LOCATION ALIGN(4) PaletteFadeStruct fadeStruct[32];
 EWRAM_LOCATION ALIGN(4) FunctionPtr* pauseMenuFunctions;
-EWRAM_LOCATION ALIGN(4) PokedexMemoryData* dexPointer;
+EWRAM_LOCATION ALIGN(4) PokedexData* dexPointer;
 EWRAM_LOCATION ALIGN(4) MusicFadeInfo* musicFadePointer;
 ALIGN(4) MemoryManagementStructure mallocData;
 ALIGN(4) SpriteManagementStructure sprallocData;

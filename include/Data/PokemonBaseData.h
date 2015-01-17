@@ -12,6 +12,5 @@ extern MoveData moveData[];
 extern void* movesets[];
 extern char abilityNames[188][13];
 extern char moveNames[618][16];
-extern PokedexData pokedexData[722];
 
 #endif

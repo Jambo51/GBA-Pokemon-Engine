@@ -1330,9 +1330,4 @@ void GBPSoundsMainEngine()
 			currentSongPlaybackStatus = ContinueSong;
 			break;
 	}
-	memcpy32((void*)(0x04000060), (void*)tone1Controller, 9);
-	tone1Controller[2] &= 0x7FFF;
-	tone1Controller[6] &= 0x7FFF;
-	tone1Controller[10] &= 0x7FFF;
-	tone1Controller[14] &= 0x7FFF;
 }

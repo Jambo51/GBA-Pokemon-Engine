@@ -48,7 +48,7 @@ int ConvertNationalIDToRegionalID(u32 index, u32 mode)
 	{
 		if (index >= dexLengths[mode])
 		{
-			return 0;
+			return U32Max;
 		}
 		return dexModeConversionTable[mode][index];
 	}

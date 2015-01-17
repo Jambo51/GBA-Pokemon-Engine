@@ -23,7 +23,7 @@ extern Pokemon temporaryHoldingPokemon;
 extern Bag bag;
 extern Player player;
 extern Pokemon enemyPokemon[];
-extern char buffers[16][40];
+extern char buffers[NUMBUFFERS][BUFFERLENGTH];
 extern MapHeader currentMap;
 extern u32 currentSeed;
 extern OverworldMovementStruct movingInformation;

@@ -13,30 +13,22 @@
 #include "libsprites.h"
 
 const RODATA_LOCATION ALIGN(2) u16 numberOfPokemon = NumberOfPokemon - 1;
-const RODATA_LOCATION ALIGN(1) char name[] = { 0xFB, 0x00 };
-const RODATA_LOCATION ALIGN(1) char number[] = { 0xFB, 0x01 };
-const RODATA_LOCATION ALIGN(1) char otName[] = { 0xFB, 0x02 };
-const RODATA_LOCATION ALIGN(1) char itemName[] = { 0xFB, 0x03 };
-const RODATA_LOCATION ALIGN(1) char natureString[] = { 0xFB, 0x04, ' ', 'n', 'a', 't', 'u', 'r', 'e' };
-const RODATA_LOCATION ALIGN(1) char metString[] = { 'M', 'e', 't', ' ', 'i', 'n', ' ', 0xFB, 0x05, ' ', 'a', 't', ' ', 0x80, ' ', 0xFB, 0x06 };
-const RODATA_LOCATION ALIGN(1) char characteristicString[] = { 0xFB, 0x07 };
-const char* pokeInfoScreenText[] = {
-		(char*)&name,
-		(char*)&number,
-		(char*)&otName,
-		(char*)&itemName,
-		(char*)&natureString,
-		(char*)&metString,
-		(char*)&characteristicString
+const RODATA_LOCATION ALIGN(1) char name[] = { 0xFB, 0x00, '\0' };
+const RODATA_LOCATION ALIGN(1) char number[] = { 0xFB, 0x01, '\0' };
+const RODATA_LOCATION ALIGN(1) char otName[] = { 0xFB, 0x02, '\0' };
+const RODATA_LOCATION ALIGN(1) char itemName[] = { 0xFB, 0x03, '\0' };
+const RODATA_LOCATION ALIGN(1) char natureString[] = { 0xFB, 0x04, ' ', 'n', 'a', 't', 'u', 'r', 'e', '.', '\0' };
+const RODATA_LOCATION ALIGN(1) char metString[] = { 'M', 'e', 't', ' ', 'i', 'n', ' ', 0xFB, 0x05, ' ', 'a', 't', ' ', 0x80, ' ', 0xFB, 0x06, '.', '\0' };
+const RODATA_LOCATION ALIGN(1) char characteristicString[] = { 0xFB, 0x07, '.', '\0' };
+const RODATA_LOCATION ALIGN(1) char idString[] = { 0xFB, 0x08, '\0' };
+
+StringAndPositionStruct pageOneStrings[] = {
+		{ &name, 100, 0x20 }
 };
 
 u32 IsFullyEvolved(u16 species)
 {
-	if (evoData[species].index == 0)
-	{
-		return true;
-	}
-	return false;
+	return evoData[species].index == 0;
 }
 
 u32 InternalPokemonDecrypter(AbridgedPokemon* thePokemon, u8 index)
@@ -257,6 +249,20 @@ u32 CountPokemon(Pokemon* location, u32 length)
 	return counter;
 }
 
+u32 CountAbridgedPokemon(AbridgedPokemon* location, u32 length)
+{
+	u32 counter = 0;
+	u32 i;
+	for (i = 0; i < length; i++)
+	{
+		if (InternalPokemonDecrypter(&location[i], PersonalityID) != 0)
+		{
+			counter++;
+		}
+	}
+	return counter;
+}
+
 u32 CountPartyPokemon()
 {
 	return CountPokemon(partyPokemon, 6);
@@ -270,8 +276,8 @@ u32 CountEnemyPartyPokemon()
 u32 CountBoxPokemon(u32 boxID)
 {
 	u32 address = (u32)&storageBoxes;
-	address += POKEMONPERBOX * boxID * sizeof(Pokemon);
-	return CountPokemon((Pokemon*)address, POKEMONPERBOX);
+	address += POKEMONPERBOX * boxID * sizeof(AbridgedPokemon);
+	return CountAbridgedPokemon((Pokemon*)address, POKEMONPERBOX);
 }
 
 u32 CountAllBoxPokemon()
@@ -283,6 +289,54 @@ u32 CountAllBoxPokemon()
 		counter += CountBoxPokemon(i);
 	}
 	return counter;
+}
+
+u32 FindFreePartySlot()
+{
+	u32 i;
+	for (i = 0; i < 6; i++)
+	{
+		if (PokemonDecrypter(&partyPokemon[i], PersonalityID) == 0)
+		{
+			return i;
+		}
+	}
+	return U32Max;
+}
+
+u32 FindFreeBoxSlot(u32 boxID)
+{
+	u32 i;
+	for (i = 0; i < POKEMONPERBOX; i++)
+	{
+		if (InternalPokemonDecrypter(&storageBoxes.boxData[boxID][i], PersonalityID) == 0)
+		{
+			return i;
+		}
+	}
+	return U32Max;
+}
+
+u32 FindFreeAllBoxSlot()
+{
+	u32 value = FindFreeBoxSlot(storageBoxes.info.currentBoxID);
+	if (value == U32Max)
+	{
+		u32 i;
+		for (i = 0; i < NUMBOXES; i++)
+		{
+			if (i != storageBoxes.info.currentBoxID)
+			{
+				value = FindFreeBoxSlot(i);
+				if (value != U32Max)
+				{
+					storageBoxes.info.currentBoxID = i;
+					break;
+				}
+			}
+		}
+	}
+	return value;
 }
 
 u16 CalculateChecksum(u16* thePokemon)
@@ -701,11 +755,7 @@ void PokemonEncrypter(Pokemon* thePokemon, u8 index, u32 value)
 
 u32 HappinessCheck(Pokemon* thePokemon)
 {
-	if (PokemonDecrypter(thePokemon, Friendship) >= MaxHappiness)
-	{
-		return true;
-	}
-	return false;
+	return PokemonDecrypter(thePokemon, Friendship) >= MaxHappiness;
 }
 
 u32 LevelCheck(Pokemon* thePokemon, u32 theLevel)
@@ -1664,12 +1714,15 @@ const RODATA_LOCATION char questionString[] = "???";
 
 void PokemonInfoScreenInitialise()
 {
+	REG_BG0CNT = (BG_4BPP | BG_REG_32x64 | BG_MOSAIC | BG_SBB(14) | BG_CBB(2));
+	SetupSongForPlayback(Song_AzaleaTown, StartSong);
+	temporaryHoldingPokemon = partyPokemon[0];
 	Pokemon* thePokemon = &temporaryHoldingPokemon;
+	u16 species = PokemonDecrypter(thePokemon, Species);
 	{
-		u16 species = PokemonDecrypter(thePokemon, Species);
 		BufferPokemonNameFromPointer(thePokemon, 0);
-		u16 convertedIndex = ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex));
-		if (convertedIndex == 0)
+		u32 convertedIndex = ConvertNationalIDToRegionalID(species, CheckFlag(Flag_NationalDex));
+		if (convertedIndex == U32Max)
 		{
 			BufferString((char*)&questionString, 1, 3);
 		}
@@ -1690,14 +1743,15 @@ void PokemonInfoScreenInitialise()
 	BufferItemName(PokemonDecrypter(thePokemon, HeldItem), 3);
 	BufferNatureName(PokemonDecrypter(thePokemon, Nature), 4);
 	BufferMapHeaderName(PokemonDecrypter(thePokemon, MetLocation), 5);
-	BufferNumber(PokemonDecrypter(thePokemon, Level), 3, 6);
+	BufferUnsignedLongNumberNoLeading(PokemonDecrypter(thePokemon, Level), 6);
+	BufferUnsignedLongNumberNoLeading(PokemonDecrypter(thePokemon, OTID) & 0xFFFF, 8);
 	{
 		u32 characteristicID = CalculateCharacteristicIndex(thePokemon);
 		BufferString((char*)(characteristicsStrings[characteristicID])[0], 7, 0);
 	}
 	{
 		void* spriteRAMLocation = (void*)SpriteAllocate(64 * 64);
-		preOAM[0].tileLocation = spriteRAMLocation;
+		preOAM[0].tileLocation = (void*)(((u32)spriteRAMLocation - BASESPRITETILELOCATION) >> 6);
 		void* spriteROMLocation = GetPokemonFrontSpriteFromPokemon(thePokemon);
 		LZ77UnCompVram(spriteROMLocation, spriteRAMLocation);
 	}
@@ -1714,10 +1768,11 @@ void PokemonInfoScreenInitialise()
 	preOAM[0].requiresUpdate = 1;
 	preOAM[0].xLocation = 28;
 	preOAM[0].yLocation = 20;
-	//preOAM[0].hFlip = 1;
+	u32 formeIndex = GetClampedFormeByteValue(thePokemon, &pokemonBaseData[species].baseDataInfo);
+	preOAM[0].hFlip = ((InternalBaseData*)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex].hFlipOnPokemonScreen;
 	{
 		void* spriteRAMLocation = (void*)SpriteAllocate(16 * 16);
-		preOAM[1].tileLocation = spriteRAMLocation;
+		preOAM[1].tileLocation = (void*)(((u32)spriteRAMLocation - BASESPRITETILELOCATION) >> 6);
 		void* spriteROMLocation = GetPokeballSpriteFromPokemon(thePokemon);
 		LZ77UnCompVram(spriteROMLocation, spriteRAMLocation);
 	}
@@ -1734,6 +1789,45 @@ void PokemonInfoScreenInitialise()
 	preOAM[1].requiresUpdate = 1;
 	preOAM[1].xLocation = 90;
 	preOAM[1].yLocation = 72;
+	memcpy32((void*)TilePaletteRAM(0), &pauseOutlinePalette, 8);
+	DrawString((char*)&name, 7, 0x10);
+	DrawString((char*)&number, 7, 0x00);
+	DrawString((char*)&otName, 7, 0x20);
+	DrawString((char*)&idString, 7, 0x30);
+	DrawString((char*)&itemName, 7, 0x40);
+	DrawString((char*)&natureString, 0, 0x50);
+	DrawString((char*)&metString, 0, 0x60);
+	DrawString((char*)&characteristicString, 0, 0x70);
+	{
+		u16* address = (u16*)0x060070E8;
+		u32 i;
+		for (i = 0; i < 8; i++)
+		{
+			address[i] = 0x200 + (i * 20);
+			address[0x20 + i] = 0x201 + (i * 20);
+			address[0x40 + i] = 0x202 + (i * 20);
+			address[0x60 + i] = 0x203 + (i * 20);
+			address[0xC0 + i] = 0x204 + (i * 20);
+			address[0xE0 + i] = 0x205 + (i * 20);
+			address[0x100 + i] = 0x206 + (i * 20);
+			address[0x120 + i] = 0x207 + (i * 20);
+			address[0x140 + i] = 0x208 + (i * 20);
+			address[0x160 + i] = 0x209 + (i * 20);
+		}
+	}
+	{
+		u16* address = (u16*)0x06007382;
+		u32 i;
+		for (i = 0; i < 30; i++)
+		{
+			address[i] = 0x20A + (i * 20);
+			address[0x20 + i] = 0x20B + (i * 20);
+			address[0x40 + i] = 0x20C + (i * 20);
+			address[0x60 + i] = 0x20D + (i * 20);
+			address[0x80 + i] = 0x20E + (i * 20);
+			address[0xA0 + i] = 0x20F + (i * 20);
+		}
+	}
 	CallbackMain = &IgnoreKeyPresses;
 	HandleKeyPresses = &PokemonInfoScreenKeyPresses;
 }

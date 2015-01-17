@@ -29,6 +29,7 @@ void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID);
 void BufferNumber(u32 number, u32 length, u8 bufferID);
 void BufferNegativeNumber(s32 number, u32 length, u8 bufferID);
 void BufferUnsignedLongNumber(u32 number, u8 bufferID);
+void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID);
 void BufferUnsignedShortNumber(u16 number, u8 bufferID);
 void BufferSignedLongNumber(s32 number, u8 bufferID);
 void BufferSignedShortNumber(s16 number, u8 bufferID);
@@ -37,7 +38,7 @@ void DrawCharacter(char c, u8 x, u8 y);
 void DrawString(char* string, u8 x, u8 y);
 void DrawStringOverTimeMain(u32 pointer);
 void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void));
-void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
+void InitialiseTextEngineInner(u32 colourWord, TFont* font, u8 paletteSet);
 void InitialiseTextEngine(u32 textSetID);
 
 extern char* playerNameLoc;

@@ -87,7 +87,8 @@ void ExitMenu()
 
 const RODATA_LOCATION TextFunctionPair menuItems[] = { { "Pokégear", &TransitionToPokegear }, { "Pokédex", &TransitionToPokedex }, { "Pokémon", &TransitionToPokemonMenu }, { "Bag", &TransitionToBag }, { *(&player.name), &TransitionToPlayerCard }, { "Save", &SaveGame }, { "Options", &TransitionToOptions }, { "Exit", &ExitMenu } };
 
-const u8* mapNamesTable[0x100];
+const char* mapNamesTable[] = {
+};
 
 u8 CalculateNumberOfFramesPerChange(u8 sizeOfChange, u8 numberOfFrames)
 {

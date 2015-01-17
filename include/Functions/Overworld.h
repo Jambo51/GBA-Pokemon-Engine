@@ -26,6 +26,6 @@ void LoadOverworld();
 
 extern Colour blackPalette[16];
 extern Colour whitePalette[16];
-extern u8* mapNamesTable[0x100];
+extern char* mapNamesTable[];
 
 #endif /* OVERWORLD_H_ */

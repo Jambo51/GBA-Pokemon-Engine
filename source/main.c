@@ -101,6 +101,7 @@ int main()
 	SetFlag(Flag_PokemonMenu);
 	player.completeTrainerID = GetRandom32BitValue();
 	SetPlayerName("Jambo51");
+	currentMap = ((MapHeader*)GetMapHeaderFromBankAndMapID(3, 0))[0];
 	GivePokemonToPlayer(&partyPokemon[0], 36, Charizard, 0);
 	while (1)
 	{
@@ -112,6 +113,14 @@ int main()
 		CallbackMain();
 		UpdateOAMFromStructure();
 		MusicEngine();
+		{
+			vu16* tone1Controller = (vu16*)(&gbpBuffer);
+			memcpy32((void*)(0x04000060), (void*)tone1Controller, 9);
+			tone1Controller[2] &= 0x7FFF;
+			tone1Controller[6] &= 0x7FFF;
+			tone1Controller[10] &= 0x7FFF;
+			tone1Controller[14] &= 0x7FFF;
+		}
 		DefragmentMallocData();
 		GetRandom32BitValue();
 	}

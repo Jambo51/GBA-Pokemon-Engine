@@ -68,7 +68,7 @@ void StringCopy(char* stringDest, char* stringSource, u32 length)
 	stringDest[index] = currentChar;
 }
 
-const IndexTable localBuffersTable[] = { { 20, *(&buffers[0]) }, { 20, *(&buffers[1]) }, { 20, *(&buffers[2]) }, { 20, *(&buffers[3]) }, { 20, *(&buffers[4]) }, { 20, *(&buffers[5]) }, { 20, *(&buffers[6]) }, { 20, *(&buffers[7]) }, { 7, *(&player.name) }, { 7, *(&player.primaryRivalName) }, { 7, *(&player.secondaryRivalName) }, { 7, *(&player.tertiaryRivalName) } };
+const IndexTable localBuffersTable[] = { { PLAYERNAMELENGTH, *(&player.name) }, { PLAYERNAMELENGTH, *(&player.primaryRivalName) }, { PLAYERNAMELENGTH, *(&player.secondaryRivalName) }, { PLAYERNAMELENGTH, *(&player.tertiaryRivalName) } };
 
 char* statBuffStrings1[] = {
 		"Attack",
@@ -153,11 +153,17 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 					{
 						char* pointer = 0;
 						u32 length = 0;
-						char c = stringSource[pos + 1];
-						if (c < 12)
+						u32 c = (u32)stringSource[pos + 1];
+						if (c < NUMBUFFERS)
 						{
-							length = localBuffersTable[(u32)c].index;
-							pointer = (char*)localBuffersTable[(u32)c].pointerToData;
+							length = BUFFERLENGTH;
+							pointer = (char*)&buffers[c];
+						}
+						else
+						{
+							c -= NUMBUFFERS;
+							length = localBuffersTable[c].index;
+							pointer = (char*)localBuffersTable[c].pointerToData;
 						}
 						index += StringCopyWithBufferChecks(stringDest, pointer, length, index);
 						pos += 2;
@@ -398,7 +404,7 @@ void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
 		case 9:
 		case 10:
 		case 11:
-			thePokemon = &enemyPokemon[pokemonIndex];
+			thePokemon = &enemyPokemon[pokemonIndex - 6];
 			break;
 		default:
 			thePokemon = &temporaryHoldingPokemon;
@@ -409,12 +415,11 @@ void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
 
 void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID)
 {
-	BufferString((char*)(&(mapNamesTable[mapHeaderNameID])), bufferID, 20);
+	BufferString(mapNamesTable[mapHeaderNameID], bufferID, BUFFERLENGTH);
 }
 
 void BufferNumber(u32 number, u32 length, u8 bufferID)
 {
-	length++;
 	u32 chars = ToDecimal(number);
 	u32 i;
 	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
@@ -427,14 +432,7 @@ void BufferNumber(u32 number, u32 length, u8 bufferID)
 		}
 	}
 	string[length] = END;
-	for (i = 0; i < length; i++)
-	{
-		if (string[i] != '0' || (i == (length - 1)))
-		{
-			BufferString(&string[i], bufferID, 0);
-			break;
-		}
-	}
+	BufferString(string, bufferID, 0);
 	MemoryDeallocate(string);
 }
 
@@ -509,6 +507,28 @@ void BufferUnsignedLongNumber(u32 number, u8 bufferID)
 	BufferNumber(number, 8, bufferID);
 }
 
+void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID)
+{
+	if (number > 99999999)
+	{
+		// Since the decimalisation code only has 32 bits to return to
+		// the maximum value for this is as above
+		// Therefore, to prevent errors, the value is clamped between
+		// 0 and the maximum decimal value available in a 32 bit value
+		number = 0;
+	}
+	u32 chars = ToDecimal(number);
+	u32 i;
+	for (i = 0; i < 8; i++)
+	{
+		if (((chars & (0xF << ((8 - i) << 2))) >> ((8 - i) << 2)) != 0)
+		{
+			break;
+		}
+	}
+	BufferNumber(number, 9 - i, bufferID);
+}
+
 void BufferUnsignedShortNumber(u16 number, u8 bufferID)
 {
 	if (number > 0xFFFF)
@@ -572,7 +592,6 @@ void DrawString(char* string, u8 x, u8 y)
 	{
 		char* newString = (char*)MemoryAllocate(100 * sizeof(char));
 		StringCopyWithBufferChecks(newString, string, 0, 0);
-		//tte_set_pos(x, y);
 		tte_printf(posString, x, y);
 		tte_printf(newString);
 		MemoryDeallocate(newString);

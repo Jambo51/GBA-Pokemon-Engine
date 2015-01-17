@@ -29,6 +29,14 @@
 #define BATTLEBGCOLOUR U32Max
 #define WHITETEXTBG 0x11111111
 #define MAXDEXENTRYLENGTH 50
+#define BASESPRITETILELOCATION 0x06010000
+#define NUMBUFFERS 16
+#define BUFFERLENGTH 40
+#define PLAYERNAMEBUFFER NUMBUFFERS + 1
+#define RIVAL1NAMEBUFFER NUMBUFFERS + 2
+#define RIVAL2NAMEBUFFER NUMBUFFERS + 3
+#define RIVAL3NAMEBUFFER NUMBUFFERS + 4
+#define PLAYERNAMELENGTH 7
 
 #include "tonc.h"
 
@@ -903,7 +911,8 @@ typedef struct InternalBaseData {
 	u8 hiddenAbility;
 	u8 frontspriteYPos;
 	u8 backspriteYPos;
-	u8 shadowPos;
+	u8 shadowPos:7;
+	u8 hFlipOnPokemonScreen:1;
 	union
 	{
 		u16 EVYield;
@@ -1305,6 +1314,12 @@ typedef struct NeuralNet {
 	u32 numLayers;
 	NeuralLayer** layers;
 } NeuralNet;
+
+typedef struct StringAndPositionStruct {
+	char* string;
+	u16 xPos;
+	u16 yPos;
+} StringAndPositionStruct;
 
 #endif // TOOLBOX_H
 

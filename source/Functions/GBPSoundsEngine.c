@@ -246,28 +246,6 @@ void ResumeSongPlayback()
 	currentSongPlaybackStatus = ContinueSong;
 }
 
-void SwitchWavePattern(u8 patternID)
-{
-	vu16* tone1Controller = (vu16*)(0x04000060);
-	if (patternID < NUMWAVEPATTERNS)
-	{
-		WavePattern* mainPattern = (WavePattern*)0x04000090;
-		tone1Controller[8] = 0x40;
-		mainPattern[0] = patterns[patternID];
-		tone1Controller[8] = 0x0;
-	}
-}
-
-void ResumeSongPlaybackAndDisableFanfare()
-{
-	ResumeSongPlayback();
-	if (gbpData[GBP_Set_BGM].wave.currentVoice != gbpData[GBP_Set_Fanfare].wave.currentVoice)
-	{
-		SwitchWavePattern(gbpData[GBP_Set_BGM].wave.currentVoice);
-	}
-	gbpData[GBP_Set_Fanfare].isPlaying = false;
-}
-
 u16 U16LittleEndianToBigEndian(u16 input)
 {
 	u16 temp = (input & 0xFF) << 8;
@@ -469,6 +447,18 @@ u8 ExecuteCommandsTone(GBPToneData* theData, u8 commandID, u8 trackID, u32 music
 	}
 	theData[0].nextInstruction += commandLength;
 	return theData[0].nextInstruction[0];
+}
+
+void SwitchWavePattern(u8 patternID)
+{
+	vu16* tone1Controller = (vu16*)(0x04000060);
+	if (patternID < NUMWAVEPATTERNS)
+	{
+		WavePattern* mainPattern = (WavePattern*)0x04000090;
+		tone1Controller[8] = 0x40;
+		mainPattern[0] = patterns[patternID];
+		tone1Controller[8] = 0x0;
+	}
 }
 
 u8 ExecuteCommandsWave(GBPWaveData* theData, u8 commandID, u32 musicSetIndex)
@@ -1156,17 +1146,13 @@ void StartNewFanfareImmediately()
 	PutTrackDataIntoIWRAM(currentFanfareID - 1, GBP_Set_Fanfare);
 	gbpData[GBP_Set_Fanfare].isPlaying = true;
 	PauseSongPlayback();
-	SetOnTrackEndFunction(&ResumeSongPlaybackAndDisableFanfare, GBP_Set_Fanfare);
-	gbpBuffer[0x10] = 0xFF77;
-	gbpBuffer[0x11] = 0x2;
+	SetOnTrackEndFunction(&ResumeSongPlayback, GBP_Set_Fanfare);
 }
 
 void StartNewSFXImmediately()
 {
 	PutTrackDataIntoIWRAM(currentSFXID - 1, GBP_Set_SFX);
 	gbpData[GBP_Set_SFX].isPlaying = true;
-	gbpBuffer[0x10] = 0xFF77;
-	gbpBuffer[0x11] = 0x2;
 }
 
 void SetupSongForPlayback(u16 songID, u8 songStartMode)
@@ -1197,7 +1183,7 @@ void SetupFanfareForPlayback(u16 songID)
 	if (songID)
 	{
 		currentFanfareID = songID;
-		StartNewFanfareImmediately();
+		PutTrackDataIntoIWRAM(songID, GBP_Set_Fanfare);
 	}
 }
 
@@ -1206,7 +1192,7 @@ void SetupSFXForPlayback(u16 sfxID)
 	if (sfxID)
 	{
 		currentSFXID = sfxID;
-		StartNewSFXImmediately();
+		PutTrackDataIntoIWRAM(sfxID, GBP_Set_SFX);
 	}
 }
 

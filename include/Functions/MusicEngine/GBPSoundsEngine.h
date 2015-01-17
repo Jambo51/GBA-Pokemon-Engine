@@ -33,7 +33,6 @@ void NullifyHardware();
 void StopSongPlayback();
 void PauseSongPlayback();
 void ResumeSongPlayback();
-void ResumeSongPlaybackAndDisableFanfare();
 void SetupSongForPlayback(u16 songID, u8 songStartMode);
 void SetupFanfareForPlayback(u16 songID);
 void SetupSFXForPlayback(u16 sfxID);

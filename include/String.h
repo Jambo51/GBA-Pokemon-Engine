@@ -17,7 +17,7 @@ private:
 	int CountStringLength(char* string)
 	{
 		int count = 0;
-		while (string[count] != '/0')
+		while (string[count] != '\0')
 		{
 			count++;
 		}
@@ -56,17 +56,17 @@ public:
 
 	bool operator==(const String &rhs)
 	{
-		return this == rhs.GetUnderlyingArray();
+		return *this == rhs.GetUnderlyingArray();
 	}
 
 	bool operator!=(char* c)
 	{
-		return !(this == c);
+		return !(*this == c);
 	}
 
 	bool operator!=(const String &rhs)
 	{
-		return !(this == rhs);
+		return !(*this == rhs);
 	}
 
 	void operator+=(char c)
@@ -75,7 +75,7 @@ public:
 		{
 			underlyingString[stringSize] = c;
 			stringSize++;
-			underlyingString[stringSize] = '/0';
+			underlyingString[stringSize] = '\0';
 		}
 		else
 		{
@@ -88,7 +88,7 @@ public:
 			}
 			underlyingString[stringSize] = c;
 			stringSize++;
-			underlyingString[stringSize] = '/0';
+			underlyingString[stringSize] = '\0';
 			delete[] original;
 		}
 	}
@@ -103,7 +103,7 @@ public:
 				underlyingString[stringSize] = c[i];
 				stringSize++;
 			}
-			underlyingString[stringSize] = '/0';
+			underlyingString[stringSize] = '\0';
 		}
 	}
 
@@ -113,7 +113,7 @@ public:
 		{
 			return underlyingString[position];
 		}
-		return '/0';
+		return '\0';
 	}
 };
 

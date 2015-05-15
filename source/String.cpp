@@ -24,9 +24,10 @@ String::String(const String &string)
 	stringSize = CountStringLength(string.GetUnderlyingArray());
 	arraySize = stringSize * 2;
 	underlyingString = new char[arraySize];
+	char* arr = string.GetUnderlyingArray();
 	for (int i = 0; i < stringSize; i++)
 	{
-		underlyingString[i] = string[i];
+		underlyingString[i] = arr[i];
 	}
 }
 

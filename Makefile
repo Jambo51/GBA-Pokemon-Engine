@@ -45,8 +45,8 @@ endif
 LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts
 
 BUILD		:= build
-SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/data/sprites source/data/sprites/pokemonsprites source/data/TitleScreen
-DATADIRS	:= data
+SRCDIRS		:= source source/Data source/Data/TitleScreen
+DATADIRS	:= 
 INCDIRS		:= include
 LIBDIRS		:= $(TONCCODE)/tonclib $(CURDIR)
 

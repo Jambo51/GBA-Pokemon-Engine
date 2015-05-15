@@ -1,8 +1,15 @@
 *.d
-audiotemp
+
+audio
+
 build
+
 gfx
+
 *.elf
+
 *.gba
+
 .cproject
+
 .project

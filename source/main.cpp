@@ -1,3 +1,4 @@
+
 #include "GlobalDefinitions.h"
 #include "GBPSoundsEngine.h"
 #include "SoundEngine.h"
@@ -8,18 +9,12 @@
 #include "ObjectManager.h"
 #include "GameModeManager.h"
 #include "Game.h"
-#include "TextFunctions.h"
-#include "rtc.h"
 #include "BackgroundFunctions.h"
 #include "MemoryManagement.h"
-#include "MemoryLocations.h"
 #include "Pokemon.h"
-#include "ObjectFunctions.h"
 #include "Maths.h"
-#include "Battles.h"
 #include "Mapping.h"
-#include "String.h"
-#include <tonc.h>
+#include "RTC.h"
 
 int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 

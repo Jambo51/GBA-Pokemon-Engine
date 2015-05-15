@@ -5,9 +5,9 @@
  *      Author: Jamie
  */
 
-#include "Functions/MusicEngine/EngineM4.h"
-#include "Data\Audio\M4ASongs.h"
-#include "Data/GlobalDefinitions.h"
+#include "EngineM4.h"
+#include "M4ASongs.h"
+#include "GlobalDefinitions.h"
 
 const RODATA_LOCATION STT song_table[0x92] = {
 		{ (SongData*)&song278, 0, 0 },

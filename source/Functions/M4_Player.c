@@ -2,9 +2,9 @@
 /*    Engine M4 2009, Aik    */
 /*****************************/
 
-#include "Functions/MusicEngine/EngineM4.h"
-#include "Data/MemoryLocations.h"
-#include "Data/M4SongTable.h"
+#include "EngineM4.h"
+#include "MemoryLocations.h"
+#include "M4SongTable.h"
 
 /******************************/
 
@@ -205,6 +205,8 @@ void M4_Player(void) {
 		M4Player  *Play;
 		M4CGBChan *Chan = M4CGBArea;
 
+		u8* eightBitAddress = (u8*)0x02000500;
+
 		for(;SGx<4;Chan++,SGx++)
 		{
 			if(Chan->Status & M4_NoteOn)
@@ -281,6 +283,8 @@ void M4_Player(void) {
 				}
 			}
 
+			u16* sixteenBitAddress = (u16*)0x02000050;
+
 			if(Chan->Status & M4_Active) {
 				Play = &M4Players[Chan->Play0];
 				Trck = &Play->Track[Chan->Track];
@@ -310,15 +314,16 @@ void M4_Player(void) {
 
 					if(Chan->LVol != Volu) {
 						Chan->LVol = Volu;
-						*(u8*)0x04000062 = Chan->Duty<<6;
-						*(u8*)0x04000063 = Volu<<4 | Chan->Decay;
-						*(u8*)0x04000065 = (Freq>>8) + 0x80;
+						eightBitAddress[2] = Chan->Duty<<6;
+						//eightBitAddress[3] = Volu<<4 | Chan->Decay;
+						eightBitAddress[5] = (Freq>>8) + 0x80;
 					}
 
 					if(Chan->LFreq != Freq) {
 						Chan->LFreq = Freq;
-						*( u8*)0x04000062 = Chan->Duty<<6;
-						*(u16*)0x04000064 = 0x8000 + Freq;
+						eightBitAddress[2] = Chan->Duty<<6;
+						eightBitAddress[3] = Volu<<4 | Chan->Decay;
+						sixteenBitAddress[2] = 0x8000 + Freq;
 					}
 
 					continue;
@@ -332,15 +337,16 @@ void M4_Player(void) {
 
 					if(Chan->LVol != Volu) {
 						Chan->LVol = Volu;
-						*(u8*)0x04000068 = Chan->Duty<<6;
-						*(u8*)0x04000069 = Volu<<4 | Chan->Decay;
-						*(u8*)0x0400006D = (Freq>>8) + 0x80;
+						eightBitAddress[8] = Chan->Duty<<6;
+						//eightBitAddress[9] = Volu<<4 | Chan->Decay;
+						eightBitAddress[0xD] = (Freq>>8) + 0x80;
 					}
 
 					if(Chan->LFreq != Freq) {
 						Chan->LFreq = Freq;
-						*( u8*)0x04000068 = Chan->Duty<<6;
-						*(u16*)0x0400006C = 0x8000 + Freq;
+						eightBitAddress[8] = Chan->Duty<<6;
+						eightBitAddress[9] = Volu<<4;
+						sixteenBitAddress[6] = 0x8000 + Freq;
 					}
 
 					continue;
@@ -361,15 +367,15 @@ void M4_Player(void) {
 
 					if(Chan->LVol != Volu) {
 						Chan->LVol = Volu;
-						*(u16*)0x04000070 = 0x80;
-						*( u8*)0x04000073 = Volu;
-						*( u8*)0x04000075 = (Freq>>8) + 0x80;
+						sixteenBitAddress[8] = 0x80;
+						eightBitAddress[0x13] = Volu;
+						eightBitAddress[0x15] = (Freq>>8) + 0x80;
 					}
 
 					if(Chan->LFreq != Freq) {
 						Chan->LFreq = Freq;
-						*(u16*)0x04000070 = 0x80;
-						*(u16*)0x04000074 = 0x8000 + Freq;
+						sixteenBitAddress[8] = 0x80;
+						sixteenBitAddress[10] = 0x8000 + Freq;
 					}
 				}
 			} else {
@@ -378,7 +384,8 @@ void M4_Player(void) {
 			}
 		}
 
-		*(u8*)0x04000081 = Pano;
+		eightBitAddress[0x20] = 0xFF;
+		eightBitAddress[0x21] = Pano;
 	}
 }
 

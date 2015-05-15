@@ -8,7 +8,7 @@
 #ifndef LIBBATTLEANIMSCRIPTS_H_
 #define LIBBATTLEANIMSCRIPTS_H_
 
-#include "Data\GlobalDefinitions.h"
+#include "GlobalDefinitions.h"
 
 extern const RODATA_LOCATION u8 Battle_Animation_Script_Empty[];
 

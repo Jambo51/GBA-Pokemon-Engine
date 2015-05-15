@@ -8,7 +8,7 @@
 #ifndef LIBTILES_H_
 #define LIBTILES_H_
 
-#include "Data/GlobalDefinitions.h"
+#include "GlobalDefinitions.h"
 
 extern const TFont pokefont_b4Font;
 extern const TFont arabicPokefont_b4Font;

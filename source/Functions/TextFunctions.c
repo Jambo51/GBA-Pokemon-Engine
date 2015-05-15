@@ -1,14 +1,14 @@
 #include "Data.h"
-#include "Functions/Maths.h"
-#include "Functions/Overworld.h"
-#include "Functions/Mapping.h"
-#include "Functions/MemoryManagement.h"
+#include "Maths.h"
+#include "Overworld.h"
+#include "Mapping.h"
+#include "MemoryManagement.h"
 #include "libtiles.h"
-#include "Functions/Pokemon.h"
-#include "Data/PokemonBaseData.h"
-#include "Functions/CallbackSystem.h"
-#include "Functions/KeyPresses.h"
-#include "Data/PokemonBaseData.h"
+#include "Pokemon.h"
+#include "PokemonBaseData.h"
+#include "CallbackSystem.h"
+#include "KeyPresses.h"
+#include "PokemonBaseData.h"
 
 #define Space 0
 
@@ -461,6 +461,37 @@ void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 		}
 	}
 	MemoryDeallocate(string);
+}
+
+void BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecimalPoint)
+{
+	if (number > 99999999)
+	{
+		// Since the decimalisation code only has 32 bits to return to
+		// the maximum value for this is as above
+		// Therefore, to prevent errors, the value is clamped between
+		// 0 and the maximum decimal value available in a 32 bit value
+		number = 0;
+	}
+	BufferNumber(number, 8, bufferID);
+	u32 i = 39;
+	while (i != 0)
+	{
+		if (buffers[bufferID][i] != '/0')
+		{
+			break;
+		}
+		i--;
+	}
+	if (i)
+	{
+		u32 j;
+		for (j = 0; j < positionOfDecimalPoint; j++)
+		{
+			buffers[bufferID][i - j + 1] = buffers[bufferID][i - j];
+		}
+		buffers[bufferID][i - j] = '.';
+	}
 }
 
 void BufferUnsignedLongNumber(u32 number, u8 bufferID)

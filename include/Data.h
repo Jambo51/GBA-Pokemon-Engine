@@ -8,13 +8,13 @@
 #ifndef DATA_H_
 #define DATA_H_
 
-#include "Data/GlobalDefinitions.h"
-#include "Data/Maps.h"
-#include "Data/MemoryLocations.h"
-#include "Data/MusicData.h"
-#include "Data/OverworldSprites.h"
-#include "Data/PokemonBaseData.h"
-#include "Data/Fonts.h"
-#include "Data/Sprites.h"
+#include "GlobalDefinitions.h"
+#include "Maps.h"
+#include "MemoryLocations.h"
+#include "MusicData.h"
+#include "OverworldSprites.h"
+#include "PokemonBaseData.h"
+#include "Fonts.h"
+#include "Sprites.h"
 
 #endif /* DATA_H_ */

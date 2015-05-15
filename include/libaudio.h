@@ -8,7 +8,8 @@
 #ifndef LIBAUDIO_H_
 #define LIBAUDIO_H_
 
-#include "Functions\MusicEngine.h"
+#include "GlobalDefinitions.h"
+#include "EngineM4.h"
 
 extern const GBPTrackHeader song_1_Header;
 extern const GBPTrackHeader song_2_Header;

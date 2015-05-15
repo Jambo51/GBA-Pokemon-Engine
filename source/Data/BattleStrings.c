@@ -4,7 +4,7 @@
  *  Created on: 28 Oct 2014
  *      Author: pcworld
  */
-#include "Data\GlobalDefinitions.h"
+#include "GlobalDefinitions.h"
 
 ALIGN(1) const char pokemonUsedString[] = { 0xFD, 0x0, ' ', 'u', 's', 'e', 'd', ' ', 0xFD, 0x4, '!', '\0' };
 ALIGN(1) const char pokemonFaintedString[] = { 0xFD, 0x01, ' ', 'f', 'a', 'i', 'n', 't', 'e', 'd', '!', '\0' };

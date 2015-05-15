@@ -1,14 +1,11 @@
-#include "Functions.h"
-#include "Data.h"
-#include "Data\PokeStats.h"
-#include "Functions\BattleScriptCommands.h"
-#include "Functions\BattleAnimationScriptCommands.h"
-#include "Functions\ScriptRunner.h"
-#include "Data\MemoryLocations.h"
-#include "Functions\ObjectFunctions.h"
-#include "Functions\KeyPresses.h"
-#include "Functions\Pokemon.h"
-#include "Data\BattleStrings.h"
+#include "PokeStats.h"
+#include "BattleScriptCommands.h"
+#include "BattleAnimationScriptCommands.h"
+#include "ScriptRunner.h"
+#include "MemoryLocations.h"
+#include "ObjectFunctions.h"
+#include "Pokemon.h"
+#include "BattleStrings.h"
 #include "libbattlescripts.h"
 
 #define BATTLE_LAYER_0_SETTINGS (BG_4BPP | BG_REG_32x64 | BG_MOSAIC | BG_SBB(14) | BG_CBB(2))
@@ -24,7 +21,12 @@
 #define CHAMPIONBATTLE 8
 #define EVILDUOBATTLE 9
 
-#define TESTMODE TRAINERBATTLE
+#define TESTMODE WILDBATTLE
+
+#define FALSE 0
+#define TRUE 1
+
+#define GEN2MOONBALL FALSE
 
 const ALIGN(2) u16 criticalCaptureValues[6][2] = {
 		{ 30, 0 },
@@ -83,35 +85,23 @@ u32 LevelBallPokeball()
 	return retValue;
 }
 
-const u16 moonBallAffectedPokemon[] = {
-		Cleffa,
-		Clefairy,
-		Clefable,
-		Igglybuff,
-		Jigglypuff,
-		Wigglytuff,
-		Munna,
-		Musharna,
-		NidoranM,
-		Nidorino,
-		Nidoking,
-		NidoranF,
-		Nidorina,
-		Nidoqueen,
-		Skitty,
-		Delcatty
-};
-
 u32 MoonBallPokeball()
 {
 	u32 retValue = 100;
-	u16 opponentSpecies = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[PokeballTarget]].species;
+	IndexTable* data = (IndexTable*)&evoData[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[PokeballTarget]].species];
+	EvolutionData* innerData = (EvolutionData*)data[0].pointerToData;
 	u32 i;
-	for (i = 0; i < 16; i++)
+	for (i = 0; i < data[0].index; i++)
 	{
-		if (opponentSpecies == moonBallAffectedPokemon[i])
+		if (innerData[0].evolutionType == ItemUsed
+#if GEN2MOONBALL == TRUE
+				&& innerData[0].condition1 == Item_BurnHeal
+#else
+				&& innerData[0].condition1 == ITEM_MOONSTONE
+#endif
+				)
 		{
-			retValue = 300;
+			retValue = 400;
 			break;
 		}
 	}
@@ -138,7 +128,24 @@ u32 LoveBallPokeball()
 u32 HeavyBallPokeball()
 {
 	u32 retValue = 100;
-	// Logic absent form this as Pokédex data not yet created
+	PokedexData* data = (PokedexData*)&pokedexData[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[PokeballTarget]].species];
+	u16 weight = data[0].weight;
+	if (weight < 2048)
+	{
+		retValue -= 20;
+	}
+	else if (weight < 3072)
+	{
+		retValue += 20;
+	}
+	else if (weight < 4096)
+	{
+		retValue += 30;
+	}
+	else
+	{
+		retValue += 40;
+	}
 	return retValue;
 }
 
@@ -269,6 +276,47 @@ const U32FunctionPointerU32 StatusBonusRates[] = {
 };
 
 const RODATA_LOCATION u32 battleTextPalette[] = { 0x7FFF0000, 0x4D8A001F, 0x7FFF5E2D, 0x6B3A396D, 0x18C53D28, 0x737C7C1F, 0x0DF37C1F, 0x354526B9 };
+
+u32 NoEffectTypeChartCallback(u32 incomingValue)
+{
+	return incomingValue;
+}
+
+u32 TiltEffectTypeChartCallback(u32 incomingValue)
+{
+	if (incomingValue < 100)
+	{
+		incomingValue >>= 1;
+	}
+	else if (incomingValue > 100)
+	{
+		incomingValue <<= 1;
+	}
+	return incomingValue;
+}
+
+u32 InversionEffectTypeChartCallback(u32 incomingValue)
+{
+	if (incomingValue < 100)
+	{
+		incomingValue = 200;
+	}
+	else if (incomingValue > 100)
+	{
+		incomingValue = 50;
+	}
+	return incomingValue;
+}
+
+u32 TiltedInversionTypeChartCallback(u32 incomingValue)
+{
+	return TiltEffectTypeChartCallback(InversionEffectTypeChartCallback(incomingValue));
+}
+
+u32 DoubleTiltedTypeChartCallback(u32 incomingValue)
+{
+	return TiltEffectTypeChartCallback(TiltEffectTypeChartCallback(incomingValue));
+}
 
 void DrawMainSelectionMenu()
 {
@@ -750,6 +798,7 @@ void UpdateCounters()
 	for (i = 0; i < battleDataPointer[0].numBattlers; i++)
 	{
 		PokemonBattleData* pkmn = &battleDataPointer[0].pokemonStats[i];
+		pkmn[0].secondaryStatusBits.ppReduced = 0;
 		if (pkmn[0].currentHP != 0)
 		{
 			Pokemon* thePokemon = pkmn[0].mainPointer;
@@ -789,6 +838,12 @@ void UpdateCounters()
 
 void MainBattleSelectionKeyPresses(void);
 
+U32FunctionPointerU32 typeChartCallbackFunctions[(Item_Effect_Inversion - Item_Effect_Double_Cash_Gain) + 1][(Item_Effect_Inversion - Item_Effect_Double_Cash_Gain) + 1] = {
+		{ &NoEffectTypeChartCallback, &TiltEffectTypeChartCallback, &InversionEffectTypeChartCallback },
+		{ &TiltEffectTypeChartCallback, &DoubleTiltedTypeChartCallback, &TiltedInversionTypeChartCallback },
+		{ &InversionEffectTypeChartCallback, &TiltedInversionTypeChartCallback, &NoEffectTypeChartCallback }
+};
+
 void RunBattleScripts()
 {
 	if (battleDataPointer[0].flags.waitAttack)
@@ -798,13 +853,6 @@ void RunBattleScripts()
 	else if (battleDataPointer[0].flags.endBattle)
 	{
 		SetTilesForTextRender();
-		{
-			u32 i;
-			for (i = 0; i < 4; i++)
-			{
-				SpriteDeallocate((void*)(0x06010000 + (((u32)battleDataPointer[0].objectPointers.battlers[i][0].tileLocation) << 5)));
-			}
-		}
 		MemoryDeallocate(battleDataPointer[0].battleAIData);
 		MemoryDeallocate(battleDataPointer[0].trainerData);
 		MemoryDeallocate(battleDataPointer[0].pokemonStats);
@@ -848,6 +896,19 @@ void RunBattleScripts()
 						effectID = 0;
 					}
 					battleScriptPointer = moveScriptsTable[effectID];
+					{
+						u16 itemEffect1 = GetItemEffect(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].heldItem) - Item_Effect_Double_Cash_Gain;
+						u16 itemEffect2 = GetItemEffect(battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].heldItem) - Item_Effect_Double_Cash_Gain;
+						if (itemEffect1 > (Item_Effect_Inversion - Item_Effect_Double_Cash_Gain))
+						{
+							itemEffect1 = 0;
+						}
+						if (itemEffect2 > (Item_Effect_Inversion - Item_Effect_Double_Cash_Gain))
+						{
+							itemEffect2 = 0;
+						}
+						battleDataPointer[0].typeChartCallback = typeChartCallbackFunctions[itemEffect1][itemEffect2];
+					}
 				}
 				break;
 			}
@@ -879,20 +940,18 @@ void RunBattleScripts()
 				break;
 			}
 		}
-		AddFunction(&RunBattleScript, 0);
+		//AddFunction(&RunBattleScript, 0);
 		battleDataPointer[0].flags.waitAttack = 1;
 		RunCallbackSystem();
 	}
 	else
 	{
-		battleDataPointer[0].objectPointers.battlers[0]->StateFunction = &MoveUpAndDown;
-		battleDataPointer[0].objectPointers.battlers[0]->stateFunctionInfo = 16;
 		battleDataPointer[0].battleBanks[User] = 0;
 		battleDataPointer[0].currentBattlerIndex = 0;
 		UpdateCounters();
 		DrawMainSelectionMenu();
 		CallbackMain = &BattleWaitForKeyPress;
-		HandleKeyPresses = &MainBattleSelectionKeyPresses;
+		//HandleKeyPresses = &MainBattleSelectionKeyPresses;
 	}
 }
 
@@ -934,17 +993,7 @@ void ChooseTargetBattleKeyPress()
 		if (selectorIndex == battleDataPointer[0].numBattlers)
 		{
 			HandleKeyPresses = &IgnoreKeyPresses;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
 			CallbackMain = &BattleAISelections;
-		}
-		else
-		{
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex]->StateFunction = &MoveUpAndDown;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex]->stateFunctionInfo = 16;
-			// Handle input again for second Pokémon
 		}
 	}
 	else if (IsKeyDownButNotHeld(Key_B))
@@ -1022,17 +1071,7 @@ void MoveSelectionKeyPresses()
 		if (selectorIndex == battleDataPointer[0].numBattlers)
 		{
 			HandleKeyPresses = &IgnoreKeyPresses;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
 			CallbackMain = &BattleAISelections;
-		}
-		else
-		{
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex]->StateFunction = &MoveUpAndDown;
-			battleDataPointer[0].objectPointers.battlers[selectorIndex]->stateFunctionInfo = 16;
-			// Handle input again for second Pokémon
 		}
 	}
 	else if (IsKeyDownButNotHeld(Key_B))
@@ -1096,24 +1135,11 @@ void MainBattleSelectionKeyPresses()
 					{
 						HandleKeyPresses = &IgnoreKeyPresses;
 						CallbackMain = &BattleAISelections;
-						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
-						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
-					}
-					else
-					{
-						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->StateFunction = 0;
-						battleDataPointer[0].objectPointers.battlers[selectorIndex - 2]->stateFunctionInfo = 0;
-						battleDataPointer[0].objectPointers.battlers[selectorIndex]->StateFunction = &MoveUpAndDown;
-						battleDataPointer[0].objectPointers.battlers[selectorIndex]->stateFunctionInfo = 16;
 					}
 					battleDataPointer[0].selectorIndex = selectorIndex;
 				}
 				break;
 		}
-	}
-	else if (IsKeyDownButNotHeld(Key_B))
-	{
-		SetupFanfareForPlayback(Song_MagnetTrainFanfare);
 	}
 	else if (IsKeyDownButNotHeld(Key_Left) || IsKeyDownButNotHeld(Key_Right))
 	{
@@ -1240,23 +1266,17 @@ void InitialiseBattleEnvironment()
 	}
 	CopyBattleDataFromPokemon(&partyPokemon[0], &battleDataPointer[0].pokemonStats[0]);
 	CopyBattleDataFromPokemon(&enemyPokemon[0], &battleDataPointer[0].pokemonStats[1]);
-	battleDataPointer[0].objectPointers.battlers[0] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[0], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Sprite_Side_Back))];
 	memcpy32((void*)ObjectPaletteRAM(0), GetPokemonSpritePaletteFromPokemon(&partyPokemon[0], Palette_Normal + PokemonIsShiny(&partyPokemon[0])), 8);
-	battleDataPointer[0].objectPointers.battlers[1] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[1], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Sprite_Side_Front))];
 	memcpy32((void*)ObjectPaletteRAM(1), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[0], Palette_Normal + PokemonIsShiny(&enemyPokemon[0])), 8);
-	battleDataPointer[0].objectPointers.battlers[0]->StateFunction = &MoveUpAndDown;
-	battleDataPointer[0].objectPointers.battlers[0]->stateFunctionInfo = 16;
 	if (battleType.info.isDoubleBattle)
 	{
 		CopyBattleDataFromPokemon(&partyPokemon[1], &battleDataPointer[0].pokemonStats[2]);
 		CopyBattleDataFromPokemon(&enemyPokemon[1], &battleDataPointer[0].pokemonStats[3]);
-		battleDataPointer[0].objectPointers.battlers[2] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[4], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&partyPokemon[1], Sprite_Side_Back))];
 		memcpy32((void*)ObjectPaletteRAM(2), GetPokemonSpritePaletteFromPokemon(&partyPokemon[1], Palette_Normal + PokemonIsShiny(&partyPokemon[1])), 8);
-		battleDataPointer[0].objectPointers.battlers[3] = (PreOAMStruct*)&preOAM[CreateObjectFromCompressedImage((OAMData*)&battleObjectsOAMData[5], Shape_Square, Square_64x64, GetPokemonSpritePaletteFromPokemon(&enemyPokemon[1], Sprite_Side_Front))];
 		memcpy32((void*)ObjectPaletteRAM(3), GetPokemonSpritePaletteFromPokemon(&enemyPokemon[1], Palette_Normal + PokemonIsShiny(&enemyPokemon[1])), 8);
 	}
 	DrawMainSelectionMenu();
-	SetupSongForPlayback(GetSongIDForBattle(), 0);
+	//SetupSongForPlayback(GetSongIDForBattle(), 0);
 	memcpy32((void*)TilePaletteRAM(0), &battleTextPalette, 8);
 	memcpy32((void*)TilePaletteRAM(1), &pauseOutlinePalette, 8);
 	REG_BG0CNT = BATTLE_LAYER_0_SETTINGS;

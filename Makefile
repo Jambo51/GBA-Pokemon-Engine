@@ -45,7 +45,7 @@ endif
 LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts
 
 BUILD		:= build
-SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/data/sprites source/data/sprites/pokemonsprites source/functions source/classes source/data/TitleScreen
+SRCDIRS		:= source source/data source/data/audio/m4asamples source/data/audio/m4awavesamples source/data/audio/m4asoundbanks source/data/audio/m4asongs source/data/audio/m4apokemoncries source/data/audio/gbpsongs source/data/audio/gbppokemoncries source/data/fonts source/data/sprites source/data/sprites/pokemonsprites source/data/TitleScreen
 DATADIRS	:= data
 INCDIRS		:= include
 LIBDIRS		:= $(TONCCODE)/tonclib $(CURDIR)
@@ -117,7 +117,7 @@ LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
 
 else
 
-CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O2
+CFLAGS		:= -mcpu=arm7tdmi -mtune=arm7tdmi -O3
 CFLAGS		+= -Wall
 CFLAGS		+= $(INCLUDE)
 CFLAGS		+= -ffast-math -fno-strict-aliasing

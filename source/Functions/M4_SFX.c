@@ -2,7 +2,7 @@
 /*    Engine M4 2009, Aik    */
 /*****************************/
 
-#include "Functions/MusicEngine/EngineM4.h"
+#include "EngineM4.h"
 
 /*****************************/
 

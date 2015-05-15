@@ -6,16 +6,15 @@
  */
 
 #include "Data.h"
-#include "Functions/KeyPresses.h"
-#include "Functions/Mapping.h"
-#include "Functions/Flags.h"
-#include "Functions/Maths.h"
-#include "Functions/MemoryManagement.h"
-#include "Functions/TextFunctions.h"
-#include "Functions/ScriptRunner.h"
-#include "Functions/MusicEngine.h"
-#include "Functions/rtc.h"
-#include "Functions/CallbackSystem.h"
+#include "KeyPresses.h"
+#include "Mapping.h"
+#include "Flags.h"
+#include "Maths.h"
+#include "MemoryManagement.h"
+#include "TextFunctions.h"
+#include "ScriptRunner.h"
+#include "rtc.h"
+#include "CallbackSystem.h"
 
 #define BG_PRIORITY_ZERO 0
 #define MAJORITY (BG_4BPP | BG_REG_32x32 | BG_MOSAIC | BG_SBB(31) | BG_PRIORITY_ZERO)
@@ -566,7 +565,7 @@ void LoadOverworld()
 	DrawMap(overworldSpriteData[0].xLocation, overworldSpriteData[0].yLocation);
 	PlacePlayerSprite(overworldSpriteData[0].xLocation, overworldSpriteData[0].yLocation, 0);
 	UpdateOAMFromStructure();
-	SetupSongForPlayback(currentMap.musicTrack, 0);
+	//SetupSongForPlayback(currentMap.musicTrack, 0);
 	SetCheckKeyPressesOverworld();
 	AddFunction(&AnimateTiles, 0);
 	AddFunction(&MoveNPCs, 0);

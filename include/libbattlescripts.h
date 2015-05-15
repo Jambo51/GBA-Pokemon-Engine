@@ -5,7 +5,7 @@
  *      Author: Jamie
  */
 
-#include "Data\GlobalDefinitions.h"
+#include "GlobalDefinitions.h"
 
 #ifndef LIBBATTLESCRIPTS_H_
 #define LIBBATTLESCRIPTS_H_

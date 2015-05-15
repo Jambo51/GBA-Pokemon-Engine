@@ -6,28 +6,26 @@
  */
 
 #include <tonc.h>
-#include <stdio.h>
 #include "Functions.h"
-#include "Functions/Titlescreen.h"
-#include "Functions/MusicEngine.h"
-#include "Data/MemoryLocations.h"
-#include "Functions/KeyPresses.h"
+#include "Titlescreen.h"
+#include "MemoryLocations.h"
+#include "KeyPresses.h"
 
-#include "Data/TitleScreen/pal.h"
-#include "Data/TitleScreen/BG0_Tiles.h"
-#include "Data/TitleScreen/BG0_Map.h"
-#include "Data/TitleScreen/BG1_Tiles.h"
-#include "Data/TitleScreen/BG1_Map.h"
-#include "Data/TitleScreen/BG2_Tiles.h"
-#include "Data/TitleScreen/BG2_Map.h"
-#include "Data/TitleScreen/BG3_Tiles.h"
-#include "Data/TitleScreen/BG3_Map.h"
+#include "pal.h"
+#include "BG0_Tiles.h"
+#include "BG0_Map.h"
+#include "BG1_Tiles.h"
+#include "BG1_Map.h"
+#include "BG2_Tiles.h"
+#include "BG2_Map.h"
+#include "BG3_Tiles.h"
+#include "BG3_Map.h"
 
 
 
 void SetupTitleScreen()
 {
-	SetupSongForPlayback(Song_CrystalTitleScreen, 0);
+	//SetupSongForPlayback(Song_CrystalTitleScreen, 0);
 
 	REG_BG0CNT = 0x1F80;
 	REG_BG1CNT = 0x1E05;
@@ -48,7 +46,7 @@ void SetupTitleScreen()
 	dma3_cpy(0x0600E000, BG3_Map_bin, BG3_Map_bin_size);
 
 	CallbackMain = &TitleScreen;
-	HandleKeyPresses = &TitleScreenKeyHandle;
+	//HandleKeyPresses = &TitleScreenKeyHandle;
 }
 
 void TitleScreen()
@@ -58,32 +56,5 @@ void TitleScreen()
 	RunCallbackSystem();
 
 
-}
-
-void TitleScreenKeyHandle()
-{
-
-	if (IsKeyDownButNotHeld(Key_Start) == true)
-	{
-		setbackgroundstodefault();
-
-		CallbackMain = &LoadOverworld;
-	}
-	else if (IsKeyDownButNotHeld(Key_B) == true)
-	{
-
-	}
-	else if (IsKeyDownButNotHeld(Key_Up) == true)
-	{
-
-	}
-	else if (IsKeyDownButNotHeld(Key_Down) == true)
-	{
-
-	}
-	else if (IsKeyDown(Key_A) != 0)
-	{
-
-	}
 }
 

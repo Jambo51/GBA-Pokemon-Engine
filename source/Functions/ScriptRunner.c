@@ -6,9 +6,9 @@
  */
 
 #include "Data.h"
-#include "Functions\BattleScriptCommands.h"
-#include "Functions\BattleAnimationScriptCommands.h"
-#include "Functions\CallbackSystem.h"
+#include "BattleScriptCommands.h"
+#include "BattleAnimationScriptCommands.h"
+#include "CallbackSystem.h"
 
 const u8 (*battleScriptCommandTable[])(void) = {
 		&CheckForMoveCancellingStatuses,

@@ -20,8 +20,6 @@ extern u8* animationScriptPointer;
 extern u16 animationScriptFrameWait;
 extern u8* applyMovementScriptPointer[5];
 extern u32 applyMovementStatus[5];
-extern s16 x;
-extern s16 y;
 extern u8 seasonByte;
 extern u8 regionByte;
 extern u16 currentSFXID;
@@ -33,9 +31,6 @@ extern NPCData overworldSpriteData[24];
 extern u8 hardwareColumn;
 extern u8 hardwareRow;
 extern u8 textPalette;
-extern void (*CallbackMain)(void);
-extern TileAnimationStruct* animStruct;
-extern ConnectionStruct* connectStruct;
 extern PaletteFadeStruct fadeStruct[];
 extern MemoryManagementStructure mallocData;
 extern SpriteManagementStructure sprallocData;
@@ -44,7 +39,5 @@ extern PokedexMemoryData* dexPointer;
 extern MusicFadeInfo* musicFadePointer;
 extern BattleData* battleDataPointer;
 extern u32 pauseOutlinePalette[8];
-extern u8 textPalette;
-extern EntityManagerEntry entityData[MAXENTITIES];
 
 #endif /* MEMORYLOCATIONS_H_ */

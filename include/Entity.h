@@ -9,7 +9,8 @@ protected:
 	bool _isAlive;
 	bool _isVisible;
 	u32 _objectID;
-	Entity(const Vector2D &location);
+	u32 _priority;
+	Entity(const Vector2D &location, u32 backgroundLevel = 0, bool isAlive = true, bool isVisible = true);
 public:
 	virtual ~Entity() { }
 	const Vector2D & GetPosition() const { return _position; }

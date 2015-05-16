@@ -18,7 +18,7 @@ class SoundEngine
 {
 private:
 	SoundEngine();
-	virtual ~SoundEngine();
+	~SoundEngine();
 	static MusicEngine* me;
 	static u16 songPlayingMode;
 	static u16 songIDInt;

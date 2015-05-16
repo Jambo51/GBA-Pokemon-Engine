@@ -1,8 +1,9 @@
-#include "GlobalDefinitions.h"
+#include "MappingDefinitions.h"
 
 #ifndef MAPS_H
 #define MAPS_H
 
-extern MapHeader* maps[][2];
+extern MapHeader** maps[];
+extern MapHeader* errorMap;
 
 #endif

@@ -9,10 +9,7 @@
 #define INPUTHANDLER_H_
 
 #include "GlobalDefinitions.h"
-
-class InputEventHandler;
-
-typedef enum Keys { Key_A, Key_B, Key_Select, Key_Start, Key_Right, Key_Left, Key_Up, Key_Down, Key_RightBumper, Key_LeftBumper } Keys;
+#include "InputEventHandler.h"
 
 typedef struct KeyBuffer {
 	union
@@ -32,6 +29,7 @@ private:
 	static bool IsKeyDown(Keys keyID);
 public:
 	static void KeyPoll();
+	static void SetEventHandler(InputEventHandler* newHandler);
 };
 
 #endif /* INPUTHANDLER_H_ */

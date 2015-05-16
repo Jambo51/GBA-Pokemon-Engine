@@ -8,7 +8,13 @@
 #ifndef IRQHANDLER_H_
 #define IRQHANDLER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <tonc_irq.h>
+#ifdef __cplusplus
+}
+#endif
 
 class IRQHandler
 {

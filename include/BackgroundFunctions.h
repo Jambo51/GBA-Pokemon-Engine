@@ -14,7 +14,7 @@ private:
 	BackgroundFunctions() { }
 	~BackgroundFunctions() { }
 public:
-	static void setbackgroundstodefault();
+	static void SetBackgroundsToDefault();
 };
 
 

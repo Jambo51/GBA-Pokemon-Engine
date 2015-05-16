@@ -18,8 +18,6 @@ InputEventHandler::~InputEventHandler()
 	// TODO Auto-generated destructor stub
 }
 
-enum Keys { Key_A, Key_B, Key_Select, Key_Start, Key_Right, Key_Left, Key_Up, Key_Down, Key_RightBumper, Key_LeftBumper };
-
 void InputEventHandler::OnPressA()
 {
 	keyDown[Key_A] = true;
@@ -82,7 +80,7 @@ void InputEventHandler::Update()
 		else
 		{
 			keyPressTimers[i]++;
-			if (keyPressTimers[i] >= NumWaitFrames)
+			if (keyPressTimers[i] >= 0)
 			{
 				keyHeld[i] = true;
 			}

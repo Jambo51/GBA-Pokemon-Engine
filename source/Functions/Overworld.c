@@ -256,30 +256,6 @@ void PlaceMenuBox(u16* location, u32 height, u32 width)
 	location[(0x20 * height) + 8] = paletteSlot | 9;
 }
 
-void AnimateTiles()
-{
-	TileAnimationStruct* animStructInner = &(animStruct[0]);
-	u8 i;
-	for (i = 0; i < 10; i++)
-	{
-		if (animStructInner[i].dataPointer != 0)
-		{
-			if (animStructInner[i].framesUntilChange == 0)
-			{
-				void* destination = (void*)(((i >= 5)?0x06005000:0x06000000) + ((animStructInner[i].startTile - ((i >= 5)?512:0)) * 0x20));
-				u32 tileCopyLength = animStructInner[i].numberOfTiles << 3;
-				memcpy32(destination, (void*)(&(animStructInner[i].dataPointer[tileCopyLength * animStructInner[i].frameOfAnimation])), tileCopyLength);
-				animStructInner[i].framesUntilChange = animStructInner[i].frameDelay;
-				animStructInner[i].frameOfAnimation = UnsignedModulus(animStructInner[i].frameOfAnimation + 1, animStructInner[i].numberOfFrames);
-			}
-			else
-			{
-				animStructInner[i].framesUntilChange--;
-			}
-		}
-	}
-}
-
 void MoveNPCs()
 {
 	u8 i;

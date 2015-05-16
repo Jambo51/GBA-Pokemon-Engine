@@ -14,7 +14,7 @@
 #define BG_PRIORITY_ZERO 0
 #define MAIN_BG_SETTINGS (BG_CBB(0) | BG_4BPP | BG_REG_32x32 | BG_MOSAIC)
 
-void BackgroundFunctions::setbackgroundstodefault()
+void BackgroundFunctions::SetBackgroundsToDefault()
 {
 	RegisterRamReset(RESET_GFX);
 	REG_BG0CNT = MAIN_BG_SETTINGS | BG_SBB(31) | BG_PRIORITY_ZERO;

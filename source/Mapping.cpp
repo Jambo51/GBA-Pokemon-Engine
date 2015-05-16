@@ -11,39 +11,62 @@
 #include "RTC.h"
 #include "SoundEngine.h"
 #include "Mapping.h"
+#include "BackgroundFunctions.h"
+#include "InputHandler.h"
+#include "DoNothingInputEventHandler.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
 #define tilemapBottom ((u32*)0x0600F000)
 
-const RODATA_LOCATION TileAnimationStruct emptyAnimStruct = { 0, 0, 0, 0, 0, 0, 0, 0 };
+TEXT_LOCATION TileAnimationStruct Overworld::emptyAnimStruct = { 0, 0, 0, 0, 0, 0, 0, 0 };
+TEXT_LOCATION ALIGN(1) u8 Overworld::maxBanks = MaxBanks;
+TEXT_LOCATION ALIGN(1) u8 Overworld::maxMaps[MaxBanks] = { 0, 0, 0, 2 };
 
-MapHeader* Overworld::GetMapHeaderFromBankAndMapID(u8 bank, u8 map)
+Overworld::Overworld()
 {
-	return maps[bank][map];
+	BackgroundFunctions::SetBackgroundsToDefault();
+	animStruct = new TileAnimationStruct[10];
+	DrawMap(10, 15);
+	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
+	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
 }
 
-WildData* Overworld::GetMapWildDataFromBankAndMapID(u8 bank, u8 map)
+Overworld::~Overworld()
 {
-	return (GetMapHeaderFromBankAndMapID(bank, map))[0].wildDataLocation;
+	delete[] animStruct;
 }
 
-MapConnection* Overworld::GetMapConnectionsFromBankAndMapID(u8 bank, u8 map)
+const MapHeader & Overworld::GetMapHeaderFromBankAndMapID(u8 bank, u8 map)
 {
-	return (GetMapHeaderFromBankAndMapID(bank, map))[0].connections;
+	if (bank < maxBanks && map < maxMaps[bank])
+	{
+		return *maps[bank][map];
+	}
+	return *errorMap;
 }
 
-MapFooter* Overworld::GetMapFooterFromBankAndMapID(u8 bank, u8 map)
+const WildData & Overworld::GetMapWildDataFromBankAndMapID(u8 bank, u8 map)
 {
-	return (GetMapHeaderFromBankAndMapID(bank, map))[0].footerLocation;
+	return *GetMapHeaderFromBankAndMapID(bank, map).wildDataLocation;
+}
+
+const MapConnection & Overworld::GetMapConnectionsFromBankAndMapID(u8 bank, u8 map)
+{
+	return *GetMapHeaderFromBankAndMapID(bank, map).connections;
+}
+
+const MapFooter & Overworld::GetMapFooterFromBankAndMapID(u8 bank, u8 map)
+{
+	return *GetMapHeaderFromBankAndMapID(bank, map).footerLocation;
 }
 
 u16 Overworld::GetMusicTrackIDFromBankAndMapID(u8 bank, u8 map)
 {
-	return (GetMapHeaderFromBankAndMapID(bank, map))[0].musicTrack;
+	return GetMapHeaderFromBankAndMapID(bank, map).musicTrack;
 }
 
-void Overworld::PutTilesetPalettesInMemory(u8 tilesetID, u16* paletteLocation, u8 time)
+void Overworld::PutTilesetPalettesInMemory(u32 tilesetID, u16* paletteLocation, u32 time)
 {
 	u8 extraLength = ((tilesetID == 0)?0:112);
 	void* palLoc = (void*)(pal_bg_mem + extraLength);
@@ -53,17 +76,18 @@ void Overworld::PutTilesetPalettesInMemory(u8 tilesetID, u16* paletteLocation, u
 
 void Overworld::PutMapPalettesInMemory()
 {
-	u8 time = RTC::GetTime().timeOfDay;
-	u16* palette = (u16*)((u32*)Game::GetCurrentMap().footerLocation[0].primaryTileset)[2];
+	u32 time = RTC::GetTime().timeOfDay;
+	const MapHeader &header = Game::GetCurrentMap();
+	u16* palette = (u16*)header.footerLocation->primaryTileset->paletteData;
 	PutTilesetPalettesInMemory(0, palette, time);
-	palette = (u16*)((u32*)Game::GetCurrentMap().footerLocation[0].secondaryTileset)[2];
+	palette = (u16*)header.footerLocation->secondaryTileset->paletteData;
 	PutTilesetPalettesInMemory(1, palette, time);
 }
 
-TileAnimationStructROM* Overworld::GetTileAnimationDataPointer(u8 tilesetID)
+TileAnimationStructROM* Overworld::GetTileAnimationDataPointer(u32 tilesetID)
 {
 	MapFooter* footer = Game::GetCurrentMap().footerLocation;
-	void* prim;
+	Tileset* prim;
 	if (tilesetID == 0)
 	{
 		prim = footer->primaryTileset;
@@ -72,30 +96,28 @@ TileAnimationStructROM* Overworld::GetTileAnimationDataPointer(u8 tilesetID)
 	{
 		prim = footer->secondaryTileset;
 	}
-	return (TileAnimationStructROM*)((u32*)prim)[4];
+	return prim->blockAnimationsData;
 }
 
-void Overworld::PutTileAnimationDataIntoMemory(u8 tilesetID)
+void Overworld::PutTileAnimationDataIntoMemory(u32 tilesetID)
 {
 	TileAnimationStructROM* theData = GetTileAnimationDataPointer(tilesetID);
 	tilesetID *= 5;
-	u8 j;
-	for (j = 0; j < 5; j++)
+	for (int j = 0; j < 5; j++)
 	{
 		animStruct[j + tilesetID] = emptyAnimStruct;
 	}
 	if (theData != 0)
 	{
 		TileAnimationStruct* data = theData[0].dataPointer;
-		u8 length = theData[0].length;
+		u32 length = theData[0].length;
 		if (length > 5)
 		{
 			length = 5;
 		}
 		if (length != 0 && data != 0)
 		{
-			vu8 i;
-			for (i = 0; i < length; i++)
+			for (int i = 0; i < length; i++)
 			{
 				animStruct[i + tilesetID] = data[i];
 			}
@@ -103,13 +125,13 @@ void Overworld::PutTileAnimationDataIntoMemory(u8 tilesetID)
 	}
 }
 
-const RODATA_LOCATION IndexTable dataForTilesets[2][2] = { { { 5120, (void*)0x06000000 }, { 3072, (void*)0x06005000 } }, { { 4096, (void*)0x06000000 },	{ 4096, (void*)0x06004000 } } };
+TEXT_LOCATION IndexTable Overworld::dataForTilesets[2][2] = { { { 5120, (void*)0x06000000 }, { 3072, (void*)0x06005000 } }, { { 4096, (void*)0x06000000 },	{ 4096, (void*)0x06004000 } } };
 
-void Overworld::StoreTilesetIntoMemory(u8 tilesetID, void* location, u8 tilesetMode, bool isCompressed)
+void Overworld::StoreTilesetIntoMemory(u32 tilesetID, u16* location, u32 tilesetMode, bool isCompressed)
 {
 	u32 length = dataForTilesets[tilesetMode][tilesetID].index;
 	void* storeLoc = dataForTilesets[tilesetMode][tilesetID].pointerToData;
-	if (isCompressed == 1)
+	if (isCompressed)
 	{
 		LZ77UnCompVram(location, storeLoc);
 	}
@@ -121,33 +143,28 @@ void Overworld::StoreTilesetIntoMemory(u8 tilesetID, void* location, u8 tilesetM
 
 void Overworld::PutMapTilesetsInMemory()
 {
-	u8 tilesetMode = (Game::GetCurrentMap().footerLocation[0].primaryTileset[0].information & 0xFF0000) >> 0x10;
-	StoreTilesetIntoMemory(0, Game::GetCurrentMap().footerLocation[0].primaryTileset[0].primaryTilesetData[0], tilesetMode, Game::GetCurrentMap().footerLocation[0].primaryTileset[0].information & 1);
+	u32 tilesetMode = (Game::GetCurrentMap().footerLocation[0].primaryTileset[0].information & 0xFF0000) >> 0x10;
+	StoreTilesetIntoMemory(0, Game::GetCurrentMap().footerLocation[0].primaryTileset[0].primaryTilesetData, tilesetMode, Game::GetCurrentMap().footerLocation[0].primaryTileset[0].information & 1);
 	PutTileAnimationDataIntoMemory(0);
-	u8 oldTilesetMode = tilesetMode;
+	u32 oldTilesetMode = tilesetMode;
 	tilesetMode = (Game::GetCurrentMap().footerLocation[0].secondaryTileset[0].information & 0xFF0000) >> 0x10;
 	if (tilesetMode == oldTilesetMode)
 	{
-		StoreTilesetIntoMemory(1, Game::GetCurrentMap().footerLocation[0].secondaryTileset[0].secondaryTilesetData[0], tilesetMode, Game::GetCurrentMap().footerLocation[0].secondaryTileset[0].information & 1);
+		StoreTilesetIntoMemory(1, Game::GetCurrentMap().footerLocation[0].secondaryTileset[0].secondaryTilesetData, tilesetMode, Game::GetCurrentMap().footerLocation[0].secondaryTileset[0].information & 1);
 		PutTileAnimationDataIntoMemory(1);
 	}
 }
 
-u8 Overworld::IsConnectionOnSide(MapConnection* m, u8 side)
+u32 Overworld::IsConnectionOnSide(const MapConnection &m, u32 side)
 {
-	if (m == 0)
-	{
-		return 0xFF;
-	}
-	u32 maxLength = m[0].numberOfConnections;
+	u32 maxLength = m.numberOfConnections;
 	if (maxLength == 0)
 	{
 		return 0xFF;
 	}
-	u8 i;
-	u8 isConnectionOnThisSide = 0xFF;
-	MapConnectionData* temp = (MapConnectionData*)(((u32*)(&(m[0].mainData)))[0]);
-	for (i = 0; i < maxLength; i++)
+	u32 isConnectionOnThisSide = 0xFF;
+	MapConnectionData* temp = m.mainData;
+	for (int i = 0; i < maxLength; i++)
 	{
 		if (temp[i].type == side)
 		{
@@ -165,12 +182,13 @@ u16 Overworld::GetBlockFromData(u16* mapDataLocation, s32 x, s32 y, u16 mapWidth
 
 u16 Overworld::GetBorderBlock(s32 x, s32 y)
 {
-	return (Game::GetCurrentMap().footerLocation->borderBlocks[Maths::UnsignedModulus(x, Game::GetCurrentMap().footerLocation->borderWidth) + (Maths::UnsignedModulus(y, Game::GetCurrentMap().footerLocation->borderHeight) << 1)] & 0x3FF) | 0x400;
+	const MapFooter &footerLocation = *Game::GetCurrentMap().footerLocation;
+	return (footerLocation.borderBlocks[Maths::UnsignedModulus(x, footerLocation.borderWidth) + (Maths::UnsignedModulus(y, footerLocation.borderHeight) << 1)] & 0x3FF) | 0x400;
 }
 
-u8 Overworld::CalculateXConnectionLocation(MapConnection* m, s32 x, s32 y, u16 widthOfMap)
+u8 Overworld::CalculateXConnectionLocation(const MapConnection* m, s32 x, s32 y, u16 widthOfMap)
 {
-	if (m != 0)
+	if (m)
 	{
 		u8 sideID = 0xFF;
 		if (x < 0)
@@ -181,14 +199,14 @@ u8 Overworld::CalculateXConnectionLocation(MapConnection* m, s32 x, s32 y, u16 w
 		{
 			sideID = 4;
 		}
-		return IsConnectionOnSide(m, sideID);
+		return IsConnectionOnSide(*m, sideID);
 	}
 	return 0xFF;
 }
 
-u8 Overworld::CalculateYConnectionLocation(MapConnection* m, s32 x, s32 y, u16 heightOfMap)
+u8 Overworld::CalculateYConnectionLocation(const MapConnection* m, s32 x, s32 y, u16 heightOfMap)
 {
-	if (m != 0)
+	if (m)
 	{
 		u8 sideID = 0xFF;
 		if (y < 0)
@@ -199,22 +217,22 @@ u8 Overworld::CalculateYConnectionLocation(MapConnection* m, s32 x, s32 y, u16 h
 		{
 			sideID = 1;
 		}
-		return IsConnectionOnSide(m, sideID);
+		return IsConnectionOnSide(*m, sideID);
 	}
 	return 0xFF;
 }
 
-u16 Overworld::GetOutOfBoundsXBlock(MapConnection* m, s32 x, s32 y, u16 widthOfMap)
+u16 Overworld::GetOutOfBoundsXBlock(const MapConnection &m, s32 x, s32 y, u16 widthOfMap)
 {
 	u16 blockID = 0;
-	u8 theValue = CalculateXConnectionLocation(m, x, y, widthOfMap);
+	u8 theValue = CalculateXConnectionLocation(&m, x, y, widthOfMap);
 	if (theValue != 0xFF)
 	{
-		MapConnectionData* data = ((MapConnectionData*)(m[0].mainData));
-		s32 offset = data[theValue].offset;
-		MapFooter* footer = GetMapFooterFromBankAndMapID(data[theValue].mapBank, data[theValue].map);
-		u16 blockColumn = (x < 0)?footer[0].width:0;
-		if (data[theValue].type == 4)
+		const MapConnectionData &data = *m.mainData;
+		s32 offset = data.offset;
+		const MapFooter &footer = GetMapFooterFromBankAndMapID(data.mapBank, data.map);
+		u16 blockColumn = (x < 0)?footer.width:0;
+		if (data.type == 4)
 		{
 			blockColumn += (x - widthOfMap);
 		}
@@ -222,7 +240,7 @@ u16 Overworld::GetOutOfBoundsXBlock(MapConnection* m, s32 x, s32 y, u16 widthOfM
 		{
 			blockColumn += x;
 		}
-		blockID = ((y + (0 - offset)) >= 0 || (y + (0 - offset)) < footer[0].height)?GetBlockFromData(footer[0].mapDataLocation, blockColumn, y + (0 - offset), footer[0].width):GetBorderBlock(blockColumn, y + (0 - offset));
+		blockID = ((y + (0 - offset)) >= 0 || (y + (0 - offset)) < footer.height)?GetBlockFromData(footer.mapDataLocation, blockColumn, y + (0 - offset), footer.width):GetBorderBlock(blockColumn, y + (0 - offset));
 	}
 	else
 	{
@@ -231,17 +249,17 @@ u16 Overworld::GetOutOfBoundsXBlock(MapConnection* m, s32 x, s32 y, u16 widthOfM
 	return blockID;
 }
 
-u16 Overworld::GetOutOfBoundsYBlock(MapConnection* m, s32 x, s32 y, u16 heightOfMap)
+u16 Overworld::GetOutOfBoundsYBlock(const MapConnection &m, s32 x, s32 y, u16 heightOfMap)
 {
 	u16 blockID = 0;
-	u8 theValue = CalculateYConnectionLocation(m, x, y, heightOfMap);
+	u8 theValue = CalculateYConnectionLocation(&m, x, y, heightOfMap);
 	if (theValue != 0xFF)
 	{
-		MapConnectionData* data = ((MapConnectionData*)(m[0].mainData));
-		s32 offset = data[theValue].offset;
-		MapFooter* footer = GetMapFooterFromBankAndMapID(data[theValue].mapBank, data[theValue].map);
-		u16 blockRow = (y < 0)?footer[0].height:0;
-		if (data[theValue].type == 1)
+		const MapConnectionData &data = *m.mainData;
+		s32 offset = data.offset;
+		const MapFooter &footer = GetMapFooterFromBankAndMapID(data.mapBank, data.map);
+		u16 blockRow = (y < 0)?footer.height:0;
+		if (data.type == 1)
 		{
 			blockRow += (y - heightOfMap);
 		}
@@ -249,7 +267,7 @@ u16 Overworld::GetOutOfBoundsYBlock(MapConnection* m, s32 x, s32 y, u16 heightOf
 		{
 			blockRow += y;
 		}
-		blockID = ((x + (0 - offset)) >= 0 || (x + (0 - offset)) < footer[0].width)?GetBlockFromData(footer[0].mapDataLocation, x + (0 - offset), blockRow, footer[0].width):GetBorderBlock(x + (0 - offset), blockRow);
+		blockID = ((x + (0 - offset)) >= 0 || (x + (0 - offset)) < footer.width)?GetBlockFromData(footer.mapDataLocation, x + (0 - offset), blockRow, footer.width):GetBorderBlock(x + (0 - offset), blockRow);
 	}
 	else
 	{
@@ -261,20 +279,21 @@ u16 Overworld::GetOutOfBoundsYBlock(MapConnection* m, s32 x, s32 y, u16 heightOf
 u16 Overworld::CalculateBlock(s32 x, s32 y)
 {
 	u16 blockID = 0;
-	u16 heightOfMap = Game::GetCurrentMap().footerLocation->height;
-	u16 widthOfMap = Game::GetCurrentMap().footerLocation->width;
-	MapConnection* m = Game::GetCurrentMap().connections;
+	const MapHeader &header = Game::GetCurrentMap();
+	u16 heightOfMap = header.footerLocation->height;
+	u16 widthOfMap = header.footerLocation->width;
+	MapConnection* m = header.connections;
 	if (x < 0 || x >= widthOfMap)
 	{
-		blockID = GetOutOfBoundsXBlock(m, x, y, widthOfMap);
+		blockID = GetOutOfBoundsXBlock(*m, x, y, widthOfMap);
 	}
-	else if (y < 0 || y >= Game::GetCurrentMap().footerLocation->height)
+	else if (y < 0 || y >= header.footerLocation->height)
 	{
-		blockID = GetOutOfBoundsYBlock(m, x, y, heightOfMap);
+		blockID = GetOutOfBoundsYBlock(*m, x, y, heightOfMap);
 	}
 	else
 	{
-		blockID = GetBlockFromData(Game::GetCurrentMap().footerLocation->mapDataLocation, x, y, widthOfMap);
+		blockID = GetBlockFromData(header.footerLocation->mapDataLocation, x, y, widthOfMap);
 	}
 	return blockID;
 }
@@ -300,9 +319,9 @@ Block* Overworld::GetBlockLocation(u16 blockID)
 
 u32* Overworld::GetBlockDataLocation(u16 blockID)
 {
-	MapFooter* footer = Game::GetCurrentMap().footerLocation;
-	void* prim = ((blockID >= comparisonSizes[Game::GetCurrentMap().tilesetType])?(void*)footer[0].secondaryTileset:(void*)footer[0].primaryTileset);
-	return (u32*)((u32*)prim)[5];
+	const MapFooter &footer = *Game::GetCurrentMap().footerLocation;
+	const Tileset &prim = *((blockID >= comparisonSizes[Game::GetCurrentMap().tilesetType])?footer.secondaryTileset:footer.primaryTileset);
+	return prim.RSEBlockInformation;
 }
 
 void Overworld::PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location)
@@ -370,47 +389,6 @@ void Overworld::DrawMap(u32 xLocation, u32 yLocation)
 	}
 }
 
-u8 Overworld::LoadObjectPaletteIntoMemory(u32 paletteID, u8 slot, u8 overloadExisting)
-{
-	u16* paletteLocation = (u16*)((u8*)((((u32*)paletteTable[paletteID]))) + (RTC::GetTime().timeOfDay * 0x20));
-	if (overloadExisting == 1)
-	{
-		memcpy32((void*)(0x05000200 + (slot * 0x20)), paletteLocation, 0x8);
-		return slot;
-	}
-	else
-	{
-		s32 result = 0;
-		if (result < 0)
-		{
-			return 0xFF;
-		}
-		memcpy32((void*)(0x05000200 + (result * 0x20)), paletteLocation, 0x8);
-		return (u8)result;
-	}
-}
-
-void Overworld::ChangeSpriteFrame(u8 spriteID)
-{
-	u8 i;
-	u8 found = 0;
-	for (i = 0; i < 24; i++)
-	{
-		if (overworldSpriteData[i].spriteID == spriteID)
-		{
-			found = 1;
-			break;
-		}
-	}
-	if (found == 1)
-	{
-		//u8 oamID = overworldSpriteData[i].oamStructID;
-		//void* tileBase = (void*)(0x06010000 + (preOAM[oamID].tilebaseStart << 5));
-		//u8 frameID = walkingFrameConversion[overworldSpriteData[i].directionFacing][overworldSpriteData[i].nextWalkingFrame];
-
-	}
-}
-
 const RODATA_LOCATION u16 xLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 112 } };
 
 u16 Overworld::CalculateObjectXLocation(u8 shape, u8 size)
@@ -435,17 +413,18 @@ void Overworld::UpdateMapLocations()
 	REG_BG1VOFS = y;
 }
 
-u32 Overworld::IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocation)
+bool Overworld::IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocation)
 {
-	u32 returnable = 0;
-	u16 heightOfMap = Game::GetCurrentMap().footerLocation->height;
-	u16 widthOfMap = Game::GetCurrentMap().footerLocation->width;
-	MapConnection* m = Game::GetCurrentMap().connections;
+	bool returnable = false;
+	const MapHeader &header = Game::GetCurrentMap();
+	u16 heightOfMap = header.footerLocation->height;
+	u16 widthOfMap = header.footerLocation->width;
+	MapConnection* m = header.connections;
 	if (horizontalLocation < 0 || horizontalLocation >= widthOfMap)
 	{
 		if (m != 0)
 		{
-			u8 sideID = 0xFF;
+			u32 sideID = 0xFF;
 			if (horizontalLocation < 0)
 			{
 				sideID = 3;
@@ -454,10 +433,10 @@ u32 Overworld::IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocati
 			{
 				sideID = 4;
 			}
-			u8 theValue = IsConnectionOnSide(m, sideID);
+			u32 theValue = IsConnectionOnSide(*m, sideID);
 			if (sideID != 0xFF && theValue != 0xFF)
 			{
-				returnable = 1;
+				returnable = true;
 			}
 		}
 	}
@@ -465,7 +444,7 @@ u32 Overworld::IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocati
 	{
 		if (m != 0)
 		{
-			u8 sideID = 0xFF;
+			u32 sideID = 0xFF;
 			if (verticalLocation < 0)
 			{
 				sideID = 2;
@@ -474,36 +453,36 @@ u32 Overworld::IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocati
 			{
 				sideID = 1;
 			}
-			u8 theValue = IsConnectionOnSide(m, sideID);
+			u32 theValue = IsConnectionOnSide(*m, sideID);
 			if (sideID != 0xFF && theValue != 0xFF)
 			{
-				returnable = 1;
+				returnable = true;
 			}
 		}
 	}
 	return returnable;
 }
 
-u32 Overworld::IsNewLocationWalkable(s32 horizontalLocation, s32 verticalLocation)
+bool Overworld::IsNewLocationWalkable(s32 horizontalLocation, s32 verticalLocation)
 {
-	return (CalculateBlockMovementPermissions(horizontalLocation, verticalLocation) == 0xC)?1:0;
+	return CalculateBlockMovementPermissions(horizontalLocation, verticalLocation) == 0xC;
 }
 
-u32 Overworld::IsNewLocationInBounds(s32 horizontalLocation, s32 verticalLocation)
+bool Overworld::IsNewLocationInBounds(s32 horizontalLocation, s32 verticalLocation)
 {
-	return (horizontalLocation >= 0 && horizontalLocation < Game::GetCurrentMap().footerLocation[0].width && verticalLocation >= 0 && verticalLocation < Game::GetCurrentMap().footerLocation[0].height)?1:0;
+	return (horizontalLocation >= 0 && horizontalLocation < Game::GetCurrentMap().footerLocation[0].width && verticalLocation >= 0 && verticalLocation < Game::GetCurrentMap().footerLocation[0].height);
 }
 
 u32 Overworld::IsNewLocationValid(s32 horizontalLocation, s32 verticalLocation)
 {
 	u32 retValue = 0;
-	if (IsNewLocationWalkable(horizontalLocation, verticalLocation) == 1)
+	if (IsNewLocationWalkable(horizontalLocation, verticalLocation))
 	{
-		if (IsNewLocationInBounds(horizontalLocation, verticalLocation) == 1)
+		if (IsNewLocationInBounds(horizontalLocation, verticalLocation))
 		{
 			retValue = 1;
 		}
-		else if (IsNewLocationConnected(horizontalLocation, verticalLocation) == 1)
+		else if (IsNewLocationConnected(horizontalLocation, verticalLocation))
 		{
 			retValue = 2;
 		}
@@ -513,25 +492,46 @@ u32 Overworld::IsNewLocationValid(s32 horizontalLocation, s32 verticalLocation)
 
 void Overworld::CopyMapHeaderAndResetMusic()
 {
-	u8 mapBank = connectStruct[0].mapBank;
-	u8 map = connectStruct[0].map;
+	u8 mapBank = connect.mapBank;
+	u8 map = connect.map;
 	u16 newMusicTrack = GetMusicTrackIDFromBankAndMapID(mapBank, map);
 	if (Game::GetCurrentMap().musicTrack != newMusicTrack)
 	{
 		SoundEngine::PlaySong(newMusicTrack, 1);
 	}
-	MapHeader* theHeader = GetMapHeaderFromBankAndMapID(mapBank, map);
-	if (theHeader[0].footerLocation[0].primaryTileset != Game::GetCurrentMap().footerLocation[0].primaryTileset)
+	const MapHeader &theHeader = GetMapHeaderFromBankAndMapID(mapBank, map);
+	if (theHeader.footerLocation[0].primaryTileset != Game::GetCurrentMap().footerLocation[0].primaryTileset)
 	{
-		StoreTilesetIntoMemory(0, theHeader[0].footerLocation[0].primaryTileset[0].primaryTilesetData[0], (theHeader[0].footerLocation[0].primaryTileset[0].information & 0xFF0000) >> 0x10, theHeader[0].footerLocation[0].primaryTileset[0].information & 1);
-		PutTilesetPalettesInMemory(0, (u16*)theHeader[0].footerLocation[0].primaryTileset[0].paletteData, RTC::GetTime().timeOfDay);
+		StoreTilesetIntoMemory(0, theHeader.footerLocation[0].primaryTileset[0].primaryTilesetData, (theHeader.footerLocation[0].primaryTileset[0].information & 0xFF0000) >> 0x10, theHeader.footerLocation[0].primaryTileset[0].information & 1);
+		PutTilesetPalettesInMemory(0, (u16*)theHeader.footerLocation[0].primaryTileset[0].paletteData, RTC::GetTime().timeOfDay);
 	}
-	if (theHeader[0].footerLocation[0].secondaryTileset != Game::GetCurrentMap().footerLocation[0].secondaryTileset)
+	if (theHeader.footerLocation[0].secondaryTileset != Game::GetCurrentMap().footerLocation[0].secondaryTileset)
 	{
-		StoreTilesetIntoMemory(1, theHeader[0].footerLocation[0].secondaryTileset[0].secondaryTilesetData[0], (theHeader[0].footerLocation[0].secondaryTileset[0].information & 0xFF0000) >> 0x10, theHeader[0].footerLocation[0].secondaryTileset[0].information & 1);
-		PutTilesetPalettesInMemory(1, (u16*)theHeader[0].footerLocation[0].secondaryTileset[0].paletteData, RTC::GetTime().timeOfDay);
+		StoreTilesetIntoMemory(1, theHeader.footerLocation[0].secondaryTileset[0].secondaryTilesetData, (theHeader.footerLocation[0].secondaryTileset[0].information & 0xFF0000) >> 0x10, theHeader.footerLocation[0].secondaryTileset[0].information & 1);
+		PutTilesetPalettesInMemory(1, (u16*)theHeader.footerLocation[0].secondaryTileset[0].paletteData, RTC::GetTime().timeOfDay);
 	}
-	Game::SetCurrentMap(*theHeader);
+	Game::SetCurrentMap(theHeader);
 	Maths::ReseedRNG();
 }
 
+void Overworld::Update()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		if (animStruct[i].dataPointer != 0)
+		{
+			if (animStruct[i].framesUntilChange == 0)
+			{
+				void* destination = (void*)(((i >= 5)?0x06005000:0x06000000) + ((animStruct[i].startTile - ((i >= 5)?512:0)) * 0x20));
+				u32 tileCopyLength = animStruct[i].numberOfTiles << 3;
+				memcpy32(destination, (void*)(&(animStruct[i].dataPointer[tileCopyLength * animStruct[i].frameOfAnimation])), tileCopyLength);
+				animStruct[i].framesUntilChange = animStruct[i].frameDelay;
+				animStruct[i].frameOfAnimation = Maths::UnsignedModulus(animStruct[i].frameOfAnimation + 1, animStruct[i].numberOfFrames);
+			}
+			else
+			{
+				animStruct[i].framesUntilChange--;
+			}
+		}
+	}
+}

@@ -1,4 +1,5 @@
 #include "GlobalDefinitions.h"
+#include "MappingDefinitions.h"
 #include "Maths.h"
 #include "libsprites.h"
 #include "Pokemon.h"
@@ -584,6 +585,7 @@ Pokemon* Pokemon::GenerateEgg(Pokemon* mother, Pokemon* father)
 	Pokemon* egg = new Pokemon(0, species);
 	egg->Encrypt(IsEgg, true);
 	// Calculate Egg Moves and award where necessary
+	return egg;
 }
 
 void Pokemon::GivePokemonToPlayer(u8 level, u16 species, u32 formeIndex)

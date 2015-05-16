@@ -7,7 +7,6 @@
 
 #include "InputHandler.h"
 #include "GlobalDefinitions.h"
-#include "InputEventHandler.h"
 
 EWRAM_LOCATION ALIGN(4) KeyBuffer InputHandler::inputValues;
 EWRAM_LOCATION ALIGN(4) InputEventHandler* InputHandler::handler = NULL;
@@ -75,4 +74,13 @@ void InputHandler::KeyPoll()
 		}
 		handler->Update();
 	}
+}
+
+void InputHandler::SetEventHandler(InputEventHandler* newHandler)
+{
+	if (handler)
+	{
+		delete handler;
+	}
+	handler = newHandler;
 }

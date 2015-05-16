@@ -9,6 +9,7 @@
 #define GAME_H_
 
 #include "GlobalDefinitions.h"
+#include "MappingDefinitions.h"
 #include "Pokemon.h"
 
 typedef struct PokemonStorageBoxes {
@@ -25,20 +26,22 @@ private:
 	static Bag bag;
 	static Player player;
 	static MapHeader currentMap;
+	static Options options;
 	static char buffers[NUMBUFFERS][BUFFERLENGTH];
 	Game();
 	~Game();
-	u32 CountPokemon(Pokemon* location, u32 length);
-	u32 CountAbridgedPokemon(AbridgedPokemon* location, u32 length);
+	static u32 CountPokemon(Pokemon* location, u32 length);
+	static u32 CountAbridgedPokemon(AbridgedPokemon* location, u32 length);
 public:
 	static void Update();
 	static void SetCurrentMap(const MapHeader &mapHeader) { currentMap = mapHeader; }
 	static Player & GetPlayer() { return player; }
 	static const MapHeader & GetCurrentMap() { return currentMap; }
+	static const Options & GetOptions() { return options; }
 	static bool AddNewPokemon(const Pokemon &p);
-	u32 CountPartyPokemon();
-	u32 CountBoxPokemon(u32 boxID);
-	u32 CountAllBoxPokemon();
+	static u32 CountPartyPokemon();
+	static u32 CountBoxPokemon(u32 boxID);
+	static u32 CountAllBoxPokemon();
 };
 
 #endif /* GAME_H_ */

@@ -11,6 +11,8 @@
 #include "GlobalDefinitions.h"
 #define NumWaitFrames 8
 
+enum Keys { Key_A, Key_B, Key_Select, Key_Start, Key_Right, Key_Left, Key_Up, Key_Down, Key_RightBumper, Key_LeftBumper };
+
 class InputEventHandler
 {
 protected:
@@ -18,8 +20,8 @@ protected:
 	bool keyHeld[10];
 	u8 keyPressTimers[10];
 	InputEventHandler();
-	~InputEventHandler();
 public:
+	virtual ~InputEventHandler();
 	virtual void OnPressA();
 	virtual void OnPressB();
 	virtual void OnPressUp();

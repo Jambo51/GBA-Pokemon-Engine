@@ -8,8 +8,6 @@
 #ifndef UNORDEREDMAP_H_
 #define UNORDEREDMAP_H_
 
-#define NULL 0
-
 template <class T> class ListNode
 {
 private:
@@ -51,8 +49,8 @@ public:
 	LinkedList<T>()
 	{
 		numItems = 0;
-		frontNode = NULL;
-		backNode = NULL;
+		frontNode = __null;
+		backNode = __null;
 	}
 	~LinkedList<T>()
 	{
@@ -66,12 +64,12 @@ public:
 	{
 		if (frontNode)
 		{
-			ListNode<T>* node = new ListNode<T>(backNode, item, NULL);
+			ListNode<T>* node = new ListNode<T>(backNode, item, __null);
 			backNode = node;
 		}
 		else
 		{
-			frontNode = new ListNode<T>(NULL, item, NULL);
+			frontNode = new ListNode<T>(__null, item, __null);
 			backNode = frontNode;
 		}
 		numItems++;
@@ -81,12 +79,12 @@ public:
 	{
 		if (frontNode)
 		{
-			ListNode<T>* node = new ListNode<T>(NULL, item, frontNode);
+			ListNode<T>* node = new ListNode<T>(__null, item, frontNode);
 			frontNode = node;
 		}
 		else
 		{
-			frontNode = new ListNode<T>(NULL, item, NULL);
+			frontNode = new ListNode<T>(__null, item, __null);
 			backNode = frontNode;
 		}
 		numItems++;

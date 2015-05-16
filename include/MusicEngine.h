@@ -14,7 +14,7 @@ protected:
 	virtual void FadeSongOut() = 0;
 	virtual void FadeSongIn() = 0;
 public:
-	~MusicEngine();
+	virtual ~MusicEngine();
 	virtual void Update();
 	virtual void SetSongOnEndFunction(VoidFunctionPointerVoid function) = 0;
 	virtual void SetSFXOnEndFunction(VoidFunctionPointerVoid function) = 0;

@@ -5,7 +5,7 @@
  *      Author: Jamie
  */
 
-#include "GlobalDefinitions.h"
+#include "MappingDefinitions.h"
 #include "Tilesets.h"
 
 const u16 map3_0[] = { 0x041C, 0x041D, 0x041C, 0x041D, 0x041C, 0x041D, 0x041C, 0x041D,
@@ -209,8 +209,8 @@ const MapConnectionData connectionData3_19[] = {
 
 const MapConnection connections3_19 = { 1, (MapConnectionData*)(&connectionData3_19) };
 
-const RODATA_LOCATION Tileset tileset0 = { 0x1, &Tileset0Tiles, &Tileset0Pal, &Tileset0MapBlock, &Tileset0AnimStruct, &Tileset0BlockInformation };
-const RODATA_LOCATION Tileset tileset1 = { 0x101, &Tileset1Tiles, &Tileset1Pal, &Tileset1MapBlock, 0, &Tileset1BlockInformation };
+const TEXT_LOCATION Tileset tileset0 = { 0x1, &Tileset0Tiles, &Tileset0Pal, &Tileset0MapBlock, &Tileset0AnimStruct, &Tileset0BlockInformation };
+const TEXT_LOCATION Tileset tileset1 = { 0x101, &Tileset1Tiles, &Tileset1Pal, &Tileset1MapBlock, 0, &Tileset1BlockInformation };
 
 const WildPokemonEntry wildData[] = { { 75, 3, 6, Caterpie }, { 25, 7, 9, Metapod } };
 
@@ -224,4 +224,14 @@ const MapHeader mapHeader3_0 = { &mapFooter3_0, 0, 0, &connections3_0, Song_GSCP
 const MapFooter mapFooter3_19 = { 24, 40, &map3_0BorderData, &map3_19, &tileset0, &tileset1, 2, 2 };
 const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, { 3, 19 }, 0, 0, 0, 0, 0, 0, 0, 0, (WildData*)&mapWildData };
 
-const MapHeader* maps[][2] = { { 0x00000000, 0x00000000 }, { 0x00000000, 0x00000000 }, { 0x00000000, 0x00000000 }, { (MapHeader*)(&mapHeader3_0), (MapHeader*)(&mapHeader3_19) } };
+const RODATA_LOCATION MapHeader* bankZero[] = { };
+
+const RODATA_LOCATION MapHeader* bankOne[] = { };
+
+const RODATA_LOCATION MapHeader* bankTwo[] = { };
+
+const RODATA_LOCATION MapHeader* bankThree[] = { &mapHeader3_0, &mapHeader3_19 };
+
+const RODATA_LOCATION MapHeader** maps[] = { &bankZero, &bankOne, &bankTwo, &bankThree };
+
+const RODATA_LOCATION MapHeader* errorMap = &mapHeader3_0;

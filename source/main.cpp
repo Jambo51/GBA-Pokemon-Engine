@@ -15,6 +15,7 @@
 #include "Maths.h"
 #include "Mapping.h"
 #include "RTC.h"
+#include "TitleScreen.h"
 
 int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 
@@ -63,13 +64,13 @@ int main()
 	RTC::Enable();
 	IRQHandler::Initialise();
 	IRQHandler::PrimeIRQ(II_VBLANK);
-	BackgroundFunctions::setbackgroundstodefault();
+	BackgroundFunctions::SetBackgroundsToDefault();
+	GameModeManager::SetScreen(new TitleScreen());
 	InitialiseMemoryAllocator((void*)Image$$ZI$$Limit, 0x02040000 - Image$$ZI$$Limit);
 	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
 	InitialisePaletteAllocator();
-	Game::SetCurrentMap(*Overworld::GetMapHeaderFromBankAndMapID(3, 0));
+	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 0));
 	Pokemon::GivePokemonToPlayer(36, Charizard);
-	SoundEngine::PlaySong(Song_KantoTrainerBattle, 0);
 	while (true)
 	{
 		VBlankIntrWait();

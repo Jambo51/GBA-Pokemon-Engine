@@ -7,7 +7,6 @@
 
 #include "IRQHandler.h"
 #include "GlobalDefinitions.h"
-#include <tonc_irq.h>
 
 IRQHandler::IRQHandler()
 {

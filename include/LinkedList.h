@@ -8,6 +8,8 @@
 #ifndef UNORDEREDMAP_H_
 #define UNORDEREDMAP_H_
 
+#include "GlobalDefinitions.h"
+
 template <class T> class ListNode
 {
 private:
@@ -127,23 +129,15 @@ public:
 			}
 			return currNode;
 		}
+		return NULL;
 	}
 
 	T & At(int index)
 	{
-		if (index < numItems)
+		ListNode<T>* node = NodeAt(index);
+		if (node)
 		{
-			int currIndex = 0;
-			ListNode<T>* currNode = frontNode;
-			if (index != currIndex)
-			{
-				do
-				{
-					currNode = currNode->GetNext();
-					currIndex++;
-				} while (index != currIndex);
-			}
-			return currNode->GetItem();
+			return node->GetItem();
 		}
 	}
 

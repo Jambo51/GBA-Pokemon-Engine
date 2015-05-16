@@ -21,5 +21,10 @@ Allocator::~Allocator()
 
 void* Allocator::AllocateObjectTiles(u32 totalSize)
 {
+	return (void*)0x06010000;
+}
 
+u32 Allocator::AllocatePaletteSlot()
+{
+	return 0;
 }

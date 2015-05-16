@@ -6,7 +6,6 @@
 #include "CallbackManager.h"
 #include "IRQHandler.h"
 #include "InputHandler.h"
-#include "ObjectManager.h"
 #include "GameModeManager.h"
 #include "Game.h"
 #include "BackgroundFunctions.h"
@@ -53,9 +52,9 @@ int main()
 		RTC::Update();
 		InputHandler::KeyPoll();
 		CallbackManager::Update();
-		EntityManager::Update();
 		SoundEngine::Update();
-		ObjectManager::Update(EntityManager::GetRenderOrder());
+		EntityManager::Update();
+		EntityManager::Render();
 		Game::Update();
 		DefragmentMallocData();
 		Maths::GetRandom32BitValue();

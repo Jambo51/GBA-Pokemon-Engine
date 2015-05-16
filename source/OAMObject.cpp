@@ -1,24 +1,22 @@
 /*
- * ObjectManager.cpp
+ * OAMObjecte.cpp
  *
- *  Created on: 13 May 2015
+ *  Created on: 16 May 2015
  *      Author: Jamie
  */
 
-#include "ObjectManager.h"
-#include "Allocator.h"
+#include "OAMObject.h"
 #include "GlobalDefinitions.h"
+#include "Allocator.h"
 
-LinkedList<OAMObject*>* ObjectManager::_objects = new LinkedList<OAMObject*>();
+RODATA_LOCATION u8 OAMObject::sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
 
-const RODATA_LOCATION u8 sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
-
-u32 CalculateObjectSize(u32 shape, u32 size)
+u32 OAMObject::CalculateObjectSize(u32 shape, u32 size)
 {
 	return (u32)sizes[shape][size];
 }
 
-OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* palette, bool compressed)
+OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* palette, u32 priority, bool compressed)
 {
 	if (shape <= Shape_Vertical && size <= Square_64x64)
 	{
@@ -28,6 +26,7 @@ OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* pa
 			this->objSize = size;
 			this->mode = paletteMode;
 			u32 totalSize = CalculateObjectSize(shape, size);
+			this->priority = priority;
 			void* loc = Allocator::AllocateObjectTiles(totalSize);
 			if (loc)
 			{
@@ -37,15 +36,27 @@ OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* pa
 				}
 				else
 				{
-					memcpy32(loc, image, totalSize);
+					memcpy32(loc, image, totalSize << 3);
 				}
 			}
+			this->isActive = 1;
+			this->tileLocation = ((u32)loc - 0x06010000) >> 5;
+			u32 paletteID = Allocator::AllocatePaletteSlot();
+			if (paletteID < 16)
+			{
+				memcpy32((void*)(MEM_PAL_OBJ + paletteID * 0x20), palette, 8);
+			}
+			this->paletteSlot = paletteID;
 		}
 	}
 }
 
 void OAMObject::Update(u32 position)
 {
+	if (updater)
+	{
+		updater->Update(this);
+	}
 	u16* oam = (u16*)0x07000000;
 	if (isActive)
 	{
@@ -57,24 +68,4 @@ void OAMObject::Update(u32 position)
 		oam[(position << 3) + 1] = xLocation | ((rotationFlag) ? (rotScaleParam << 9) : (hFlip << 12) | (vFlip << 13)) | (objSize << 14);
 		oam[(position << 3) + 2] = tileLocation | (priority << 10)| (paletteSlot << 12);
 	}
-}
-
-ObjectManager::ObjectManager()
-{
-	// TODO Auto-generated constructor stub
-
-}
-
-ObjectManager::~ObjectManager()
-{
-	// TODO Auto-generated destructor stub
-}
-
-void ObjectManager::Update(LinkedList<Entity*>* order)
-{
-	for (int i = 0; i < order->Size(); i++)
-	{
-		_objects->At(order->At(i)->GetObjectID())->Update(i);
-	}
-	delete order;
 }

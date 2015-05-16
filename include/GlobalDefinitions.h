@@ -314,7 +314,13 @@ typedef struct RealTimeClock {
 	u8 minute;
 	u8 second;
 	u8 timeOfDay;
+	u8 season;
 } RealTimeClock;
+
+typedef struct SeasonClockValues {
+	u8 day;
+	u8 month;
+} SeasonClockValues;
 
 typedef struct Bag {
 	u32 bagInformation;

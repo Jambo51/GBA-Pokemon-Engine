@@ -25,6 +25,7 @@
 
 EWRAM_LOCATION ALIGN(4) RealTimeClock RTC::rtcData;
 EWRAM_LOCATION ALIGN(4) s32 RTC::check_val = 0;
+RODATA_LOCATION ALIGN(1) SeasonClockValues RTC::seasonValues[4] = {  };
 
 RTC::RTC()
 {
@@ -44,6 +45,19 @@ s32 RTC::CompareTimeTo(u8 hour, u8 minute, u8 second)
 		return 1;
 	}
 	else if (hour == rtcData.hour && minute == rtcData.minute && second == rtcData.second)
+	{
+		return 0;
+	}
+	return -1;
+}
+
+s32 RTC::CompareDateTo(u8 day, u8 month, u16 year)
+{
+	if (year < rtcData.year || (year == rtcData.year && month < rtcData.month) || (year == rtcData.hour && month == rtcData.month && day < rtcData.day))
+	{
+		return 1;
+	}
+	else if (year == rtcData.year && month == rtcData.month && day == rtcData.day)
 	{
 		return 0;
 	}

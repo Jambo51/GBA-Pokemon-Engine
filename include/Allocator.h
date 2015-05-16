@@ -17,6 +17,7 @@ private:
 	virtual ~Allocator();
 public:
 	static void* AllocateObjectTiles(u32 totalSize);
+	static u32 AllocatePaletteSlot();
 };
 
 #endif /* ALLOCATOR_H_ */

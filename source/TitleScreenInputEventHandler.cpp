@@ -8,6 +8,7 @@
 #include "TitleScreenInputEventHandler.h"
 #include "GameModeManager.h"
 #include "Mapping.h"
+#include "Maths.h"
 
 TitleScreenInputEventHandler::TitleScreenInputEventHandler()
 {
@@ -23,6 +24,7 @@ TitleScreenInputEventHandler::~TitleScreenInputEventHandler()
 void TransitionToOverworld()
 {
 	GameModeManager::SetScreen(new Overworld());
+	Maths::ReseedRNG();
 }
 
 void TitleScreenInputEventHandler::OnPressA()

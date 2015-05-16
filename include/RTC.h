@@ -15,6 +15,7 @@ class RTC
 private:
 	static RealTimeClock rtcData;
 	static s32 check_val;
+	static SeasonClockValues seasonValues[];
 	RTC();
 	~RTC();
 	static void Cmd(s32 v);
@@ -27,6 +28,7 @@ private:
 	static void IncrementPlayerPlayedCounter();
 public:
 	static s32 CompareTimeTo(u8 hour, u8 minute, u8 second);
+	static s32 CompareDateTo(u8 day, u8 month, u16 year);
 	static void Update();
 	static void Enable(void);
 	static const RealTimeClock & GetTime() { return rtcData; }

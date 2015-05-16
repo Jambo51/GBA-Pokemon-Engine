@@ -15,7 +15,7 @@ public:
 	static bool LoadContent();
 	static bool Update();
 	static void UnloadContent();
-	static LinkedList<Entity*>* GetRenderOrder();
+	static void Render();
 	static void Clear();
 	static void ShutDown();
 	static void RegisterEntity(Entity* entity);

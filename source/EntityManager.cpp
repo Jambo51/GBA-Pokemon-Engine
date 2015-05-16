@@ -42,7 +42,7 @@ void EntityManager::UnloadContent()
 	}
 }
 
-LinkedList<Entity*>* EntityManager::GetRenderOrder()
+void EntityManager::Render()
 {
 	LinkedList<Entity*>* order = new LinkedList<Entity*>();
 	for (int i = 0; i < _entities->Size(); i++)
@@ -66,8 +66,16 @@ LinkedList<Entity*>* EntityManager::GetRenderOrder()
 		{
 			order->PushBack(_entities->At(i));
 		}
+		for (int i = 0; i < order->Size(); i++)
+		{
+			OAMObject* obj = order->At(i)->GetObject();
+			if (obj)
+			{
+				obj->Update(i);
+			}
+		}
+		delete order;
 	}
-	return order;
 }
 
 void EntityManager::Clear()

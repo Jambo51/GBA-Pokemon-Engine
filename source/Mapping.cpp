@@ -5,7 +5,6 @@
 #include "MemoryManagement.h"
 #include "Maths.h"
 #include "Flags.h"
-#include "ObjectFunctions.h"
 #include "Game.h"
 #include "Maths.h"
 #include "RTC.h"
@@ -14,6 +13,7 @@
 #include "BackgroundFunctions.h"
 #include "InputHandler.h"
 #include "DoNothingInputEventHandler.h"
+#include "PlayerEntity.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -30,6 +30,7 @@ Overworld::Overworld()
 	DrawMap(10, 15);
 	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
+	new PlayerEntity(Vector2D(112, 56), 2);
 }
 
 Overworld::~Overworld()

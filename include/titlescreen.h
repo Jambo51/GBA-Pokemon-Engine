@@ -1,16 +1,25 @@
 /*
- * tittlescreen.h
+ * TitleScreen.h
  *
- *  Created on: Aug 2, 2014
- *      Author: Gamer2020
+ *  Created on: 15 May 2015
+ *      Author: Jamie
  */
 
-#ifndef TITTLESCREEN_H_
-#define TITTLESCREEN_H_
+#ifndef TITLESCREEN_H_
+#define TITLESCREEN_H_
 
+#include "GameScreen.h"
+#include "GlobalDefinitions.h"
 
-extern void TitleScreen();
-extern void SetupTitleScreen();
-extern void TitleScreenKeyHandle();
+class TitleScreen : public GameScreen
+{
+private:
+	u32 counter:31;
+	u32 status:1;
+public:
+	TitleScreen();
+	~TitleScreen();
+	void Update();
+};
 
-#endif /* TITTLESCREEN_H_ */
+#endif /* TITLESCREEN_H_ */

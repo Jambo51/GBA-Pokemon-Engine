@@ -42,6 +42,7 @@ public:
 	static u32 CountPartyPokemon();
 	static u32 CountBoxPokemon(u32 boxID);
 	static u32 CountAllBoxPokemon();
+	static void StartTimer(int timerNum, int timerSetting, u16 cascadeValue);
 };
 
 #endif /* GAME_H_ */

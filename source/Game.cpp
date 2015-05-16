@@ -117,3 +117,26 @@ u32 Game::CountAllBoxPokemon()
 {
 	return storageBoxes.info.numPokemon;
 }
+
+void Game::StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
+{
+	switch(timerNum)
+	{
+	case 0:
+		REG_TM0D = cascadeValue;
+		REG_TM0CNT = 0x80 | timerSetting;
+		break;
+	case 1:
+		REG_TM1D = cascadeValue;
+		REG_TM1CNT = 0x80 | timerSetting;
+		break;
+	case 2:
+		REG_TM2D = cascadeValue;
+		REG_TM2CNT = 0x80 | timerSetting;
+		break;
+	case 3:
+		REG_TM3D = cascadeValue;
+		REG_TM3CNT = 0x80 | timerSetting;
+		break;
+	}
+}

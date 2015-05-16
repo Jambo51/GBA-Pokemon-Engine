@@ -31,33 +31,10 @@ int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 #define TEXTSET LATIN
 #define MUSICENGINE GBP
 
-void StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
-{
-	switch(timerNum)
-	{
-	case 0:
-		REG_TM0D = cascadeValue;
-		REG_TM0CNT = 0x80 | timerSetting;
-		break;
-	case 1:
-		REG_TM1D = cascadeValue;
-		REG_TM1CNT = 0x80 | timerSetting;
-		break;
-	case 2:
-		REG_TM2D = cascadeValue;
-		REG_TM2CNT = 0x80 | timerSetting;
-		break;
-	case 3:
-		REG_TM3D = cascadeValue;
-		REG_TM3CNT = 0x80 | timerSetting;
-		break;
-	}
-}
-
 int main()
 {
-	StartTimer(2, 0, 0);
-	StartTimer(3, 1, 0);
+	Game::StartTimer(2, 0, 0);
+	Game::StartTimer(3, 1, 0);
 	SoundEngine::Initialise(new GBPSoundsEngine());
 	EntityManager::Initialise();
 	//InitialiseTextEngine(TEXTSET);
@@ -70,7 +47,6 @@ int main()
 	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
 	InitialisePaletteAllocator();
 	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 0));
-	Pokemon::GivePokemonToPlayer(36, Charizard);
 	while (true)
 	{
 		VBlankIntrWait();

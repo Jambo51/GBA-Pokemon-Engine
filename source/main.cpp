@@ -33,8 +33,8 @@ int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 
 int main()
 {
-	Game::StartTimer(2, 0, 0);
-	Game::StartTimer(3, 1, 0);
+	Game::StartTimer(2);
+	Game::StartTimer(3, 1);
 	SoundEngine::Initialise(new GBPSoundsEngine());
 	EntityManager::Initialise();
 	//InitialiseTextEngine(TEXTSET);

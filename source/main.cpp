@@ -15,6 +15,7 @@
 #include "Mapping.h"
 #include "RTC.h"
 #include "TitleScreen.h"
+#include "Allocator.h"
 
 int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 
@@ -42,9 +43,7 @@ int main()
 	IRQHandler::PrimeIRQ(II_VBLANK);
 	BackgroundFunctions::SetBackgroundsToDefault();
 	GameModeManager::SetScreen(new TitleScreen());
-	InitialiseMemoryAllocator((void*)Image$$ZI$$Limit, 0x02040000 - Image$$ZI$$Limit);
-	InitialiseSpriteAllocator((void*)0x06010000, 0x8000);
-	InitialisePaletteAllocator();
+	Allocator::Initialise((void*)0x06010000, 0x8000);
 	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 0));
 	while (true)
 	{
@@ -56,7 +55,6 @@ int main()
 		EntityManager::Update();
 		EntityManager::Render();
 		Game::Update();
-		DefragmentMallocData();
 		Maths::GetRandom32BitValue();
 		GameModeManager::Update();
 	}

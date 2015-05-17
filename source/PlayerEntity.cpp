@@ -13,7 +13,7 @@ PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel) : Enti
 {
 	// TODO Auto-generated constructor stub
 	SpriteData* data = &spriteTable[0];
-	OAMObject* object = new OAMObject(data->spriteShape, data->spriteSize, 0, (void*)data->frames[0], (void*)paletteTable[data->paletteSlotID], backgroundLevel, false);
+	OAMObject* object = new OAMObject(data->spriteShape, data->spriteSize, 0, (void*)data->frames[0], data->paletteSlotID, (void*)paletteTable[data->paletteSlotID], backgroundLevel, false);
 	this->_object = object;
 }
 

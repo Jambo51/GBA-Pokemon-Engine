@@ -8,7 +8,7 @@
 
 #define MALLOCLENGTH 20
 #define SPRALLOCLENGTH 35
-#define PALLOCLENGTH 16
+#define PALLOCLENGTH 14
 
 #define EWRAM_LOCATION __attribute__((section (".sbss")))
 #define IWRAM_LOCATION __attribute__((section (".bss")))
@@ -551,6 +551,13 @@ typedef struct MemoryManagementStructure {
 	IndexTable data[MALLOCLENGTH];
 } MemoryManagementStructure;
 
+typedef struct PallocDataTable
+{
+	u32 index;
+	u16 paletteID;
+	u16 numObjectsUsing;
+} PallocDataTable;
+
 typedef struct SpriteManagementStructure {
 	u32 filledEntries;
 	void* startLocation;
@@ -560,7 +567,7 @@ typedef struct SpriteManagementStructure {
 
 typedef struct PaletteManagementStructure {
 	u32 filledEntriesObjects;
-	IndexTable dataObjects[PALLOCLENGTH];
+	PallocDataTable dataObjects[PALLOCLENGTH];
 } PaletteManagementStructure;
 
 typedef struct WavePattern {

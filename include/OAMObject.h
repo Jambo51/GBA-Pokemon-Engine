@@ -54,7 +54,7 @@ private:
 	u32 rotScaleParam:5;
 	u32 tileLocation:18;
 public:
-	OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* palette, u32 priority = 0, bool compressed = true);
+	OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority = 0, bool compressed = true);
 	~OAMObject();
 	void Update(u32 position);
 	u32 GetPriority() const { return priority; }

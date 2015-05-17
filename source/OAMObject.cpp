@@ -16,7 +16,7 @@ u32 OAMObject::CalculateObjectSize(u32 shape, u32 size)
 	return (u32)sizes[shape][size];
 }
 
-OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* palette, u32 priority, bool compressed)
+OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority, bool compressed)
 {
 	if (shape <= Shape_Vertical && size <= Square_64x64)
 	{
@@ -27,7 +27,7 @@ OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* pa
 			this->mode = paletteMode;
 			u32 totalSize = CalculateObjectSize(shape, size);
 			this->priority = priority;
-			void* loc = Allocator::AllocateObjectTiles(totalSize);
+			void* loc = Allocator::AllocateObjectTilesFromNumTiles(totalSize);
 			if (loc)
 			{
 				if (compressed)
@@ -41,7 +41,7 @@ OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* pa
 			}
 			this->isActive = 1;
 			this->tileLocation = ((u32)loc - 0x06010000) >> 5;
-			u32 paletteID = Allocator::AllocatePaletteSlot();
+			paletteID = Allocator::AllocatePaletteSlot(paletteID);
 			if (paletteID < 16)
 			{
 				memcpy32((void*)(MEM_PAL_OBJ + paletteID * 0x20), palette, 8);
@@ -49,6 +49,12 @@ OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, void* pa
 			this->paletteSlot = paletteID;
 		}
 	}
+}
+
+OAMObject::~OAMObject()
+{
+	Allocator::FreePalette(this->paletteSlot);
+	Allocator::FreeObjectTilesFromTileID(this->tileLocation);
 }
 
 void OAMObject::Update(u32 position)

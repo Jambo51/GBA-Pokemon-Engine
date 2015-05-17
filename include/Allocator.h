@@ -13,11 +13,18 @@
 class Allocator
 {
 private:
+	static PaletteManagementStructure pallocData;
+	static SpriteManagementStructure sprallocData;
 	Allocator();
 	virtual ~Allocator();
 public:
 	static void* AllocateObjectTiles(u32 totalSize);
-	static u32 AllocatePaletteSlot();
+	static void* AllocateObjectTilesFromNumTiles(u32 requestedLengthInTiles);
+	static void FreeObjectTiles(void* pointer);
+	static void FreeObjectTilesFromTileID(u32 tileID);
+	static s32 AllocatePaletteSlot(u32 paletteID);
+	static void FreePalette(u32 paletteID);
+	static void Initialise(void* objectTilesStartPoint, u32 objectTilesLength);
 };
 
 #endif /* ALLOCATOR_H_ */

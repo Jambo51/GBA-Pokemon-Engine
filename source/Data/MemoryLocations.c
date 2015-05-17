@@ -35,7 +35,6 @@ ALIGN(1) u8 hardwareColumn;
 ALIGN(1) u8 hardwareRow;
 EWRAM_LOCATION ALIGN(4) PaletteFadeStruct fadeStruct[32];
 EWRAM_LOCATION ALIGN(4) PokedexMemoryData* dexPointer;
-ALIGN(4) MemoryManagementStructure mallocData;
 ALIGN(4) SpriteManagementStructure sprallocData;
 ALIGN(4) PaletteManagementStructure pallocData;
 EWRAM_LOCATION ALIGN(4) BattleData* battleDataPointer;

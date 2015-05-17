@@ -158,8 +158,8 @@ s32 Allocator::AllocatePaletteSlot(u32 paletteID)
 		if (slot >= 0 && slot < 14)
 		{
 			pallocData.dataObjects[slot].numObjectsUsing = 1;
-			pallocData.dataObjects[slot].index = 0;
-			pallocData.dataObjects[slot].paletteID = slot;
+			pallocData.dataObjects[slot].index = slot;
+			pallocData.dataObjects[slot].paletteID = paletteID;
 			pallocData.filledEntriesObjects++;
 		}
 		return slot;

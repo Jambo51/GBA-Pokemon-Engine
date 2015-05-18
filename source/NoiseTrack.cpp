@@ -8,6 +8,7 @@
 #include "NoiseTrack.h"
 #include "GlobalDefinitions.h"
 #include "GBPChannel.h"
+#include "Game.h"
 
 RODATA_LOCATION ALIGN(1) u8 NoiseTrack::noiseData00[] = { 0x20, 0x11, 0x00, 0xFF };
 RODATA_LOCATION ALIGN(1) u8 NoiseTrack::noiseData01[] = { 0x20, 0xC1, 0x33, 0xFF };
@@ -227,10 +228,10 @@ void NoiseTrack::ExecuteModifications(u8 commandID, u16 tempo, GBPChannel &maste
 	u16 noteLength = CalculateLength(frameDelay, tempo, (commandID & 0xF), noteLength2);
 	noteLength1 = (noteLength & 0xFF00) >> 8;
 	noteLength2 = noteLength & 0xFF;
-	if (false)
+	if (Game::GetOptions().stereoSound)
 	{
-		u8 pan = pan & 0x88;
-		u16 valueToWrite = (tone1Controller[0x10] & 0x77FF) | (pan << 0x8);
+		u8 thisPan = pan & 0x88;
+		u16 valueToWrite = (tone1Controller[0x10] & 0x77FF) | (thisPan << 0x8);
 		tone1Controller[0x10] = valueToWrite;
 	}
 	if ((commandID & 0xF0) != 0)

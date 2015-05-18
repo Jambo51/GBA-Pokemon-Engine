@@ -30,7 +30,16 @@ Overworld::Overworld()
 	DrawMap(10, 15);
 	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
-	new PlayerEntity(Vector2D(112, 56), 2);
+	NonPlayerCharacter* npc = new PlayerEntity(Vector2D(112, 56), 2);
+	if (!Game::AddNPC(npc))
+	{
+		delete npc;
+	}
+	npc = new NonPlayerCharacter(Vector2D(112, 72), 2, 30);
+	if (!Game::AddNPC(npc))
+	{
+		delete npc;
+	}
 }
 
 Overworld::~Overworld()

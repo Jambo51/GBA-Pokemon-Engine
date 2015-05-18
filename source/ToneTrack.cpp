@@ -8,6 +8,7 @@
 #include "ToneTrack.h"
 #include "GBPChannel.h"
 #include "GlobalDefinitions.h"
+#include "Game.h"
 
 RODATA_LOCATION ALIGN(2) u16 ToneTrack::CGBFreq[] = {
 	8013, 7566, 7144, 6742,
@@ -71,18 +72,18 @@ void ToneTrack::ExecuteModifications(u8 commandID, u16 tempo, GBPChannel &master
 		tone1Controller[1] = secondValue;
 	}
 	tone1Controller[(trackID << 2) + 2] = activationValue;
-	if (false)
+	if (Game::GetOptions().stereoSound)
 	{
 		if (trackID == 0)
 		{
-			u8 pan = pan & 0x11;
-			u16 valueToWrite = (tone1Controller[0x10] & 0xEEFF) | (pan << 0x8);
+			u8 thisPan = pan & 0x11;
+			u16 valueToWrite = (tone1Controller[0x10] & 0xEEFF) | (thisPan << 0x8);
 			tone1Controller[0x10] = valueToWrite;
 		}
 		else
 		{
-			u8 pan = pan & 0x22;
-			u16 valueToWrite = (tone1Controller[0x10] & 0xDDFF) | (pan << 0x8);
+			u8 thisPan = pan & 0x22;
+			u16 valueToWrite = (tone1Controller[0x10] & 0xDDFF) | (thisPan << 0x8);
 			tone1Controller[0x10] = valueToWrite;
 		}
 	}

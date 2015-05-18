@@ -8,13 +8,14 @@
 #ifndef PLAYERENTITY_H_
 #define PLAYERENTITY_H_
 
-#include "Entity.h"
+#include "NonPlayerCharacter.h"
 
-class PlayerEntity : public Entity
+class PlayerEntity : public NonPlayerCharacter
 {
 public:
-	PlayerEntity(const Vector2D &location, u32 backgroundLevel);
+	PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender = false);
 	~PlayerEntity();
+	u32 GetObjectID() const { return 0xFF; }
 	bool Initialise();
 	bool LoadContent();
 	bool Update();

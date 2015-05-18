@@ -6,7 +6,6 @@
 #ifndef CUSTOMTYPES_H
 #define CUSTOMTYPES_H
 
-#define MALLOCLENGTH 20
 #define SPRALLOCLENGTH 35
 #define PALLOCLENGTH 14
 
@@ -23,6 +22,7 @@
 #define NumberOfTrainers 5
 #define NumberOfFlags 0x2000
 #define NumberOfMoves 618
+#define NumberOfOverworlds 24
 #define PlayerNameLength 7
 #define MaxPlayerCash 9999999
 #define U32Max 0xFFFFFFFF
@@ -38,7 +38,6 @@
 #define RIVAL2NAMEBUFFER NUMBUFFERS + 3
 #define RIVAL3NAMEBUFFER NUMBUFFERS + 4
 #define PLAYERNAMELENGTH 7
-#define MAXENTITIES 64
 
 #include <tonc.h>
 
@@ -331,106 +330,6 @@ typedef struct Bag {
 	BagItem berryItemsData[30];
 } Bag;
 
-typedef struct GBPToneData {
-	u8* nextInstruction;
-	u8* returnLocation;
-	u16 pitch;
-	u16 tone;
-	u32 statusFlags;
-	u8 frameDelay;
-	u8 loopCounter;
-	u8 loopCounter2;
-	s8 keyShift;
-	u8 currentOctave;
-	u8 currentVoice;
-	u8 fadeSpeed;
-	u8 noteLength1;
-	u8 noteLength2;
-	u8 channelVolume;
-	u8 fadeDirection;
-	u8 velocity;
-	u8 pan;
-	u8 arpeggiationVoice:2;
-	u8 arpeggiationDelayCount:6;
-	u8 arpeggiationCountdown;
-	u8 modulationCountdown;
-	u8 modulationDelay:6;
-	u8 modulationMode:2;
-	u8 modulationDepth;
-	u8 modulationSpeedDelay:4;
-	u8 modulationSpeed:4;
-	s8 pitchBendRate;
-	u8 portamentoCountdown;
-	u8 portamentoDelay;
-	u8 portamentoTarget;
-	u8 portamentoSpeedDelay:4;
-	u8 portamentoSpeed:4;
-} GBPToneData;
-
-typedef struct GBPWaveData {
-	u8* nextInstruction;
-	u8* returnLocation;
-	u16 pitch;
-	u16 tone;
-	u32 statusFlags;
-	u8 frameDelay;
-	u8 noteLength1;
-	u8 noteLength2;
-	u8 loopCounter;
-	u8 loopCounter2;
-	s8 keyShift;
-	u8 currentOctave;
-	u8 velocity;
-	u8 currentVoice;
-	u8 pan;
-	u8 modulationCountdown;
-	u8 modulationDelay:6;
-	u8 modulationMode:2;
-	u8 modulationDepth;
-	u8 modulationSpeedDelay:4;
-	u8 modulationSpeed:4;
-	s8 pitchBendRate;
-	u8 portamentoCountdown;
-	u8 portamentoDelay;
-	u8 portamentoTarget;
-	u8 portamentoSpeedDelay:4;
-	u8 portamentoSpeed:4;
-} GBPWaveData;
-
-typedef struct GBPNoiseData {
-	u8* nextInstruction;
-	u8* returnLocation;
-	u8 noteLength1;
-	u8 noteLength2;
-	u8 noiseSet;
-	u8 frameDelay;
-	u8 loopCounter;
-	u8 loopCounter2;
-	u8 pan;
-	u8 noiseFrameDelay:7;
-	u8 noiseActive:1;
-	u8* samplePointer;
-} GBPNoiseData;
-
-typedef struct GBPMusicStruct {
-	u16 tempo;
-	u16 tone1Included:1;
-	u16 tone2Included:1;
-	u16 waveIncluded:1;
-	u16 noiseIncluded:1;
-	u16 tone1update:1;
-	u16 tone2update:1;
-	u16 waveupdate:1;
-	u16 noiseupdate:1;
-	u16 isPlaying:1;
-	u16 unused:7;
-	GBPToneData tone1;
-	GBPToneData tone2;
-	GBPWaveData wave;
-	GBPNoiseData noise;
-	VoidFunctionPointerVoid onEndFunction;
-} GBPMusicStruct;
-
 typedef struct GBPTrack {
 	u32 trackType:2;
 	u32 secondaryTracks:1;
@@ -492,23 +391,6 @@ typedef struct MoveData {
 	u8 secondaryInformation;
 } MoveData;
 
-typedef struct NPCData {
-	u16 xLocation;
-	u16 yLocation;
-	u8* scriptLocation;
-	u8 spriteID;
-	u8 directionFacing:4;
-	u8 isActive:1;
-	u8 unused:3;
-	u8 oamStructID;
-	u8 nextWalkingFrame;
-	u8 previousWalkingFrame;
-	u8 frameDelay;
-	u8 pixelsMoved;
-	u8 dataSpriteID:7;
-	u8 isMoving:1;
-} NPCData;
-
 typedef struct Double8BitValue
 {
 	u8 byte1;
@@ -543,13 +425,6 @@ typedef struct IndexTable {
 	u32 index;
 	void* pointerToData;
 } IndexTable;
-
-typedef struct MemoryManagementStructure {
-	u32 filledEntries;
-	void* startLocation;
-	u32 memoryBlockLength;
-	IndexTable data[MALLOCLENGTH];
-} MemoryManagementStructure;
 
 typedef struct PallocDataTable
 {

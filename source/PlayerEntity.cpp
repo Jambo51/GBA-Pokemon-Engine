@@ -7,14 +7,10 @@
 
 #include "PlayerEntity.h"
 #include "GlobalDefinitions.h"
-#include "OverworldSprites.h"
 
-PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel) : Entity(location, backgroundLevel)
+PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender) : NonPlayerCharacter(location, backgroundLevel, (gender) ? 30 : 0)
 {
 	// TODO Auto-generated constructor stub
-	SpriteData* data = &spriteTable[0];
-	OAMObject* object = new OAMObject(data->spriteShape, data->spriteSize, 0, (void*)data->frames[0], data->paletteSlotID, (void*)paletteTable[data->paletteSlotID], backgroundLevel, false);
-	this->_object = object;
 }
 
 PlayerEntity::~PlayerEntity()
@@ -34,7 +30,7 @@ bool PlayerEntity::LoadContent()
 
 bool PlayerEntity::Update()
 {
-	Entity::Update();
+	return NonPlayerCharacter::Update();
 }
 
 void PlayerEntity::UnloadContent()

@@ -30,7 +30,6 @@ EWRAM_LOCATION ALIGN(2) u16 currentFanfareID;
 EWRAM_LOCATION ALIGN(2) u16 currentSongID;
 EWRAM_LOCATION ALIGN(2) u16 currentSongPlaybackStatus;
 EWRAM_LOCATION ALIGN(1) u8 pauseMenuLocation;
-EWRAM_LOCATION ALIGN(4) NPCData overworldSpriteData[24];
 ALIGN(1) u8 hardwareColumn;
 ALIGN(1) u8 hardwareRow;
 EWRAM_LOCATION ALIGN(4) PaletteFadeStruct fadeStruct[32];

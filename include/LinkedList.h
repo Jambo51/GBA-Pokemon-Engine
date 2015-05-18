@@ -10,165 +10,40 @@
 
 #include "GlobalDefinitions.h"
 
-template <class T> class ListNode
+class ListNode
 {
 private:
-	ListNode<T>* previous;
-	T itemItself;
-	ListNode<T>* next;
+	ListNode* previous;
+	void* itemItself;
+	ListNode* next;
 public:
-	ListNode<T>(ListNode* previousItem, T item, ListNode* nextItem) : previous(previousItem), itemItself(item), next(nextItem) { }
-	~ListNode<T>()
-	{
-		if (previous)
-		{
-			previous->SetNext(this->next);
-		}
-		if (next)
-		{
-			next->SetPrevious(this->previous);
-		}
-	}
-
-	T & GetItem()
-	{
-		return itemItself;
-	}
-
-	ListNode<T>* GetNext() const { return next; }
-	ListNode<T>* GetPrevious() const { return previous; }
-	void SetPrevious(ListNode<T>* node) { this->previous = node; }
-	void SetNext(ListNode<T>* node) { this->next = node; }
+	ListNode(ListNode* previousItem, void* item, ListNode* nextItem);
+	~ListNode();
+	void* GetItem() const { return itemItself; }
+	ListNode* GetNext() const { return next; }
+	ListNode* GetPrevious() const { return previous; }
+	void SetPrevious(ListNode* node) { this->previous = node; }
+	void SetNext(ListNode* node) { this->next = node; }
 };
 
-template <class T> class LinkedList
+class LinkedList
 {
 private:
 	int numItems;
-	ListNode<T>* frontNode;
-	ListNode<T>* backNode;
+	ListNode* frontNode;
+	ListNode* backNode;
 public:
-	LinkedList<T>()
-	{
-		numItems = 0;
-		frontNode = __null;
-		backNode = __null;
-	}
-	~LinkedList<T>()
-	{
-		this->Clear();
-	}
+	LinkedList();
+	~LinkedList();
 	int Size() const { return numItems; }
-	ListNode<T>* Front() const { return frontNode; }
-	ListNode<T>* Back() const { return backNode; }
-
-	void PushBack(T item)
-	{
-		if (frontNode)
-		{
-			ListNode<T>* node = new ListNode<T>(backNode, item, __null);
-			backNode = node;
-		}
-		else
-		{
-			frontNode = new ListNode<T>(__null, item, __null);
-			backNode = frontNode;
-		}
-		numItems++;
-	}
-
-	void PushFront(T item)
-	{
-		if (frontNode)
-		{
-			ListNode<T>* node = new ListNode<T>(__null, item, frontNode);
-			frontNode = node;
-		}
-		else
-		{
-			frontNode = new ListNode<T>(__null, item, __null);
-			backNode = frontNode;
-		}
-		numItems++;
-	}
-
-	void Remove(T item)
-	{
-		if (frontNode)
-		{
-			ListNode<T>* currNode = frontNode;
-			do
-			{
-				if (currNode->GetItem() == item)
-				{
-					break;
-				}
-				currNode = currNode->GetNext();
-			} while (currNode);
-			if (currNode)
-			{
-				delete currNode;
-				numItems--;
-			}
-		}
-	}
-
-	ListNode<T>* NodeAt(int index)
-	{
-		if (index < numItems)
-		{
-			int currIndex = 0;
-			ListNode<T>* currNode = frontNode;
-			if (index != currIndex)
-			{
-				do
-				{
-					currNode = currNode->GetNext();
-					currIndex++;
-				} while (index != currIndex);
-			}
-			return currNode;
-		}
-		return NULL;
-	}
-
-	T & At(int index)
-	{
-		ListNode<T>* node = NodeAt(index);
-		if (node)
-		{
-			return node->GetItem();
-		}
-	}
-
-	void Clear()
-	{
-		if (frontNode)
-		{
-			do
-			{
-				ListNode<T>* node = frontNode;
-				frontNode = frontNode->GetNext();
-				delete node;
-			} while (frontNode);
-		}
-		numItems = 0;
-	}
-
-	void PushAt(T item, int index)
-	{
-		ListNode<T>* currNode = NodeAt(index);
-		if (currNode)
-		{
-			ListNode<T>* currNode2 = currNode->GetPrevious();
-			ListNode<T>* newNode = new ListNode<T>(currNode2, item, currNode);
-			if (currNode2)
-			{
-				currNode2->SetNext(newNode);
-			}
-			currNode->SetPrevious(newNode);
-			numItems++;
-		}
-	}
+	ListNode* Front() const { return frontNode; }
+	ListNode* Back() const { return backNode; }
+	void PushBack(void* item);
+	void PushFront(void* item);
+	void Remove(void* item);
+	ListNode* NodeAt(int index);
+	void* At(int index);
+	void Clear();
+	void PushAt(void* item, int index);
 };
 #endif /* UNORDEREDMAP_H_ */

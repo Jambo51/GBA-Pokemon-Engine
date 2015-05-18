@@ -8,7 +8,7 @@
 #include "CallbackManager.h"
 #include "Callback.h"
 
-EWRAM_LOCATION ALIGN(4) LinkedList<Callback*>* CallbackManager::callbacks = new LinkedList<Callback*>();
+EWRAM_LOCATION ALIGN(4) LinkedList CallbackManager::callbacks = LinkedList();
 
 CallbackManager::CallbackManager()
 {
@@ -23,18 +23,18 @@ CallbackManager::~CallbackManager()
 
 void CallbackManager::AddCallback(Callback* callback)
 {
-	callbacks->PushBack(callback);
+	callbacks.PushBack((void*)callback);
 }
 
 void CallbackManager::RemoveCallback(Callback* callback)
 {
-	callbacks->Remove(callback);
+	callbacks.Remove((void*)callback);
 }
 
 void CallbackManager::Update()
 {
-	for (int i = 0; i < callbacks->Size(); i++)
+	for (int i = 0; i < callbacks.Size(); i++)
 	{
-		callbacks->At(i)->Update();
+		((Callback*)callbacks.At(i))->Update();
 	}
 }

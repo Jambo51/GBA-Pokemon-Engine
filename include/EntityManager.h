@@ -7,7 +7,7 @@ class Entity;
 class EntityManager
 {
 private:
-	static LinkedList<Entity*>* _entities;
+	static LinkedList _entities;
 	EntityManager(void);
 	~EntityManager(void);
 public:

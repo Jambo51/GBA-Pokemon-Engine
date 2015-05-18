@@ -70,8 +70,8 @@ void OAMObject::Update(u32 position)
 		{
 			updater->Update(this);
 		}
-		oam[(position << 3)] = yLocation | (disableDoubleFlag << 9) | (rotationFlag << 8) | (mode << 10) | (mosaic << 12) | (colourMode << 13) | (objShape << 14);
-		oam[(position << 3) + 1] = xLocation | ((rotationFlag) ? (rotScaleParam << 9) : (hFlip << 12) | (vFlip << 13)) | (objSize << 14);
-		oam[(position << 3) + 2] = tileLocation | (priority << 10)| (paletteSlot << 12);
+		oam[(position * 4)] = yLocation | (disableDoubleFlag << 9) | (rotationFlag << 8) | (mode << 10) | (mosaic << 12) | (colourMode << 13) | (objShape << 14);
+		oam[(position * 4) + 1] = xLocation | ((rotationFlag) ? (rotScaleParam << 9) : (hFlip << 12) | (vFlip << 13)) | (objSize << 14);
+		oam[(position * 4) + 2] = tileLocation | (priority << 10)| (paletteSlot << 12);
 	}
 }

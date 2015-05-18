@@ -15,7 +15,7 @@ class Callback;
 class CallbackManager
 {
 private:
-	static LinkedList<Callback*>* callbacks;
+	static LinkedList callbacks;
 	CallbackManager();
 	~CallbackManager();
 public:

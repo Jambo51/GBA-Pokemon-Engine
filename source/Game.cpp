@@ -7,6 +7,7 @@
 
 #include "Game.h"
 #include "Pokemon.h"
+#include "NonPlayerCharacter.h"
 
 #define PartyLength 6
 
@@ -16,7 +17,9 @@ EWRAM_LOCATION ALIGN(4) Pokemon Game::temporaryHoldingPokemon;
 EWRAM_LOCATION ALIGN(4) Bag Game::bag;
 EWRAM_LOCATION ALIGN(4) Player Game::player;
 EWRAM_LOCATION ALIGN(4) MapHeader Game::currentMap;
+EWRAM_LOCATION ALIGN(4) Options Game::options;
 EWRAM_LOCATION ALIGN(1) char Game::buffers[NUMBUFFERS][BUFFERLENGTH];
+EWRAM_LOCATION ALIGN(4) NPCData Game::overworldData[NumberOfOverworlds];
 
 Game::Game()
 {
@@ -27,6 +30,17 @@ Game::Game()
 Game::~Game()
 {
 	// TODO Auto-generated destructor stub
+}
+
+void Game::Initialise()
+{
+	options.battleSwitchStyle = 0;
+	options.boxOutline = 0;
+	options.playAnimations = 0;
+	options.stereoSound = 1;
+	options.textSpeed = 2;
+	options.typeValues = 0;
+	options.useImperialUnits = 1;
 }
 
 void Game::Update()
@@ -139,4 +153,30 @@ void Game::StartTimer(int timerNum, int timerSetting, u16 cascadeValue)
 		REG_TM3CNT = 0x80 | timerSetting;
 		break;
 	}
+}
+
+bool Game::AddNPC(NonPlayerCharacter* npc)
+{
+	for (int i = 0; i < NumberOfOverworlds; i++)
+	{
+		if (!overworldData[i].isActive)
+		{
+			overworldData[i].isActive = 1;
+			overworldData[i].xLocation = npc->GetPosition().GetX();
+			overworldData[i].yLocation = npc->GetPosition().GetY();
+			overworldData[i].dataSpriteID = npc->GetObjectID();
+			overworldData[i].isMoving = 0;
+			overworldData[i].directionFacing = 0;
+			overworldData[i].frameDelay = 0;
+			overworldData[i].isMoving = 0;
+			overworldData[i].nextWalkingFrame = 0;
+			overworldData[i].oamStructID = 0;
+			overworldData[i].pixelsMoved = 0;
+			overworldData[i].previousWalkingFrame = 0;
+			overworldData[i].scriptLocation = 0;
+			overworldData[i].spriteID = npc->GetSpriteIndex();
+			return true;
+		}
+	}
+	return false;
 }

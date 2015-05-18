@@ -27,7 +27,6 @@ extern u16 currentFanfareID;
 extern u16 currentSongID;
 extern u16 currentSongPlaybackStatus;
 extern u8 pauseMenuLocation;
-extern NPCData overworldSpriteData[24];
 extern u8 hardwareColumn;
 extern u8 hardwareRow;
 extern u8 textPalette;

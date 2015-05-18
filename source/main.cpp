@@ -35,6 +35,7 @@ int main()
 {
 	Game::StartTimer(2);
 	Game::StartTimer(3, 1);
+	Game::Initialise();
 	SoundEngine::Initialise(new GBPSoundsEngine());
 	EntityManager::Initialise();
 	//InitialiseTextEngine(TEXTSET);

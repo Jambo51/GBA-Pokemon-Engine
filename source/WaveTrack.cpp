@@ -8,6 +8,7 @@
 #include "WaveTrack.h"
 #include "GlobalDefinitions.h"
 #include "GBPChannel.h"
+#include "Game.h"
 
 RODATA_LOCATION u16 WaveTrack::freq[75] = {
 	44,		// C3
@@ -130,10 +131,10 @@ void WaveTrack::ExecuteModifications(u8 commandID, u16 tempo, GBPChannel &master
 	{
 		thisPitch = 0;
 	}
-	if (false)
+	if (Game::GetOptions().stereoSound)
 	{
-		u8 pan = pan & 0x44;
-		u16 valueToWrite = (tone1Controller[0x10] & 0xBBFF) | (pan << 0x8);
+		u8 thisPan = pan & 0x44;
+		u16 valueToWrite = (tone1Controller[0x10] & 0xBBFF) | (thisPan << 0x8);
 		tone1Controller[0x10] = valueToWrite;
 	}
 	tone1Controller[8] = activationValue;

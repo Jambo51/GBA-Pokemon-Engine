@@ -116,7 +116,7 @@ void Allocator::FreeObjectTiles(void* pointer)
 				u32 leftOver = dataSize & 3;
 				dataSize >>= 2;
 				dataSize <<= 2;
-				for (int j = 0; j < leftOver; j++)
+				for (u32 j = 0; j < leftOver; j++)
 				{
 					((u8*) pointer)[dataSize + j] = 0;
 				}

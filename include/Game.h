@@ -48,10 +48,21 @@ private:
 	static Options options;
 	static char buffers[NUMBUFFERS][BUFFERLENGTH];
 	static NPCData overworldData[];
+	static bool doFade;
+	static bool doFade2;
+	static u32 fadeType;
+	static u16* currentPalette;
+	static u16* targetPalette;
+	static u32 numFrames;
+	static u16 blackPalette[];
+	static u16 whitePalette[];
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
 	static u32 CountAbridgedPokemon(AbridgedPokemon* location, u32 length);
+	static void DoFade();
+	static void SetPalette(u16 *Palette);
+	static u16* GetCurrentPalette();
 public:
 	static void Initialise();
 	static void Update();
@@ -65,6 +76,11 @@ public:
 	static u32 CountAllBoxPokemon();
 	static void StartTimer(int timerNum, int timerSetting = 0, u16 cascadeValue = 0);
 	static bool AddNPC(NonPlayerCharacter* npc);
+	static void FadeToPalette(const u16* newPalette, u32 FrameCount);
+	static void FadeToGreyScale(u32 FrameCount);
+	static void FadeToBlack(u32 FrameCount) { FadeToPalette((const u16*)&blackPalette, FrameCount); }
+	static void FadeToWhite(u32 FrameCount) { FadeToPalette((const u16*)&whitePalette, FrameCount); }
+	static u16* GetGreyScale(const u16* original);
 };
 
 #endif /* GAME_H_ */

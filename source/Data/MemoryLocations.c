@@ -32,7 +32,6 @@ EWRAM_LOCATION ALIGN(2) u16 currentSongPlaybackStatus;
 EWRAM_LOCATION ALIGN(1) u8 pauseMenuLocation;
 ALIGN(1) u8 hardwareColumn;
 ALIGN(1) u8 hardwareRow;
-EWRAM_LOCATION ALIGN(4) PaletteFadeStruct fadeStruct[32];
 EWRAM_LOCATION ALIGN(4) PokedexMemoryData* dexPointer;
 ALIGN(4) SpriteManagementStructure sprallocData;
 ALIGN(4) PaletteManagementStructure pallocData;

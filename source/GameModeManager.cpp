@@ -10,6 +10,7 @@
 #include "GameScreen.h"
 
 EWRAM_LOCATION ALIGN(4) GameScreen* GameModeManager::screen = NULL;
+EWRAM_LOCATION ALIGN(4) GameScreen* GameModeManager::newScreenStatic = NULL;
 
 GameModeManager::GameModeManager()
 {
@@ -26,16 +27,21 @@ void GameModeManager::SetScreen(GameScreen* newScreen)
 {
 	if (newScreen)
 	{
-		if (screen)
-		{
-			delete screen;
-		}
-		screen = newScreen;
+		newScreenStatic = newScreen;
 	}
 }
 
 void GameModeManager::Update()
 {
+	if (newScreenStatic)
+	{
+		if (screen)
+		{
+			delete screen;
+		}
+		screen = newScreenStatic;
+		newScreenStatic = NULL;
+	}
 	if (screen)
 	{
 		screen->Update();

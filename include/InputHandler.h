@@ -24,6 +24,7 @@ class InputHandler
 private:
 	static KeyBuffer inputValues;
 	static InputEventHandler* handler;
+	static InputEventHandler* newInputHandler;
 	InputHandler();
 	~InputHandler();
 	static bool IsKeyDown(Keys keyID);

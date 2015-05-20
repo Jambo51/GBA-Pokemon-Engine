@@ -10,6 +10,7 @@
 
 EWRAM_LOCATION ALIGN(4) KeyBuffer InputHandler::inputValues;
 EWRAM_LOCATION ALIGN(4) InputEventHandler* InputHandler::handler = NULL;
+EWRAM_LOCATION ALIGN(4) InputEventHandler* InputHandler::newInputHandler = NULL;
 
 InputHandler::InputHandler()
 {
@@ -29,6 +30,15 @@ bool InputHandler::IsKeyDown(Keys keyID)
 
 void InputHandler::KeyPoll()
 {
+	if (newInputHandler)
+	{
+		if (handler)
+		{
+			delete handler;
+		}
+		handler = newInputHandler;
+		newInputHandler = NULL;
+	}
 	inputValues.keyBits = (~(REG_KEYINPUT)) & 0x3FF;
 	if (handler)
 	{
@@ -78,9 +88,5 @@ void InputHandler::KeyPoll()
 
 void InputHandler::SetEventHandler(InputEventHandler* newHandler)
 {
-	if (handler)
-	{
-		delete handler;
-	}
-	handler = newHandler;
+	newInputHandler = newHandler;
 }

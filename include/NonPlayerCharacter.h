@@ -16,7 +16,7 @@ protected:
 	u32 spriteIndex;
 	u32 objectID;
 public:
-	NonPlayerCharacter(const Vector2D &location, u32 backgroundLevel, u32 spriteID);
+	NonPlayerCharacter(const Vector2D &location, u32 backgroundLevel, u32 spriteID, u16* colourAddress);
 	u32 GetSpriteIndex() const { return spriteIndex; }
 	virtual u32 GetObjectID() const { return objectID; }
 	virtual ~NonPlayerCharacter();

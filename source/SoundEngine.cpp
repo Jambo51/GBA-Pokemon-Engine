@@ -80,3 +80,15 @@ void SoundEngine::PlaySFX(u16 songID)
 		songPlayingMode = InitialiseSFX;
 	}
 }
+
+void SoundEngine::FadeSongToSilence()
+{
+	songIDInt = 0;
+	songPlayingMode = FadeToSong;
+}
+
+void SoundEngine::StopSong()
+{
+	songIDInt = 0;
+	songPlayingMode = InitialiseSong;
+}

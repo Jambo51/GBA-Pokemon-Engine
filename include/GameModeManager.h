@@ -14,10 +14,12 @@ class GameModeManager
 {
 private:
 	static GameScreen* screen;
+	static GameScreen* newScreenStatic;
 	GameModeManager();
 	~GameModeManager();
 public:
 	static void SetScreen(GameScreen* newScreen);
+	static GameScreen* GetScreen() { return screen; }
 	static void Update();
 };
 

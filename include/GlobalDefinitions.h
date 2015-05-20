@@ -219,30 +219,6 @@ typedef struct Colour {
 	};
 } Colour;
 
-typedef struct ColourChangeStruct {
-	s8 redChange;
-	u8 redFramesPerChange;
-	u8 redFramesCounter;
-	s8 blueChange;
-	u8 blueFramesPerChange;
-	u8 blueFramesCounter;
-	s8 greenChange;
-	u8 greenFramesPerChange;
-	u8 greenFramesCounter;
-	u8 alignment;
-	u16 alignment2;
-} ColourChangeStruct;
-
-typedef struct PaletteFadeStruct {
-	u16* paletteLocation;
-	u16* targetPaletteLocation;
-	ColourChangeStruct* valueChanges;
-	u8 framesPassed;
-	u8 framesTotal;
-	u8 fadeDirection;
-	u8 isActive;
-} PaletteFadeStruct;
-
 typedef struct SpriteData {
 	u8 numberOfFrames;
 	u8 paletteSlotID;

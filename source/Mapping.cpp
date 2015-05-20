@@ -27,19 +27,21 @@ Overworld::Overworld()
 {
 	BackgroundFunctions::SetBackgroundsToDefault();
 	animStruct = new TileAnimationStruct[10];
-	DrawMap(10, 15);
+	u16* newColours = new u16[512];
+	DrawMap(10, 15, newColours);
 	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
-	NonPlayerCharacter* npc = new PlayerEntity(Vector2D(112, 56), 2);
+	NonPlayerCharacter* npc = new PlayerEntity(Vector2D(112, 56), 2, false, newColours);
 	if (!Game::AddNPC(npc))
 	{
 		delete npc;
 	}
-	npc = new NonPlayerCharacter(Vector2D(112, 72), 2, 30);
+	npc = new NonPlayerCharacter(Vector2D(112, 72), 2, 30, newColours);
 	if (!Game::AddNPC(npc))
 	{
 		delete npc;
 	}
+	Game::FadeToPalette(newColours, 32);
 }
 
 Overworld::~Overworld()
@@ -76,22 +78,22 @@ u16 Overworld::GetMusicTrackIDFromBankAndMapID(u8 bank, u8 map)
 	return GetMapHeaderFromBankAndMapID(bank, map).musicTrack;
 }
 
-void Overworld::PutTilesetPalettesInMemory(u32 tilesetID, u16* paletteLocation, u32 time)
+void Overworld::PutTilesetPalettesInMemory(u32 tilesetID, u16* paletteLocation, u32 time, u16* colourLocation)
 {
 	u8 extraLength = ((tilesetID == 0)?0:112);
-	void* palLoc = (void*)(pal_bg_mem + extraLength);
+	void* palLoc = (void*)(((colourLocation) ? colourLocation : pal_bg_mem) + extraLength);
 	u32 length = (tilesetID == 0)?56:48;
 	memcpy32(palLoc, (void*)(&paletteLocation[extraLength + time * 256]), length);
 }
 
-void Overworld::PutMapPalettesInMemory()
+void Overworld::PutMapPalettesInMemory(u16* colourLocation)
 {
 	u32 time = RTC::GetTime().timeOfDay;
 	const MapHeader &header = Game::GetCurrentMap();
 	u16* palette = (u16*)header.footerLocation->primaryTileset->paletteData;
-	PutTilesetPalettesInMemory(0, palette, time);
+	PutTilesetPalettesInMemory(0, palette, time, colourLocation);
 	palette = (u16*)header.footerLocation->secondaryTileset->paletteData;
-	PutTilesetPalettesInMemory(1, palette, time);
+	PutTilesetPalettesInMemory(1, palette, time, colourLocation);
 }
 
 TileAnimationStructROM* Overworld::GetTileAnimationDataPointer(u32 tilesetID)
@@ -388,10 +390,10 @@ void Overworld::DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID)
 	}
 }
 
-void Overworld::DrawMap(u32 xLocation, u32 yLocation)
+void Overworld::DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation)
 {
 	PutMapTilesetsInMemory();
-	PutMapPalettesInMemory();
+	PutMapPalettesInMemory(colourLocation);
 	u32 y;
 	for (y = 0; y < 16; y++)
 	{
@@ -543,5 +545,14 @@ void Overworld::Update()
 				animStruct[i].framesUntilChange--;
 			}
 		}
+	}
+}
+
+void Overworld::OnExitCallback()
+{
+	switch (exitContext)
+	{
+		default:
+			break;
 	}
 }

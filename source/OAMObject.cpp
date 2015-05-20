@@ -16,8 +16,9 @@ u32 OAMObject::CalculateObjectSize(u32 shape, u32 size)
 	return (u32)sizes[shape][size];
 }
 
-OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority, bool compressed)
+OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority, bool compressed, u16* colourAddress)
 {
+	memset32((void*)this, 0, sizeof(OAMObject) >> 2);
 	if (shape <= Shape_Vertical && size <= Square_64x64)
 	{
 		if (paletteMode < 2)
@@ -44,7 +45,14 @@ OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 pale
 			paletteID = Allocator::AllocatePaletteSlot(paletteID);
 			if (paletteID < 16)
 			{
-				memcpy32((void*)(MEM_PAL_OBJ + paletteID * 0x20), palette, 8);
+				if (colourAddress)
+				{
+					memcpy32((void*)((u32)colourAddress + 0x200 + paletteID * 0x20), palette, 8);
+				}
+				else
+				{
+					memcpy32((void*)(MEM_PAL_OBJ + paletteID * 0x20), palette, 8);
+				}
 			}
 			this->paletteSlot = paletteID;
 		}

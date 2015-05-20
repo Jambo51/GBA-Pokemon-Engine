@@ -11,6 +11,7 @@
 class Overworld : public GameScreen
 {
 private:
+	u32 exitContext;
 	s16 x;
 	s16 y;
 	ConnectionStruct connect;
@@ -27,8 +28,8 @@ public:
 	static const MapConnection & GetMapConnectionsFromBankAndMapID(u8 bank, u8 map);
 	static const MapFooter & GetMapFooterFromBankAndMapID(u8 bank, u8 map);
 	static u16 GetMusicTrackIDFromBankAndMapID(u8 bank, u8 map);
-	void PutTilesetPalettesInMemory(u32 tilesetID, u16* paletteLocation, u32 time);
-	void PutMapPalettesInMemory();
+	void PutTilesetPalettesInMemory(u32 tilesetID, u16* paletteLocation, u32 time, u16* colourLocation = NULL);
+	void PutMapPalettesInMemory(u16* colourLocation = NULL);
 	TileAnimationStructROM* GetTileAnimationDataPointer(u32 tilesetID);
 	void PutTileAnimationDataIntoMemory(u32 tilesetID);
 	void StoreTilesetIntoMemory(u32 tilesetID, u16* location, u32 tilesetMode, bool isCompressed);
@@ -48,7 +49,7 @@ public:
 	void PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location);
 	void DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID);
 	void DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID);
-	void DrawMap(u32 xLocation, u32 yLocation);
+	void DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation = NULL);
 	u16 CalculateObjectXLocation(u8 shape, u8 size);
 	u16 CalculateObjectYLocation(u8 shape, u8 size);
 	void UpdateMapLocations();
@@ -58,6 +59,7 @@ public:
 	u32 IsNewLocationValid(s32 horizontalLocation, s32 verticalLocation);
 	void CopyMapHeaderAndResetMusic();
 	void Update();
+	void OnExitCallback();
 };
 
 #endif

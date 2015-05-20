@@ -12,8 +12,9 @@ class GameScreen
 {
 public:
 	GameScreen();
-	~GameScreen();
+	virtual ~GameScreen();
 	virtual void Update() = 0;
+	virtual void OnExitCallback() = 0;
 };
 
 #endif /* GAMESCREEN_H_ */

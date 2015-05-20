@@ -30,7 +30,6 @@ extern u8 pauseMenuLocation;
 extern u8 hardwareColumn;
 extern u8 hardwareRow;
 extern u8 textPalette;
-extern PaletteFadeStruct fadeStruct[];
 extern PokedexMemoryData* dexPointer;
 extern MusicFadeInfo* musicFadePointer;
 extern BattleData* battleDataPointer;

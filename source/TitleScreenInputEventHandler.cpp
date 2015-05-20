@@ -9,6 +9,10 @@
 #include "GameModeManager.h"
 #include "Mapping.h"
 #include "Maths.h"
+#include "Game.h"
+#include "SoundEngine.h"
+#include "DoNothingInputEventHandler.h"
+#include "InputHandler.h"
 
 TitleScreenInputEventHandler::TitleScreenInputEventHandler()
 {
@@ -23,8 +27,10 @@ TitleScreenInputEventHandler::~TitleScreenInputEventHandler()
 
 void TransitionToOverworld()
 {
-	GameModeManager::SetScreen(new Overworld());
+	Game::FadeToBlack(32);
+	SoundEngine::FadeSongToSilence();
 	Maths::ReseedRNG();
+	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
 }
 
 void TitleScreenInputEventHandler::OnPressA()

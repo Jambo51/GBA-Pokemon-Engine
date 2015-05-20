@@ -20,6 +20,7 @@ public:
 	TitleScreen();
 	~TitleScreen();
 	void Update();
+	void OnExitCallback();
 };
 
 #endif /* TITLESCREEN_H_ */

@@ -35,6 +35,8 @@ public:
 	static u16 GetSongID() { return songIDInt; }
 	static u16 GetFanfareID() { return fanfareIDInt; }
 	static u16 GetSFXID() { return sfxIDInt; }
+	static void FadeSongToSilence();
+	static void StopSong();
 };
 
 #endif /* SOUNDENGINE_H_ */

@@ -10,6 +10,8 @@
 #include "InputHandler.h"
 #include "GlobalDefinitions.h"
 #include "TitleScreenInputEventHandler.h"
+#include "Mapping.h"
+#include "GameModeManager.h"
 extern "C"
 {
 #include <tonc.h>
@@ -88,4 +90,9 @@ void TitleScreen::Update()
 	{
 		counter++;
 	}
+}
+
+void TitleScreen::OnExitCallback()
+{
+	GameModeManager::SetScreen(new Overworld());
 }

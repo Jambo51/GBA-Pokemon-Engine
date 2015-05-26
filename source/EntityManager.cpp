@@ -89,6 +89,14 @@ bool EntityManager::Update()
 	return true;
 }
 
+void EntityManager::TimeTick(u32 time)
+{
+	for (int i = 0; i < _entities.Size(); i++)
+	{
+		((Entity*)_entities.At(i))->TimeTick(time);
+	}
+}
+
 void EntityManager::RegisterEntity(Entity* entity)
 {
 	_entities.PushBack(entity);

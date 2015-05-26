@@ -1,5 +1,7 @@
 #include "Flags.h"
 
+#include "FlashFunctions.h"
+
 #define NumberofSeenCaughts ((NumberOfPokemon >> 3) << 3)
 #define NumberofTrainerBytes ((NumberOfTrainers >> 3) << 3)
 #define BytesForFlagsBase (NumberOfPokemon >> 3)
@@ -17,7 +19,31 @@ EWRAM_LOCATION ALIGN(1) u8 Flags::trainerflags[BytesForTrainerflagsBase];
 #else
 EWRAM_LOCATION ALIGN(1) u8 Flags::trainerflags[BytesForTrainerflagsBase + 1];
 #endif
-EWRAM_LOCATION ALIGN(1) u8 Flags::mainFlagBank[FlagsToBytes(0x2000)];
+EWRAM_LOCATION ALIGN(1) u8 Flags::mainFlagBank[FlagsToBytes(NumFlags)];
+
+RODATA_LOCATION ALIGN(4) SaveLocationStruct Flags::saveData[] = {
+		{ (u8*)0x10000, (u8*)&Flags::mainFlagBank, FlagsToBytes(NumFlags) },
+#if NumberofTrainerBytes == NumberOfTrainers
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase },
+#if NumberofSeenCaughts == NumberOfPokemon
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
+#else
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
+#endif
+#else
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase + 1 },
+#if NumberofSeenCaughts == NumberOfPokemon
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
+#else
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
+#endif
+#endif
+		{ (u8*)0xFFFFFFFF, 0, 0 }
+};
 
 u8* Flags::FlagDecryption(u32 flagID, u8* ramLocation, u32 upperFlagLimit)
 {
@@ -108,4 +134,51 @@ void Flags::ClearFlag(u32 flagID)
 void Flags::ClearTrainerflag(u32 flagID)
 {
 	GenericClearFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
+}
+
+void Flags::Save()
+{
+	FlashFunctions::WriteToFlash((SaveLocationStruct*)&saveData);
+}
+
+void Flags::Load()
+{
+	FlashFunctions::ReadFromFlash((SaveLocationStruct*)&saveData);
+}
+
+void Flags::Initialise()
+{
+#if NumberofSeenCaughts == NumberOfPokemon
+	for (int i = 0; i < BytesForFlagsBase; i++)
+	{
+		seenFlags[i] = 0;
+		caughtFlags[i] = 0;
+	}
+#else
+	for (int i = 0; i < BytesForFlagsBase + 1; i++)
+	{
+		seenFlags[i] = 0;
+		caughtFlags[i] = 0;
+	}
+#endif
+#if NumberofTrainerBytes == NumberOfTrainers
+	for (int i = 0; i < BytesForTrainerflagsBase; i++)
+	{
+		trainerflags[i] = 0;
+	}
+	EWRAM_LOCATION ALIGN(1) u8 Flags::trainerflags[BytesForTrainerflagsBase];
+#else
+	for (int i = 0; i < BytesForTrainerflagsBase + 1; i++)
+	{
+		trainerflags[i] = 0;
+	}
+#endif
+	memset32((void*)&Flags::mainFlagBank, 0, FlagsToBytes(NumFlags) >> 2);
+#if ((FlagsToBytes(NumFlags) >> 2) << 2) != FlagsToBytes(NumFlags)
+	u32 remainder = FlagsToBytes(NumFlags) - ((FlagsToBytes(NumFlags) >> 2) << 2);
+	for (u32 i = 0; i < remainder; i++)
+	{
+		mainFlagBank[((FlagsToBytes(NumFlags) >> 2) << 2) + i] = 0;
+	}
+#endif
 }

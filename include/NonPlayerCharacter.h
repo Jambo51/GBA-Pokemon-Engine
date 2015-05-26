@@ -24,6 +24,7 @@ public:
 	virtual bool LoadContent();
 	virtual bool Update();
 	virtual void UnloadContent();
+	virtual void TimeTick(u32 time);
 };
 
 #endif /* NONPLAYERCHARACTER_H_ */

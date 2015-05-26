@@ -36,6 +36,14 @@ void SoundEngine::Initialise(MusicEngine* engine)
 	me->Initialise();
 }
 
+void SoundEngine::Interrupt()
+{
+	if (me)
+	{
+		me->Interrupt();
+	}
+}
+
 void SoundEngine::Update()
 {
 	if (me)
@@ -91,4 +99,12 @@ void SoundEngine::StopSong()
 {
 	songIDInt = 0;
 	songPlayingMode = InitialiseSong;
+}
+
+void SoundEngine::SetOnSongEndFunction(VoidFunctionPointerVoid ptr)
+{
+	if (me)
+	{
+		me->SetSongOnEndFunction(ptr);
+	}
 }

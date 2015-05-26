@@ -60,6 +60,7 @@ public:
 	void CopyMapHeaderAndResetMusic();
 	void Update();
 	void OnExitCallback();
+	void OnEnterCallback();
 };
 
 #endif

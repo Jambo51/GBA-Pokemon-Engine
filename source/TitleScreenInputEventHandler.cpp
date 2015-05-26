@@ -25,9 +25,9 @@ TitleScreenInputEventHandler::~TitleScreenInputEventHandler()
 	// TODO Auto-generated destructor stub
 }
 
-void TransitionToOverworld()
+void TransitionToLoadGameScreen()
 {
-	Game::FadeToBlack(32);
+	Game::FadeToBlack(32, true);
 	SoundEngine::FadeSongToSilence();
 	Maths::ReseedRNG();
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
@@ -38,7 +38,7 @@ void TitleScreenInputEventHandler::OnPressA()
 	InputEventHandler::OnPressA();
 	if (!keyHeld[Key_A])
 	{
-		TransitionToOverworld();
+		TransitionToLoadGameScreen();
 	}
 }
 
@@ -47,6 +47,6 @@ void TitleScreenInputEventHandler::OnPressStart()
 	InputEventHandler::OnPressStart();
 	if (!keyHeld[Key_Start])
 	{
-		TransitionToOverworld();
+		TransitionToLoadGameScreen();
 	}
 }

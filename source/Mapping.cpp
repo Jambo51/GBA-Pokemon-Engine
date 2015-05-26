@@ -41,7 +41,7 @@ Overworld::Overworld()
 	{
 		delete npc;
 	}
-	Game::FadeToPalette(newColours, 32);
+	Game::FadeToPalette(newColours);
 }
 
 Overworld::~Overworld()
@@ -129,7 +129,7 @@ void Overworld::PutTileAnimationDataIntoMemory(u32 tilesetID)
 		}
 		if (length != 0 && data != 0)
 		{
-			for (int i = 0; i < length; i++)
+			for (u32 i = 0; i < length; i++)
 			{
 				animStruct[i + tilesetID] = data[i];
 			}
@@ -176,7 +176,7 @@ u32 Overworld::IsConnectionOnSide(const MapConnection &m, u32 side)
 	}
 	u32 isConnectionOnThisSide = 0xFF;
 	MapConnectionData* temp = m.mainData;
-	for (int i = 0; i < maxLength; i++)
+	for (u32 i = 0; i < maxLength; i++)
 	{
 		if (temp[i].type == side)
 		{
@@ -552,6 +552,18 @@ void Overworld::OnExitCallback()
 {
 	switch (exitContext)
 	{
+		default:
+			break;
+	}
+}
+
+void Overworld::OnEnterCallback()
+{
+	switch (exitContext)
+	{
+		case 0:
+			SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
+			break;
 		default:
 			break;
 	}

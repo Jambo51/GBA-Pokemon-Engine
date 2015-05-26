@@ -21,6 +21,8 @@ public:
 	static void SetScreen(GameScreen* newScreen);
 	static GameScreen* GetScreen() { return screen; }
 	static void Update();
+	static void RunExitCallback();
+	static void RunEnterCallback();
 };
 
 #endif /* SOURCE_GAMEMODEMANAGER_H_ */

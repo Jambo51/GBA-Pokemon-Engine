@@ -10,8 +10,9 @@
 #include "InputHandler.h"
 #include "GlobalDefinitions.h"
 #include "TitleScreenInputEventHandler.h"
-#include "Mapping.h"
+#include "LoadGameScreen.h"
 #include "GameModeManager.h"
+#include "Game.h"
 extern "C"
 {
 #include <tonc.h>
@@ -36,8 +37,10 @@ TitleScreen::TitleScreen()
 	REG_BG2CNT = 0x1D0A;
 	REG_BG3CNT = 0x1C0F;
 
+	u16* location = new u16[512];
+
 	// Load palette
-	dma3_cpy((void*)pal_bg_mem, pal_bin, 512);
+	dma3_cpy((void*)location, pal_bin, 512);
 	// Load tiles
 	dma3_cpy((void*)0x06000000, BG0_Tiles_bin, BG0_Tiles_bin_size);
 	dma3_cpy((void*)0x06004000, BG1_Tiles_bin, BG1_Tiles_bin_size);
@@ -48,8 +51,7 @@ TitleScreen::TitleScreen()
 	dma3_cpy((void*)0x0600F000, BG1_Map_bin, BG1_Map_bin_size);
 	dma3_cpy((void*)0x0600E800, BG2_Map_bin, BG2_Map_bin_size);
 	dma3_cpy((void*)0x0600E000, BG3_Map_bin, BG3_Map_bin_size);
-	SoundEngine::PlaySong(Song_CrystalTitleScreen, 0);
-	InputHandler::SetEventHandler(new TitleScreenInputEventHandler());
+	Game::FadeToPalette(location, 32, true, false);
 }
 
 TitleScreen::~TitleScreen()
@@ -92,7 +94,13 @@ void TitleScreen::Update()
 	}
 }
 
+void TitleScreen::OnEnterCallback()
+{
+	SoundEngine::PlaySong(Song_CrystalTitleScreen, 0);
+	InputHandler::SetEventHandler(new TitleScreenInputEventHandler());
+}
+
 void TitleScreen::OnExitCallback()
 {
-	GameModeManager::SetScreen(new Overworld());
+	GameModeManager::SetScreen(new LoadGameScreen());
 }

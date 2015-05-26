@@ -8,6 +8,7 @@
 #include "RTC.h"
 #include "Maths.h"
 #include "Game.h"
+#include "EntityManager.h"
 
 #define RTC_DATA ((vu16 *)0x080000C4)
 #define RTC_RW ((vu16 *)0x080000C6)
@@ -175,6 +176,7 @@ void RTC::InnerUpdate()
 	if (timeToWrite != rtcData.timeOfDay)
 	{
 		rtcData.timeOfDay = timeToWrite;
+		EntityManager::TimeTick(timeToWrite);
 	}
 }
 

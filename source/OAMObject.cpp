@@ -83,3 +83,22 @@ void OAMObject::Update(u32 position)
 		oam[(position * 4) + 2] = tileLocation | (priority << 10)| (paletteSlot << 12);
 	}
 }
+
+void OAMObject::UpdatePalette(void* newPalette)
+{
+	memcpy32((void*)(MEM_PAL_OBJ + paletteSlot * 0x20), newPalette, 8);
+}
+
+void OAMObject::UpdateImage(void* image, bool compressed)
+{
+	void* loc = (void*)((tileLocation << 5) + 0x06010000);
+	if (compressed)
+	{
+		LZ77UnCompVram(image, loc);
+	}
+	else
+	{
+		u32 totalSize = CalculateObjectSize(objShape, objSize);
+		memcpy32(loc, image, totalSize << 3);
+	}
+}

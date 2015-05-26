@@ -12,6 +12,8 @@
 #include "MappingDefinitions.h"
 #include "Pokemon.h"
 
+enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
+
 class NonPlayerCharacter;
 
 typedef struct PokemonStorageBoxes {
@@ -45,17 +47,22 @@ private:
 	static Bag bag;
 	static Player player;
 	static MapHeader currentMap;
-	static Options options;
+	static OptionsStruct options;
 	static char buffers[NUMBUFFERS][BUFFERLENGTH];
 	static NPCData overworldData[];
 	static bool doFade;
 	static bool doFade2;
-	static u32 fadeType;
+	static bool doCallback;
+	static bool doExitCallback;
+	static bool paletteWriteDetected;
+	static u8 validGameSave;
+	static u8 soundEngineID;
 	static u16* currentPalette;
 	static u16* targetPalette;
 	static u32 numFrames;
 	static u16 blackPalette[];
 	static u16 whitePalette[];
+	static SaveLocationStruct saveData[];
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
@@ -69,18 +76,24 @@ public:
 	static void SetCurrentMap(const MapHeader &mapHeader) { currentMap = mapHeader; }
 	static Player & GetPlayer() { return player; }
 	static const MapHeader & GetCurrentMap() { return currentMap; }
-	static const Options & GetOptions() { return options; }
+	static const Options & GetOptions() { return options.options; }
 	static bool AddNewPokemon(const Pokemon &p);
 	static u32 CountPartyPokemon();
 	static u32 CountBoxPokemon(u32 boxID);
 	static u32 CountAllBoxPokemon();
 	static void StartTimer(int timerNum, int timerSetting = 0, u16 cascadeValue = 0);
 	static bool AddNPC(NonPlayerCharacter* npc);
-	static void FadeToPalette(const u16* newPalette, u32 FrameCount);
-	static void FadeToGreyScale(u32 FrameCount);
-	static void FadeToBlack(u32 FrameCount) { FadeToPalette((const u16*)&blackPalette, FrameCount); }
-	static void FadeToWhite(u32 FrameCount) { FadeToPalette((const u16*)&whitePalette, FrameCount); }
+	static void FadeToPalette(const u16* newPalette, u32 FrameCount = 32, bool callback = false, bool exitCallback = true);
+	static void FadeToGreyScale(u32 FrameCount = 32, bool callback = false, bool exitCallback = true);
+	static void FadeToBlack(u32 FrameCount = 32, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&blackPalette, FrameCount, callback, exitCallback); }
+	static void FadeToWhite(u32 FrameCount = 32, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&whitePalette, FrameCount, callback, exitCallback); }
 	static u16* GetGreyScale(const u16* original);
+	static void Save();
+	static void Load();
+	static bool ValidSaveDetected() { return validGameSave == 1; }
+	static void ValidSaveDetected(bool newValue) { if (newValue) { validGameSave = 1; } else { validGameSave = 0; } }
+	static u32 GetSoundEngineID() { return soundEngineID; }
+	static void SetPaletteToWhite();
 };
 
 #endif /* GAME_H_ */

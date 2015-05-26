@@ -18,6 +18,7 @@ public:
 	virtual bool LoadContent() = 0;
 	virtual bool Update();
 	virtual void UnloadContent() = 0;
+	virtual void TimeTick(u32 time) = 0;
 	u32 EvaluatePositionScore() const;
 	OAMObject* GetObject() const { return _object; }
 };

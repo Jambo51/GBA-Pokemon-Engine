@@ -60,6 +60,8 @@ public:
 	u32 GetPriority() const { return priority; }
 	void SetPosition(u16 x, u16 y) { xLocation = x; yLocation = y; }
 	void SetPosition(const Vector2D &position) { SetPosition(position.GetX(), position.GetY()); }
+	void UpdatePalette(void* newPalette);
+	void UpdateImage(void* image, bool compressed);
 };
 
 #endif /* OAMOBJECT_H_ */

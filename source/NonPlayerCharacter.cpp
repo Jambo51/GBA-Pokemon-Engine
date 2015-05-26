@@ -7,12 +7,13 @@
 
 #include "NonPlayerCharacter.h"
 #include "OverworldSprites.h"
+#include "RTC.h"
 
 NonPlayerCharacter::NonPlayerCharacter(const Vector2D &location, u32 backgroundLevel, u32 spriteID, u16* colourAddress) : Entity(location, backgroundLevel), spriteIndex(spriteID)
 {
 	// TODO Auto-generated constructor stub
 	SpriteData* data = &spriteTable[spriteID];
-	OAMObject* object = new OAMObject(data->spriteShape, data->spriteSize, 0, (void*)data->frames[0], data->paletteSlotID, (void*)paletteTable[data->paletteSlotID], backgroundLevel, false, colourAddress);
+	OAMObject* object = new OAMObject(data->spriteShape, data->spriteSize, 0, (void*)data->frames[0], data->paletteSlotID, (void*)((u32)paletteTable[data->paletteSlotID] + RTC::GetTime().timeOfDay * 0x20), backgroundLevel, false, colourAddress);
 	this->_object = object;
 }
 
@@ -43,4 +44,10 @@ bool NonPlayerCharacter::Update()
 void NonPlayerCharacter::UnloadContent()
 {
 
+}
+
+void NonPlayerCharacter::TimeTick(u32 time)
+{
+	SpriteData* data = &spriteTable[spriteIndex];
+	_object->UpdatePalette((void*)((u32)paletteTable[data->paletteSlotID] + time * 0x20));
 }

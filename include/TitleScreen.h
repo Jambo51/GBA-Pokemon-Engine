@@ -21,6 +21,7 @@ public:
 	~TitleScreen();
 	void Update();
 	void OnExitCallback();
+	void OnEnterCallback();
 };
 
 #endif /* TITLESCREEN_H_ */

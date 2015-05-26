@@ -3,6 +3,8 @@
 #ifndef FLAGS_H
 #define FLAGS_H
 
+#define NumFlags 0x2000
+
 class Flags
 {
 private:
@@ -10,6 +12,7 @@ private:
 	static u8 caughtFlags[];
 	static u8 trainerflags[];
 	static u8 mainFlagBank[];
+	static SaveLocationStruct saveData[];
 public:
 	static u8* FlagDecryption(u32 flagID, u8* ramLocation, u32 upperFlagLimit);
 	static bool GetSeenCaughtStatus(u32 pokemonIndex, u32 modeIndex);
@@ -22,6 +25,9 @@ public:
 	static void GenericClearFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit);
 	static void ClearFlag(u32 flagID);
 	static void ClearTrainerflag(u32 flagID);
+	static void Save();
+	static void Load();
+	static void Initialise();
 };
 
 #endif

@@ -47,3 +47,19 @@ void GameModeManager::Update()
 		screen->Update();
 	}
 }
+
+void GameModeManager::RunExitCallback()
+{
+	if (screen)
+	{
+		screen->OnExitCallback();
+	}
+}
+
+void GameModeManager::RunEnterCallback()
+{
+	if (screen)
+	{
+		screen->OnEnterCallback();
+	}
+}

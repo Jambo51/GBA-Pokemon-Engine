@@ -193,16 +193,15 @@ typedef struct U32BitField {
 	u32 bit31:1;
 } U32BitField;
 
-typedef struct SaveBlockFooter {
-	u16 blockNumber;
-	u16 saveNumber;
-	u32 checksum;
-	u8* pointer;
-} SaveBlockFooter;
+typedef struct SaveLocationStruct {
+	u8* destinationPosition;
+	u8* sourcePosition;
+	u32 length;
+} SaveLocationStruct;
 
 typedef struct SaveBlock {
-	u8 data[0x994];
-	SaveBlockFooter footer;
+	u8 data[0x99C];
+	u32 checksum;
 } SaveBlock;
 
 typedef struct ColourInner {
@@ -245,6 +244,15 @@ typedef struct Options
 	u16 typeValues:2;
 	u16 options:4;
 } Options;
+
+typedef struct OptionsStruct
+{
+	union
+	{
+		Options options;
+		u16 allOptions;
+	};
+} OptionsStruct;
 
 typedef struct BagItem {
 	u16 quantity;

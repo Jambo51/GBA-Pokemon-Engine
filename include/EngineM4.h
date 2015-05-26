@@ -254,37 +254,9 @@ typedef struct _STT {
 	u16 r1;
 } STT;
 
-/*          Inlines          */
-
-static inline int M4_IsActiveChan(M4Channel *Chan) {
-	return Chan->Status&M4_Active;
-}
-
-
-static inline int M4_IsActiveSong(M4Player *Play) {
-	return Play->Status&M4_Active;
-}
-
-/*         Prototype         */
-
-void M4_Init(void);
-void M4_Intr(void);
-void M4_Main(void);
-void M4_MainEngine(void);
-void M4_PlaySong(u32 Player, const SongData *Song);
-void M4_StopSong(u32 Player);
-void M4_Fade(u32 direction);
-void M4_FadeOut();
-void M4_FadeIn();
-void M4_PlayByIdx(u32 Idx);
-void M4_PlayByName(SongData *Song);
-void M4_StopByName(SongData *Song);
-
-M4Channel *M4_SFX(const WaveData *Wave);
-
-extern M4Driver  M4DriverArea;
-extern M4CGBChan M4CGBArea[4];
-extern M4Player  M4Players[M4_MaxPly];
+void M4_Mixer();
+void M4_Init();
+void M4_Intr();
 
 /*****************************/
 #ifdef __cplusplus

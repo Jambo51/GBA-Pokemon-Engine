@@ -25,6 +25,7 @@ private:
 	static u16 fanfareIDInt;
 	static u16 sfxIDInt;
 public:
+	static void Interrupt();
 	static void Initialise(MusicEngine* engine);
 	static void Update();
 	static void PlaySong(u16 songID, u8 songStartMode);
@@ -37,6 +38,7 @@ public:
 	static u16 GetSFXID() { return sfxIDInt; }
 	static void FadeSongToSilence();
 	static void StopSong();
+	static void SetOnSongEndFunction(VoidFunctionPointerVoid ptr);
 };
 
 #endif /* SOUNDENGINE_H_ */

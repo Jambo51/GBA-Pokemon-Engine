@@ -63,7 +63,7 @@ void GBPSoundsEngine::Update()
 			break;
 		case FadeIn:
 		{
-			this->StartSong(currentSongID, true);
+			this->StartSong(SoundEngine::GetSongID(), true);
 			buffer[0x10] &= 0xFF00;
 			FadeSongIn();
 			SoundEngine::SetStatus(FadeInSecond);
@@ -103,9 +103,12 @@ void GBPSoundsEngine::StartSong(u16 songID, bool startWithZeroVolume)
 {
 	channels[0]->Clear();
 	memset32(&buffer, 0, 8);
-	channels[0]->StartTrack(gbpSongs[songID - 1]);
-	buffer[0x10] = 0xFF77;
-	SwitchWavePattern(0);
+	if (songID > 0)
+	{
+		channels[0]->StartTrack(gbpSongs[songID - 1]);
+		buffer[0x10] = 0xFF77;
+		SwitchWavePattern(0);
+	}
 }
 
 void GBPSoundsEngine::SwitchWavePattern(u8 patternID) const
@@ -138,7 +141,12 @@ void GBPSoundsEngine::StartFanfare(u16 fanfareID)
 
 void GBPSoundsEngine::StartSFX(u16 sfxID)
 {
-	channels[2]->StartTrack(gbpSongs[sfxID - 1]);
+
+}
+
+void GBPSoundsEngine::Interrupt()
+{
+
 }
 
 void GBPSoundsEngine::SetSongOnEndFunction(VoidFunctionPointerVoid function)

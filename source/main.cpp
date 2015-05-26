@@ -1,6 +1,8 @@
 
+#include "FlashFunctions.h"
 #include "GlobalDefinitions.h"
 #include "GBPSoundsEngine.h"
+#include "M4AEngine.h"
 #include "SoundEngine.h"
 #include "EntityManager.h"
 #include "CallbackManager.h"
@@ -16,6 +18,7 @@
 #include "RTC.h"
 #include "TitleScreen.h"
 #include "Allocator.h"
+#include "DoNothingInputEventHandler.h"
 
 int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 
@@ -33,10 +36,19 @@ int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 
 int main()
 {
+	Game::SetPaletteToWhite();
 	Game::StartTimer(2);
 	Game::StartTimer(3, 1);
-	Game::Initialise();
-	SoundEngine::Initialise(new GBPSoundsEngine());
+	FlashFunctions::LoadGame();
+	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
+	if (Game::GetSoundEngineID() == M4AEngineID)
+	{
+		//SoundEngine::Initialise(new M4AEngine());
+	}
+	else
+	{
+		SoundEngine::Initialise(new GBPSoundsEngine());
+	}
 	EntityManager::Initialise();
 	//InitialiseTextEngine(TEXTSET);
 	RTC::Enable();
@@ -45,10 +57,10 @@ int main()
 	BackgroundFunctions::SetBackgroundsToDefault();
 	GameModeManager::SetScreen(new TitleScreen());
 	Allocator::Initialise((void*)0x06010000, 0x8000);
-	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 0));
 	while (true)
 	{
 		VBlankIntrWait();
+		SoundEngine::Interrupt();
 		RTC::Update();
 		InputHandler::KeyPoll();
 		CallbackManager::Update();

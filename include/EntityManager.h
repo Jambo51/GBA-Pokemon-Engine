@@ -20,5 +20,6 @@ public:
 	static void ShutDown();
 	static void RegisterEntity(Entity* entity);
 	static void RemoveEntity(Entity* entity);
+	static void TimeTick(u32 time);
 };
 

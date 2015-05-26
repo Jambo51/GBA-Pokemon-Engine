@@ -23,7 +23,14 @@ public:
 			channels[i] = new GBPChannel(this);
 		}
 	}
-	~GBPSoundsEngine() { }
+	~GBPSoundsEngine()
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			delete channels[i];
+		}
+	}
+	void Interrupt();
 	void Update();
 	void SetSongOnEndFunction(VoidFunctionPointerVoid function);
 	void SetSFXOnEndFunction(VoidFunctionPointerVoid function);

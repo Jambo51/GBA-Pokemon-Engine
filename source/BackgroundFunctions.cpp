@@ -22,3 +22,9 @@ void BackgroundFunctions::SetBackgroundsToDefault()
 	REG_BG3CNT = MAIN_BG_SETTINGS | BG_SBB(30) | BG_PRIORITY_THREE;
 	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_BG3 | DCNT_OBJ_1D | DCNT_OBJ;
 }
+
+void BackgroundFunctions::ClearBackground(u32 blockID)
+{
+	void* loc = (void*)(0x06000000 + (0x800 * blockID));
+	memset32(loc, 0, 0x200);
+}

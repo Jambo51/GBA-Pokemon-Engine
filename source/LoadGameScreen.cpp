@@ -12,12 +12,16 @@
 #include "OptionsScreen.h"
 #include "GameModeManager.h"
 #include "Game.h"
+#include "InputHandler.h"
+#include "LoadGameScreenInputEventHandler.h"
+#include "BackgroundFunctions.h"
 
-LoadGameScreen::LoadGameScreen()
+LoadGameScreen::LoadGameScreen(u32 enterContext)
 {
+	BackgroundFunctions::ClearBackground(31);
 	Game::FadeToWhite(32, true, false);
 	menuPosition = 0;
-	exitContext = 0;
+	exitContext = enterContext;
 }
 
 LoadGameScreen::~LoadGameScreen()
@@ -32,7 +36,12 @@ void LoadGameScreen::Update()
 
 void LoadGameScreen::OnEnterCallback()
 {
-	SoundEngine::PlaySong(Song_ContinueMenuTheme, 0);
+	if (exitContext)
+	{
+		SoundEngine::PlaySong(Song_ContinueMenuTheme, 0);
+		exitContext = 0;
+	}
+	InputHandler::SetEventHandler(new LoadGameScreenInputEventHandler());
 }
 
 void LoadGameScreen::OnExitCallback()
@@ -53,10 +62,27 @@ void LoadGameScreen::OnExitCallback()
 			break;
 		case 2:
 			// Options Menu
-			GameModeManager::SetScreen(new OptionsScreen());
+			GameModeManager::SetScreen(new OptionsScreen(0));
 			break;
 		default:
 			break;
 
 	}
+}
+
+bool LoadGameScreen::SetExitContext(u32 contextGetType)
+{
+	if (!contextGetType)
+	{
+		exitContext = menuPosition;
+		if (menuPosition == 2)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		exitContext = 3;
+	}
+	return true;
 }

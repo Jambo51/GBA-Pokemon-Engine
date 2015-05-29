@@ -16,13 +16,14 @@ private:
 	u32 exitContext;
 	u32 menuPosition;
 public:
-	LoadGameScreen();
+	LoadGameScreen(u32 enterContext);
 	~LoadGameScreen();
 	void Update();
 	void OnEnterCallback();
 	void OnExitCallback();
-	void IncrementMenuPosition() { menuPosition++; }
-	void DecrementMenuPosition() { menuPosition--; }
+	void IncrementMenuPosition() { if (menuPosition < 2) { menuPosition++; } }
+	void DecrementMenuPosition() { if (menuPosition > 0) { menuPosition--; } }
+	bool SetExitContext(u32 contextGetType = 0);
 };
 
 #endif /* INCLUDE_LOADGAMESCREEN_H_ */

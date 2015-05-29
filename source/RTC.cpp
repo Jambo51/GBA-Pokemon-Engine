@@ -133,27 +133,30 @@ void RTC::InnerUpdate()
 	if (rtcData.second != Maths::ToHex(dateTime[6]))
 	{
 		rtcData.second = Maths::ToHex(dateTime[6]);
-		Player player = Game::GetPlayer();
-		u8 currentSeconds = player.secondsPlayed + 1;
-		u8 additionalMinutes = 0;
-		u8 additionalHours = 0;
-		if (currentSeconds == 60)
+		if (Game::MainGame())
 		{
-			currentSeconds = 0;
-			additionalMinutes = 1;
-		}
-		u8 currentMinutes = player.minutesPlayed + additionalMinutes;
-		if (currentMinutes == 60)
-		{
-			currentMinutes = 0;
-			additionalHours = 1;
-		}
-		player.secondsPlayed = currentSeconds;
-		player.minutesPlayed = currentMinutes;
-		u16 hours = player.hoursPlayed;
-		if (hours + additionalHours <= 0xFFFF)
-		{
-			player.hoursPlayed += additionalHours;
+			Player player = Game::GetPlayer();
+			u8 currentSeconds = player.secondsPlayed + 1;
+			u8 additionalMinutes = 0;
+			u8 additionalHours = 0;
+			if (currentSeconds == 60)
+			{
+				currentSeconds = 0;
+				additionalMinutes = 1;
+			}
+			u8 currentMinutes = player.minutesPlayed + additionalMinutes;
+			if (currentMinutes == 60)
+			{
+				currentMinutes = 0;
+				additionalHours = 1;
+			}
+			player.secondsPlayed = currentSeconds;
+			player.minutesPlayed = currentMinutes;
+			u16 hours = player.hoursPlayed;
+			if (hours + additionalHours <= 0xFFFF)
+			{
+				player.hoursPlayed += additionalHours;
+			}
 		}
 	}
 	u8 timeToWrite = 3;
@@ -242,23 +245,26 @@ void RTC::Set(u8 *data) {
 
 void RTC::IncrementPlayerPlayedCounter()
 {
-	Player player = Game::GetPlayer();
-	player.framesPlayed++;
-	if (player.framesPlayed == 60)
+	if (Game::MainGame())
 	{
-		player.framesPlayed = 0;
-		player.secondsPlayed++;
-		if (player.secondsPlayed == 60)
+		Player player = Game::GetPlayer();
+		player.framesPlayed++;
+		if (player.framesPlayed == 60)
 		{
-			player.secondsPlayed = 0;
-			player.minutesPlayed++;
-			if (player.minutesPlayed == 60)
+			player.framesPlayed = 0;
+			player.secondsPlayed++;
+			if (player.secondsPlayed == 60)
 			{
-				player.minutesPlayed = 0;
-				u16 hours = player.hoursPlayed;
-				if (hours < 0xFFFF)
+				player.secondsPlayed = 0;
+				player.minutesPlayed++;
+				if (player.minutesPlayed == 60)
 				{
-					player.hoursPlayed++;
+					player.minutesPlayed = 0;
+					u16 hours = player.hoursPlayed;
+					if (hours < 0xFFFF)
+					{
+						player.hoursPlayed++;
+					}
 				}
 			}
 		}

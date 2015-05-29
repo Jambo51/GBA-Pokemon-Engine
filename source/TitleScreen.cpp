@@ -102,5 +102,5 @@ void TitleScreen::OnEnterCallback()
 
 void TitleScreen::OnExitCallback()
 {
-	GameModeManager::SetScreen(new LoadGameScreen());
+	GameModeManager::SetScreen(new LoadGameScreen(1));
 }

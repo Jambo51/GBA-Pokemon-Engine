@@ -15,6 +15,7 @@ private:
 	~BackgroundFunctions() { }
 public:
 	static void SetBackgroundsToDefault();
+	static void ClearBackground(u32 blockID);
 };
 
 

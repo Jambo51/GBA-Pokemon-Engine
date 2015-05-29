@@ -55,6 +55,7 @@ private:
 	static bool doCallback;
 	static bool doExitCallback;
 	static bool paletteWriteDetected;
+	static bool inMainGame;
 	static u8 validGameSave;
 	static u8 soundEngineID;
 	static u16* currentPalette;
@@ -76,7 +77,8 @@ public:
 	static void SetCurrentMap(const MapHeader &mapHeader) { currentMap = mapHeader; }
 	static Player & GetPlayer() { return player; }
 	static const MapHeader & GetCurrentMap() { return currentMap; }
-	static const Options & GetOptions() { return options.options; }
+	static Options & GetOptions() { return options.options; }
+	static const Options & GetConstOptions() { return options.options; }
 	static bool AddNewPokemon(const Pokemon &p);
 	static u32 CountPartyPokemon();
 	static u32 CountBoxPokemon(u32 boxID);
@@ -94,6 +96,8 @@ public:
 	static void ValidSaveDetected(bool newValue) { if (newValue) { validGameSave = 1; } else { validGameSave = 0; } }
 	static u32 GetSoundEngineID() { return soundEngineID; }
 	static void SetPaletteToWhite();
+	static bool MainGame() { return inMainGame; }
+	static void MainGame(bool newValue) { inMainGame = newValue; }
 };
 
 #endif /* GAME_H_ */

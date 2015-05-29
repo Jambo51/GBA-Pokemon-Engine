@@ -29,7 +29,6 @@ Overworld::Overworld()
 	animStruct = new TileAnimationStruct[10];
 	u16* newColours = new u16[512];
 	DrawMap(10, 15, newColours);
-	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
 	NonPlayerCharacter* npc = new PlayerEntity(Vector2D(112, 56), 2, false, newColours);
 	if (!Game::AddNPC(npc))
@@ -41,7 +40,8 @@ Overworld::Overworld()
 	{
 		delete npc;
 	}
-	Game::FadeToPalette(newColours);
+	Game::FadeToPalette(newColours, 32, true, false);
+	exitContext = 0;
 }
 
 Overworld::~Overworld()
@@ -563,6 +563,7 @@ void Overworld::OnEnterCallback()
 	{
 		case 0:
 			SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
+			Game::MainGame(true);
 			break;
 		default:
 			break;

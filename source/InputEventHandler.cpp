@@ -80,7 +80,7 @@ void InputEventHandler::Update()
 		else
 		{
 			keyPressTimers[i]++;
-			if (keyPressTimers[i] >= 0)
+			if (keyPressTimers[i] > 0)
 			{
 				keyHeld[i] = true;
 			}

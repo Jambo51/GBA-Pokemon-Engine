@@ -8,6 +8,7 @@
 #include "M4AEngine.h"
 #include "M4SongTable.h"
 #include "SoundEngine.h"
+#include "EngineM4.h"
 
 RODATA_LOCATION ALIGN(2) u16 M4AEngine::Sqrt[] = {
 	0x0000,0x0B5B,0x1010,0x13AC,0x16B7,0x1965,0x1BD2,0x1E0D,
@@ -28,24 +29,14 @@ RODATA_LOCATION ALIGN(2) u16 M4AEngine::Sqrt[] = {
 	0x7C6C,0x7CF0,0x7D74,0x7DF7,0x7E7A,0x7EFC,0x7F7E,0x8000,
 };
 
-void M4_Intr()
-{
-
-}
-
-void M4_Init()
-{
-
-}
-
 void M4AEngine::Interrupt()
 {
-	M4_Intr();
+	//M4_Intr();
 }
 
 void M4AEngine::Initialise()
 {
-	M4_Init();
+	//M4_Init();
 }
 
 M4Channel* M4AEngine::FetchChannel()

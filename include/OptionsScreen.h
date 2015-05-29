@@ -15,14 +15,19 @@ class OptionsScreen : public GameScreen
 private:
 	u32 exitContext;
 	u32 menuPosition;
+	u32 optionValues[6];
 public:
-	OptionsScreen();
+	OptionsScreen(u32 exitContext);
 	~OptionsScreen();
 	void Update();
 	void OnExitCallback();
 	void OnEnterCallback();
-	void IncrementMenuPosition() { menuPosition++; }
-	void DecrementMenuPosition() { menuPosition--; }
+	void IncrementMenuPosition() { if (menuPosition < 6) { menuPosition++; } }
+	void DecrementMenuPosition()  { if (menuPosition > 0) { menuPosition--; } }
+	void Save();
+	void IncrementValueAt();
+	void DecrementValueAt();
+	u32 GetMenuPosition() const { return menuPosition; }
 };
 
 #endif /* SOURCE_OPTIONSSCREEN_H_ */

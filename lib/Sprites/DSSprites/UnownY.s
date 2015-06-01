@@ -477,6 +477,8 @@ UnownY_FrontSprite:
 	.byte		0xC0
 	.byte		0x01
 
+	.align 4
+
 UnownY_NormalPalette:
 	.short		0x5739
 	.short		0x7C1F
@@ -494,6 +496,8 @@ UnownY_NormalPalette:
 	.short		0x7C1F
 	.short		0x7C1F
 	.short		0x7C1F
+
+	.align 4
 
 UnownY_BackSprite:
 	.byte		0x10
@@ -995,6 +999,8 @@ UnownY_BackSprite:
 	.byte		0x01
 	.byte		0xE0
 	.byte		0x01
+
+	.align 4
 
 UnownY_ShinyPalette:
 	.short		0x5739

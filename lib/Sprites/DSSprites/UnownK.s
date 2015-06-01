@@ -468,6 +468,8 @@ UnownK_FrontSprite:
 	.byte		0x00
 	.byte		0x01
 
+	.align 4
+
 UnownK_NormalPalette:
 	.short		0x5739
 	.short		0x7C1F
@@ -485,6 +487,8 @@ UnownK_NormalPalette:
 	.short		0x7C1F
 	.short		0x7C1F
 	.short		0x7C1F
+
+	.align 4
 
 UnownK_BackSprite:
 	.byte		0x10
@@ -988,6 +992,8 @@ UnownK_BackSprite:
 	.byte		0x01
 	.byte		0xB0
 	.byte		0x01
+
+	.align 4
 
 UnownK_ShinyPalette:
 	.short		0x5739

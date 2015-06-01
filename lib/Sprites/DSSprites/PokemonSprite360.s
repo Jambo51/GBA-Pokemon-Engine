@@ -939,6 +939,8 @@ PokemonSprite360_FrontSprite:
 	.byte		0x00
 	.byte		0x00
 
+	.align 4
+
 PokemonSprite360_NormalPalette:
 	.short		0x5353
 	.short		0x3147
@@ -956,6 +958,8 @@ PokemonSprite360_NormalPalette:
 	.short		0x0000
 	.short		0x0000
 	.short		0x0000
+
+	.align 4
 
 PokemonSprite360_BackSprite:
 	.byte		0x10
@@ -1998,6 +2002,8 @@ PokemonSprite360_BackSprite:
 	.byte		0xF7
 	.byte		0xEC
 	.byte		0x00
+
+	.align 4
 
 PokemonSprite360_ShinyPalette:
 	.short		0x5353

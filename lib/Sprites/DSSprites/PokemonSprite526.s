@@ -1683,6 +1683,8 @@ PokemonSprite526_FrontSprite:
 	.byte		0x00
 	.byte		0x00
 
+	.align 4
+
 PokemonSprite526_NormalPalette:
 	.short		0x5353
 	.short		0x108D
@@ -1700,6 +1702,8 @@ PokemonSprite526_NormalPalette:
 	.short		0x2529
 	.short		0x0000
 	.short		0x0000
+
+	.align 4
 
 PokemonSprite526_BackSprite:
 	.byte		0x10
@@ -3234,6 +3238,8 @@ PokemonSprite526_BackSprite:
 	.byte		0x00
 	.byte		0x00
 	.byte		0x00
+
+	.align 4
 
 PokemonSprite526_ShinyPalette:
 	.short		0x5353

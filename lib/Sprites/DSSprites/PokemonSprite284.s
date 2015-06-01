@@ -1539,6 +1539,8 @@ PokemonSprite284_FrontSprite:
 	.byte		0x00
 	.byte		0x00
 
+	.align 4
+
 PokemonSprite284_NormalPalette:
 	.short		0x5353
 	.short		0x1133
@@ -1556,6 +1558,8 @@ PokemonSprite284_NormalPalette:
 	.short		0x0842
 	.short		0x15BC
 	.short		0x325F
+
+	.align 4
 
 PokemonSprite284_BackSprite:
 	.byte		0x10
@@ -3250,6 +3254,8 @@ PokemonSprite284_BackSprite:
 	.byte		0x00
 	.byte		0x00
 	.byte		0x00
+
+	.align 4
 
 PokemonSprite284_ShinyPalette:
 	.short		0x76C0

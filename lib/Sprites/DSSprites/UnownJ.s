@@ -459,6 +459,8 @@ UnownJ_FrontSprite:
 	.byte		0x90
 	.byte		0x01
 
+	.align 4
+
 UnownJ_NormalPalette:
 	.short		0x5739
 	.short		0x7C1F
@@ -476,6 +478,8 @@ UnownJ_NormalPalette:
 	.short		0x7C1F
 	.short		0x7C1F
 	.short		0x7C1F
+
+	.align 4
 
 UnownJ_BackSprite:
 	.byte		0x10
@@ -963,6 +967,8 @@ UnownJ_BackSprite:
 	.byte		0x01
 	.byte		0x10
 	.byte		0x01
+
+	.align 4
 
 UnownJ_ShinyPalette:
 	.short		0x5739

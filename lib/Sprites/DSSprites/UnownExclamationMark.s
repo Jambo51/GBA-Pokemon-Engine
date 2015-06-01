@@ -407,6 +407,8 @@ UnownExclamationMark_FrontSprite:
 	.byte		0xB0
 	.byte		0x01
 
+	.align 4
+
 UnownExclamationMark_NormalPalette:
 	.short		0x5739
 	.short		0x7C1F
@@ -424,6 +426,8 @@ UnownExclamationMark_NormalPalette:
 	.short		0x7C1F
 	.short		0x7C1F
 	.short		0x7C1F
+
+	.align 4
 
 UnownExclamationMark_BackSprite:
 	.byte		0x10
@@ -881,6 +885,8 @@ UnownExclamationMark_BackSprite:
 	.byte		0x80
 	.byte		0xC0
 	.byte		0x01
+
+	.align 4
 
 UnownExclamationMark_ShinyPalette:
 	.short		0x5739

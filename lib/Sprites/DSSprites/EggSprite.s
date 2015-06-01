@@ -440,6 +440,8 @@ EggSprite_FrontSprite:
 	.byte		0xC0
 	.byte		0x01
 
+	.align 4
+
 EggSprite_NormalPalette:
 	.short		0x4BF4
 	.short		0x2528
@@ -457,6 +459,8 @@ EggSprite_NormalPalette:
 	.short		0x001C
 	.short		0x001C
 	.short		0x7390
+
+	.align 4
 
 EggSprite_BackSprite:
 	.byte		0x10
@@ -892,6 +896,8 @@ EggSprite_BackSprite:
 	.byte		0x01
 	.byte		0xC0
 	.byte		0x01
+
+	.align 4
 
 EggSprite_ShinyPalette:
 	.short		0x4BF4

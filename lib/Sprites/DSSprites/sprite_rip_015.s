@@ -2134,6 +2134,8 @@ sprite_rip_015_FrontSprite:
 	.byte		0x00
 	.byte		0x00
 
+	.align 4
+
 sprite_rip_015_NormalPalette:
 	.short		0x5353
 	.short		0x14A5
@@ -2151,6 +2153,8 @@ sprite_rip_015_NormalPalette:
 	.short		0x63BF
 	.short		0x0000
 	.short		0x3DAD
+
+	.align 4
 
 sprite_rip_015_BackSprite:
 	.byte		0x10
@@ -3646,6 +3650,8 @@ sprite_rip_015_BackSprite:
 	.byte		0x00
 	.byte		0x00
 	.byte		0x00
+
+	.align 4
 
 sprite_rip_015_ShinyPalette:
 	.short		0x5353

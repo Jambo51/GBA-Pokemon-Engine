@@ -10,6 +10,10 @@
 
 MusicEngine::MusicEngine()
 {
+	for (int i = 0; i < 17; i++)
+	{
+		buffer[i] = 0;
+	}
 }
 
 MusicEngine::~MusicEngine()

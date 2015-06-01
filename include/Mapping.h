@@ -20,6 +20,7 @@ private:
 	static TileAnimationStruct emptyAnimStruct;
 	static u8 maxBanks;
 	static u8 maxMaps[MaxBanks];
+	static char* mapNamesTable[];
 public:
 	Overworld();
 	~Overworld();
@@ -61,6 +62,7 @@ public:
 	void Update();
 	void OnExitCallback();
 	void OnEnterCallback();
+	static char** GetMapNamesTablePointer() { return (char**)&mapNamesTable; }
 };
 
 #endif

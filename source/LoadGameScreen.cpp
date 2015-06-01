@@ -15,6 +15,7 @@
 #include "InputHandler.h"
 #include "LoadGameScreenInputEventHandler.h"
 #include "BackgroundFunctions.h"
+#include "TextFunctions.h"
 
 LoadGameScreen::LoadGameScreen(u32 enterContext)
 {

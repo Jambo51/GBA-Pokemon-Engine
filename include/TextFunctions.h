@@ -8,45 +8,58 @@
 #ifndef TEXTFUNCTIONS_H_
 #define TEXTFUNCTIONS_H_
 
+#define END '\0'
+
 #include "GlobalDefinitions.h"
 
-#define Space 0
+class Pokemon;
 
-#define NEWLINE 0xFE
-#define END 0xFF
-
-void SetTextColour(u32 colour, u32 shadowColour, u32 paperColour);
-void SetTextPaletteSlot(u32 paletteID);
-void StringCopy(char* stringDest, char* stringSource, u32 length);
-u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex);
-void BufferString(char* string, u8 bufferID, u32 maxLength);
-void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID);
-void BufferItemName(u16 itemIndex, u8 bufferID);
-void BufferNatureName(u32 natureID, u8 bufferID);
-void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID);
-void BufferPokemonName(u8 pokemonIndex, u8 bufferID);
-void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID);
-void BufferNumber(u32 number, u32 length, u8 bufferID);
-void BufferNegativeNumber(s32 number, u32 length, u8 bufferID);
-void BufferUnsignedLongNumber(u32 number, u8 bufferID);
-void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID);
-void BufferUnsignedShortNumber(u16 number, u8 bufferID);
-void BufferSignedLongNumber(s32 number, u8 bufferID);
-void BufferSignedShortNumber(s16 number, u8 bufferID);
-s32 CharacterComparison(u8 charOne, u8 charTwo);
-void DrawCharacter(char c, u8 x, u8 y);
-void DrawString(char* string, u8 x, u8 y);
-void DrawStringOverTimeMain(u32 pointer);
-void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void));
-void InitialiseTextEngineInner(u32 colourWord, TFont* font, u8 paletteSet);
-#ifdef __cplusplus
-extern "C" {
-#endif
-void InitialiseTextEngine(u32 textSetID);
-#ifdef __cplusplus
-}
-#endif
-
-extern char* playerNameLoc;
+class TextFunctions
+{
+private:
+	static char* playerNameLoc;
+	static char* rival1NameLoc;
+	static char* rival2NameLoc;
+	static char* rival3NameLoc;
+	static char* statBuffStrings1[];
+	static char* statBuffStrings2[2][3];
+	static char* foeString;
+	static char* wildString;
+	static char* trainerClasses[];
+	static const TFont* fonts[];
+	static const char* posString;
+	TextFunctions() { }
+	~TextFunctions() { }
+	static void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
+	static void DrawStringOverTimeMain(u32 pointer);
+public:
+	static const TFont* GetFont();
+	static void SetFont(const TFont* font);
+	static void SetTextColour(u32 colour, u32 shadowColour, u32 paperColour);
+	static void SetTextPaletteSlot(u32 paletteID);
+	static void StringCopy(char* stringDest, char* stringSource, u32 length);
+	static u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex);
+	static void BufferString(char* string, u8 bufferID, u32 maxLength);
+	static void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID);
+	static void BufferItemName(u16 itemIndex, u8 bufferID);
+	static void BufferNatureName(u32 natureID, u8 bufferID);
+	static void SetFontByID(u32 id);
+	static void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID);
+	static void BufferPokemonName(u8 pokemonIndex, u8 bufferID);
+	static void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID);
+	static void BufferNumber(u32 number, u32 length, u8 bufferID);
+	static void BufferNegativeNumber(s32 number, u32 length, u8 bufferID);
+	static void BufferUnsignedLongNumber(u32 number, u8 bufferID);
+	static void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID);
+	static void BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecimalPoint);
+	static void BufferUnsignedShortNumber(u16 number, u8 bufferID);
+	static void BufferSignedLongNumber(s32 number, u8 bufferID);
+	static void BufferSignedShortNumber(s16 number, u8 bufferID);
+	static s32 CharacterComparison(u8 charOne, u8 charTwo);
+	static void DrawCharacter(char c, u8 x, u8 y);
+	static void DrawString(char* string, u8 x, u8 y);
+	static void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void));
+	static void InitialiseTextEngine(u32 textSetID);
+};
 
 #endif /* TEXTFUNCTIONS_H_ */

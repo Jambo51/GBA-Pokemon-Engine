@@ -14,6 +14,7 @@
 #include "InputHandler.h"
 #include "DoNothingInputEventHandler.h"
 #include "PlayerEntity.h"
+#include "TextFunctions.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -22,6 +23,7 @@
 TEXT_LOCATION TileAnimationStruct Overworld::emptyAnimStruct = { 0, 0, 0, 0, 0, 0, 0, 0 };
 TEXT_LOCATION ALIGN(1) u8 Overworld::maxBanks = MaxBanks;
 TEXT_LOCATION ALIGN(1) u8 Overworld::maxMaps[MaxBanks] = { 0, 0, 0, 2 };
+TEXT_LOCATION ALIGN(4) char* Overworld::mapNamesTable[] = { "Pallet Town", "Route 1" };
 
 Overworld::Overworld()
 {
@@ -40,6 +42,27 @@ Overworld::Overworld()
 	{
 		delete npc;
 	}
+	npc = new NonPlayerCharacter(Vector2D(112, 72 + (72 - 56)), 2, 31, newColours);
+	if (!Game::AddNPC(npc))
+	{
+		delete npc;
+	}
+	npc = new NonPlayerCharacter(Vector2D(112, 72 + ((72 - 56) * 2)), 2, 32, newColours);
+	if (!Game::AddNPC(npc))
+	{
+		delete npc;
+	}
+	npc = new NonPlayerCharacter(Vector2D(112, 72 + ((72 - 56) * 3)), 2, 32, newColours);
+	if (!Game::AddNPC(npc))
+	{
+		delete npc;
+	}
+	npc = new NonPlayerCharacter(Vector2D(112, 72 + ((72 - 56) * 4)), 2, 33, newColours);
+	if (!Game::AddNPC(npc))
+	{
+		delete npc;
+	}
+	newColours[255] = 0;
 	Game::FadeToPalette(newColours, 32, true, false);
 	exitContext = 0;
 }
@@ -563,6 +586,7 @@ void Overworld::OnEnterCallback()
 	{
 		case 0:
 			SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
+			TextFunctions::DrawStringOverTime("Hello world!", 0, 0, (void (*)(void))NULL);
 			Game::MainGame(true);
 			break;
 		default:

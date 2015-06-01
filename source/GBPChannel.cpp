@@ -28,6 +28,12 @@ GBPChannel::GBPChannel(GBPSoundsEngine* hostEngine)
 GBPChannel::~GBPChannel()
 {
 	// TODO Auto-generated destructor stub
+	for (int i = 0; i < 2; i++)
+	{
+		delete toneTracks[i];
+	}
+	delete waveTrack;
+	delete noiseTrack;
 }
 
 void GBPChannel::SetOnTrackEndFunction(VoidFunctionPointerVoid functionPtr)

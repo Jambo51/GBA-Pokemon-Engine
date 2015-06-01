@@ -24,8 +24,6 @@ void StartMenuKeyPresses();
 void CheckKeyPressesOverworld();
 void LoadOverworld();
 
-extern Colour blackPalette[16];
-extern Colour whitePalette[16];
 extern char* mapNamesTable[];
 
 #endif /* OVERWORLD_H_ */

@@ -19,8 +19,7 @@
 #include "TitleScreen.h"
 #include "Allocator.h"
 #include "DoNothingInputEventHandler.h"
-
-int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
+#include "TextFunctions.h"
 
 #define LATIN 0
 #define CYRILLIC 1
@@ -28,11 +27,7 @@ int Image$$ZI$$Limit = 0x02020000; // beginning of free exRAM
 #define ARABIC 3
 #define BRAILLE 4
 
-#define M4A 0
-#define GBP 1
-
 #define TEXTSET LATIN
-#define MUSICENGINE GBP
 
 int main()
 {
@@ -50,7 +45,7 @@ int main()
 		SoundEngine::Initialise(new GBPSoundsEngine());
 	}
 	EntityManager::Initialise();
-	//InitialiseTextEngine(TEXTSET);
+	TextFunctions::InitialiseTextEngine(TEXTSET);
 	RTC::Enable();
 	IRQHandler::Initialise();
 	IRQHandler::PrimeIRQ(II_VBLANK);

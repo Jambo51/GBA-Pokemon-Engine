@@ -836,19 +836,6 @@ typedef struct OAMData {
 	u8 size;
 } OAMData;
 
-typedef struct TextOverTimeStruct {
-	char* string;
-	u32 stringPosition;
-	void (*EndFunction)(void);
-	u8 currentX;
-	u8 currentY;
-	u8 initialX;
-	u8 framesToWait;
-	u8 textSpeed;
-	u8 alignment1;
-	u16 alignment;
-} TextOverTimeStruct;
-
 typedef struct UpAndDownStruct {
 	u32 frameDelayLength:8;
 	u32 frameDelay:8;

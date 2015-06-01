@@ -98,6 +98,9 @@ public:
 	static void SetPaletteToWhite();
 	static bool MainGame() { return inMainGame; }
 	static void MainGame(bool newValue) { inMainGame = newValue; }
+	static char* GetBufferPointer(u32 bufferID) { if (bufferID < NUMBUFFERS) { return (char*)&buffers[bufferID]; } return NULL; }
+	static Pokemon* GetPartyPokemon(u32 indexID) { if (indexID < 6) { return &partyPokemon[indexID]; } return NULL; }
+	static Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
 };
 
 #endif /* GAME_H_ */

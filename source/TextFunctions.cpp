@@ -1,30 +1,33 @@
-#include "Data.h"
-#include "Maths.h"
-#include "Overworld.h"
-#include "Mapping.h"
-#include "MemoryManagement.h"
-#include "libtiles.h"
+#include "TextFunctions.h"
+#include "Game.h"
 #include "Pokemon.h"
+#include "Maths.h"
+#include "Fonts.h"
+#include "TextDrawer.h"
+#include "Mapping.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <tonc_tte.h>
 #include "PokemonBaseData.h"
-#include "CallbackSystem.h"
-#include "KeyPresses.h"
-#include "PokemonBaseData.h"
+#include "MemoryLocations.h"
+#ifdef __cplusplus
+}
+#endif
 
-#define Space 0
+EWRAM_LOCATION ALIGN(4) char* TextFunctions::playerNameLoc = NULL;
+EWRAM_LOCATION ALIGN(4) char* TextFunctions::rival1NameLoc = NULL;
+EWRAM_LOCATION ALIGN(4) char* TextFunctions::rival2NameLoc = NULL;
+EWRAM_LOCATION ALIGN(4) char* TextFunctions::rival3NameLoc = NULL;
+RODATA_LOCATION ALIGN(4) char* TextFunctions::statBuffStrings1[] = { "Attack", "Defence", "Speed", "Special Attack", "Special Defence", "Accuracy", "Evasiveness" };
+RODATA_LOCATION ALIGN(4) char* TextFunctions::statBuffStrings2[2][3] = { { "rose", "rose sharply", "rose drastically" }, { "fell", "harshly fell", "severely fell" } };
+RODATA_LOCATION ALIGN(4) char* TextFunctions::foeString = "Foe ";
+RODATA_LOCATION ALIGN(4) char* TextFunctions::wildString = "Wild ";
+RODATA_LOCATION ALIGN(4) char* TextFunctions::trainerClasses[] = { "Gym Leader", "Elite Four", "Champion", "Rocket Grunt", "Rocket Duo", "Elite Trainer" };
+RODATA_LOCATION ALIGN(4) const TFont* TextFunctions::fonts[] = { &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font };
+RODATA_LOCATION ALIGN(4) const char* TextFunctions::posString = "#{P:%d,%d}";
 
-#define NEWLINE 0xFE
-#define END '\0'
-
-typedef struct ItemData {
-	char name[10];
-} ItemData;
-
-#define NumItems 250
-#define NumMoves 617
-
-const RODATA_LOCATION ItemData itemData[NumItems];
-
-void SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
+void TextFunctions::TextFunctions::SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
 {
 	TTC* context = tte_get_context();
 	context->cattr[TTE_INK] = colour & 0xF;
@@ -32,26 +35,26 @@ void SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
 	context->cattr[TTE_PAPER] = paperColour & 0xF;
 }
 
-void SetTextPaletteSlot(u32 paletteID)
+void TextFunctions::SetTextPaletteSlot(u32 paletteID)
 {
 	TTC* context = tte_get_context();
 	TSurface* surface = &context->dst;
 	surface->palData = pal_bg_bank[paletteID];
 }
 
-const TFont* GetFont()
+const TFont* TextFunctions::GetFont()
 {
 	TTC* context = tte_get_context();
 	return context->font;
 }
 
-void SetFont(const TFont* font)
+void TextFunctions::SetFont(const TFont* font)
 {
 	TTC* context = tte_get_context();
-	context->font = font;
+	context->font = (TFont*)font;
 }
 
-void StringCopy(char* stringDest, char* stringSource, u32 length)
+void TextFunctions::StringCopy(char* stringDest, char* stringSource, u32 length)
 {
 	char currentChar = stringSource[0];
 	u32 index = 0;
@@ -67,39 +70,6 @@ void StringCopy(char* stringDest, char* stringSource, u32 length)
 	}
 	stringDest[index] = currentChar;
 }
-
-const IndexTable localBuffersTable[] = { { PLAYERNAMELENGTH, *(&player.name) }, { PLAYERNAMELENGTH, *(&player.primaryRivalName) }, { PLAYERNAMELENGTH, *(&player.secondaryRivalName) }, { PLAYERNAMELENGTH, *(&player.tertiaryRivalName) } };
-
-char* statBuffStrings1[] = {
-		"Attack",
-		"Defence",
-		"Speed",
-		"Special Attack",
-		"Special Defence",
-		"Accuracy",
-		"Evasiveness"
-};
-
-char* statBuffStrings2[2][3] = {
-		{
-				"rose",
-				"rose sharply",
-				"rose drastically"
-		},
-		{
-				"fell",
-				"harshly fell",
-				"severely fell"
-		}
-};
-
-char* foeString = "Foe ";
-char* wildString = "Wild ";
-char* trainerClasses[] = { "Gym Leader", "Elite Four", "Champion", "Rocket Grunt", "Rocket Duo", "Elite Trainer" };
-char* playerNameLoc = *(&player.name);
-char* rival1NameLoc = *(&player.primaryRivalName);
-char* rival2NameLoc = *(&player.secondaryRivalName);
-char* rival3NameLoc = *(&player.tertiaryRivalName);
 
 char ToUpper(char c)
 {
@@ -130,9 +100,7 @@ u32 StartsWithVowel(char* pointer)
 	return false;
 }
 
-void BufferUnsignedLongNumber(u32, u8);
-
-u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex)
+u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex)
 {
 	u32 index = 0;
 	u32 pos = 0;
@@ -157,13 +125,13 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 						if (c < NUMBUFFERS)
 						{
 							length = BUFFERLENGTH;
-							pointer = (char*)&buffers[c];
+							pointer = Game::GetBufferPointer(c);
 						}
 						else
 						{
-							c -= NUMBUFFERS;
-							length = localBuffersTable[c].index;
-							pointer = (char*)localBuffersTable[c].pointerToData;
+//							c -= NUMBUFFERS;
+//							length = localBuffersTable[c].index;
+//							pointer = (char*)localBuffersTable[c].pointerToData;
 						}
 						index += StringCopyWithBufferChecks(stringDest, pointer, length, index);
 						pos += 2;
@@ -191,7 +159,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 										index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
 									}
 								}
-								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
+								pointer = 0;//(char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
 							}
 							case 1:
@@ -208,7 +176,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 										index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
 									}
 								}
-								pointer = (char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
+								pointer = 0;//(char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
 								break;
 							}
 							case 2:
@@ -221,7 +189,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 							{
 								u32 bank = battleDataPointer[0].battleBanks[User];
 								u16 move = battleDataPointer[0].pokemonStats[bank].moves[battleDataPointer[0].moveSelections[bank]];
-								if (move <= NumMoves)
+								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
 								}
@@ -234,7 +202,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 							case 5:
 							{
 								u16 move = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
-								if (move <= NumMoves)
+								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
 								}
@@ -265,7 +233,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 							case 8:
 							{
 								BufferUnsignedLongNumber(battleDataPointer[0].battleDamage, 0);
-								pointer = (char*)&buffers[0];
+								pointer = Game::GetBufferPointer(0);
 								break;
 							}
 							case 9:
@@ -318,7 +286,7 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 							case 17:
 							{
 								u16 move = battleDataPointer[0].battleBanks[GenericBufferByte] | (battleDataPointer[0].battleBanks[GenericBufferByte2] << 8);
-								if (move <= NumMoves)
+								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
 								}
@@ -356,38 +324,38 @@ u32 StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length,
 	return index;
 }
 
-void BufferString(char* string, u8 bufferID, u32 maxLength)
+void TextFunctions::BufferString(char* string, u8 bufferID, u32 maxLength)
 {
 	if (string != 0)
 	{
-		char* buffer = (char*)(&(buffers[bufferID]));
+		char* buffer = Game::GetBufferPointer(bufferID);
 		StringCopy(buffer, string, maxLength);
 	}
 }
 
-void BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
+void TextFunctions::BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 {
 	BufferString((char*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
 }
 
-void BufferItemName(u16 itemIndex, u8 bufferID)
+void TextFunctions::BufferItemName(u16 itemIndex, u8 bufferID)
 {
-	BufferString((char*)(&(itemData[itemIndex].name)), bufferID, 11);
+	//BufferString((char*)(&(itemData[itemIndex].name)), bufferID, 11);
 }
 
-void BufferNatureName(u32 natureID, u8 bufferID)
+void TextFunctions::BufferNatureName(u32 natureID, u8 bufferID)
 {
 	BufferString((char*)(&(natureNames[natureID])), bufferID, 5);
 }
 
-void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID)
+void TextFunctions::BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID)
 {
-	BufferString((char*)(PokemonDecrypter(thePokemon, Nickname)), bufferID, 11);
+	BufferString((char*)thePokemon->Decrypt(Nickname), bufferID, 11);
 }
 
-void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
+void TextFunctions::BufferPokemonName(u8 pokemonIndex, u8 bufferID)
 {
-	Pokemon* thePokemon;
+	Pokemon* thePokemon = NULL;
 	switch (pokemonIndex)
 	{
 		case 0:
@@ -396,7 +364,7 @@ void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
 		case 3:
 		case 4:
 		case 5:
-			thePokemon = &partyPokemon[pokemonIndex];
+			thePokemon = Game::GetPartyPokemon(pokemonIndex);
 			break;
 		case 6:
 		case 7:
@@ -404,25 +372,28 @@ void BufferPokemonName(u8 pokemonIndex, u8 bufferID)
 		case 9:
 		case 10:
 		case 11:
-			thePokemon = &enemyPokemon[pokemonIndex - 6];
+			//thePokemon = &enemyPokemon[pokemonIndex - 6];
 			break;
 		default:
-			thePokemon = &temporaryHoldingPokemon;
+			thePokemon = Game::GetTemporaryPokemon();
 			break;
 	}
-	BufferString((char*)(PokemonDecrypter(thePokemon, Nickname)), bufferID, 11);
+	if (thePokemon)
+	{
+		BufferString((char*)(*thePokemon).Decrypt(Nickname), bufferID, 11);
+	}
 }
 
-void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID)
+void TextFunctions::BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID)
 {
-	BufferString(mapNamesTable[mapHeaderNameID], bufferID, BUFFERLENGTH);
+	BufferString(Overworld::GetMapNamesTablePointer()[mapHeaderNameID], bufferID, BUFFERLENGTH);
 }
 
-void BufferNumber(u32 number, u32 length, u8 bufferID)
+void TextFunctions::BufferNumber(u32 number, u32 length, u8 bufferID)
 {
-	u32 chars = ToDecimal(number);
+	u32 chars = Maths::ToDecimal(number);
 	u32 i;
-	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
+	char* string = new char[sizeof(char) * length + 1];
 	for (i = 0; i < length; i++)
 	{
 		u32 value = (chars & (0xF << (i << 2))) >> (i << 2);
@@ -433,15 +404,15 @@ void BufferNumber(u32 number, u32 length, u8 bufferID)
 	}
 	string[length] = END;
 	BufferString(string, bufferID, 0);
-	MemoryDeallocate(string);
+	delete[] string;
 }
 
-void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
+void TextFunctions::BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 {
 	number *= -1;
-	u32 chars = ToDecimal(number);
+	u32 chars = Maths::ToDecimal(number);
 	u32 i;
-	char* string = (char*)MemoryAllocate(sizeof(char) * length + 1);
+	char* string = new char[sizeof(char) * length + 1];
 	for (i = 0; i < length; i++)
 	{
 		u32 value = (chars & (0xF << (i << 2))) >> (i << 2);
@@ -460,10 +431,10 @@ void BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
 			break;
 		}
 	}
-	MemoryDeallocate(string);
+	delete[] string;
 }
 
-void BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecimalPoint)
+void TextFunctions::BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecimalPoint)
 {
 	if (number > 99999999)
 	{
@@ -474,10 +445,11 @@ void BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecim
 		number = 0;
 	}
 	BufferNumber(number, 8, bufferID);
+	char* buffers = Game::GetBufferPointer(bufferID);
 	u32 i = 39;
 	while (i != 0)
 	{
-		if (buffers[bufferID][i] != '/0')
+		if (buffers[i] != '/0')
 		{
 			break;
 		}
@@ -488,13 +460,13 @@ void BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecim
 		u32 j;
 		for (j = 0; j < positionOfDecimalPoint; j++)
 		{
-			buffers[bufferID][i - j + 1] = buffers[bufferID][i - j];
+			buffers[i - j + 1] = buffers[i - j];
 		}
-		buffers[bufferID][i - j] = '.';
+		buffers[i - j] = '.';
 	}
 }
 
-void BufferUnsignedLongNumber(u32 number, u8 bufferID)
+void TextFunctions::BufferUnsignedLongNumber(u32 number, u8 bufferID)
 {
 	if (number > 99999999)
 	{
@@ -507,7 +479,7 @@ void BufferUnsignedLongNumber(u32 number, u8 bufferID)
 	BufferNumber(number, 8, bufferID);
 }
 
-void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID)
+void TextFunctions::BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID)
 {
 	if (number > 99999999)
 	{
@@ -517,7 +489,7 @@ void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID)
 		// 0 and the maximum decimal value available in a 32 bit value
 		number = 0;
 	}
-	u32 chars = ToDecimal(number);
+	u32 chars = Maths::ToDecimal(number);
 	u32 i;
 	for (i = 0; i < 8; i++)
 	{
@@ -529,7 +501,7 @@ void BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID)
 	BufferNumber(number, 9 - i, bufferID);
 }
 
-void BufferUnsignedShortNumber(u16 number, u8 bufferID)
+void TextFunctions::BufferUnsignedShortNumber(u16 number, u8 bufferID)
 {
 	if (number > 0xFFFF)
 	{
@@ -540,7 +512,7 @@ void BufferUnsignedShortNumber(u16 number, u8 bufferID)
 	BufferNumber((u32)number, 4, bufferID);
 }
 
-void BufferSignedLongNumber(s32 number, u8 bufferID)
+void TextFunctions::BufferSignedLongNumber(s32 number, u8 bufferID)
 {
 	if (number > 99999999 || number < -99999999)
 	{
@@ -560,7 +532,7 @@ void BufferSignedLongNumber(s32 number, u8 bufferID)
 	}
 }
 
-void BufferSignedShortNumber(s16 number, u8 bufferID)
+void TextFunctions::BufferSignedShortNumber(s16 number, u8 bufferID)
 {
 	if (number >= 0)
 	{
@@ -574,115 +546,47 @@ void BufferSignedShortNumber(s16 number, u8 bufferID)
 
 s32 CharacterComparison(u8 charOne, u8 charTwo)
 {
-	return Sign(charOne - charTwo);
+	return Maths::Sign(charOne - charTwo);
 }
 
-const RODATA_LOCATION char* posString = "#{P:%d,%d}";
-
-void DrawCharacter(char c, u8 x, u8 y)
+void TextFunctions::DrawCharacter(char c, u8 x, u8 y)
 {
 	tte_printf(posString, x, y);
 	char string[] = { c, '\0' };
 	tte_printf((char*)&string);
 }
 
-void DrawString(char* string, u8 x, u8 y)
+void TextFunctions::DrawString(char* string, u8 x, u8 y)
 {
 	if (string != 0)
 	{
-		char* newString = (char*)MemoryAllocate(100 * sizeof(char));
+		char* newString = new char[100 * sizeof(char)];
 		StringCopyWithBufferChecks(newString, string, 0, 0);
 		tte_printf(posString, x, y);
 		tte_printf(newString);
-		MemoryDeallocate(newString);
+		delete[] newString;
 	}
 }
 
-void DrawStringOverTimeMain(u32 pointer)
-{
-	TextOverTimeStruct* data = (TextOverTimeStruct*)pointer;
-	const TFont* font = GetFont();
-	if (data[0].framesToWait == 0 || IsKeyDown(Key_A))
-	{
-		u32 currentX = data[0].currentX;
-		u32 currentY = data[0].currentY;
-		char c = data[0].string[data[0].stringPosition];
-		if (c != '\0')
-		{
-			if (c == '\n')
-			{
-				currentX = data[0].initialX;
-				currentY += 0x10;
-				data[0].stringPosition++;
-				c = data[0].string[data[0].stringPosition];
-				DrawCharacter(c, currentX, currentY);
-				data[0].stringPosition++;
-				data[0].currentX = currentX + font[0].widths[(u32)c - font[0].charOffset];
-			}
-			else if (c == 0xFE)
-			{
-				if (IsKeyDownButNotHeld(Key_A) || IsKeyDownButNotHeld(Key_B))
-				{
-					memset32((void*)0x0600C000, 0, 0xD00);
-					data[0].currentX = data[0].initialX;
-					currentY = 0;
-					data[0].stringPosition++;
-				}
-			}
-			else
-			{
-				DrawCharacter(c, currentX, currentY);
-				data[0].currentX = currentX + font[0].widths[(u32)c - font[0].charOffset];
-				data[0].stringPosition++;
-			}
-			data[0].currentY = currentY;
-			data[0].framesToWait = (IsKeyDown(Key_B)) ? data[0].textSpeed << 1 : data[0].textSpeed;
-		}
-		else
-		{
-			if (data[0].EndFunction)
-			{
-				data[0].EndFunction();
-			}
-			RemoveFunctionByPointer(&DrawStringOverTimeMain);
-			MemoryDeallocate(data[0].string);
-			MemoryDeallocate(data);
-		}
-	}
-	else
-	{
-		data[0].framesToWait--;
-	}
-}
-
-void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void))
+void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void))
 {
 	if (string != 0)
 	{
-		u32 spd = player.textSpeed;
+		u32 spd = Game::GetConstOptions().textSpeed;
 		if (spd == 3)
 		{
 			DrawString(string, x, y);
 		}
 		else
 		{
-			char* newString = (char*)MemoryAllocate(100 * sizeof(char));
+			char* newString = new char[100 * sizeof(char)];
 			StringCopyWithBufferChecks(newString, string, 0, 0);
-			TextOverTimeStruct* data = (TextOverTimeStruct*)MemoryAllocate((sizeof(TextOverTimeStruct)));
-			data[0].string = newString;
-			data[0].currentX = x;
-			data[0].initialX = x;
-			data[0].currentY = y;
-			data[0].framesToWait = 0;
-			data[0].textSpeed = 2 - player.textSpeed;
-			data[0].stringPosition = 0;
-			data[0].EndFunction = endFunction;
-			AddFunction(&DrawStringOverTimeMain, (u32)data);
+			new TextDrawer(newString, x, y, 2 - spd, endFunction);
 		}
 	}
 }
 
-void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)
+void TextFunctions::InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)
 {
 	tte_init_chr4c(
 			0,
@@ -695,9 +599,7 @@ void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)
 	tte_init_con();
 }
 
-const RODATA_LOCATION TFont* fonts[] = { &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font };
-
-void SetFontByID(u32 id)
+void TextFunctions::SetFontByID(u32 id)
 {
 	if (id > 4)
 	{
@@ -706,7 +608,11 @@ void SetFontByID(u32 id)
 	SetFont(fonts[id]);
 }
 
-void InitialiseTextEngine(u32 textSetID)
+void TextFunctions::InitialiseTextEngine(u32 textSetID)
 {
 	InitialiseTextEngineInner(bytes2word(15, 3, 0, 0), fonts[textSetID], 0xE);
+	playerNameLoc = (char*)&Game::GetPlayer().name;
+	rival1NameLoc = (char*)&Game::GetPlayer().primaryRivalName;
+	rival2NameLoc = (char*)&Game::GetPlayer().secondaryRivalName;
+	rival3NameLoc = (char*)&Game::GetPlayer().tertiaryRivalName;
 }

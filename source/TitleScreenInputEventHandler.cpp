@@ -27,7 +27,7 @@ TitleScreenInputEventHandler::~TitleScreenInputEventHandler()
 
 void TransitionToLoadGameScreen()
 {
-	Game::FadeToBlack(32, true);
+	Game::FadeToBlack(true, HalfSecond, true);
 	SoundEngine::FadeSongToSilence();
 	Maths::ReseedRNG();
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());

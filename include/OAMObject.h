@@ -61,7 +61,8 @@ public:
 	void SetPosition(u16 x, u16 y) { xLocation = x; yLocation = y; }
 	void SetPosition(const Vector2D &position) { SetPosition(position.GetX(), position.GetY()); }
 	void UpdatePalette(void* newPalette);
-	void UpdateImage(void* image, bool compressed);
+	void UpdateImage(void* image, bool compressed = false);
+	static Vector2D CalculateRelativePosition(const Vector2D& pos);
 };
 
 #endif /* OAMOBJECT_H_ */

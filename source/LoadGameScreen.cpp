@@ -20,7 +20,7 @@
 LoadGameScreen::LoadGameScreen(u32 enterContext)
 {
 	BackgroundFunctions::ClearBackground(31);
-	Game::FadeToWhite(32, true, false);
+	Game::FadeToWhite(true, HalfSecond, true, false);
 	menuPosition = 0;
 	exitContext = enterContext;
 }

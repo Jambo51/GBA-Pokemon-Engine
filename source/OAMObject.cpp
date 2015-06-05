@@ -8,6 +8,7 @@
 #include "OAMObject.h"
 #include "GlobalDefinitions.h"
 #include "Allocator.h"
+#include "Game.h"
 
 RODATA_LOCATION u8 OAMObject::sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
 
@@ -101,4 +102,22 @@ void OAMObject::UpdateImage(void* image, bool compressed)
 		u32 totalSize = CalculateObjectSize(objShape, objSize);
 		memcpy32(loc, image, totalSize << 3);
 	}
+}
+
+Vector2D OAMObject::CalculateRelativePosition(const Vector2D& pos)
+{
+	NPCData* data = Game::GetNPCDataPointer();
+	u16 xPosition = 112;
+	s16 xOffset = pos.GetX() - data[0].xLocation;
+	if (xOffset != 0)
+	{
+		xPosition += xOffset * 0x10;
+	}
+	u16 yPosition = 56;
+	s16 yOffset = pos.GetY() - data[0].yLocation;
+	if (yOffset != 0)
+	{
+		yPosition += yOffset * 0x10;
+	}
+	return Vector2D(xPosition, yPosition);
 }

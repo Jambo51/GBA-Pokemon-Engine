@@ -16,7 +16,7 @@ private:
 	u32 data;
 public:
 	Callback(u32 callbackData);
-	~Callback();
+	virtual ~Callback();
 	virtual void Update() = 0;
 };
 

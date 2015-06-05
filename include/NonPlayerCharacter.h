@@ -16,7 +16,7 @@ protected:
 	u32 spriteIndex;
 	u32 objectID;
 public:
-	NonPlayerCharacter(const Vector2D &location, u32 backgroundLevel, u32 spriteID, u16* colourAddress);
+	NonPlayerCharacter(const Vector2D &location, u32 backgroundLevel, u32 spriteID, u32 objectID, u16* colourAddress);
 	u32 GetSpriteIndex() const { return spriteIndex; }
 	virtual u32 GetObjectID() const { return objectID; }
 	virtual ~NonPlayerCharacter();
@@ -25,6 +25,7 @@ public:
 	virtual bool Update();
 	virtual void UnloadContent();
 	virtual void TimeTick(u32 time);
+	virtual void ChangeFrame(u32 frameID);
 };
 
 #endif /* NONPLAYERCHARACTER_H_ */

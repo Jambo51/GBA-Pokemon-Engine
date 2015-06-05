@@ -8,9 +8,10 @@
 #include "PlayerEntity.h"
 #include "GlobalDefinitions.h"
 
-PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender, u16* colourAddress) : NonPlayerCharacter(location, backgroundLevel, (gender) ? 30 : 0, colourAddress)
+PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender, u16* colourAddress) : NonPlayerCharacter(location, backgroundLevel, (gender) ? 30 : 0, 0xFF, colourAddress)
 {
 	// TODO Auto-generated constructor stub
+	_object->SetPosition(Vector2D(112, 56));
 }
 
 PlayerEntity::~PlayerEntity()

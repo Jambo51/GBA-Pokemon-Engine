@@ -14,9 +14,5 @@ u32 Entity::EvaluatePositionScore() const
 
 bool Entity::Update()
 {
-	if (_object)
-	{
-		_object->SetPosition(_position);
-	}
 	return true;
 }

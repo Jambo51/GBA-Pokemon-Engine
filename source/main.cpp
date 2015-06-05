@@ -52,6 +52,7 @@ int main()
 	BackgroundFunctions::SetBackgroundsToDefault();
 	GameModeManager::SetScreen(new TitleScreen());
 	Allocator::Initialise((void*)0x06010000, 0x8000);
+	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(Game::GetCurrentMap().mapLocation.mapBank, Game::GetCurrentMap().mapLocation.map));
 	while (true)
 	{
 		VBlankIntrWait();

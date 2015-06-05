@@ -14,6 +14,8 @@
 
 enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
 
+enum FadeIDs { EighthSecond, QuarterSecond, HalfSecond, Second, TwoSecond, MaxFadeIDs };
+
 class NonPlayerCharacter;
 
 typedef struct PokemonStorageBoxes {
@@ -22,14 +24,18 @@ typedef struct PokemonStorageBoxes {
 } PokemonStorageBoxes;
 
 typedef struct NPCData {
+	NonPlayerCharacter* dataPointer;
 	u16 xLocation;
 	u16 yLocation;
+	u16 prevXLocation;
+	u16 prevYLocation;
 	u8* scriptLocation;
 	u8 spriteID;
-	u8 directionFacing:4;
+	u8 frameID:4;
 	u8 isActive:1;
 	u8 isMoving:1;
-	u8 unused:2;
+	u8 isVertical:1;
+	u8 isPositive:1;
 	u8 oamStructID;
 	u8 nextWalkingFrame;
 	u8 previousWalkingFrame;
@@ -56,18 +62,25 @@ private:
 	static bool doExitCallback;
 	static bool paletteWriteDetected;
 	static bool inMainGame;
+	static bool fade256;
 	static u8 validGameSave;
 	static u8 soundEngineID;
 	static u16* currentPalette;
 	static u16* targetPalette;
 	static u32 numFrames;
+	static u32 alphaSteps;
+	static u32 currentAlpha;
 	static u16 blackPalette[];
 	static u16 whitePalette[];
 	static SaveLocationStruct saveData[];
+	static u32 framesInFades[];
+	static u32 alphaStepsInFades[];
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
 	static u32 CountAbridgedPokemon(AbridgedPokemon* location, u32 length);
+	static u32 GetFadeColour(u16 clra, u16 clrb);
+	static void DoFadeOnPalette(u32 paletteID, u16* target, u16* current);
 	static void DoFade();
 	static void SetPalette(u16 *Palette);
 	static u16* GetCurrentPalette();
@@ -85,10 +98,11 @@ public:
 	static u32 CountAllBoxPokemon();
 	static void StartTimer(int timerNum, int timerSetting = 0, u16 cascadeValue = 0);
 	static bool AddNPC(NonPlayerCharacter* npc);
-	static void FadeToPalette(const u16* newPalette, u32 FrameCount = 32, bool callback = false, bool exitCallback = true);
-	static void FadeToGreyScale(u32 FrameCount = 32, bool callback = false, bool exitCallback = true);
-	static void FadeToBlack(u32 FrameCount = 32, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&blackPalette, FrameCount, callback, exitCallback); }
-	static void FadeToWhite(u32 FrameCount = 32, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&whitePalette, FrameCount, callback, exitCallback); }
+	static void OverwriteNPC(NonPlayerCharacter* npc, u32 position);
+	static void FadeToPalette(const u16* newPalette, bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
+	static void FadeToGreyScale(FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
+	static void FadeToBlack(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&blackPalette, fade256Colours, FrameCount, callback, exitCallback); }
+	static void FadeToWhite(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&whitePalette, fade256Colours, FrameCount, callback, exitCallback); }
 	static u16* GetGreyScale(const u16* original);
 	static void Save();
 	static void Load();
@@ -101,6 +115,7 @@ public:
 	static char* GetBufferPointer(u32 bufferID) { if (bufferID < NUMBUFFERS) { return (char*)&buffers[bufferID]; } return NULL; }
 	static Pokemon* GetPartyPokemon(u32 indexID) { if (indexID < 6) { return &partyPokemon[indexID]; } return NULL; }
 	static Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
+	static NPCData* GetNPCDataPointer() { return (NPCData*)&overworldData; }
 };
 
 #endif /* GAME_H_ */

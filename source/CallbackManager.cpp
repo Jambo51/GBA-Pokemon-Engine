@@ -29,6 +29,7 @@ void CallbackManager::AddCallback(Callback* callback)
 void CallbackManager::RemoveCallback(Callback* callback)
 {
 	callbacks.Remove((void*)callback);
+	delete callback;
 }
 
 void CallbackManager::Update()

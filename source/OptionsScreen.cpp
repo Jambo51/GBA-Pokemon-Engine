@@ -19,7 +19,7 @@ OptionsScreen::OptionsScreen(u32 exitContext)
 	// TODO Auto-generated constructor stub
 	this->exitContext = exitContext;
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
-	Game::FadeToWhite(32, true, false);
+	Game::FadeToWhite(true, HalfSecond, true, false);
 	const Options &options = Game::GetConstOptions();
 	optionValues[0] = options.textSpeed;
 	optionValues[1] = options.playAnimations;

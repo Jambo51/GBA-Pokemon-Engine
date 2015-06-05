@@ -24,7 +24,7 @@ OptionsInputEventHandler::~OptionsInputEventHandler()
 void OptionsInputEventHandler::OnPressB()
 {
 	InputEventHandler::OnPressB();
-	Game::FadeToBlack(32, true, true);
+	Game::FadeToBlack(true, HalfSecond, true, true);
 }
 
 void OptionsInputEventHandler::OnPressUp()
@@ -66,7 +66,7 @@ void OptionsInputEventHandler::OnPressA()
 		if (sc->GetMenuPosition() == 6)
 		{
 			sc->Save();
-			Game::FadeToBlack(32, true, true);
+			Game::FadeToBlack(true, HalfSecond, true, true);
 		}
 		else
 		{

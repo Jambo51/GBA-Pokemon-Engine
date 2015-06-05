@@ -25,7 +25,7 @@ LoadGameScreenInputEventHandler::~LoadGameScreenInputEventHandler()
 void LoadGameScreenInputEventHandler::OnPressA()
 {
 	InputEventHandler::OnPressA();
-	Game::FadeToBlack(32, true, true);
+	Game::FadeToBlack(true, HalfSecond, true, true);
 	LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
 	if (sc->SetExitContext())
 	{
@@ -36,7 +36,7 @@ void LoadGameScreenInputEventHandler::OnPressA()
 void LoadGameScreenInputEventHandler::OnPressB()
 {
 	InputEventHandler::OnPressB();
-	Game::FadeToBlack(32, true, true);
+	Game::FadeToBlack(true, HalfSecond, true, true);
 	LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
 	if (sc->SetExitContext(1))
 	{
@@ -67,7 +67,7 @@ void LoadGameScreenInputEventHandler::OnPressDown()
 void LoadGameScreenInputEventHandler::OnPressStart()
 {
 	InputEventHandler::OnPressStart();
-	Game::FadeToBlack(32, true, true);
+	Game::FadeToBlack(true, HalfSecond, true, true);
 	LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
 	if (sc->SetExitContext())
 	{

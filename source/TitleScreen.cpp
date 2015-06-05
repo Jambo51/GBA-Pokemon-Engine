@@ -51,7 +51,7 @@ TitleScreen::TitleScreen()
 	dma3_cpy((void*)0x0600F000, BG1_Map_bin, BG1_Map_bin_size);
 	dma3_cpy((void*)0x0600E800, BG2_Map_bin, BG2_Map_bin_size);
 	dma3_cpy((void*)0x0600E000, BG3_Map_bin, BG3_Map_bin_size);
-	Game::FadeToPalette(location, 32, true, false);
+	Game::FadeToPalette(location, true, HalfSecond, true, false);
 }
 
 TitleScreen::~TitleScreen()

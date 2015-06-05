@@ -21,4 +21,5 @@ public:
 	virtual void TimeTick(u32 time) = 0;
 	u32 EvaluatePositionScore() const;
 	OAMObject* GetObject() const { return _object; }
+	void SetOAMPosition(const Vector2D &pos) { _object->SetPosition(OAMObject::CalculateRelativePosition(pos)); }
 };

@@ -21,6 +21,7 @@ private:
 	static u8 maxBanks;
 	static u8 maxMaps[MaxBanks];
 	static char* mapNamesTable[];
+	static void PlaceNPCs(u16* newColours);
 public:
 	Overworld();
 	~Overworld();

@@ -15,6 +15,8 @@
 #include "DoNothingInputEventHandler.h"
 #include "PlayerEntity.h"
 #include "TextFunctions.h"
+#include "OAMObject.h"
+#include "FlashFunctions.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -30,46 +32,34 @@ Overworld::Overworld()
 	BackgroundFunctions::SetBackgroundsToDefault();
 	animStruct = new TileAnimationStruct[10];
 	u16* newColours = new u16[512];
-	DrawMap(10, 15, newColours);
+	NPCData* data = Game::GetNPCDataPointer();
+	DrawMap(data[0].xLocation, data[0].yLocation, newColours);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
-	NonPlayerCharacter* npc = new PlayerEntity(Vector2D(112, 56), 2, false, newColours);
-	if (!Game::AddNPC(npc))
-	{
-		delete npc;
-	}
-	npc = new NonPlayerCharacter(Vector2D(112, 72), 2, 30, newColours);
-	if (!Game::AddNPC(npc))
-	{
-		delete npc;
-	}
-	npc = new NonPlayerCharacter(Vector2D(112, 72 + (72 - 56)), 2, 31, newColours);
-	if (!Game::AddNPC(npc))
-	{
-		delete npc;
-	}
-	npc = new NonPlayerCharacter(Vector2D(112, 72 + ((72 - 56) * 2)), 2, 32, newColours);
-	if (!Game::AddNPC(npc))
-	{
-		delete npc;
-	}
-	npc = new NonPlayerCharacter(Vector2D(112, 72 + ((72 - 56) * 3)), 2, 32, newColours);
-	if (!Game::AddNPC(npc))
-	{
-		delete npc;
-	}
-	npc = new NonPlayerCharacter(Vector2D(112, 72 + ((72 - 56) * 4)), 2, 33, newColours);
-	if (!Game::AddNPC(npc))
-	{
-		delete npc;
-	}
-	newColours[255] = 0;
-	Game::FadeToPalette(newColours, 32, true, false);
+	Overworld::PlaceNPCs(newColours);
+	Game::FadeToPalette(newColours, true, HalfSecond, true, false);
 	exitContext = 0;
 }
 
 Overworld::~Overworld()
 {
 	delete[] animStruct;
+}
+
+void Overworld::PlaceNPCs(u16* newColours)
+{
+	NPCData* data = Game::GetNPCDataPointer();
+	NonPlayerCharacter* npc = new PlayerEntity(Vector2D(data[0].xLocation, data[0].yLocation), 2, false, newColours);
+	npc->ChangeFrame(data[0].frameID);
+	Game::OverwriteNPC(npc, 0);
+	for (u32 i = 1; i < NumberOfOverworlds; i++)
+	{
+		if (data[i].isActive)
+		{
+			npc = new NonPlayerCharacter(Vector2D(data[i].xLocation, data[i].yLocation), 2, data[i].spriteID, data[i].dataSpriteID, newColours);
+			npc->ChangeFrame(data[i].frameID);
+			Game::OverwriteNPC(npc, i);
+		}
+	}
 }
 
 const MapHeader & Overworld::GetMapHeaderFromBankAndMapID(u8 bank, u8 map)
@@ -586,7 +576,6 @@ void Overworld::OnEnterCallback()
 	{
 		case 0:
 			SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
-			TextFunctions::DrawStringOverTime("Hello world!", 0, 0, (void (*)(void))NULL);
 			Game::MainGame(true);
 			break;
 		default:

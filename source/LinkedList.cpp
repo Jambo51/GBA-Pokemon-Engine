@@ -90,6 +90,11 @@ void LinkedList::Remove(void* item)
 		{
 			delete currNode;
 			numItems--;
+			if (numItems == 0)
+			{
+				frontNode = NULL;
+				backNode = NULL;
+			}
 		}
 	}
 }

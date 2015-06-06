@@ -31,7 +31,9 @@ Overworld::Overworld()
 {
 	BackgroundFunctions::SetBackgroundsToDefault();
 	animStruct = new TileAnimationStruct[10];
+	memset32((void*)animStruct, 0, (sizeof(TileAnimationStruct) * 10) >> 2);
 	u16* newColours = new u16[512];
+	memset32((void*)newColours, 0, (sizeof(u16) * 512) >> 3);
 	NPCData* data = Game::GetNPCDataPointer();
 	DrawMap(data[0].xLocation, data[0].yLocation, newColours);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());

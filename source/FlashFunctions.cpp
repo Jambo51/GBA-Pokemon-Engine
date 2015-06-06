@@ -34,6 +34,8 @@ int byteverify(void *in_dst, const void *in_src, unsigned int length)
 	return 0;
 }
 
+#pragma GCC optimize "O2"
+
 void bytecpy(void *in_dst, const void *in_src, unsigned int length, bool write)
 {
 	unsigned char *src = (unsigned char *)in_src;
@@ -63,6 +65,8 @@ void byteclr(void *in_dst, unsigned int length)
 		*(vu8*)0x0E005555 = 0xA0;
 		*dst++ = 0xFF;
 }
+
+#pragma GCC reset_options
 
 bool FlashFunctions::SaveThing(void *in_dst, const void *in_src, unsigned int length)
 {
@@ -106,57 +110,34 @@ bool FlashFunctions::LoadThing(void *in_dst, const void *in_src, unsigned int le
 
 void FlashFunctions::CalculateChecksums()
 {
-	SetBank(0);
-	for (int i = 0; i < 16; i++)
+	for (int k = 0; k < 2; k++)
 	{
-		u32 checksumValue = 0;
-		u8* address = (u8*)(0x0E000000 + (0x1000 * i));
-		for (int j = 0; j < SaveBlockMaxLength >> 2; j++)
+		SetBank(k);
+		for (int i = 0; i < 16; i++)
 		{
-			checksumValue += (address[j << 2] | (address[(j << 2) + 1] << 0x8) | (address[(j << 2) + 2] << 0x10) | (address[(j << 2) + 3] << 0x18));
+			u32 checksumValue = 0;
+			u8* address = (u8*)(0x0E000000 + (0x1000 * i));
+			for (int j = 0; j < SaveBlockMaxLength >> 2; j++)
+			{
+				checksumValue += (address[j << 2] | (address[(j << 2) + 1] << 0x8) | (address[(j << 2) + 2] << 0x10) | (address[(j << 2) + 3] << 0x18));
+			}
+			*(vu8*)0x0E005555 = 0xAA;
+			*(vu8*)0x0E002AAA = 0x55;
+			*(vu8*)0x0E005555 = 0xA0;
+			address[0xFFC] = checksumValue;
+			*(vu8*)0x0E005555 = 0xAA;
+			*(vu8*)0x0E002AAA = 0x55;
+			*(vu8*)0x0E005555 = 0xA0;
+			address[0xFFD] = checksumValue >> 0x8;
+			*(vu8*)0x0E005555 = 0xAA;
+			*(vu8*)0x0E002AAA = 0x55;
+			*(vu8*)0x0E005555 = 0xA0;
+			address[0xFFE] = checksumValue >> 0x10;
+			*(vu8*)0x0E005555 = 0xAA;
+			*(vu8*)0x0E002AAA = 0x55;
+			*(vu8*)0x0E005555 = 0xA0;
+			address[0xFFF] = checksumValue >> 0x18;
 		}
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFC] = checksumValue;
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFD] = checksumValue >> 0x8;
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFE] = checksumValue >> 0x10;
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFF] = checksumValue >> 0x18;
-	}
-	SetBank(1);
-	for (int i = 0; i < 16; i++)
-	{
-		u32 checksumValue = 0;
-		u8* address = (u8*)(0x0E000000 + (0x1000 * i));
-		for (int j = 0; j < SaveBlockMaxLength >> 2; j++)
-		{
-			checksumValue += (address[j << 2] | (address[(j << 2) + 1] << 0x8) | (address[(j << 2) + 2] << 0x10) | (address[(j << 2) + 3] << 0x18));
-		}
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFC] = checksumValue;
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFD] = checksumValue >> 0x8;
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFE] = checksumValue >> 0x10;
-		*(vu8*)0x0E005555 = 0xAA;
-		*(vu8*)0x0E002AAA = 0x55;
-		*(vu8*)0x0E005555 = 0xA0;
-		address[0xFFF] = checksumValue >> 0x18;
 	}
 }
 

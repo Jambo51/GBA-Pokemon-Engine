@@ -48,10 +48,6 @@ typedef struct TileAnimationStructROM {
 	TileAnimationStruct* dataPointer;
 } TileAnimationStructROM;
 
-typedef struct MapPalette {
-	u16 palette[4][256];
-} MapPalette;
-
 typedef struct Tileset
 {
 	u32 information;
@@ -61,7 +57,7 @@ typedef struct Tileset
 		u16* secondaryTilesetData;
 		u16* RSETilesetData;
 	};
-	MapPalette* paletteData;
+	u16* paletteData;
 	union
 	{
 		Block* primaryBlockData;

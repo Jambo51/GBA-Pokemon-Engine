@@ -12,8 +12,8 @@ class Overworld : public GameScreen
 {
 private:
 	u32 exitContext;
-	s16 x;
-	s16 y;
+	u16 row;
+	u16 column;
 	ConnectionStruct connect;
 	TileAnimationStruct* animStruct;
 	static IndexTable dataForTilesets[2][2];
@@ -50,12 +50,11 @@ public:
 	Block* GetBlockLocation(u16 blockID);
 	u32* GetBlockDataLocation(u16 blockID);
 	void PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location);
-	void DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID);
-	void DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID);
+	void DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID, u32 columnID);
+	void DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID, u32 rowID);
 	void DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation = NULL);
 	u16 CalculateObjectXLocation(u8 shape, u8 size);
 	u16 CalculateObjectYLocation(u8 shape, u8 size);
-	void UpdateMapLocations();
 	bool IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocation);
 	bool IsNewLocationWalkable(s32 horizontalLocation, s32 verticalLocation);
 	bool IsNewLocationInBounds(s32 horizontalLocation, s32 verticalLocation);
@@ -66,6 +65,12 @@ public:
 	void OnEnterCallback();
 	void OnCompleteTurn();
 	void OnCompleteMove();
+	u16 GetRow() const { return row; }
+	u16 GetColumn() const { return column; }
+	void IncrementRow() { row++; if (row == 0x10) { row = 0; } }
+	void DecrementRow() { if (row == 0) { row = 0xF; } else { row--; } }
+	void IncrementColumn() { column++; if (column == 0x10) { column = 0; } }
+	void DecrementColumn() { if (column == 0) { column = 0xF; } else { column--; } }
 	static char** GetMapNamesTablePointer() { return (char**)&mapNamesTable; }
 };
 

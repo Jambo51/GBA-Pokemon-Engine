@@ -11,6 +11,7 @@
 #include "GlobalDefinitions.h"
 #include "MappingDefinitions.h"
 #include "Pokemon.h"
+#include "Vector2D.h"
 
 enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
 
@@ -65,6 +66,8 @@ private:
 	static bool paletteWriteDetected;
 	static bool inMainGame;
 	static bool fade256;
+	static bool cameraUpdate;
+	static bool layer0Included;
 	static u8 validGameSave;
 	static u8 soundEngineID;
 	static u16* currentPalette;
@@ -78,9 +81,11 @@ private:
 	static u32 framesInFades[];
 	static u32 alphaStepsInFades[];
 	static u16 eggCycle;
-	static u16 happinessCycle;
+	static u8 happinessCycle;
+	static u8 poisonCycle;
 	static u16 repelCounter;
 	static u16 repelStrength;
+	static Vector2D cameraPos;
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
@@ -92,6 +97,7 @@ private:
 	static u16* GetCurrentPalette();
 	static void OnEggCycleExpire();
 	static void OnHappinessCycleExpire();
+	static void OnPoisonCycleExpire();
 public:
 	static void Initialise();
 	static void Update();
@@ -125,6 +131,11 @@ public:
 	static Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
 	static NPCData* GetNPCDataPointer() { return (NPCData*)&overworldData; }
 	static void OnTakeStep();
+	static void MoveCamera(const Vector2D &delta);
+	static void SetCamera(const Vector2D &position);
+	static bool CameraUpdate() { return cameraUpdate; }
+	static void CameraUpdate(bool newValue) { cameraUpdate = newValue; }
+	static void SetCameraMode(bool isActive, bool layer0Mode) { cameraUpdate = isActive; layer0Included = layer0Mode; }
 };
 
 #endif /* GAME_H_ */

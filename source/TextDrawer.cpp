@@ -9,7 +9,7 @@
 #include "TextFunctions.h"
 #include "CallbackManager.h"
 
-TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(void)) : Callback(0)
+TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(void)) : Callback()
 {
 	// TODO Auto-generated constructor stub
 	string = newString;

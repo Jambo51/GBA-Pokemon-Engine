@@ -42,6 +42,7 @@ public:
 	void* GetPokeballSprite() const { return mainData.GetPokeballSprite(); }
 	void* GetPokeballPalette() const { return mainData.GetPokeballPalette(); }
 	const AbridgedPokemon & GetMainData() const { return mainData; }
+	const PrimaryStatusStruct & GetStatus() { return statusAilmentBits; }
 	static Pokemon* GenerateWildPokemonFromData(WildData* initData);
 	static Pokemon* GenerateEgg(Pokemon* mother, Pokemon* father);
 	static void GivePokemonToPlayer(u8 level, u16 species, u32 formeIndex = 0);

@@ -8,10 +8,9 @@
 #include "Callback.h"
 #include "CallbackManager.h"
 
-Callback::Callback(u32 callbackData)
+Callback::Callback()
 {
 	// TODO Auto-generated constructor stub
-	data = callbackData;
 	CallbackManager::AddCallback(this);
 }
 

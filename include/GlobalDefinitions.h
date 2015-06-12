@@ -40,6 +40,15 @@
 #define RIVAL3NAMEBUFFER NUMBUFFERS + 4
 #define PLAYERNAMELENGTH 7
 
+#define BG0HOFS (u16*)0x04000010
+#define BG0VOFS (u16*)0x04000012
+#define BG1HOFS (u16*)0x04000014
+#define BG1VOFS (u16*)0x04000016
+#define BG2HOFS (u16*)0x04000018
+#define BG2VOFS (u16*)0x0400001A
+#define BG3HOFS (u16*)0x0400001C
+#define BG3VOFS (u16*)0x0400001E
+
 #include <tonc.h>
 
 // --- primary typedefs ---

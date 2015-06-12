@@ -34,6 +34,7 @@ void InputHandler::KeyPoll()
 	{
 		if (handler)
 		{
+			newInputHandler->CopyInput(*handler);
 			delete handler;
 		}
 		handler = newInputHandler;

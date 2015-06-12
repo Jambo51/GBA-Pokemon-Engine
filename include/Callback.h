@@ -12,10 +12,9 @@
 
 class Callback
 {
-private:
-	u32 data;
+protected:
+	Callback();
 public:
-	Callback(u32 callbackData);
 	virtual ~Callback();
 	virtual void Update() = 0;
 };

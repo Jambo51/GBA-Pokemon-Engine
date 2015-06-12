@@ -88,3 +88,16 @@ void InputEventHandler::Update()
 		keyDown[i] = false;
 	}
 }
+
+void InputEventHandler::CopyInput(const InputEventHandler &other)
+{
+	bool* first = other.KeyDownAddress();
+	bool* second = other.KeyHeldAddress();
+	u8* third = other.KeyPressTimersAddress();
+	for (int i = 0; i < 10; i++)
+	{
+		keyPressTimers[i] = third[i];
+		keyDown[i] = first[i];
+		keyHeld[i] = second[i];
+	}
+}

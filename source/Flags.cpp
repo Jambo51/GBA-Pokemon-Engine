@@ -20,26 +20,28 @@ EWRAM_LOCATION ALIGN(1) u8 Flags::trainerflags[BytesForTrainerflagsBase];
 EWRAM_LOCATION ALIGN(1) u8 Flags::trainerflags[BytesForTrainerflagsBase + 1];
 #endif
 EWRAM_LOCATION ALIGN(1) u8 Flags::mainFlagBank[FlagsToBytes(NumFlags)];
+EWRAM_LOCATION ALIGN(1) u8 Flags::worldMapFlagBank[FlagsToBytes(0x100)];
 
 RODATA_LOCATION ALIGN(4) SaveLocationStruct Flags::saveData[] = {
 		{ (u8*)0x10000, (u8*)&Flags::mainFlagBank, FlagsToBytes(NumFlags) },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags)), (u8*)&Flags::worldMapFlagBank, FlagsToBytes(0x100) },
 #if NumberofTrainerBytes == NumberOfTrainers
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase },
 #if NumberofSeenCaughts == NumberOfPokemon
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase },
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
 #else
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
 #endif
 #else
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase + 1 },
 #if NumberofSeenCaughts == NumberOfPokemon
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase },
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
 #else
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
-		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
+		{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
 #endif
 #endif
 		{ (u8*)0xFFFFFFFF, 0, 0 }
@@ -173,6 +175,7 @@ void Flags::Initialise()
 		trainerflags[i] = 0;
 	}
 #endif
+	memset32((void*)&Flags::worldMapFlagBank, 0, FlagsToBytes(0x100) >> 2);
 	memset32((void*)&Flags::mainFlagBank, 0, FlagsToBytes(NumFlags) >> 2);
 #if ((FlagsToBytes(NumFlags) >> 2) << 2) != FlagsToBytes(NumFlags)
 	u32 remainder = FlagsToBytes(NumFlags) - ((FlagsToBytes(NumFlags) >> 2) << 2);

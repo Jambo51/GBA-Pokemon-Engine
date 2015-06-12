@@ -12,6 +12,7 @@ private:
 	static u8 caughtFlags[];
 	static u8 trainerflags[];
 	static u8 mainFlagBank[];
+	static u8 worldMapFlagBank[];
 	static SaveLocationStruct saveData[];
 public:
 	static u8* FlagDecryption(u32 flagID, u8* ramLocation, u32 upperFlagLimit);

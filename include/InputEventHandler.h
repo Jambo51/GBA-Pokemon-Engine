@@ -20,6 +20,9 @@ protected:
 	bool keyHeld[10];
 	u8 keyPressTimers[10];
 	InputEventHandler();
+	bool* KeyDownAddress() const { return (bool*)&keyDown; }
+	bool* KeyHeldAddress() const { return (bool*)&keyHeld; }
+	u8* KeyPressTimersAddress() const { return (u8*)&keyPressTimers; }
 public:
 	virtual ~InputEventHandler();
 	virtual void OnPressA();
@@ -33,6 +36,7 @@ public:
 	virtual void OnPressL();
 	virtual void OnPressR();
 	virtual void Update();
+	void CopyInput(const InputEventHandler &other);
 };
 
 #endif /* INPUTEVENTHANDLER_H_ */

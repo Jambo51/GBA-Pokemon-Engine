@@ -30,6 +30,10 @@ TEXT_LOCATION ALIGN(4) char* Overworld::mapNamesTable[] = { "Pallet Town", "Rout
 
 Overworld::Overworld()
 {
+	Game::SetCamera(Vector2D(0, 8));
+	Game::SetCameraMode(true, false);
+	row = 0;
+	column = 0;
 	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 1));
 	BackgroundFunctions::SetBackgroundsToDefault();
 	animStruct = new TileAnimationStruct[10];
@@ -380,7 +384,7 @@ void Overworld::PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 loca
     tilemapBottom[0x10 + location] = b[blockID].bottom[1];
 }
 
-void Overworld::DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID)
+void Overworld::DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID, u32 columnID)
 {
 	s32 x;
 	for (x = 0; x < 16; x++)
@@ -393,11 +397,11 @@ void Overworld::DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID)
 		{
 			blockID -= size;
 		}
-		PutBlockIntoVRAM(b, blockData, blockID, Maths::UnsignedModulus(x + hardwareColumn, 16) + (rowID * 0x20));
+		PutBlockIntoVRAM(b, blockData, blockID, Maths::UnsignedModulus(x + columnID, 16) + (rowID * 0x20));
 	}
 }
 
-void Overworld::DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID)
+void Overworld::DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID, u32 rowID)
 {
 	s32 y;
 	for (y = 0; y < 16; y++)
@@ -410,7 +414,7 @@ void Overworld::DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID)
 		{
 			blockID -= size;
 		}
-		PutBlockIntoVRAM(b, blockData, blockID, columnID + (Maths::UnsignedModulus(y + hardwareRow, 16) * 0x20));
+		PutBlockIntoVRAM(b, blockData, blockID, columnID + (Maths::UnsignedModulus(y + rowID, 16) * 0x20));
 	}
 }
 
@@ -421,7 +425,7 @@ void Overworld::DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation)
 	u32 y;
 	for (y = 0; y < 16; y++)
 	{
-		DrawRowOfBlocks(xLocation - 7, y + yLocation - 7, y);
+		DrawRowOfBlocks(xLocation - 7, y + yLocation - 5, y, 0);
 	}
 }
 
@@ -437,16 +441,6 @@ const RODATA_LOCATION u16 yLocs[3][3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 56 }
 u16 Overworld::CalculateObjectYLocation(u8 shape, u8 size)
 {
 	return yLocs[shape][size];
-}
-
-void Overworld::UpdateMapLocations()
-{
-	REG_BG3HOFS = x;
-	REG_BG3VOFS = y;
-	REG_BG2HOFS = x;
-	REG_BG2VOFS = y;
-	REG_BG1HOFS = x;
-	REG_BG1VOFS = y;
 }
 
 bool Overworld::IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocation)

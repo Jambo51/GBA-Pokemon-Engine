@@ -18,6 +18,8 @@
 #define PartyLength 6
 #define EggCycleLength 257
 #define HappinessCycleLength 32
+#define PoisonCycleLength 4
+#define GEN123STYLEPOISON
 
 EWRAM_LOCATION ALIGN(4) Pokemon Game::partyPokemon[PartyLength];
 EWRAM_LOCATION ALIGN(4) PokemonStorageBoxes Game::storageBoxes;
@@ -33,7 +35,8 @@ EWRAM_LOCATION ALIGN(4) u32 Game::numFrames = 0;
 EWRAM_LOCATION ALIGN(4) u32 Game::alphaSteps = 0;
 EWRAM_LOCATION ALIGN(4) u32 Game::currentAlpha = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::eggCycle = EggCycleLength;
-EWRAM_LOCATION ALIGN(2) u16 Game::happinessCycle = HappinessCycleLength;
+EWRAM_LOCATION ALIGN(1) u8 Game::happinessCycle = HappinessCycleLength;
+EWRAM_LOCATION ALIGN(1) u8 Game::poisonCycle = PoisonCycleLength;
 EWRAM_LOCATION ALIGN(2) u16 Game::repelCounter = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::repelStrength = 0;
 EWRAM_LOCATION ALIGN(1) char Game::buffers[NUMBUFFERS][BUFFERLENGTH];
@@ -44,8 +47,11 @@ EWRAM_LOCATION ALIGN(1) bool Game::doExitCallback = false;
 EWRAM_LOCATION ALIGN(1) bool Game::paletteWriteDetected = false;
 EWRAM_LOCATION ALIGN(1) bool Game::inMainGame = false;
 EWRAM_LOCATION ALIGN(1) bool Game::fade256 = false;
+EWRAM_LOCATION ALIGN(1) bool Game::cameraUpdate = false;
+EWRAM_LOCATION ALIGN(1) bool Game::layer0Included = false;
 EWRAM_LOCATION ALIGN(1) u8 Game::validGameSave = 0;
 EWRAM_LOCATION ALIGN(1) u8 Game::soundEngineID = GBPSoundsEngineID;
+EWRAM_LOCATION ALIGN(4) Vector2D Game::cameraPos = Vector2D(0, 8);
 RODATA_LOCATION ALIGN(4) u32 Game::framesInFades[MaxFadeIDs] = { 8, 16, 32, 64, 128 };
 RODATA_LOCATION ALIGN(4) u32 Game::alphaStepsInFades[MaxFadeIDs] = { 4, 2, 1, 0x800, 0x400 };
 RODATA_LOCATION ALIGN(2) u16 Game::blackPalette[512] = { 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000 };
@@ -80,9 +86,10 @@ RODATA_LOCATION ALIGN(4) SaveLocationStruct Game::saveData[] = {
 		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds)), (u8*)&Game::validGameSave, 1 },
 		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8)), (u8*)&Game::soundEngineID, 1 },
 		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2), (u8*)&Game::eggCycle, 2 },
-		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16)), (u8*)&Game::happinessCycle, 2 },
-		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 2), (u8*)&Game::repelCounter, 2 },
-		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3), (u8*)&Game::repelStrength, 2 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16)), (u8*)&Game::repelCounter, 2 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 2), (u8*)&Game::repelStrength, 2 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3), (u8*)&Game::happinessCycle, 1 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3 + sizeof(u8)), (u8*)&Game::poisonCycle, 1 },
 		{ (u8*)(0x1000 * (BaseBlocks + 1)), (u8*)&Game::bag, sizeof(Bag) },
 		{ (u8*)0xFFFFFFFF, 0, 0 }
 };
@@ -109,9 +116,10 @@ void Game::Initialise()
 	soundEngineID = GBPSoundsEngineID;
 	eggCycle = EggCycleLength;
 	happinessCycle = HappinessCycleLength;
+	poisonCycle = PoisonCycleLength;
 	repelCounter = 0;
 	repelStrength = 0;
-	currentMap = Overworld::GetMapHeaderFromBankAndMapID(3, 0);
+	cameraPos = Vector2D(0, 8);
 }
 
 void Game::OnTakeStep()
@@ -133,6 +141,15 @@ void Game::OnTakeStep()
 	else
 	{
 		happinessCycle--;
+	}
+	if (poisonCycle == 0)
+	{
+		happinessCycle = PoisonCycleLength;
+		OnPoisonCycleExpire();
+	}
+	else
+	{
+		poisonCycle--;
 	}
 	if (repelCounter)
 	{
@@ -208,8 +225,64 @@ void Game::OnHappinessCycleExpire()
 	}
 }
 
+void Game::OnPoisonCycleExpire()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		PrimaryStatusStruct status = partyPokemon[i].GetStatus();
+		if (partyPokemon[i].Decrypt(PersonalityID) && (status.badlyPoisoned || status.poisoned))
+		{
+#ifdef GEN123STYLEPOISON
+			u32 value = partyPokemon[i].Decrypt(CurrentHP);
+			if (value > 0)
+			{
+				value--;
+				partyPokemon[i].Encrypt(CurrentHP, value);
+				if (value == 0)
+				{
+					status.badlyPoisoned = 0;
+					status.poisoned = 0;
+					status.badlyPoisonedCounter = 0;
+					// Fainted script
+				}
+			}
+#else
+			u32 value = partyPokemon[i].Decrypt(CurrentHP);
+			if (value > 1)
+			{
+				value--;
+				partyPokemon[i].Encrypt(CurrentHP, value);
+				if (value == 1)
+				{
+					status.badlyPoisoned = 0;
+					status.poisoned = 0;
+					status.badlyPoisonedCounter = 0;
+					// Cured of poison script
+				}
+			}
+#endif
+		}
+	}
+}
+
 void Game::Update()
 {
+	if (cameraUpdate)
+	{
+		s16 x = Maths::UnsignedModulus(cameraPos.GetX(), 0x200);
+		s16 y = Maths::UnsignedModulus(cameraPos.GetY(), 0x200);
+		*BG3HOFS = x;
+		*BG3VOFS = y;
+		*BG1HOFS = x;
+		*BG1VOFS = y;
+		*BG2HOFS = x;
+		*BG2VOFS = y;
+		if (layer0Included)
+		{
+			*BG0HOFS = x;
+			*BG0VOFS = y;
+		}
+	}
 	if (doFade)
 	{
 		doFade = false;
@@ -563,4 +636,14 @@ void Game::Load()
 void Game::SetPaletteToWhite()
 {
 	SetPalette((u16*)&whitePalette);
+}
+
+void Game::MoveCamera(const Vector2D &delta)
+{
+	cameraPos += delta;
+}
+
+void Game::SetCamera(const Vector2D &position)
+{
+	cameraPos = position;
 }

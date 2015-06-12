@@ -13,23 +13,25 @@
 class Vector2D
 {
 private:
-	u16 xPos;
-	u16 yPos;
+	s16 xPos;
+	s16 yPos;
 public:
 	Vector2D()
 	{
 		xPos = 0;
 		yPos = 0;
 	}
-	Vector2D(u16 x, u16 y)
+	Vector2D(s16 x, s16 y)
 	{
 		xPos = x;
 		yPos = y;
 	}
 	virtual ~Vector2D();
 
-	u16 GetX() const { return xPos; }
-	u16 GetY() const { return yPos; }
+	s16 GetX() const { return xPos; }
+	s16 GetY() const { return yPos; }
+	void SetX(s16 value) { xPos = value; }
+	void SetY(s16 value) { yPos = value; }
 
 	Vector2D operator+(const Vector2D &rhs)
 	{
@@ -58,7 +60,7 @@ public:
 		this->yPos -= rhs.GetY();
 	}
 
-	void operator*=(const u16 rhs)
+	void operator*=(const s16 rhs)
 	{
 		this->xPos *= rhs;
 		this->yPos *= rhs;

@@ -75,11 +75,14 @@ void OverworldInputEventHandler::OnPressUp()
 					data[0].frameID = Facing_Up_Logical;
 					data[0].dataPointer->HFlip(false);
 					movementWord.movement.changeCounter = 4;
-					movementWord.movement.ignoreCounter = 8;
+					movementWord.movement.ignoreCounter = 9;
 				}
 			}
 			else if (!movementWord.movement.ignoreCounter)
 			{
+				Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+				ow->DecrementRow();
+				ow->DrawRowOfBlocks(data[0].xLocation - 7, data[0].yLocation - 6, ow->GetRow(), ow->GetColumn());
 				data[0].dataPointer->ChangeFrame(Walking_Up_1 + data[0].previousWalkingFrame);
 				data[0].frameID = Facing_Up_Logical;
 				data[0].dataPointer->HFlip(false);
@@ -89,12 +92,14 @@ void OverworldInputEventHandler::OnPressUp()
 				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
 				{
 					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 8;
+					movementWord.movement.movementCounter = 9;
+					movementWord.movement.ignoreCounter = 9;
 				}
 				else
 				{
 					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 16;
+					movementWord.movement.movementCounter = 17;
+					movementWord.movement.ignoreCounter = 17;
 				}
 			}
 		}
@@ -117,7 +122,7 @@ void OverworldInputEventHandler::OnPressDown()
 					data[0].frameID = Facing_Down_Logical;
 					data[0].dataPointer->HFlip(false);
 					movementWord.movement.changeCounter = 4;
-					movementWord.movement.ignoreCounter = 8;
+					movementWord.movement.ignoreCounter = 9;
 				}
 			}
 			else if (!movementWord.movement.ignoreCounter)
@@ -127,16 +132,18 @@ void OverworldInputEventHandler::OnPressDown()
 				data[0].dataPointer->HFlip(false);
 				movementWord.movement.isMoving = 1;
 				movementWord.movement.vertical = 1;
-				movementWord.movement.positive = 0;
+				movementWord.movement.positive = 1;
 				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
 				{
 					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 8;
+					movementWord.movement.movementCounter = 9;
+					movementWord.movement.ignoreCounter = 9;
 				}
 				else
 				{
 					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 16;
+					movementWord.movement.movementCounter = 17;
+					movementWord.movement.ignoreCounter = 17;
 				}
 			}
 		}
@@ -159,26 +166,31 @@ void OverworldInputEventHandler::OnPressLeft()
 					data[0].frameID = Facing_Left_Logical;
 					data[0].dataPointer->HFlip(false);
 					movementWord.movement.changeCounter = 4;
-					movementWord.movement.ignoreCounter = 8;
+					movementWord.movement.ignoreCounter = 9;
 				}
 			}
 			else if (!movementWord.movement.ignoreCounter)
 			{
+				Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+				ow->DecrementColumn();
+				ow->DrawColumnOfBlocks(data[0].xLocation - 8, data[0].yLocation - 5, ow->GetColumn(), ow->GetRow());
 				data[0].dataPointer->ChangeFrame(Walking_Left_1 + data[0].previousWalkingFrame);
 				data[0].frameID = Facing_Left_Logical;
 				data[0].dataPointer->HFlip(false);
 				movementWord.movement.isMoving = 1;
-				movementWord.movement.vertical = 1;
+				movementWord.movement.vertical = 0;
 				movementWord.movement.positive = 0;
 				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
 				{
 					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 8;
+					movementWord.movement.movementCounter = 9;
+					movementWord.movement.ignoreCounter = 9;
 				}
 				else
 				{
 					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 16;
+					movementWord.movement.movementCounter = 17;
+					movementWord.movement.ignoreCounter = 17;
 				}
 			}
 		}
@@ -201,7 +213,7 @@ void OverworldInputEventHandler::OnPressRight()
 					data[0].frameID = Facing_Right_Logical;
 					data[0].dataPointer->HFlip(true);
 					movementWord.movement.changeCounter = 4;
-					movementWord.movement.ignoreCounter = 8;
+					movementWord.movement.ignoreCounter = 9;
 				}
 			}
 			else if (!movementWord.movement.ignoreCounter)
@@ -210,17 +222,19 @@ void OverworldInputEventHandler::OnPressRight()
 				data[0].frameID = Facing_Right_Logical;
 				data[0].dataPointer->HFlip(true);
 				movementWord.movement.isMoving = 1;
-				movementWord.movement.vertical = 1;
-				movementWord.movement.positive = 0;
+				movementWord.movement.vertical = 0;
+				movementWord.movement.positive = 1;
 				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
 				{
 					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 8;
+					movementWord.movement.movementCounter = 9;
+					movementWord.movement.ignoreCounter = 9;
 				}
 				else
 				{
 					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 16;
+					movementWord.movement.movementCounter = 17;
+					movementWord.movement.ignoreCounter = 17;
 				}
 			}
 		}
@@ -286,11 +300,71 @@ void OverworldInputEventHandler::Update()
 				data[0].dataPointer->ChangeFrame(data[0].frameID);
 				data[0].dataPointer->HFlip(false);
 			}
+			if (movementWord.movement.vertical)
+			{
+				if (movementWord.movement.positive)
+				{
+					data[0].prevXLocation = data[0].xLocation;
+					data[0].prevYLocation = data[0].yLocation;
+					data[0].yLocation++;
+					Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+					ow->DrawRowOfBlocks(data[0].xLocation - 7, data[0].yLocation + 10, ow->GetRow(), ow->GetColumn());
+					ow->IncrementRow();
+				}
+				else
+				{
+					data[0].prevXLocation = data[0].xLocation;
+					data[0].prevYLocation = data[0].yLocation;
+					data[0].yLocation--;
+				}
+			}
+			else
+			{
+				if (movementWord.movement.positive)
+				{
+					data[0].prevXLocation = data[0].xLocation;
+					data[0].prevYLocation = data[0].yLocation;
+					data[0].xLocation++;
+					Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+					ow->DrawColumnOfBlocks(data[0].xLocation + 8, data[0].yLocation - 5, ow->GetColumn(), ow->GetRow());
+					ow->IncrementColumn();
+				}
+				else
+				{
+					data[0].prevXLocation = data[0].xLocation;
+					data[0].prevYLocation = data[0].yLocation;
+					data[0].xLocation--;
+				}
+			}
 			Overworld* ow = (Overworld*)GameModeManager::GetScreen();
 			ow->OnCompleteMove();
 		}
 		else
 		{
+			Vector2D delta = Vector2D();
+			if (movementWord.movement.vertical)
+			{
+				if (movementWord.movement.positive)
+				{
+					delta.SetY(movementWord.movement.ppm);
+				}
+				else
+				{
+					delta.SetY(-1 * movementWord.movement.ppm);
+				}
+			}
+			else
+			{
+				if (movementWord.movement.positive)
+				{
+					delta.SetX(movementWord.movement.ppm);
+				}
+				else
+				{
+					delta.SetX(-1 * movementWord.movement.ppm);
+				}
+			}
+			Game::MoveCamera(delta);
 		}
 	}
 	movementWord.movement.isBDown = 0;

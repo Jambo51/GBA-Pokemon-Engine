@@ -15,7 +15,6 @@
 #include "TextFunctions.h"
 #include "libbattlescripts.h"
 #include "libbattleanimscripts.h"
-#include "KeyPresses.h"
 #include "Flags.h"
 
 #define FALSE 0

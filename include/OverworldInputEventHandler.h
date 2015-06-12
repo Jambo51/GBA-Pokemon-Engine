@@ -13,10 +13,10 @@
 typedef struct OverworldMovement
 {
 	u32 movementCounter:8;
-	u32 ignoreCounter:4;
-	u32 changeCounter:4;
+	u32 ignoreCounter:5;
+	u32 changeCounter:5;
 	u32 ppm:3;
-	u32 blarg2:7;
+	u32 blarg2:5;
 	u32 locked:1;
 	u32 wasMoving:1;
 	u32 isBDown:1;

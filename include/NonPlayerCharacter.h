@@ -10,6 +10,8 @@
 
 #include "Entity.h"
 
+enum ObjectWalkingFrames { Facing_Down, Facing_Up, Facing_Left, Walking_Down_1, Walking_Down_2, Walking_Up_1, Walking_Up_2, Walking_Left_1, Walking_Left_2 };
+
 class NonPlayerCharacter : public Entity
 {
 protected:

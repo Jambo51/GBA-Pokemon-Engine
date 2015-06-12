@@ -17,6 +17,7 @@
 #include "TextFunctions.h"
 #include "OAMObject.h"
 #include "FlashFunctions.h"
+#include "OverworldInputEventHandler.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -29,6 +30,7 @@ TEXT_LOCATION ALIGN(4) char* Overworld::mapNamesTable[] = { "Pallet Town", "Rout
 
 Overworld::Overworld()
 {
+	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 1));
 	BackgroundFunctions::SetBackgroundsToDefault();
 	animStruct = new TileAnimationStruct[10];
 	memset32((void*)animStruct, 0, (sizeof(TileAnimationStruct) * 10) >> 2);
@@ -335,6 +337,13 @@ u16 Overworld::CalculateBlockID(s32 x, s32 y)
 	return CalculateBlock(x, y) & 0x3FF;
 }
 
+u32 Overworld::CalculateBlockAttributes(s32 x, s32 y)
+{
+	u16 blockID = CalculateBlock(x, y) & 0x3FF;
+	u32* loc = GetBlockDataLocation(blockID);
+	return loc[blockID];
+}
+
 const u16 comparisonSizes[2] = { 0x280, 0x200 };
 
 Block* Overworld::GetBlockLocation(u16 blockID)
@@ -574,6 +583,7 @@ void Overworld::OnExitCallback()
 
 void Overworld::OnEnterCallback()
 {
+	InputHandler::SetEventHandler(new OverworldInputEventHandler());
 	switch (exitContext)
 	{
 		case 0:
@@ -582,5 +592,90 @@ void Overworld::OnEnterCallback()
 			break;
 		default:
 			break;
+	}
+}
+
+void Overworld::OnCompleteTurn()
+{
+	const MapHeader &header = Game::GetCurrentMap();
+	NPCData* data = Game::GetNPCDataPointer();
+	if (header.wildDataLocation)
+	{
+		if (CalculateBlockAttributes(data[0].xLocation, data[0].yLocation) & 0x1)
+		{
+			WildData &data = *header.wildDataLocation;
+			WildPokemonData &dat = *data.data[0];
+			u32 encounterRate = dat.encounterRate[RTC::GetTime().timeOfDay];
+			bool triggerWildBattle = false;
+			if (encounterRate == 0xFF)
+			{
+				triggerWildBattle = true;
+			}
+			else
+			{
+				u32 random = Maths::GetDelimitedRandom32BitValue(255);
+				if (encounterRate >= random)
+				{
+					triggerWildBattle = true;
+				}
+			}
+			if (triggerWildBattle)
+			{
+				// Transition to wild battle
+				SoundEngine::PlaySong(Song_KantoWildBattle, 0);
+			}
+		}
+	}
+}
+
+void Overworld::OnCompleteMove()
+{
+	Game::OnTakeStep();
+	NPCData* data = Game::GetNPCDataPointer();
+	// Check for trainer battles and scripts and such
+	const MapHeader &header = Game::GetCurrentMap();
+
+	// Check tile scripts first
+
+	if (false)
+	{
+		return;
+	}
+
+	// Check Trainer Battles Second
+
+	if (false)
+	{
+		return;
+	}
+
+	// Check Wild Battles last
+
+	if (header.wildDataLocation)
+	{
+		if (CalculateBlockAttributes(data[0].xLocation, data[0].yLocation) & 0x1)
+		{
+			WildData &data = *header.wildDataLocation;
+			WildPokemonData &dat = *data.data[0];
+			u32 encounterRate = dat.encounterRate[RTC::GetTime().timeOfDay];
+			bool triggerWildBattle = false;
+			if (encounterRate == 0xFF)
+			{
+				triggerWildBattle = true;
+			}
+			else
+			{
+				u32 random = Maths::GetDelimitedRandom32BitValue(255);
+				if (encounterRate >= random)
+				{
+					triggerWildBattle = true;
+				}
+			}
+			if (triggerWildBattle)
+			{
+				// Transition to wild battle
+				return;
+			}
+		}
 	}
 }

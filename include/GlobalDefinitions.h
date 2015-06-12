@@ -25,6 +25,7 @@
 #define NumberOfOverworlds 24
 #define PlayerNameLength 7
 #define MaxPlayerCash 9999999
+#define MaxHappinessAllowed 0xD0
 #define U32Max 0xFFFFFFFF
 #define ARROWCHAR ('~' + 1)
 #define BATTLEBGCOLOUR U32Max
@@ -106,7 +107,7 @@ enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Mov
 
 enum BattleOrderIndices { PokemonOneFirst, PokemonTwoFirst };
 
-enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs, Item_Effect_Double_Cash_Gain, Item_Effect_Tilt, Item_Effect_Inversion };
+enum HeldItemEffects { Item_Effect_None, Item_Effect_Last_In_Priority_Bracket, Item_Effect_First_In_Priority_Bracket, Item_Effect_Boost_Exp, Item_Effect_Boost_EVs, Item_Effect_Double_Cash_Gain, Item_Effect_Tilt, Item_Effect_Inversion, Item_Effect_Increase_Happiness_Gain };
 
 enum ExpShareModes { Mode_Standard_Exp_Calc, Exp_Share_Mode };
 
@@ -532,16 +533,6 @@ typedef struct MusicFadeInfo {
 	u8 frameDelay;
 	bool active;
 } MusicFadeInfo;
-
-typedef struct OverworldMovementStruct {
-	u32 isMoving:1;
-	u32 isRunning:1;
-	u32 movingRight:1;
-	u32 movingLeft:1;
-	u32 movingUp:1;
-	u32 movingDown:1;
-	u32 counter:26;
-} OverworldMovementStruct;
 
 typedef struct TextFunctionPair {
 	char* string;

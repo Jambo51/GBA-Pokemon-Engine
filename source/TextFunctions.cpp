@@ -449,7 +449,7 @@ void TextFunctions::BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 
 	u32 i = 39;
 	while (i != 0)
 	{
-		if (buffers[i] != '/0')
+		if (buffers[i] != END)
 		{
 			break;
 		}
@@ -568,6 +568,11 @@ void TextFunctions::DrawString(char* string, u8 x, u8 y)
 	}
 }
 
+void TextFunctions::DrawString(const String &string, u8 x, u8 y)
+{
+	DrawString(string.GetUnderlyingArray(), x, y);
+}
+
 void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void))
 {
 	if (string != 0)
@@ -584,6 +589,11 @@ void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunct
 			new TextDrawer(newString, x, y, 2 - spd, endFunction);
 		}
 	}
+}
+
+void TextFunctions::DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(void))
+{
+	DrawStringOverTime(string.GetUnderlyingArray(), x, y, endFunction);
 }
 
 void TextFunctions::InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)

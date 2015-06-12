@@ -22,4 +22,8 @@ public:
 	u32 EvaluatePositionScore() const;
 	OAMObject* GetObject() const { return _object; }
 	void SetOAMPosition(const Vector2D &pos) { _object->SetPosition(OAMObject::CalculateRelativePosition(pos)); }
+	void HFlip(bool newValue) { if (_object) { _object->HFlip(newValue); } }
+	bool HFlip() const { if (_object) { return _object->HFlip(); } return false; }
+	void VFlip(bool newValue) { if (_object) { _object->VFlip(newValue); } }
+	bool VFlip() const { if (_object) { return _object->VFlip(); } return false; }
 };

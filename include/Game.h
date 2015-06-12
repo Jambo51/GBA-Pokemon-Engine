@@ -16,6 +16,8 @@ enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
 
 enum FadeIDs { EighthSecond, QuarterSecond, HalfSecond, Second, TwoSecond, MaxFadeIDs };
 
+enum LogicalFacingDirections { Facing_Down_Logical, Facing_Up_Logical, Facing_Left_Logical, Facing_Right_Logical };
+
 class NonPlayerCharacter;
 
 typedef struct PokemonStorageBoxes {
@@ -75,6 +77,10 @@ private:
 	static SaveLocationStruct saveData[];
 	static u32 framesInFades[];
 	static u32 alphaStepsInFades[];
+	static u16 eggCycle;
+	static u16 happinessCycle;
+	static u16 repelCounter;
+	static u16 repelStrength;
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
@@ -84,6 +90,8 @@ private:
 	static void DoFade();
 	static void SetPalette(u16 *Palette);
 	static u16* GetCurrentPalette();
+	static void OnEggCycleExpire();
+	static void OnHappinessCycleExpire();
 public:
 	static void Initialise();
 	static void Update();
@@ -116,6 +124,7 @@ public:
 	static Pokemon* GetPartyPokemon(u32 indexID) { if (indexID < 6) { return &partyPokemon[indexID]; } return NULL; }
 	static Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
 	static NPCData* GetNPCDataPointer() { return (NPCData*)&overworldData; }
+	static void OnTakeStep();
 };
 
 #endif /* GAME_H_ */

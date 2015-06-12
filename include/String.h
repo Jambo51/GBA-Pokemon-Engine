@@ -23,12 +23,11 @@ private:
 		}
 		return count;
 	}
-protected:
-	char* GetUnderlyingArray() const { return underlyingString; }
 public:
 	String(char* string);
 	String(const String &string);
 	~String();
+	char* GetUnderlyingArray() const { return underlyingString; }
 
 	int Size() const { return stringSize; }
 
@@ -105,6 +104,66 @@ public:
 			}
 			underlyingString[stringSize] = '\0';
 		}
+		else if (stringSize + count <= arraySize * 2)
+		{
+			char* original = underlyingString;
+			arraySize *= 2;
+			underlyingString = new char[arraySize];
+			for (int i = 0; i < stringSize; i++)
+			{
+				underlyingString[i] = original[i];
+			}
+			for (int i = 0; i < count; i++)
+			{
+				underlyingString[stringSize] = c[i];
+				stringSize++;
+			}
+			underlyingString[stringSize] = '\0';
+			delete[] original;
+		}
+		else
+		{
+			char* original = underlyingString;
+			arraySize = count * 2;
+			underlyingString = new char[arraySize];
+			for (int i = 0; i < stringSize; i++)
+			{
+				underlyingString[i] = original[i];
+			}
+			for (int i = 0; i < count; i++)
+			{
+				underlyingString[stringSize] = c[i];
+				stringSize++;
+			}
+			underlyingString[stringSize] = '\0';
+			delete[] original;
+		}
+	}
+
+	void operator+=(const String &str)
+	{
+		*this += str.GetUnderlyingArray();
+	}
+
+	String operator+(char c)
+	{
+		String s = underlyingString;
+		s += c;
+		return s;
+	}
+
+	String operator+(char* rhs)
+	{
+		String s = underlyingString;
+		s += rhs;
+		return s;
+	}
+
+	String operator+(const String &rhs)
+	{
+		String s = underlyingString;
+		s += rhs;
+		return s;
 	}
 
 	char operator[](int position)

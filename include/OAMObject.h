@@ -62,6 +62,10 @@ public:
 	void SetPosition(const Vector2D &position) { SetPosition(position.GetX(), position.GetY()); }
 	void UpdatePalette(void* newPalette);
 	void UpdateImage(void* image, bool compressed = false);
+	void HFlip(bool newValue) { hFlip = (newValue) ? 1 : 0; }
+	bool HFlip() const { return hFlip == 1; }
+	void VFlip(bool newValue) { vFlip = (newValue) ? 1 : 0; }
+	bool VFlip() const { return vFlip == 1; }
 	static Vector2D CalculateRelativePosition(const Vector2D& pos);
 };
 

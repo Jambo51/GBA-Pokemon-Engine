@@ -16,6 +16,8 @@
 #include "Mapping.h"
 
 #define PartyLength 6
+#define EggCycleLength 257
+#define HappinessCycleLength 32
 
 EWRAM_LOCATION ALIGN(4) Pokemon Game::partyPokemon[PartyLength];
 EWRAM_LOCATION ALIGN(4) PokemonStorageBoxes Game::storageBoxes;
@@ -30,6 +32,10 @@ EWRAM_LOCATION ALIGN(4) u16* Game::targetPalette = NULL;
 EWRAM_LOCATION ALIGN(4) u32 Game::numFrames = 0;
 EWRAM_LOCATION ALIGN(4) u32 Game::alphaSteps = 0;
 EWRAM_LOCATION ALIGN(4) u32 Game::currentAlpha = 0;
+EWRAM_LOCATION ALIGN(2) u16 Game::eggCycle = EggCycleLength;
+EWRAM_LOCATION ALIGN(2) u16 Game::happinessCycle = HappinessCycleLength;
+EWRAM_LOCATION ALIGN(2) u16 Game::repelCounter = 0;
+EWRAM_LOCATION ALIGN(2) u16 Game::repelStrength = 0;
 EWRAM_LOCATION ALIGN(1) char Game::buffers[NUMBUFFERS][BUFFERLENGTH];
 EWRAM_LOCATION ALIGN(1) bool Game::doFade = false;
 EWRAM_LOCATION ALIGN(1) bool Game::doFade2 = false;
@@ -73,6 +79,10 @@ RODATA_LOCATION ALIGN(4) SaveLocationStruct Game::saveData[] = {
 		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options)), (u8*)&Game::overworldData, sizeof(NPCData) * NumberOfOverworlds },
 		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds)), (u8*)&Game::validGameSave, 1 },
 		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8)), (u8*)&Game::soundEngineID, 1 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2), (u8*)&Game::eggCycle, 2 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16)), (u8*)&Game::happinessCycle, 2 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 2), (u8*)&Game::repelCounter, 2 },
+		{ (u8*)(BaseSaveAddress + sizeof(Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3), (u8*)&Game::repelStrength, 2 },
 		{ (u8*)(0x1000 * (BaseBlocks + 1)), (u8*)&Game::bag, sizeof(Bag) },
 		{ (u8*)0xFFFFFFFF, 0, 0 }
 };
@@ -97,7 +107,105 @@ void Game::Initialise()
 	memset32(&player, 0, sizeof(Player) >> 2);
 	memset32(&overworldData, 0, (sizeof(NPCData) * NumberOfOverworlds) >> 2);
 	soundEngineID = GBPSoundsEngineID;
+	eggCycle = EggCycleLength;
+	happinessCycle = HappinessCycleLength;
+	repelCounter = 0;
+	repelStrength = 0;
 	currentMap = Overworld::GetMapHeaderFromBankAndMapID(3, 0);
+}
+
+void Game::OnTakeStep()
+{
+	if (eggCycle == 0)
+	{
+		eggCycle = EggCycleLength;
+		OnEggCycleExpire();
+	}
+	else
+	{
+		eggCycle--;
+	}
+	if (happinessCycle == 0)
+	{
+		happinessCycle = HappinessCycleLength;
+		OnHappinessCycleExpire();
+	}
+	else
+	{
+		happinessCycle--;
+	}
+	if (repelCounter)
+	{
+		repelCounter--;
+		if (!repelCounter)
+		{
+			// End repel
+		}
+	}
+}
+
+void Game::OnEggCycleExpire()
+{
+	// Egg cycle expiry code
+	bool doubleHatching = false;
+	for (int i = 0; i < 6; i++)
+	{
+		if (partyPokemon[i].Decrypt(PersonalityID))
+		{
+			u8 ability = partyPokemon[i].Decrypt(Ability);
+			if (!partyPokemon[i].Decrypt(IsEgg) && (ability == Magma_Armour || ability == Flame_Body))
+			{
+				doubleHatching = true;
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < 6; i++)
+	{
+		if (partyPokemon[i].Decrypt(PersonalityID) && partyPokemon[i].Decrypt(IsEgg))
+		{
+			u32 value = partyPokemon[i].Decrypt(Friendship);
+			if (doubleHatching && value >= 2)
+			{
+				value -= 2 ;
+				partyPokemon[i].Encrypt(Friendship, value);
+			}
+			else
+			{
+				value--;
+				partyPokemon[i].Encrypt(Friendship, value);
+			}
+			if (value == 0)
+			{
+				// Make note of need to hatch
+			}
+		}
+	}
+}
+
+void Game::OnHappinessCycleExpire()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		if (partyPokemon[i].Decrypt(PersonalityID) && !partyPokemon[i].Decrypt(IsEgg))
+		{
+			u32 itemEffect = 0;//Items::GetItemEffectFromID(partyPokemon[i].Decrypt(HeldItem));
+			u32 value = partyPokemon[i].Decrypt(Friendship);
+			if (itemEffect == Item_Effect_Increase_Happiness_Gain)
+			{
+				value += 1 + 0;//Items::GetItemStrengthFromID(partyPokemon[i].Decrypt(HeldItem));
+			}
+			else
+			{
+				value++;
+			}
+			if (value > MaxHappinessAllowed)
+			{
+				value = MaxHappinessAllowed;
+			}
+			partyPokemon[i].Encrypt(Friendship, value);
+		}
+	}
 }
 
 void Game::Update()

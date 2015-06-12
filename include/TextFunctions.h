@@ -11,6 +11,7 @@
 #define END '\0'
 
 #include "GlobalDefinitions.h"
+#include "String.h"
 
 class Pokemon;
 
@@ -44,6 +45,7 @@ public:
 	static void BufferItemName(u16 itemIndex, u8 bufferID);
 	static void BufferNatureName(u32 natureID, u8 bufferID);
 	static void SetFontByID(u32 id);
+	static void BufferPokemonSpecies(u16 species, u8 bufferID);
 	static void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID);
 	static void BufferPokemonName(u8 pokemonIndex, u8 bufferID);
 	static void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID);
@@ -59,6 +61,8 @@ public:
 	static void DrawCharacter(char c, u8 x, u8 y);
 	static void DrawString(char* string, u8 x, u8 y);
 	static void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void));
+	static void DrawString(const String &string, u8 x, u8 y);
+	static void DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(void));
 	static void InitialiseTextEngine(u32 textSetID);
 };
 

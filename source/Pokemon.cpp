@@ -146,7 +146,7 @@ void Pokemon::Encrypt(u8 index, u32 value)
 	}
 }
 
-/*#define MaxHappiness 0xD0
+/*
 
 u32 HappinessCheck(Pokemon* thePokemon)
 {
@@ -584,6 +584,7 @@ Pokemon* Pokemon::GenerateEgg(Pokemon* mother, Pokemon* father)
 	}
 	Pokemon* egg = new Pokemon(0, species);
 	egg->Encrypt(IsEgg, true);
+	egg->Encrypt(Friendship, pokemonBaseData[species].hatchSteps);
 	// Calculate Egg Moves and award where necessary
 	return egg;
 }

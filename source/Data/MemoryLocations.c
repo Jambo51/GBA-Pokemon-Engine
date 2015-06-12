@@ -11,7 +11,6 @@
 
 EWRAM_LOCATION ALIGN(1) u8 textPalette;
 EWRAM_LOCATION ALIGN(1) u8 formesToShowInDex[29];
-EWRAM_LOCATION ALIGN(4) OverworldMovementStruct movingInformation;
 EWRAM_LOCATION ALIGN(4) BattleTypeStruct battleType;
 EWRAM_LOCATION ALIGN(4) u8* battleScriptPointer;
 EWRAM_LOCATION ALIGN(2) u16 battleScriptFrameWait;

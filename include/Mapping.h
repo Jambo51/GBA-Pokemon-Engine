@@ -46,6 +46,7 @@ public:
 	u16 CalculateBlock(s32 x, s32 y);
 	u16 CalculateBlockMovementPermissions(s32 x, s32 y);
 	u16 CalculateBlockID(s32 x, s32 y);
+	u32 CalculateBlockAttributes(s32 x, s32 y);
 	Block* GetBlockLocation(u16 blockID);
 	u32* GetBlockDataLocation(u16 blockID);
 	void PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location);
@@ -63,6 +64,8 @@ public:
 	void Update();
 	void OnExitCallback();
 	void OnEnterCallback();
+	void OnCompleteTurn();
+	void OnCompleteMove();
 	static char** GetMapNamesTablePointer() { return (char**)&mapNamesTable; }
 };
 

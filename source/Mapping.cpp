@@ -5,6 +5,7 @@
 #include "MemoryManagement.h"
 #include "Maths.h"
 #include "Flags.h"
+#include "Variables.h"
 #include "Game.h"
 #include "Maths.h"
 #include "RTC.h"
@@ -18,6 +19,10 @@
 #include "OAMObject.h"
 #include "FlashFunctions.h"
 #include "OverworldInputEventHandler.h"
+#include "OverworldScriptRunner.h"
+#include "Rectangle.h"
+#include "Battles.h"
+#include "GameModeManager.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -25,7 +30,7 @@
 
 TEXT_LOCATION TileAnimationStruct Overworld::emptyAnimStruct = { 0, 0, 0, 0, 0, 0, 0, 0 };
 TEXT_LOCATION ALIGN(1) u8 Overworld::maxBanks = MaxBanks;
-TEXT_LOCATION ALIGN(1) u8 Overworld::maxMaps[MaxBanks] = { 0, 0, 0, 2 };
+TEXT_LOCATION ALIGN(1) u8 Overworld::maxMaps[MaxBanks] = { 0, 0, 0, 2, 1 };
 TEXT_LOCATION ALIGN(4) char* Overworld::mapNamesTable[] = { "Pallet Town", "Route 1" };
 
 Overworld::Overworld()
@@ -34,7 +39,6 @@ Overworld::Overworld()
 	Game::SetCameraMode(true, false);
 	row = 0;
 	column = 0;
-	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(3, 1));
 	BackgroundFunctions::SetBackgroundsToDefault();
 	animStruct = new TileAnimationStruct[10];
 	memset32((void*)animStruct, 0, (sizeof(TileAnimationStruct) * 10) >> 2);
@@ -46,6 +50,7 @@ Overworld::Overworld()
 	Overworld::PlaceNPCs(newColours);
 	Game::FadeToPalette(newColours, true, HalfSecond, true, false);
 	exitContext = 0;
+	Variables::SetVar(0x4050, 1);
 }
 
 Overworld::~Overworld()
@@ -68,6 +73,38 @@ void Overworld::PlaceNPCs(u16* newColours)
 			Game::OverwriteNPC(npc, i);
 		}
 	}
+}
+
+void Overworld::WarpTo()
+{
+	Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+	const WarpEvent &warpData = ow->GetWarpEvent();
+	NPCData* data = Game::GetNPCDataPointer();
+	const MapHeader &header = GetMapHeaderFromBankAndMapID(warpData.mapBank, warpData.map);
+	bool success = false;
+	if (header.eventsLocation)
+	{
+		if (header.eventsLocation->warpEvents && header.eventsLocation->numWarps > warpData.warpID)
+		{
+			data[0].xLocation = header.eventsLocation->warpEvents[warpData.warpID].xPos;
+			data[0].yLocation = header.eventsLocation->warpEvents[warpData.warpID].yPos;
+			success = true;
+		}
+	}
+	if (!success)
+	{
+		data[0].xLocation = 0;
+		data[0].yLocation = 0;
+	}
+	Game::SetCurrentMap(header);
+	Game::SetCamera(Vector2D(0, 8));
+	ow->ResetColumn();
+	ow->ResetRow();
+	u16* newColours = new u16[512];
+	memset32((void*)newColours, 0, (sizeof(u16) * 512) >> 3);
+	ow->DrawMap(data[0].xLocation, data[0].yLocation, newColours);
+	data[0].dataPointer->GetPalette(newColours, header.mapType == Indoors);
+	Game::FadeToPalette(newColours, true, QuarterSecond, false, false);
 }
 
 const MapHeader & Overworld::GetMapHeaderFromBankAndMapID(u8 bank, u8 map)
@@ -341,32 +378,31 @@ u16 Overworld::CalculateBlockID(s32 x, s32 y)
 	return CalculateBlock(x, y) & 0x3FF;
 }
 
-u32 Overworld::CalculateBlockAttributes(s32 x, s32 y)
+const BlockMetadata & Overworld::CalculateBlockAttributes(s32 x, s32 y)
 {
 	u16 blockID = CalculateBlock(x, y) & 0x3FF;
-	u32* loc = GetBlockDataLocation(blockID);
-	return loc[blockID];
+	return GetBlockDataLocation(blockID);
 }
 
 const u16 comparisonSizes[2] = { 0x280, 0x200 };
 
 Block* Overworld::GetBlockLocation(u16 blockID)
 {
-	MapFooter* footer = Game::GetCurrentMap().footerLocation;
-	void* prim = ((blockID >= comparisonSizes[Game::GetCurrentMap().tilesetType])?(void*)footer[0].secondaryTileset:(void*)footer[0].primaryTileset);
-	return (Block*)((u32*)prim)[3];
+	const MapFooter &footer = *Game::GetCurrentMap().footerLocation;
+	const Tileset &prim = *((blockID >= comparisonSizes[Game::GetCurrentMap().tilesetType])?footer.secondaryTileset:footer.primaryTileset);
+	return prim.primaryBlockData;
 }
 
-u32* Overworld::GetBlockDataLocation(u16 blockID)
+const BlockMetadata & Overworld::GetBlockDataLocation(u16 blockID)
 {
 	const MapFooter &footer = *Game::GetCurrentMap().footerLocation;
 	const Tileset &prim = *((blockID >= comparisonSizes[Game::GetCurrentMap().tilesetType])?footer.secondaryTileset:footer.primaryTileset);
-	return prim.RSEBlockInformation;
+	return prim.blockInformation[(blockID >= comparisonSizes[Game::GetCurrentMap().tilesetType])?blockID - comparisonSizes[Game::GetCurrentMap().tilesetType] : blockID];
 }
 
-void Overworld::PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location)
+void Overworld::PutBlockIntoVRAM(Block* b, const BlockMetadata &blockData, u16 blockID, u32 location)
 {
-	if ((blockData[blockID] & 0x20000000) == 0)
+	if (!blockData.playerOnTop)
 	{
 		tilemapTop[location] = b[blockID].top[0];
 		tilemapTop[0x10 + location] = b[blockID].top[1];
@@ -391,7 +427,7 @@ void Overworld::DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID, u32 col
 	{
 		u16 blockID = CalculateBlockID(x + xLocation, yLocation);
 		Block* b = GetBlockLocation(blockID);
-		u32* blockData = GetBlockDataLocation(blockID);
+		const BlockMetadata &blockData = GetBlockDataLocation(blockID);
 		u16 size = comparisonSizes[Game::GetCurrentMap().tilesetType];
 		if (blockID >= size)
 		{
@@ -408,7 +444,7 @@ void Overworld::DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID, u
 	{
 		u16 blockID = CalculateBlockID(xLocation, yLocation + y);
 		Block* b = GetBlockLocation(blockID);
-		u32* blockData = GetBlockDataLocation(blockID);
+		const BlockMetadata &blockData = GetBlockDataLocation(blockID);
 		u16 size = comparisonSizes[Game::GetCurrentMap().tilesetType];
 		if (blockID >= size)
 		{
@@ -595,12 +631,32 @@ void Overworld::OnCompleteTurn()
 	NPCData* data = Game::GetNPCDataPointer();
 	if (header.wildDataLocation)
 	{
-		if (CalculateBlockAttributes(data[0].xLocation, data[0].yLocation) & 0x1)
+		const BlockMetadata &battleValues = CalculateBlockAttributes(data[0].xLocation, data[0].yLocation);
+		bool triggerWildBattle = false;
 		{
 			WildData &data = *header.wildDataLocation;
-			WildPokemonData &dat = *data.data[0];
+			WildPokemonData dat;
+			if (battleValues.grassWildBattle)
+			{
+				dat = *data.data[0];
+			}
+			else if (battleValues.surfingWildBattle)
+			{
+				dat = *data.data[1];
+			}
+			else if (battleValues.fishingWildBattle)
+			{
+				dat = *data.data[2];
+			}
+			else if (battleValues.rockSmashWildBattle)
+			{
+				dat = *data.data[3];
+			}
+			else if (battleValues.headbuttTreeWildBattle)
+			{
+				dat = *data.data[4];
+			}
 			u32 encounterRate = dat.encounterRate[RTC::GetTime().timeOfDay];
-			bool triggerWildBattle = false;
 			if (encounterRate == 0xFF)
 			{
 				triggerWildBattle = true;
@@ -613,27 +669,129 @@ void Overworld::OnCompleteTurn()
 					triggerWildBattle = true;
 				}
 			}
-			if (triggerWildBattle)
-			{
-				// Transition to wild battle
-				SoundEngine::PlaySong(Song_KantoWildBattle, 0);
-			}
+		}
+		if (triggerWildBattle)
+		{
 		}
 	}
 }
 
-void Overworld::OnCompleteMove()
+void Overworld::OnCompleteMove(u32 direction)
 {
 	Game::OnTakeStep();
 	NPCData* data = Game::GetNPCDataPointer();
-	// Check for trainer battles and scripts and such
-	const MapHeader &header = Game::GetCurrentMap();
 
-	// Check tile scripts first
+	// Check for warping
 
-	if (false)
+	if (warpOnCompleteMove)
 	{
+		Game::FadeToBlack(true, QuarterSecond, false, false);
+		const MapHeader &header = GetMapHeaderFromBankAndMapID(warpData.mapBank, warpData.map);
+		if (SoundEngine::GetSongID() != header.musicTrack)
+		{
+			SoundEngine::PlaySong(header.musicTrack, 1);
+		}
+		warpOnCompleteMove = false;
+		Game::SetCustomFadeCallback((VoidFunctionPointerVoid)WarpTo);
 		return;
+	}
+
+	// Check for map connection map change
+
+	if (connect.isActive)
+	{
+		const MapHeader &oldHeader = GetMapHeaderFromBankAndMapID(Game::GetCurrentMap().mapLocation.mapBank, Game::GetCurrentMap().mapLocation.map);
+		const MapHeader &newHeader = GetMapHeaderFromBankAndMapID(connect.mapBank, connect.map);
+		Game::SetCurrentMap(newHeader);
+		if (oldHeader.footerLocation->primaryTileset != newHeader.footerLocation->primaryTileset)
+		{
+			u32 tilesetMode = (Game::GetCurrentMap().footerLocation[0].primaryTileset[0].information & 0xFF0000) >> 0x10;
+			StoreTilesetIntoMemory(0, newHeader.footerLocation->primaryTileset->primaryTilesetData, tilesetMode, newHeader.footerLocation->primaryTileset->information & 1);
+			PutTileAnimationDataIntoMemory(0);
+			u16* palette = (u16*)newHeader.footerLocation->primaryTileset->paletteData;
+			PutTilesetPalettesInMemory(0, palette, RTC::GetTime().timeOfDay, (u16*)NULL);
+		}
+		if (oldHeader.footerLocation->secondaryTileset != newHeader.footerLocation->secondaryTileset)
+		{
+			u32 tilesetMode = (Game::GetCurrentMap().footerLocation[0].secondaryTileset[0].information & 0xFF0000) >> 0x10;
+			StoreTilesetIntoMemory(0, newHeader.footerLocation->secondaryTileset->secondaryTilesetData, tilesetMode, newHeader.footerLocation->secondaryTileset->information & 1);
+			PutTileAnimationDataIntoMemory(1);
+			u16* palette = (u16*)newHeader.footerLocation->secondaryTileset->paletteData;
+			PutTilesetPalettesInMemory(1, palette, RTC::GetTime().timeOfDay, (u16*)NULL);
+		}
+		if (newHeader.musicTrack != oldHeader.musicTrack)
+		{
+			SoundEngine::PlaySong(newHeader.musicTrack, 1);
+		}
+		switch (connect.alignment)
+		{
+			case 1:
+				data[0].xLocation -= connect.offset;
+				data[0].yLocation = 0;
+				break;
+			case 2:
+				data[0].xLocation -= connect.offset;
+				data[0].yLocation = newHeader.footerLocation->height - 1;
+				break;
+			case 3:
+				data[0].xLocation = 0;
+				data[0].yLocation -= connect.offset;
+				break;
+			case 4:
+				data[0].xLocation = newHeader.footerLocation->width - 1;
+				data[0].yLocation -= connect.offset;
+				break;
+			default:
+				break;
+		}
+		connect.isActive = 0;
+		Maths::ReseedRNG();
+	}
+
+	// Check for trainer battles and scripts and such
+
+	const MapHeader &header = Game::GetCurrentMap();
+	if (header.eventsLocation)
+	{
+		const EventsHeader &events = *header.eventsLocation;
+
+		// Check if any NPCs need loaded
+
+		NPCEvent* npcs = events.npcEvents;
+
+		Rectangle rect1 = Rectangle(data[0].xLocation - 8, data[0].yLocation - 6, data[0].xLocation + 8, data[0].yLocation + 6);
+		Rectangle rect2 = Rectangle(data[0].xLocation - 7, data[0].yLocation - 5, data[0].xLocation + 7, data[0].yLocation + 5);
+
+		for (int i = 0; i < events.numNPCs; i++)
+		{
+			if (npcs[i].flagID && !Flags::CheckFlag(npcs[i].flagID))
+			{
+				if (rect1.IsTileWithin(npcs[i].xPos, npcs[i].yPos) && !rect2.IsTileWithin(npcs[i].xPos, npcs[i].yPos))
+				{
+					//NonPlayerCharacter* npc = new NonPlayerCharacter(Vector2D(npcs[i].xPos, npcs[i].yPos), 2, npcs[i].spriteID, npcs[i].eventNumber, NULL);
+					//if (!Game::AddNPC(npc))
+					//{
+					//	delete npc;
+					//}
+				}
+			}
+		}
+
+		// Check tile scripts second
+
+		TileScriptEvent* tileScripts = events.tileScriptEvents;
+
+		for (int i = 0; i < events.numTileScripts; i++)
+		{
+			if (tileScripts[i].xPos == data[0].xLocation && tileScripts[i].yPos == data[0].yLocation)
+			{
+				if (Variables::GetVar(tileScripts[i].varID) == tileScripts[i].varValue)
+				{
+					new OverworldScriptRunner(tileScripts[i].scriptPointer);
+					break;
+				}
+			}
+		}
 	}
 
 	// Check Trainer Battles Second
@@ -647,12 +805,32 @@ void Overworld::OnCompleteMove()
 
 	if (header.wildDataLocation)
 	{
-		if (CalculateBlockAttributes(data[0].xLocation, data[0].yLocation) & 0x1)
+		const BlockMetadata &battleValues = CalculateBlockAttributes(data[0].xLocation, data[0].yLocation);
+		bool triggerWildBattle = false;
 		{
 			WildData &data = *header.wildDataLocation;
-			WildPokemonData &dat = *data.data[0];
+			WildPokemonData dat;
+			if (battleValues.grassWildBattle)
+			{
+				dat = *data.data[0];
+			}
+			else if (battleValues.surfingWildBattle)
+			{
+				dat = *data.data[1];
+			}
+			else if (battleValues.fishingWildBattle)
+			{
+				dat = *data.data[2];
+			}
+			else if (battleValues.rockSmashWildBattle)
+			{
+				dat = *data.data[3];
+			}
+			else if (battleValues.headbuttTreeWildBattle)
+			{
+				dat = *data.data[4];
+			}
 			u32 encounterRate = dat.encounterRate[RTC::GetTime().timeOfDay];
-			bool triggerWildBattle = false;
 			if (encounterRate == 0xFF)
 			{
 				triggerWildBattle = true;
@@ -665,11 +843,9 @@ void Overworld::OnCompleteMove()
 					triggerWildBattle = true;
 				}
 			}
-			if (triggerWildBattle)
-			{
-				// Transition to wild battle
-				return;
-			}
+		}
+		if (triggerWildBattle)
+		{
 		}
 	}
 }

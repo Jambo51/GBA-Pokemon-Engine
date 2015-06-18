@@ -86,6 +86,11 @@ private:
 	static u16 repelCounter;
 	static u16 repelStrength;
 	static Vector2D cameraPos;
+	static u16 regionalDexNumberSeen;
+	static u16 regionalDexNumberCaught;
+	static u16 nationalDexNumberSeen;
+	static u16 nationalDexNumberCaught;
+	static VoidFunctionPointerVoid callbackFunction;
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
@@ -136,6 +141,12 @@ public:
 	static bool CameraUpdate() { return cameraUpdate; }
 	static void CameraUpdate(bool newValue) { cameraUpdate = newValue; }
 	static void SetCameraMode(bool isActive, bool layer0Mode) { cameraUpdate = isActive; layer0Included = layer0Mode; }
+	static u16 CountPokedexPokemon(u32 mode, u32 seenCaughtIndex);
+	static void IncrementRegionalSeen() { regionalDexNumberSeen++; }
+	static void IncrementRegionalCaught() { regionalDexNumberCaught++; }
+	static void IncrementNationalSeen() { nationalDexNumberSeen++; }
+	static void IncrementNationalCaught() { nationalDexNumberCaught++; }
+	static void SetCustomFadeCallback(VoidFunctionPointerVoid function) { callbackFunction = function; }
 };
 
 #endif /* GAME_H_ */

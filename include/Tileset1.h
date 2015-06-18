@@ -23,6 +23,10 @@ extern const u16 Tileset1Tiles[1128];
 #define Tileset1PalLen 2048
 extern const u16 Tileset1Pal[1024];
 
+extern const u16 Tileset1MapBlock[];
+
+extern const u32 Tileset1BlockInformation[];
+
 #endif // GRIT_TILESET1_H
 
 //}}BLOCK(Tileset1)

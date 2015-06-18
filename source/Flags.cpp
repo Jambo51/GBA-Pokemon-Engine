@@ -1,6 +1,7 @@
 #include "Flags.h"
-
 #include "FlashFunctions.h"
+#include "Game.h"
+#include "Pokedex.h"
 
 #define NumberofSeenCaughts ((NumberOfPokemon >> 3) << 3)
 #define NumberofTrainerBytes ((NumberOfTrainers >> 3) << 3)
@@ -74,6 +75,25 @@ bool Flags::GetSeenCaughtStatus(u32 pokemonIndex, u32 modeIndex)
 	{
 		return ((location[0] >> (pokemonIndex & 7)) & 1);
 	}
+	if (((location[0] >> (pokemonIndex & 7)) & 1) == 0)
+	{
+		if ((modeIndex & 2) == 0)
+		{
+			Game::IncrementNationalSeen();
+			if (Pokedex::IsPokemonInRegional(pokemonIndex))
+			{
+				Game::IncrementRegionalSeen();
+			}
+		}
+		else
+		{
+			Game::IncrementNationalCaught();
+			if (Pokedex::IsPokemonInRegional(pokemonIndex))
+			{
+				Game::IncrementRegionalCaught();
+			}
+		}
+	}
 	location[0] = location[0] | (1 << (pokemonIndex & 7));
 	return 0;
 }
@@ -98,6 +118,11 @@ bool Flags::CheckTrainerflag(u32 flagID)
 	return GenericCheckFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
 }
 
+bool Flags::CheckWorldMapFlag(u32 flagID)
+{
+	return GenericCheckFlag(flagID, (u8*)(&worldMapFlagBank), 0x100);
+}
+
 void Flags::GenericSetFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit)
 {
 	u8* location = FlagDecryption(flagID, flagLocation, upperFlagLimit);
@@ -118,6 +143,11 @@ void Flags::SetTrainerflag(u32 flagID)
 	GenericSetFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
 }
 
+void Flags::SetWorldMapFlag(u32 flagID)
+{
+	GenericSetFlag(flagID, (u8*)(&worldMapFlagBank), 0x100);
+}
+
 void Flags::GenericClearFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit)
 {
 	u8* location = FlagDecryption(flagID, flagLocation, upperFlagLimit);
@@ -136,6 +166,11 @@ void Flags::ClearFlag(u32 flagID)
 void Flags::ClearTrainerflag(u32 flagID)
 {
 	GenericClearFlag(flagID, (u8*)(&trainerflags), NumberOfTrainers);
+}
+
+void Flags::ClearWorldMapFlag(u32 flagID)
+{
+	GenericClearFlag(flagID, (u8*)(&worldMapFlagBank), 0x100);
 }
 
 void Flags::Save()

@@ -5,6 +5,8 @@
 #include "Fonts.h"
 #include "TextDrawer.h"
 #include "Mapping.h"
+#include "Battles.h"
+#include "GameModeManager.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -140,6 +142,9 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 					}
 					case 0xFD - 0xF8:
 					{
+						const BattleScreen &bs = *((BattleScreen*)GameModeManager::GetScreen());
+						const BattleData &battleData = bs.GetBattleData();
+						const BattleTypeStruct &battleType = bs.GetBattleTypeStruct();
 						char* pointer = 0;
 						u32 length = 0;
 						char c = stringSource[pos + 1];
@@ -147,7 +152,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 						{
 							case 0:
 							{
-								u32 bank = battleDataPointer[0].battleBanks[User];
+								u32 bank = battleData.battleBanks[User];
 								if (bank & 1)
 								{
 									if (battleType.info.isWildBattle)
@@ -159,12 +164,12 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 										index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
 									}
 								}
-								pointer = 0;//(char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
+								pointer = (char*)battleData.pokemonStats[bank].mainPointer->Decrypt(Nickname);
 								break;
 							}
 							case 1:
 							{
-								u32 bank = battleDataPointer[0].battleBanks[Target];
+								u32 bank = battleData.battleBanks[Target];
 								if (bank & 1)
 								{
 									if (battleType.info.isWildBattle)
@@ -176,19 +181,19 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 										index += StringCopyWithBufferChecks(stringDest, foeString, 0, index);
 									}
 								}
-								pointer = 0;//(char*)PokemonDecrypter(battleDataPointer[0].pokemonStats[bank].mainPointer, Nickname);
+								pointer = (char*)battleData.pokemonStats[bank].mainPointer->Decrypt(Nickname);
 								break;
 							}
 							case 2:
-								pointer = (char*)&abilityNames[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[User]].ability][0];
+								pointer = (char*)&abilityNames[battleData.pokemonStats[battleData.battleBanks[User]].ability][0];
 								break;
 							case 3:
-								pointer = (char*)&abilityNames[battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].ability][0];
+								pointer = (char*)&abilityNames[battleData.pokemonStats[battleData.battleBanks[Target]].ability][0];
 								break;
 							case 4:
 							{
-								u32 bank = battleDataPointer[0].battleBanks[User];
-								u16 move = battleDataPointer[0].pokemonStats[bank].moves[battleDataPointer[0].moveSelections[bank]];
+								u32 bank = battleData.battleBanks[User];
+								u16 move = battleData.pokemonStats[bank].moves[battleData.moveSelections[bank]];
 								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
@@ -201,7 +206,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 5:
 							{
-								u16 move = battleDataPointer[0].pokemonStats[battleDataPointer[0].battleBanks[Target]].moves[battleDataPointer[0].moveSelections[battleDataPointer[0].battleBanks[User]]];
+								u16 move = battleData.pokemonStats[battleData.battleBanks[Target]].moves[battleData.moveSelections[battleData.battleBanks[User]]];
 								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
@@ -214,12 +219,12 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 6:
 							{
-								pointer = statBuffStrings1[battleDataPointer[0].battleBanks[CurrentEffectID]];
+								pointer = statBuffStrings1[battleData.battleBanks[CurrentEffectID]];
 								break;
 							}
 							case 7:
 							{
-								u32 power = battleDataPointer[0].battleBanks[CurrentEffectPower];
+								u32 power = battleData.battleBanks[CurrentEffectPower];
 								u32 direction = (power & 0x80) >> 7;
 								power = (power & 0x70) >> 4;
 								power--;
@@ -232,7 +237,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 8:
 							{
-								BufferUnsignedLongNumber(battleDataPointer[0].battleDamage, 0);
+								BufferUnsignedLongNumber(battleData.battleDamage, 0);
 								pointer = Game::GetBufferPointer(0);
 								break;
 							}
@@ -243,12 +248,12 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 10:
 							{
-								pointer = trainerClasses[battleDataPointer[0].trainerData[0].pointerToData[0].trainerClass];
+								pointer = trainerClasses[battleData.trainerData[0].pointerToData[0].trainerClass];
 								break;
 							}
 							case 11:
 							{
-								pointer = (char*)&battleDataPointer[0].trainerData[0].pointerToData[0].name;
+								pointer = (char*)&battleData.trainerData[0].pointerToData[0].name;
 								break;
 							}
 							case 12:
@@ -280,12 +285,12 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 16:
 							{
-								pointer = (char*)&abilityNames[battleDataPointer[0].battleBanks[GenericBufferByte]][0];
+								pointer = (char*)&abilityNames[battleData.battleBanks[GenericBufferByte]][0];
 								break;
 							}
 							case 17:
 							{
-								u16 move = battleDataPointer[0].battleBanks[GenericBufferByte] | (battleDataPointer[0].battleBanks[GenericBufferByte2] << 8);
+								u16 move = battleData.battleBanks[GenericBufferByte] | (battleData.battleBanks[GenericBufferByte2] << 8);
 								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
@@ -364,19 +369,26 @@ void TextFunctions::BufferPokemonName(u8 pokemonIndex, u8 bufferID)
 		case 3:
 		case 4:
 		case 5:
+		{
 			thePokemon = Game::GetPartyPokemon(pokemonIndex);
 			break;
+		}
 		case 6:
 		case 7:
 		case 8:
 		case 9:
 		case 10:
 		case 11:
-			//thePokemon = &enemyPokemon[pokemonIndex - 6];
+		{
+			const BattleScreen &bs = *((BattleScreen*)GameModeManager::GetScreen());
+			thePokemon = bs.GetEnemyBattlerByIndex((u32)(pokemonIndex - 6));
 			break;
+		}
 		default:
+		{
 			thePokemon = Game::GetTemporaryPokemon();
 			break;
+		}
 	}
 	if (thePokemon)
 	{

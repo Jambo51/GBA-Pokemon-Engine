@@ -14,6 +14,8 @@
 //
 //======================================================================
 
+#include "MappingDefinitions.h"
+
 const unsigned short Tileset1Tiles[1128] __attribute__((aligned(4)))=
 {
 	0x0010,0x0030,0x0032,0xF000,0x9001,0xDD05,0x60DD,0x6601,

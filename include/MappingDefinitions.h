@@ -19,6 +19,19 @@ typedef struct Block
     u32 top[2];
 } Block;
 
+typedef struct BlockMetadata {
+	u32 behaviourByte:8;
+	u32 behaviourByte2:8;
+	u32 value:8;
+	u32 grassWildBattle:1;
+	u32 surfingWildBattle:1;
+	u32 headbuttTreeWildBattle:1;
+	u32 rockSmashWildBattle:1;
+	u32 fishingWildBattle:1;
+	u32 playerOnTop:1;
+	u32 values3:2;
+} BlockMetadata;
+
 typedef struct MapConnectionData {
 	u32 type;
 	s32 offset;
@@ -65,12 +78,7 @@ typedef struct Tileset
 		Block* RSEBlockData;
 	};
 	TileAnimationStructROM* blockAnimationsData;
-	union
-	{
-		u32* primaryBlockInformation;
-		u32* secondaryBlockInformation;
-		u32* RSEBlockInformation;
-	};
+	BlockMetadata* blockInformation;
 } Tileset;
 
 typedef struct MapFooter
@@ -125,9 +133,61 @@ typedef struct ConnectionStruct {
 	s32 offset;
 } ConnectionStruct;
 
+typedef struct NPCEvent {
+	u8 eventNumber;
+	u8 spriteID;
+	u8 horizontalMovement;
+	u8 verticalMovement;
+	s16 xPos;
+	s16 yPos;
+	u16 trainerRadius:15;
+	u16 isTrainer:1;
+	u8* scriptPointer;
+	u16 flagID;
+	u16 behaviour;
+} NPCEvent;
+
+typedef struct SignpostEvent {
+	s16 xPos;
+	s16 yPos;
+	u16 talkingLevel;
+	u16 talkingMode;
+	u8* scriptPointer;
+} SignpostEvent;
+
+typedef struct WarpEvent {
+	s16 xPos;
+	s16 yPos;
+	u8 warpID;
+	u8 mapBank;
+	u8 map;
+	u8 alignment;
+} WarpEvent;
+
+typedef struct TileScriptEvent {
+	s16 xPos;
+	s16 yPos;
+	u16 varID;
+	u16 varValue;
+	u8* scriptPointer;
+} TileScriptEvent;
+
+typedef struct EventsHeader {
+	u8 numNPCs;
+	u8 numSignposts;
+	u8 numWarps;
+	u8 numTileScripts;
+	NPCEvent* npcEvents;
+	SignpostEvent* signpostEvents;
+	WarpEvent* warpEvents;
+	TileScriptEvent* tileScriptEvents;
+} EventsHeader;
+
+enum MapTypes { Unknown1, Village, City, Route, Underground, Underwater, Indoors };
+
 typedef struct MapHeader {
 	MapFooter* footerLocation;
-	u32* eventsLocation;
+	EventsHeader* eventsLocation;
 	LevelScript* levelScriptsLocation;
 	MapConnection* connections;
 	u16 musicTrack;
@@ -137,7 +197,7 @@ typedef struct MapHeader {
 		u16 mapBankMapCombined;
 	};
 	u8 mapNameID;
-	u8 caveStatus;
+	u8 mapType;
 	u8 weatherType;
 	u8 lightStatus;
 	u8 tilesetType;

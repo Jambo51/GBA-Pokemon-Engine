@@ -14,6 +14,7 @@ class OverworldScriptRunner : public ScriptRunner
 {
 private:
 	static U32FunctionPointerScriptRunner overworldCommands[0xFF];
+	static u8* errorScript;
 public:
 	OverworldScriptRunner(u8* script);
 	~OverworldScriptRunner();

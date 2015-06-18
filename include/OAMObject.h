@@ -60,7 +60,7 @@ public:
 	u32 GetPriority() const { return priority; }
 	void SetPosition(u16 x, u16 y) { xLocation = x; yLocation = y; }
 	void SetPosition(const Vector2D &position) { SetPosition(position.GetX(), position.GetY()); }
-	void UpdatePalette(void* newPalette);
+	void UpdatePalette(void* newPalette, u16* locationToWriteTo);
 	void UpdateImage(void* image, bool compressed = false);
 	void HFlip(bool newValue) { hFlip = (newValue) ? 1 : 0; }
 	bool HFlip() const { return hFlip == 1; }

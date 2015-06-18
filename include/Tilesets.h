@@ -2,8 +2,8 @@
 #define TILESETS_H
 
 #include "Tileset0.h"
-#include "Tileset0.c"
 #include "Tileset1.h"
-#include "Tileset1.c"
+#include "Tileset12.h"
+#include "Tileset20.h"
 
 #endif

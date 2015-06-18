@@ -618,16 +618,16 @@ Pokemon* Pokemon::GenerateTrainerPokemon(u8 level, u16 species, char* trainerNam
 	return thePokemon;
 }
 
-Pokemon* Pokemon::GenerateWildPokemonFromData(WildData* initData)
+Pokemon* Pokemon::GenerateWildPokemonFromData(const WildData &initData, const BattleTypeStruct &battleType)
 {
 	WildPokemonEntry* pointer;
 	{
-		WildPokemonData* info = initData[0].data[battleType.info.wildBattleVariety];
-		pointer = info[0].wildData[RTC::GetTime().timeOfDay];
-		if (pointer == 0)
+		const WildPokemonData &info = *initData.data[battleType.info.wildBattleVariety];
+		pointer = info.wildData[RTC::GetTime().timeOfDay];
+		if (!pointer)
 		{
-			pointer = info[0].wildData[0];
-			if (pointer == 0)
+			pointer = info.wildData[0];
+			if (!pointer)
 			{
 				return NULL;
 			}

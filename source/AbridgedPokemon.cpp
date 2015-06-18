@@ -105,7 +105,7 @@ void AbridgedPokemon::SetNature(u8 forcedNatureValue)
 	(forcedNatureValue >= 25)?Encrypt(Nature, Maths::GetDelimitedRandom32BitValue(26)):Encrypt(Nature, forcedNatureValue);
 }
 
-bool AbridgedPokemon::IsFullyEvolved()
+bool AbridgedPokemon::IsFullyEvolved() const
 {
 	return evoData[species].index == 0;
 }
@@ -607,7 +607,7 @@ void AbridgedPokemon::Encrypt(u8 index, u32 value)
 	}
 }
 
-u32 AbridgedPokemon::SumEVs()
+u32 AbridgedPokemon::SumEVs() const
 {
 	u32 sum = 0;
 	for (int i = 0; i < 6; i++)
@@ -617,7 +617,7 @@ u32 AbridgedPokemon::SumEVs()
 	return sum;
 }
 
-bool AbridgedPokemon::AllowEVAddition(u32 value, u32 index)
+bool AbridgedPokemon::AllowEVAddition(u32 value, u32 index) const
 {
 	u32 sum = SumEVs();
 	if (sum + value > 510)

@@ -51,7 +51,7 @@ void NonPlayerCharacter::UnloadContent()
 void NonPlayerCharacter::TimeTick(u32 time)
 {
 	SpriteData* data = &spriteTable[spriteIndex];
-	_object->UpdatePalette((void*)((u32)paletteTable[data->paletteSlotID] + time * 0x20));
+	_object->UpdatePalette((void*)((u32)paletteTable[data->paletteSlotID] + time * 0x20), (u16*)NULL);
 }
 
 void NonPlayerCharacter::ChangeFrame(u32 frameID)
@@ -60,5 +60,18 @@ void NonPlayerCharacter::ChangeFrame(u32 frameID)
 	if (frameID < data->numberOfFrames)
 	{
 		_object->UpdateImage((void*)data->frames[frameID]);
+	}
+}
+
+void NonPlayerCharacter::GetPalette(u16* locationToWriteTo, bool indoors)
+{
+	SpriteData* data = &spriteTable[spriteIndex];
+	if (!indoors)
+	{
+		_object->UpdatePalette((void*)((u32)paletteTable[data->paletteSlotID] + RTC::GetTime().timeOfDay * 0x20), locationToWriteTo);
+	}
+	else
+	{
+		_object->UpdatePalette((void*)((u32)paletteTable[data->paletteSlotID]), locationToWriteTo);
 	}
 }

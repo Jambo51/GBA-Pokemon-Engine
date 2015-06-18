@@ -20,12 +20,15 @@ public:
 	static bool GenericCheckFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit);
 	static bool CheckFlag(u32 flagID);
 	static bool CheckTrainerflag(u32 flagID);
+	static bool CheckWorldMapFlag(u32 flagID);
 	static void GenericSetFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit);
 	static void SetFlag(u32 flagID);
 	static void SetTrainerflag(u32 flagID);
+	static void SetWorldMapFlag(u32 flagID);
 	static void GenericClearFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit);
 	static void ClearFlag(u32 flagID);
 	static void ClearTrainerflag(u32 flagID);
+	static void ClearWorldMapFlag(u32 flagID);
 	static void Save();
 	static void Load();
 	static void Initialise();

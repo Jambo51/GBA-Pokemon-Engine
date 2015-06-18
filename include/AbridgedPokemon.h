@@ -89,11 +89,11 @@ public:
 	u16 CalculateChecksum();
 	void SetOTName(u8* nameString);
 	void SetNickname(u8* nameString);
-	u32 SumEVs();
-	bool AllowEVAddition(u32 value, u32 index);
+	u32 SumEVs() const;
+	bool AllowEVAddition(u32 value, u32 index) const;
 	u32 Decrypt(u8 index) const;
 	void Encrypt(u8 index, u32 value);
-	bool IsFullyEvolved();
+	bool IsFullyEvolved() const;
 	bool ExperienceGainCausesLevelUp(u32 experience, u8 level);
 	u32 GetLevel100MaxExperience();
 	u32 GetExperienceAtLevel(u32 level);

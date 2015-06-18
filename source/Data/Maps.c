@@ -193,24 +193,50 @@ const u16 map3_19[] = {
 		0x0414, 0x0415, 0x0414, 0x0415, 0x0414, 0x0415, 0x0414, 0x0415
 };
 
+const u16 map4_0[] = {
+		0x0408, 0x0420, 0x0420, 0x042E, 0x042F, 0x0420, 0x042D, 0x0421,
+		0x0422, 0x0420, 0x0420, 0x0420, 0x0420, 0x0408, 0x0431, 0x0432,
+		0x0436, 0x0437, 0x0428, 0x0435, 0x0429, 0x042A, 0x0428, 0x0428,
+		0x0416, 0x0417, 0x0408, 0x3039, 0x303A, 0x303E, 0x303F, 0x3009,
+		0x303D, 0x3009, 0x3009, 0x3009, 0x301D, 0x041E, 0x041F, 0x0408,
+		0x3009, 0x3001, 0x3001, 0x3043, 0x3044, 0x3044, 0x3044, 0x3044,
+		0x3046, 0x3025, 0x3026, 0x3027, 0x0408, 0x3009, 0x3001, 0x3001,
+		0x3053, 0x304B, 0x044C, 0x044D, 0x304E, 0x3056, 0x3001, 0x3001,
+		0x3001, 0x0408, 0x3009, 0x3001, 0x3001, 0x3053, 0x304B, 0x0454,
+		0x0455, 0x304E, 0x3056, 0x3001, 0x3001, 0x3001, 0x0408, 0x3057,
+		0x3001, 0x3001, 0x305B, 0x305C, 0x305C, 0x305C, 0x305C, 0x305E,
+		0x3001, 0x3001, 0x3047, 0x0408, 0x045F, 0x3001, 0x3001, 0x3001,
+		0x3001, 0x3001, 0x3001, 0x3001, 0x3001, 0x3001, 0x3001, 0x044F,
+		0x0408, 0x3009, 0x3001, 0x3012, 0x3013, 0x3014, 0x3001, 0x3001,
+		0x3001, 0x3001, 0x3001, 0x3001, 0x3001, 0x0408, 0x0408, 0x0408,
+		0x041A, 0x041B, 0x041C, 0x0408, 0x0408, 0x0408, 0x0408, 0x0408,
+		0x0408, 0x0408
+};
+
 const u16 map3_0BorderData[] = {
 		0x001C, 0x001D, 0x0014, 0x0015
 };
 
+const u16 map4_0BorderData[] = {
+		0x0008
+};
+
 const MapConnectionData connectionData3_0[] = {
-		{ 0x00000002, 0x00000000, 0x03, 0x1, 0x0000}, { 0x00000001, 0x00000000, 0x03, 0x27, 0x0000 }
+		{ 0x00000002, 0, 0x03, 0x1, 0x0000}, { 0x00000001, 0x00000000, 0x03, 0x27, 0x0000 }
 };
 
 const MapConnection connections3_0 = { 1, (MapConnectionData*)(&connectionData3_0) };
 
 const MapConnectionData connectionData3_19[] = {
-		{ 0x00000001, 0x00000000, 0x03, 0x0, 0x0000}
+		{ 0x00000001, 0, 0x03, 0x0, 0x0000}
 };
 
 const MapConnection connections3_19 = { 1, (MapConnectionData*)(&connectionData3_19) };
 
 const TEXT_LOCATION Tileset tileset0 = { 0x1, &Tileset0Tiles, &Tileset0Pal, &Tileset0MapBlock, &Tileset0AnimStruct, &Tileset0BlockInformation };
 const TEXT_LOCATION Tileset tileset1 = { 0x101, &Tileset1Tiles, &Tileset1Pal, &Tileset1MapBlock, 0, &Tileset1BlockInformation };
+const TEXT_LOCATION Tileset tileset12 = { 0x1, &Tileset12Tiles, &Tileset12Pal, &Tileset12MapBlock, 0, &Tileset12BlockInformation };
+const TEXT_LOCATION Tileset tileset20 = { 0x101, &Tileset20Tiles, &Tileset20Pal, &Tileset20MapBlock, 0, &Tileset20BlockInformation };
 
 const WildPokemonEntry wildData[] = { { 75, 3, 6, Caterpie }, { 25, 7, 9, Metapod } };
 
@@ -218,11 +244,25 @@ const WildPokemonData wildDataInner = { { 20, 20, 20, 20 }, { (WildPokemonEntry*
 
 const WildData mapWildData = { { (WildPokemonData*)&wildDataInner, 0, 0, 0, 0 } };
 
-const MapFooter mapFooter3_0 = { 24, 20, &map3_0BorderData, &map3_0, &tileset0, &tileset1, 2, 2 };
-const MapHeader mapHeader3_0 = { &mapFooter3_0, 0, 0, &connections3_0, Song_GSCPalletTown, { 3, 0 }, 0, 0, 0, 0, 0, 0, 0, 0, (WildData*)0 };
+const NPCEvent npcEvents3_0[] = { { 1, 23, 1, 4, 3, 10, 0, 0, 0, 0, 0 }, { 2, 27, 6, 2, 0xD, 17, 0, 0, 0, 0, 0 }, { 2, 71, 1, 1, 10, 8, 0, 0, 0, 0x2C, 0 } };
+const SignpostEvent signpostEvents3_0[] = { { 16, 16, 0, 0, 0 }, { 4, 7, 0, 0, 0 }, { 13, 7, 0, 0, 0 }, { 9, 11, 0, 0, 0 }, { 5, 14, 0, 0, 0 } };
+const WarpEvent warpEvents3_0[] = { { 6, 7, 0, 4, 0, 0 }, { 15, 7, 0, 4, 2, 0 }, { 16, 13, 0, 4, 3, 0 } };
+const TileScriptEvent tileScriptEvents3_0[] = { { 12, 1, 0x4050, 0, 0 }, { 13, 1, 0x4050, 0, 0 } };
+
+const EventsHeader eventsHeader3_0 = { 3, 5, 3, 2, (NPCEvent*)&npcEvents3_0, (SignpostEvent*)&signpostEvents3_0, (WarpEvent*)&warpEvents3_0, (TileScriptEvent*)&tileScriptEvents3_0 };
+
+const MapFooter mapFooter3_0 = { 24, 20, &map3_0BorderData, &map3_0, (Tileset*)&tileset0, (Tileset*)&tileset1, 2, 2 };
+const MapHeader mapHeader3_0 = { (MapFooter*)&mapFooter3_0, (EventsHeader*)&eventsHeader3_0, 0, &connections3_0, Song_GSCPalletTown, { 3, 0 }, 0, Village, 0, 0, 0, 0, 0, 0, (WildData*)0 };
 
 const MapFooter mapFooter3_19 = { 24, 40, &map3_0BorderData, &map3_19, &tileset0, &tileset1, 2, 2 };
-const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, { 3, 19 }, 0, 0, 0, 0, 0, 0, 0, 0, (WildData*)&mapWildData };
+const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, { 3, 1 }, 1, Route, 0, 0, 0, 0, 0, 0, (WildData*)&mapWildData };
+
+const WarpEvent warpEvents4_0[] = { { 4, 8, 0, 3, 0, 0 } };
+
+const EventsHeader eventsHeader4_0 = { 0, 0, 1, 0, 0, 0, (WarpEvent*)&warpEvents4_0, 0 };
+
+const MapFooter mapFooter4_0 = { 13, 10, &map4_0BorderData, &map4_0, &tileset12, &tileset20, 1, 1 };
+const MapHeader mapHeader4_0 = { (MapFooter*)&mapFooter4_0, (EventsHeader*)&eventsHeader4_0, 0, 0, Song_GSCPalletTown, { 4, 0 }, 0, Indoors, 0, 0, 0, 0, 0, 0, 0 };
 
 const RODATA_LOCATION MapHeader* bankZero[] = { };
 
@@ -232,6 +272,8 @@ const RODATA_LOCATION MapHeader* bankTwo[] = { };
 
 const RODATA_LOCATION MapHeader* bankThree[] = { &mapHeader3_0, &mapHeader3_19 };
 
-const RODATA_LOCATION MapHeader** maps[] = { &bankZero, &bankOne, &bankTwo, &bankThree };
+const RODATA_LOCATION MapHeader* bankFour[] = { &mapHeader4_0 };
+
+const RODATA_LOCATION MapHeader** maps[] = { &bankZero, &bankOne, &bankTwo, &bankThree, &bankFour };
 
 const RODATA_LOCATION MapHeader* errorMap = &mapHeader3_0;

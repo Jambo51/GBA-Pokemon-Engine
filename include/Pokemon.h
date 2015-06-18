@@ -2,6 +2,7 @@
 #define POKEMON_H
 
 #include "GlobalDefinitions.h"
+#include "MappingDefinitions.h"
 #include "AbridgedPokemon.h"
 
 class Pokemon
@@ -43,7 +44,11 @@ public:
 	void* GetPokeballPalette() const { return mainData.GetPokeballPalette(); }
 	const AbridgedPokemon & GetMainData() const { return mainData; }
 	const PrimaryStatusStruct & GetStatus() { return statusAilmentBits; }
-	static Pokemon* GenerateWildPokemonFromData(WildData* initData);
+	void SetBasicTypes() { mainData.SetBasicTypes(); }
+	bool IsFullyEvolved() const { return mainData.IsFullyEvolved(); }
+	u32 SumEVs() const { return mainData.SumEVs(); }
+	bool AllowEVAddition(u32 value, u32 index) const { return mainData.AllowEVAddition(value, index); }
+	static Pokemon* GenerateWildPokemonFromData(const WildData &initData, const BattleTypeStruct &battleType);
 	static Pokemon* GenerateEgg(Pokemon* mother, Pokemon* father);
 	static void GivePokemonToPlayer(u8 level, u16 species, u32 formeIndex = 0);
 	static Pokemon* GenerateTrainerPokemon(u8 level, u16 species, char* trainerName, u32 id, u32 formeIndex = 0);

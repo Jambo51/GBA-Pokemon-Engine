@@ -6,7 +6,7 @@
 #include "Maths.h"
 #include "MappingDefinitions.h"
 
-#define MaxBanks 4
+#define MaxBanks 5
 
 class Overworld : public GameScreen
 {
@@ -16,6 +16,8 @@ private:
 	u16 column;
 	ConnectionStruct connect;
 	TileAnimationStruct* animStruct;
+	bool warpOnCompleteMove;
+	WarpEvent warpData;
 	static IndexTable dataForTilesets[2][2];
 	static TileAnimationStruct emptyAnimStruct;
 	static u8 maxBanks;
@@ -46,10 +48,10 @@ public:
 	u16 CalculateBlock(s32 x, s32 y);
 	u16 CalculateBlockMovementPermissions(s32 x, s32 y);
 	u16 CalculateBlockID(s32 x, s32 y);
-	u32 CalculateBlockAttributes(s32 x, s32 y);
+	const BlockMetadata & CalculateBlockAttributes(s32 x, s32 y);
 	Block* GetBlockLocation(u16 blockID);
-	u32* GetBlockDataLocation(u16 blockID);
-	void PutBlockIntoVRAM(Block* b, u32* blockData, u16 blockID, u32 location);
+	const BlockMetadata & GetBlockDataLocation(u16 blockID);
+	void PutBlockIntoVRAM(Block* b, const BlockMetadata &blockData, u16 blockID, u32 location);
 	void DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID, u32 columnID);
 	void DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID, u32 rowID);
 	void DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation = NULL);
@@ -64,13 +66,20 @@ public:
 	void OnExitCallback();
 	void OnEnterCallback();
 	void OnCompleteTurn();
-	void OnCompleteMove();
+	void OnCompleteMove(u32 direction);
 	u16 GetRow() const { return row; }
 	u16 GetColumn() const { return column; }
 	void IncrementRow() { row++; if (row == 0x10) { row = 0; } }
 	void DecrementRow() { if (row == 0) { row = 0xF; } else { row--; } }
 	void IncrementColumn() { column++; if (column == 0x10) { column = 0; } }
 	void DecrementColumn() { if (column == 0) { column = 0xF; } else { column--; } }
+	void AddConnection(const ConnectionStruct &values) { if (!connect.isActive) { connect = values; } }
+	const WarpEvent & GetWarpEvent() const { return warpData; }
+	static void WarpTo();
+	void ResetColumn() { column = 0; }
+	void ResetRow() { row = 0; }
+	void SetEnterContext(u32 context) { exitContext = context; }
+	void WarpOnCompleteMove(bool value, const WarpEvent &event) { warpOnCompleteMove = value; warpData = event; }
 	static char** GetMapNamesTablePointer() { return (char**)&mapNamesTable; }
 };
 

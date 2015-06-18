@@ -28,6 +28,7 @@ public:
 	virtual void UnloadContent();
 	virtual void TimeTick(u32 time);
 	virtual void ChangeFrame(u32 frameID);
+	virtual void GetPalette(u16* locationToWriteTo, bool indoors);
 };
 
 #endif /* NONPLAYERCHARACTER_H_ */

@@ -81,25 +81,70 @@ void OverworldInputEventHandler::OnPressUp()
 			else if (!movementWord.movement.ignoreCounter)
 			{
 				Overworld* ow = (Overworld*)GameModeManager::GetScreen();
-				ow->DecrementRow();
-				ow->DrawRowOfBlocks(data[0].xLocation - 7, data[0].yLocation - 6, ow->GetRow(), ow->GetColumn());
-				data[0].dataPointer->ChangeFrame(Walking_Up_1 + data[0].previousWalkingFrame);
-				data[0].frameID = Facing_Up_Logical;
-				data[0].dataPointer->HFlip(false);
-				movementWord.movement.isMoving = 1;
-				movementWord.movement.vertical = 1;
-				movementWord.movement.positive = 0;
-				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+				if (ow->CalculateBlockMovementPermissions(data[0].xLocation, data[0].yLocation - 1) == 0xC)
 				{
-					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 9;
-					movementWord.movement.ignoreCounter = 9;
+					if (!ow->IsNewLocationInBounds(data[0].xLocation, data[0].yLocation - 1))
+					{
+						const MapHeader &header = Game::GetCurrentMap();
+						u32 side = ow->CalculateYConnectionLocation(header.connections, data[0].xLocation, data[0].yLocation - 1, header.footerLocation->height);
+						if (side < 0xFF && side < header.connections->numberOfConnections)
+						{
+							const MapConnectionData &conn = header.connections->mainData[side];
+							ConnectionStruct str = ConnectionStruct();
+							str.isActive = 1;
+							str.map = conn.map;
+							str.mapBank = conn.mapBank;
+							str.offset = conn.offset;
+							str.alignment = 2;
+							ow->AddConnection(str);
+						}
+					}
+					ow->DecrementRow();
+					ow->DrawRowOfBlocks(data[0].xLocation - 7, data[0].yLocation - 6, ow->GetRow(), ow->GetColumn());
+					data[0].dataPointer->ChangeFrame(Walking_Up_1 + data[0].previousWalkingFrame);
+					data[0].frameID = Facing_Up_Logical;
+					data[0].dataPointer->HFlip(false);
+					movementWord.movement.isMoving = 1;
+					movementWord.movement.vertical = 1;
+					movementWord.movement.positive = 0;
+					if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+					{
+						movementWord.movement.ppm = 2;
+						movementWord.movement.movementCounter = 9;
+						movementWord.movement.ignoreCounter = 9;
+					}
+					else
+					{
+						movementWord.movement.ppm = 1;
+						movementWord.movement.movementCounter = 17;
+						movementWord.movement.ignoreCounter = 17;
+					}
 				}
-				else
+				else if (ow->CalculateBlockAttributes(data[0].xLocation, data[0].yLocation - 1).behaviourByte == 0x69 || ow->CalculateBlockAttributes(data[0].xLocation, data[0].yLocation - 1).behaviourByte == 0x60)
 				{
-					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 17;
-					movementWord.movement.ignoreCounter = 17;
+					if (Game::GetCurrentMap().eventsLocation)
+					{
+						const EventsHeader &events = *Game::GetCurrentMap().eventsLocation;
+						for (int i = 0; i < events.numWarps; i++)
+						{
+							if (events.warpEvents[i].xPos == data[0].xLocation && events.warpEvents[i].yPos == data[0].yLocation - 1)
+							{
+								ow->DecrementRow();
+								ow->DrawRowOfBlocks(data[0].xLocation - 7, data[0].yLocation - 6, ow->GetRow(), ow->GetColumn());
+								data[0].dataPointer->ChangeFrame(Walking_Up_1 + data[0].previousWalkingFrame);
+								data[0].frameID = Facing_Up_Logical;
+								data[0].dataPointer->HFlip(false);
+								movementWord.movement.isMoving = 1;
+								movementWord.movement.vertical = 1;
+								movementWord.movement.positive = 0;
+								movementWord.movement.ppm = 1;
+								movementWord.movement.movementCounter = 17;
+								movementWord.movement.ignoreCounter = 17;
+								ow->WarpOnCompleteMove(true, events.warpEvents[i]);
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -127,23 +172,59 @@ void OverworldInputEventHandler::OnPressDown()
 			}
 			else if (!movementWord.movement.ignoreCounter)
 			{
-				data[0].dataPointer->ChangeFrame(Walking_Down_1 + data[0].previousWalkingFrame);
-				data[0].frameID = Facing_Down_Logical;
-				data[0].dataPointer->HFlip(false);
-				movementWord.movement.isMoving = 1;
-				movementWord.movement.vertical = 1;
-				movementWord.movement.positive = 1;
-				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+				Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+				if (ow->CalculateBlockMovementPermissions(data[0].xLocation, data[0].yLocation + 1) == 0xC)
 				{
-					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 9;
-					movementWord.movement.ignoreCounter = 9;
+					if (!ow->IsNewLocationInBounds(data[0].xLocation, data[0].yLocation + 1))
+					{
+						const MapHeader &header = Game::GetCurrentMap();
+						u32 side = ow->CalculateYConnectionLocation(header.connections, data[0].xLocation, data[0].yLocation + 1, header.footerLocation->height);
+						if (side < 0xFF && side < header.connections->numberOfConnections)
+						{
+							const MapConnectionData &conn = header.connections->mainData[side];
+							ConnectionStruct str = ConnectionStruct();
+							str.isActive = 1;
+							str.map = conn.map;
+							str.mapBank = conn.mapBank;
+							str.offset = conn.offset;
+							str.alignment = 1;
+							ow->AddConnection(str);
+						}
+					}
+					data[0].dataPointer->ChangeFrame(Walking_Down_1 + data[0].previousWalkingFrame);
+					data[0].frameID = Facing_Down_Logical;
+					data[0].dataPointer->HFlip(false);
+					movementWord.movement.isMoving = 1;
+					movementWord.movement.vertical = 1;
+					movementWord.movement.positive = 1;
+					if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+					{
+						movementWord.movement.ppm = 2;
+						movementWord.movement.movementCounter = 9;
+						movementWord.movement.ignoreCounter = 9;
+					}
+					else
+					{
+						movementWord.movement.ppm = 1;
+						movementWord.movement.movementCounter = 17;
+						movementWord.movement.ignoreCounter = 17;
+					}
 				}
-				else
+				else if (ow->CalculateBlockAttributes(data[0].xLocation, data[0].yLocation).behaviourByte == 0x65)
 				{
-					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 17;
-					movementWord.movement.ignoreCounter = 17;
+					if (Game::GetCurrentMap().eventsLocation)
+					{
+						const EventsHeader &events = *Game::GetCurrentMap().eventsLocation;
+						for (int i = 0; i < events.numWarps; i++)
+						{
+							if (events.warpEvents[i].xPos == data[0].xLocation && events.warpEvents[i].yPos == data[0].yLocation)
+							{
+								ow->WarpOnCompleteMove(true, events.warpEvents[i]);
+								ow->OnCompleteMove(0);
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -172,25 +253,44 @@ void OverworldInputEventHandler::OnPressLeft()
 			else if (!movementWord.movement.ignoreCounter)
 			{
 				Overworld* ow = (Overworld*)GameModeManager::GetScreen();
-				ow->DecrementColumn();
-				ow->DrawColumnOfBlocks(data[0].xLocation - 8, data[0].yLocation - 5, ow->GetColumn(), ow->GetRow());
-				data[0].dataPointer->ChangeFrame(Walking_Left_1 + data[0].previousWalkingFrame);
-				data[0].frameID = Facing_Left_Logical;
-				data[0].dataPointer->HFlip(false);
-				movementWord.movement.isMoving = 1;
-				movementWord.movement.vertical = 0;
-				movementWord.movement.positive = 0;
-				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+				if (ow->CalculateBlockMovementPermissions(data[0].xLocation - 1, data[0].yLocation) == 0xC)
 				{
-					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 9;
-					movementWord.movement.ignoreCounter = 9;
-				}
-				else
-				{
-					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 17;
-					movementWord.movement.ignoreCounter = 17;
+					if (!ow->IsNewLocationInBounds(data[0].xLocation - 1, data[0].yLocation))
+					{
+						const MapHeader &header = Game::GetCurrentMap();
+						u32 side = ow->CalculateXConnectionLocation(header.connections, data[0].xLocation - 1, data[0].yLocation, header.footerLocation->width);
+						if (side < 0xFF && side < header.connections->numberOfConnections)
+						{
+							const MapConnectionData &conn = header.connections->mainData[side];
+							ConnectionStruct str = ConnectionStruct();
+							str.isActive = 1;
+							str.map = conn.map;
+							str.mapBank = conn.mapBank;
+							str.offset = conn.offset;
+							str.alignment = 3;
+							ow->AddConnection(str);
+						}
+					}
+					ow->DecrementColumn();
+					ow->DrawColumnOfBlocks(data[0].xLocation - 8, data[0].yLocation - 5, ow->GetColumn(), ow->GetRow());
+					data[0].dataPointer->ChangeFrame(Walking_Left_1 + data[0].previousWalkingFrame);
+					data[0].frameID = Facing_Left_Logical;
+					data[0].dataPointer->HFlip(false);
+					movementWord.movement.isMoving = 1;
+					movementWord.movement.vertical = 0;
+					movementWord.movement.positive = 0;
+					if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+					{
+						movementWord.movement.ppm = 2;
+						movementWord.movement.movementCounter = 9;
+						movementWord.movement.ignoreCounter = 9;
+					}
+					else
+					{
+						movementWord.movement.ppm = 1;
+						movementWord.movement.movementCounter = 17;
+						movementWord.movement.ignoreCounter = 17;
+					}
 				}
 			}
 		}
@@ -218,23 +318,43 @@ void OverworldInputEventHandler::OnPressRight()
 			}
 			else if (!movementWord.movement.ignoreCounter)
 			{
-				data[0].dataPointer->ChangeFrame(Walking_Left_1 + data[0].previousWalkingFrame);
-				data[0].frameID = Facing_Right_Logical;
-				data[0].dataPointer->HFlip(true);
-				movementWord.movement.isMoving = 1;
-				movementWord.movement.vertical = 0;
-				movementWord.movement.positive = 1;
-				if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+				Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+				if (ow->CalculateBlockMovementPermissions(data[0].xLocation + 1, data[0].yLocation) == 0xC)
 				{
-					movementWord.movement.ppm = 2;
-					movementWord.movement.movementCounter = 9;
-					movementWord.movement.ignoreCounter = 9;
-				}
-				else
-				{
-					movementWord.movement.ppm = 1;
-					movementWord.movement.movementCounter = 17;
-					movementWord.movement.ignoreCounter = 17;
+					if (!ow->IsNewLocationInBounds(data[0].xLocation + 1, data[0].yLocation))
+					{
+						const MapHeader &header = Game::GetCurrentMap();
+						u32 side = ow->CalculateXConnectionLocation(header.connections, data[0].xLocation + 1, data[0].yLocation, header.footerLocation->width);
+						if (side < 0xFF && side < header.connections->numberOfConnections)
+						{
+							const MapConnectionData &conn = header.connections->mainData[side];
+							ConnectionStruct str = ConnectionStruct();
+							str.isActive = 1;
+							str.map = conn.map;
+							str.mapBank = conn.mapBank;
+							str.offset = conn.offset;
+							str.alignment = 4;
+							ow->AddConnection(str);
+						}
+					}
+					data[0].dataPointer->ChangeFrame(Walking_Left_1 + data[0].previousWalkingFrame);
+					data[0].frameID = Facing_Right_Logical;
+					data[0].dataPointer->HFlip(true);
+					movementWord.movement.isMoving = 1;
+					movementWord.movement.vertical = 0;
+					movementWord.movement.positive = 1;
+					if (Flags::CheckFlag(Flag_RunningShoes) && (Flags::CheckFlag(Flag_RunningShoesOn) || movementWord.movement.isBDown))
+					{
+						movementWord.movement.ppm = 2;
+						movementWord.movement.movementCounter = 9;
+						movementWord.movement.ignoreCounter = 9;
+					}
+					else
+					{
+						movementWord.movement.ppm = 1;
+						movementWord.movement.movementCounter = 17;
+						movementWord.movement.ignoreCounter = 17;
+					}
 				}
 			}
 		}
@@ -286,6 +406,8 @@ void OverworldInputEventHandler::Update()
 		movementWord.movement.movementCounter--;
 		if (!movementWord.movement.movementCounter)
 		{
+			Overworld* ow = (Overworld*)GameModeManager::GetScreen();
+			u32 direction = 0;
 			movementWord.movement.isMoving = 0;
 			movementWord.movement.wasMoving = 1;
 			NPCData* data = Game::GetNPCDataPointer();
@@ -307,7 +429,6 @@ void OverworldInputEventHandler::Update()
 					data[0].prevXLocation = data[0].xLocation;
 					data[0].prevYLocation = data[0].yLocation;
 					data[0].yLocation++;
-					Overworld* ow = (Overworld*)GameModeManager::GetScreen();
 					ow->DrawRowOfBlocks(data[0].xLocation - 7, data[0].yLocation + 10, ow->GetRow(), ow->GetColumn());
 					ow->IncrementRow();
 				}
@@ -316,6 +437,7 @@ void OverworldInputEventHandler::Update()
 					data[0].prevXLocation = data[0].xLocation;
 					data[0].prevYLocation = data[0].yLocation;
 					data[0].yLocation--;
+					direction = 1;
 				}
 			}
 			else
@@ -325,19 +447,19 @@ void OverworldInputEventHandler::Update()
 					data[0].prevXLocation = data[0].xLocation;
 					data[0].prevYLocation = data[0].yLocation;
 					data[0].xLocation++;
-					Overworld* ow = (Overworld*)GameModeManager::GetScreen();
 					ow->DrawColumnOfBlocks(data[0].xLocation + 8, data[0].yLocation - 5, ow->GetColumn(), ow->GetRow());
 					ow->IncrementColumn();
+					direction = 3;
 				}
 				else
 				{
 					data[0].prevXLocation = data[0].xLocation;
 					data[0].prevYLocation = data[0].yLocation;
 					data[0].xLocation--;
+					direction = 2;
 				}
 			}
-			Overworld* ow = (Overworld*)GameModeManager::GetScreen();
-			ow->OnCompleteMove();
+			ow->OnCompleteMove(direction);
 		}
 		else
 		{

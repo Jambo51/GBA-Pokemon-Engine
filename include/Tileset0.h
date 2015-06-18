@@ -18,10 +18,16 @@
 #define GRIT_TILESET0_H
 
 #define Tileset0TilesLen 20480
-extern const u16 Tileset0Tiles[5226];
+extern const u16 Tileset0Tiles[];
 
 #define Tileset0PalLen 2048
 extern const u16 Tileset0Pal[4][256];
+
+extern const u16 Tileset0MapBlock[];
+
+extern const u32 Tileset0BlockInformation[];
+
+extern const TileAnimationStructROM Tileset0AnimStruct;
 
 #endif // GRIT_TILESET0_H
 

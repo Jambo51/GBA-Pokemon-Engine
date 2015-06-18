@@ -14,6 +14,7 @@ class BattleAnimationScriptRunner : public ScriptRunner
 {
 private:
 	static U32FunctionPointerScriptRunner battleAnimationCommands[0xFF];
+	static u8* errorScript;
 public:
 	BattleAnimationScriptRunner(u8* script);
 	~BattleAnimationScriptRunner();

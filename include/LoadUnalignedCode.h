@@ -3,7 +3,7 @@
 
 #include "GlobalDefinitions.h"
 
-class UnalignedNumberhandler
+class UnalignedNumberHandler
 {
 public:
 	static u32 LoadUnalignedNumber(u8* location, u32 modifier, u8 length);

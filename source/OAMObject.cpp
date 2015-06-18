@@ -85,9 +85,16 @@ void OAMObject::Update(u32 position)
 	}
 }
 
-void OAMObject::UpdatePalette(void* newPalette)
+void OAMObject::UpdatePalette(void* newPalette, u16* locationToWriteTo)
 {
-	memcpy32((void*)(MEM_PAL_OBJ + paletteSlot * 0x20), newPalette, 8);
+	if (locationToWriteTo)
+	{
+		memcpy32((void*)(locationToWriteTo + 0x100 + (paletteSlot * 0x20)), newPalette, 8);
+	}
+	else
+	{
+		memcpy32((void*)(MEM_PAL_OBJ + paletteSlot * 0x20), newPalette, 8);
+	}
 }
 
 void OAMObject::UpdateImage(void* image, bool compressed)

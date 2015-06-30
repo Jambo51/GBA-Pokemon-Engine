@@ -83,8 +83,8 @@ protected:
 	void SetGender();
 	void SetNature(u8 forcedNatureValue = 0xFF);
 public:
-	AbridgedPokemon() { }
-	AbridgedPokemon(u32 level, u32 species, char* nickname = NULL);
+	AbridgedPokemon() { memset32((void*)this, 0, sizeof(AbridgedPokemon) >> 2); }
+	AbridgedPokemon(u32 species, u32 level, char* nickname = NULL);
 	~AbridgedPokemon();
 	u16 CalculateChecksum();
 	void SetOTName(u8* nameString);

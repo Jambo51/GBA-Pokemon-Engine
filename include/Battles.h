@@ -289,13 +289,17 @@ private:
 	static const u8* moveScriptsTable[];
 	static u16 statModifierRates[];
 	void DrawMainSelectionMenu();
-	void CopyBattleDataFromPokemon(Pokemon* thePokemon, u32 dataIndex);
 	u32 PrioritiseBetweenTwoPokemon(u32 index1, u32 index2);
 	void PrioritisePokemon();
 	void UpdateCounters();
+protected:
+	void CopyBattleDataFromPokemon(Pokemon* thePokemon, u32 dataIndex);
+	u32 currentStatus;
 	BattleTypeStruct battleType;
 	Pokemon enemyPokemon[6];
 	BattleData battleData;
+	BattleScreen(const BattleTypeStruct &bts);
+	~BattleScreen();
 public:
 	static u32 TiltEffectTypeChartCallback(u32 incomingValue);
 	static u32 InversionEffectTypeChartCallback(u32 incomingValue);
@@ -324,11 +328,13 @@ public:
 	void RecalculateEffectiveStat(PokemonBattleData &data, u32 statIndex);
 	void RecalculateAllEffectiveStats(PokemonBattleData &dataLocation);
 	void CalculateMoveDamage(u16 moveID, u32 attackerID, u32 defenderID);
-	void InitialiseBattleEnvironment();
 	BattleData & GetBattleData() { return battleData; }
 	const BattleData & GetBattleData() const { return battleData; }
 	const BattleTypeStruct & GetBattleTypeStruct() const { return battleType; }
 	Pokemon* GetEnemyBattlerByIndex(u32 index) const { return (Pokemon*)&enemyPokemon[index]; }
+	virtual void OnExitCallback() { }
+	virtual void OnEnterCallback() { }
+	virtual void Update() = 0;
 };
 
 #endif

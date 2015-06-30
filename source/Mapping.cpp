@@ -21,7 +21,8 @@
 #include "OverworldInputEventHandler.h"
 #include "OverworldScriptRunner.h"
 #include "Rectangle.h"
-#include "Battles.h"
+#include "WildBattle.h"
+#include "TrainerBattle.h"
 #include "GameModeManager.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
@@ -32,6 +33,16 @@ TEXT_LOCATION TileAnimationStruct Overworld::emptyAnimStruct = { 0, 0, 0, 0, 0, 
 TEXT_LOCATION ALIGN(1) u8 Overworld::maxBanks = MaxBanks;
 TEXT_LOCATION ALIGN(1) u8 Overworld::maxMaps[MaxBanks] = { 0, 0, 0, 2, 1 };
 TEXT_LOCATION ALIGN(4) char* Overworld::mapNamesTable[] = { "Pallet Town", "Route 1" };
+TEXT_LOCATION ALIGN(4) FlightSpot Overworld::flightSpots[] = {
+		{ { 0, 0 }, 0, 0, 0 },
+		{ { 3, 0 }, 6, 8, 0 }
+};
+TEXT_LOCATION ALIGN(4) HealingPlace Overworld::healingPlaces[] = {
+		{ { 4, 0 }, 8, 5, 0, 0, 1, 1 }
+};
+TEXT_LOCATION ALIGN(4) AirportData Overworld::airportData[] = {
+		{ { 3, 0 }, 0, 1, 0, 0 }
+};
 
 Overworld::Overworld()
 {
@@ -422,8 +433,7 @@ void Overworld::PutBlockIntoVRAM(Block* b, const BlockMetadata &blockData, u16 b
 
 void Overworld::DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID, u32 columnID)
 {
-	s32 x;
-	for (x = 0; x < 16; x++)
+	for (int x = 0; x < 16; x++)
 	{
 		u16 blockID = CalculateBlockID(x + xLocation, yLocation);
 		Block* b = GetBlockLocation(blockID);
@@ -672,6 +682,10 @@ void Overworld::OnCompleteTurn()
 		}
 		if (triggerWildBattle)
 		{
+			BattleTypeStruct bts = BattleTypeStruct();
+			bts.basicInfo = 0;
+			bts.info.isWildBattle = 1;
+			GameModeManager::SetScreen(new WildBattle(bts));
 		}
 	}
 }
@@ -846,6 +860,10 @@ void Overworld::OnCompleteMove(u32 direction)
 		}
 		if (triggerWildBattle)
 		{
+			BattleTypeStruct bts = BattleTypeStruct();
+			bts.basicInfo = 0;
+			bts.info.isWildBattle = 1;
+			GameModeManager::SetScreen(new WildBattle(bts));
 		}
 	}
 }

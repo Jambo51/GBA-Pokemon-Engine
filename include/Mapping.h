@@ -7,6 +7,7 @@
 #include "MappingDefinitions.h"
 
 #define MaxBanks 5
+#define NumFlightSpots 1
 
 class Overworld : public GameScreen
 {
@@ -24,6 +25,9 @@ private:
 	static u8 maxMaps[MaxBanks];
 	static char* mapNamesTable[];
 	static void PlaceNPCs(u16* newColours);
+	static FlightSpot flightSpots[];
+	static HealingPlace healingPlaces[];
+	static AirportData airportData[];
 public:
 	Overworld();
 	~Overworld();
@@ -81,6 +85,9 @@ public:
 	void SetEnterContext(u32 context) { exitContext = context; }
 	void WarpOnCompleteMove(bool value, const WarpEvent &event) { warpOnCompleteMove = value; warpData = event; }
 	static char** GetMapNamesTablePointer() { return (char**)&mapNamesTable; }
+	static const HealingPlace & GetHealingPlaceByID(u32 id) { if (id < NumFlightSpots) { return healingPlaces[id]; } return healingPlaces[0]; }
+	static const FlightSpot & GetFlightSpotByID(u32 id) { if (id < NumFlightSpots + 1) { return flightSpots[id]; } return flightSpots[0]; }
+	static const AirportData & GetAirportDataByID(u32 id) { if (id < NumFlightSpots) { return airportData[id]; } return airportData[0]; }
 };
 
 #endif

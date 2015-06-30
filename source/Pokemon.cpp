@@ -655,7 +655,7 @@ Pokemon* Pokemon::GenerateWildPokemonFromData(const WildData &initData, const Ba
 		}
 		if (calculatedLevel != minLevel)
 		{
-			calculatedLevel += Maths::GetDelimitedRandom32BitValue((calculatedLevel - minLevel) + 1);
+			calculatedLevel = minLevel + Maths::GetDelimitedRandom32BitValue((calculatedLevel - minLevel) + 1);
 		}
 	}
 	return new Pokemon(pointer[loopCounter].species, calculatedLevel);

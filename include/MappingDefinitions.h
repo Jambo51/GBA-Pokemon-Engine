@@ -207,6 +207,44 @@ typedef struct MapHeader {
 	WildData* wildDataLocation;
 } MapHeader;
 
+typedef struct HealingPlace {
+	union
+	{
+		MapBankMapCombo mapLocation;
+		u16 mapBankMapCombined;
+	};
+	u16 xPosition;
+	u16 yPosition;
+	u8 afterWhiteOutText;
+	u8 afterWhiteOutScriptID;
+	u8 flightSpotID;
+	u8 spriteID;
+	u16 alignment;
+} HealingPlace;
+
+typedef struct FlightSpot {
+	union
+	{
+		MapBankMapCombo mapLocation;
+		u16 mapBankMapCombined;
+	};
+	u16 xPosition;
+	u16 yPosition;
+	u16 alignment;
+} FlightSpot;
+
+typedef struct AirportData {
+	union
+	{
+		MapBankMapCombo mapLocation;
+		u16 mapBankMapCombined;
+	};
+	u16 flagID;
+	u8 flightSpotID;
+	u8 alignment1;
+	u16 alignment2;
+} AirportData;
+
 #ifdef __cplusplus
 }
 #endif

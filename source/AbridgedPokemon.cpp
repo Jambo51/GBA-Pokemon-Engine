@@ -11,6 +11,7 @@
 #include "PokeStats.h"
 #include "PokemonBaseData.h"
 #include "Game.h"
+#include "TextFunctions.h"
 
 RODATA_LOCATION ALIGN(4) void* AbridgedPokemon::spriteLookupFromIndices[] = { (void*)&PokemonSprites::pokemonFrontSprite, (void*)&PokemonSprites::pokemonBackSprite, (void*)&PokemonSprites::pokemonNormalPalette, (void*)&PokemonSprites::pokemonShinyPalette };
 RODATA_LOCATION ALIGN(2) u16 AbridgedPokemon::numberOfPokemon = NumberOfPokemon - 1;
@@ -20,7 +21,7 @@ AbridgedPokemon::~AbridgedPokemon()
 	// TODO Auto-generated destructor stub
 }
 
-AbridgedPokemon::AbridgedPokemon(u32 level, u32 species, char* nickname)
+AbridgedPokemon::AbridgedPokemon(u32 species, u32 level, char* nickname)
 {
 	Encrypt(Level, level);
 	Encrypt(CaptureLevel, level);
@@ -314,7 +315,7 @@ void AbridgedPokemon::Encrypt(u8 index, u32 value)
 			originalTrainerID = value;
 			break;
 		case Nickname:
-			//StringCopy((char*)&nickname, (char*)value, 11);
+			TextFunctions::StringCopy((char*)&nickname, (char*)value, 11);
 			break;
 		case FormeIndex:
 			if (value <= 0x3FF)

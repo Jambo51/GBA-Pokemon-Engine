@@ -367,7 +367,7 @@ void OverworldInputEventHandler::Update()
 	if (movementWord.movement.ignoreCounter)
 	{
 		movementWord.movement.ignoreCounter--;
-		if (!movementWord.movement.ignoreCounter)
+		if (!movementWord.movement.ignoreCounter && !movementWord.movement.isMoving)
 		{
 			Overworld* ow = (Overworld*)GameModeManager::GetScreen();
 			ow->OnCompleteTurn();

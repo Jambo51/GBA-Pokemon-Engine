@@ -56,6 +56,7 @@ private:
 	static Bag bag;
 	static Player player;
 	static MapHeader currentMap;
+	static HealingPlace currentHealingPlace;
 	static OptionsStruct options;
 	static char buffers[NUMBUFFERS][BUFFERLENGTH];
 	static NPCData overworldData[];
@@ -147,6 +148,9 @@ public:
 	static void IncrementNationalSeen() { nationalDexNumberSeen++; }
 	static void IncrementNationalCaught() { nationalDexNumberCaught++; }
 	static void SetCustomFadeCallback(VoidFunctionPointerVoid function) { callbackFunction = function; }
+	static bool AddNewPokemonToParty(const Pokemon &p);
+	static const HealingPlace & GetHealingPlace() { return currentHealingPlace; }
+	static void SetHealingPlace(const HealingPlace &newPlace) { currentHealingPlace = newPlace; }
 };
 
 #endif /* GAME_H_ */

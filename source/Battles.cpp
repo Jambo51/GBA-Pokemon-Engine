@@ -12,24 +12,10 @@
 #include "Flags.h"
 #include "Items.h"
 #include "libbattlescripts.h"
-
-#define BATTLE_LAYER_0_SETTINGS (BG_4BPP | BG_REG_32x64 | BG_MOSAIC | BG_SBB(14) | BG_CBB(2))
-
-#define WILDBATTLE 0
-#define TRAINERBATTLE 1
-#define DOUBLEWILD 2
-#define RAREWILD 3
-#define LEGENDARYWILD 4
-#define ROAMINGWILD 5
-#define GYMBATTLE 6
-#define EVILBATTLE 7
-#define CHAMPIONBATTLE 8
-#define EVILDUOBATTLE 9
-
-#define TESTMODE WILDBATTLE
-
-#define FALSE 0
-#define TRUE 1
+#include "SoundEngine.h"
+#include "GameModeManager.h"
+#include "InputHandler.h"
+#include "DoNothingInputEventHandler.h"
 
 #define GEN2MOONBALL FALSE
 
@@ -128,6 +114,20 @@ RODATA_LOCATION ALIGN(4) const u8* BattleScreen::moveScriptsTable[] = {
 };
 RODATA_LOCATION ALIGN(2) u16 BattleScreen::statModifierRates[] = { 25, 28, 33, 40, 50, 66, 100, 150, 200, 250, 300, 350, 400 };
 EWRAM_LOCATION ALIGN(4) BattleScreen* BattleScreen::instance = NULL;
+
+BattleScreen::BattleScreen(const BattleTypeStruct &bts)
+{
+	memset32((void*)&enemyPokemon, 0, (sizeof(Pokemon) * 6) >> 2);
+	memset32((void*)&battleData, 0, sizeof(BattleData) >> 2);
+	battleType = bts;
+	currentStatus = 0;
+	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
+}
+
+BattleScreen::~BattleScreen()
+{
+
+}
 
 u16 BattleScreen::CalculateBattleTrack()
 {
@@ -848,122 +848,4 @@ void BattleScreen::UpdateCounters()
 			pkmn[0].damageReceivedThisTurn = 0;
 		}
 	}
-}
-
-const TrainerPokemonData weezing1 = {
-		Weezing, 40, 0, 0
-};
-
-const TrainerPokemonData golem1 = {
-		Golem, 40, 0, 0
-};
-
-const TrainerPokemonData pidgeot1 = {
-		Pidgeot, 40, 0, 0
-};
-
-const TrainerPokemonData ekans1 = {
-		Arbok, 40, 0, 0
-};
-
-const TrainerPokemonData alakazam1 = {
-		Alakazam, 40, 0, 0
-};
-
-const TrainerData trainerBattleDataTable[] = {
-		{ 1, 0, 0, Class_Elite_Trainer, { 0, 0, 0, 0 }, { 'J', 'e', 'r', 'e', 'm', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&pidgeot1 },
-		{ 1, 0, 0, Class_Champion, { 0, 0, 0, 0 }, { 'G', 'a', 'r', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&alakazam1 },
-		{ 1, 0, 0, Class_Gym_Leader, { 0, 0, 0, 0 }, { 'B', 'r', 'o', 'c', 'k', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&golem1 },
-		{ 1, 0, 0, Class_Evil_Team, { 0, 0, 0, 0 }, { 'J', 'a', 'm', 'e', 's', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&ekans1 },
-		{ 1, 0, 0, Class_Evil_Team_Duo, { 0, 0, 0, 0 }, { 'J', 'e', 's', 's', 'i', 'e', ' ', '&', ' ', 'J', 'a', 'm', 'e', 's', '\0', 0 }, (TrainerPokemonData*)&weezing1 }
-};
-
-void BattleScreen::InitialiseBattleEnvironment()
-{
-#if TESTMODE == WILDBATTLE
-	battleType.info.isWildBattle = 1;
-#elif TESTMODE == DOUBLEWILD
-	battleType.info.isWildBattle = 1;
-	battleType.info.isDoubleBattle = 1;
-#elif TESTMODE == RAREWILD
-	battleType.info.isWildBattle = 1;
-	battleType.info.isRareWildBattle = 1;
-#elif TESTMODE == LEGENDARYWILD
-	battleType.info.isWildBattle = 1;
-	battleType.info.isLegendaryWildBattle = 1;
-#elif TESTMODE == ROAMINGWILD
-	battleType.info.isWildBattle = 1;
-	battleType.info.isRoamingWildBattle = 1;
-#else
-	battleType.info.isTrainerBattle = 1;
-#endif
-	battleData = BattleData();
-	battleData.numBattlers = 2 << battleType.info.isDoubleBattle;
-	battleData.pokemonStats = new PokemonBattleData[battleData.numBattlers];
-	if (battleType.info.isTrainerBattle)
-	{
-		battleData.trainerData = new TrainerBattleData();
-		battleData.trainerData->trainerID = Maths::GetRandom32BitValue();
-#if TESTMODE == GYMBATTLE
-		u16 trainerID = 2;
-#elif TESTMODE == EVILBATTLE
-		u16 trainerID = 3;
-#elif TESTMODE == EVILDUOBATTLE
-		u16 trainerID = 4;
-#elif TESTMODE == CHAMPIONBATTLE
-		u16 trainerID = 1;
-#else
-		u16 trainerID = 0;
-#endif
-		TrainerData* data = (TrainerData*)&trainerBattleDataTable[trainerID];
-		u32 upperLimit = data[0].numPokemon;
-		for (u32 i = 0; i < upperLimit; i++)
-		{
-			Pokemon* thePokemon = Pokemon::GenerateTrainerPokemon(data[0].pokemonData[i].level, data[0].pokemonData[i].species, (char*)&data[0].name, battleData.trainerData[0].trainerID, 0);
-			if (data[0].battleVarietyBits.isHeldItemsBattle)
-			{
-				if (data[0].battleVarietyBits.isMovesetBattle)
-				{
-					u32 j;
-					for (j = 0; j < 4; j++)
-					{
-						u16 moveID = data[0].pokemonDataMoves[i].moves[j];
-						thePokemon->Encrypt(Move1 + j, moveID);
-						thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
-					}
-					thePokemon->Encrypt(HeldItem, data[0].pokemonDataMoves[i].mainData.heldItem);
-				}
-				else
-				{
-					thePokemon->Encrypt(HeldItem, data[0].pokemonData[i].heldItem);
-				}
-			}
-			else if (data[0].battleVarietyBits.isMovesetBattle)
-			{
-				u32 j;
-				for (j = 0; j < 4; j++)
-				{
-					u16 moveID = data[0].pokemonDataMoves[i].moves[j];
-					thePokemon->Encrypt(Move1 + j, moveID);
-					thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
-				}
-			}
-			enemyPokemon[i] = *thePokemon;
-		}
-		battleData.trainerData[0].pointerToData = data;
-		battleData.trainerData[0].afterBattleText = "Congratulations!";
-	}
-	else
-	{
-		enemyPokemon[0] = *Pokemon::GenerateWildPokemonFromData(*Game::GetCurrentMap().wildDataLocation, battleType);
-	}
-	CopyBattleDataFromPokemon(Game::GetPartyPokemon(0), 0);
-	CopyBattleDataFromPokemon(&enemyPokemon[0], 1);
-	if (battleType.info.isDoubleBattle)
-	{
-		CopyBattleDataFromPokemon(Game::GetPartyPokemon(1), 2);
-		CopyBattleDataFromPokemon(&enemyPokemon[1], 3);
-	}
-	DrawMainSelectionMenu();
-	REG_BG0CNT = BATTLE_LAYER_0_SETTINGS;
 }

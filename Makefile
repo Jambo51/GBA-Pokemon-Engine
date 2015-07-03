@@ -48,11 +48,7 @@ endif
 LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts
 
 BUILD		:= build
-SRCDIRS		:= source source/Data source/Data/TitleScreen source/Data/Tilesets \
-	lib/Audio/gbpsongs lib/Audio/m4asamples lib/Audio/m4asongs \
-	lib/Audio/m4asoundbanks lib/Audio/m4awavesamples \
-	lib/Scripts/BattleAnimationScripts lib/Scripts/BattleScripts \
-	lib/Sprites/DSSprites lib/Tiles/Fonts
+SRCDIRS		:= source source/Data source/Data/TitleScreen source/Data/Tilesets
 DATADIRS	:= 
 INCDIRS		:= include
 LIBDIRS		:= $(TONCCODE)/tonclib $(CURDIR)
@@ -165,16 +161,16 @@ endif
 ifeq ($(strip $(bDEBUG)), 2)
 	CFLAGS		+= -DNDEBUG
 	CXXFLAGS	+= -DNDEBUG
-#	ASFLAGS		+= -DNDEBUG
+	ASFLAGS		+= -DNDEBUG
 else ifeq ($(strip $(bDEBUG)), 1)
 	CFLAGS		+= -DDEBUG -g
 	CXXFLAGS	+= -DDEBUG -g
-#	ASFLAGS		+= -DDEBUG -g
+	ASFLAGS		+= -DDEBUG -g
 	LDFLAGS		+= -g
 else
 	CFLAGS		+= -DNDEBUG
 	CXXFLAGS	+= -DNDEBUG
-#	ASFLAGS		+= -DNDEBUG
+	ASFLAGS		+= -DNDEBUG
 endif
 
 

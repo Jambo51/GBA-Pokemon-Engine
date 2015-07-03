@@ -56,7 +56,8 @@ EWRAM_LOCATION ALIGN(1) bool Game::layer0Included = false;
 EWRAM_LOCATION ALIGN(1) u8 Game::validGameSave = 0;
 EWRAM_LOCATION ALIGN(1) u8 Game::soundEngineID = GBPSoundsEngineID;
 EWRAM_LOCATION ALIGN(4) Vector2D Game::cameraPos = Vector2D(0, 8);
-EWRAM_LOCATION ALIGN(4) VoidFunctionPointerVoid Game::callbackFunction = NULL;
+EWRAM_LOCATION ALIGN(4) u32 Game::callbackData = 0;
+EWRAM_LOCATION ALIGN(4) VoidFunctionPointerU32 Game::callbackFunction = NULL;
 EWRAM_LOCATION ALIGN(4) HealingPlace Game::currentHealingPlace;
 RODATA_LOCATION ALIGN(4) u32 Game::framesInFades[MaxFadeIDs] = { 8, 16, 32, 64, 128 };
 RODATA_LOCATION ALIGN(4) u32 Game::alphaStepsInFades[MaxFadeIDs] = { 4, 2, 1, 0x800, 0x400 };
@@ -330,7 +331,8 @@ void Game::Update()
 			targetPalette = NULL;
 			if (callbackFunction)
 			{
-				callbackFunction();
+				callbackFunction(callbackData);
+				callbackData = 0;
 				callbackFunction = NULL;
 			}
 			if (doCallback)

@@ -5,6 +5,7 @@
 #include "GameScreen.h"
 #include "Maths.h"
 #include "MappingDefinitions.h"
+#include "Vector2D.h"
 
 #define MaxBanks 5
 #define NumFlightSpots 1
@@ -58,7 +59,7 @@ public:
 	void PutBlockIntoVRAM(Block* b, const BlockMetadata &blockData, u16 blockID, u32 location);
 	void DrawRowOfBlocks(s32 xLocation, s32 yLocation, u32 rowID, u32 columnID);
 	void DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID, u32 rowID);
-	void DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation = NULL);
+	void DrawMap(const Vector2D &position, u16* colourLocation = NULL);
 	u16 CalculateObjectXLocation(u8 shape, u8 size);
 	u16 CalculateObjectYLocation(u8 shape, u8 size);
 	bool IsNewLocationConnected(s32 horizontalLocation, s32 verticalLocation);
@@ -79,7 +80,7 @@ public:
 	void DecrementColumn() { if (column == 0) { column = 0xF; } else { column--; } }
 	void AddConnection(const ConnectionStruct &values) { if (!connect.isActive) { connect = values; } }
 	const WarpEvent & GetWarpEvent() const { return warpData; }
-	static void WarpTo();
+	static void WarpTo(u32 callbackData);
 	void ResetColumn() { column = 0; }
 	void ResetRow() { row = 0; }
 	void SetEnterContext(u32 context) { exitContext = context; }

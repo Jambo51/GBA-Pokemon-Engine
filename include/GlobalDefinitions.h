@@ -136,6 +136,8 @@ typedef u32 (*U32FunctionPointerVoid)(void);
 
 typedef void (*VoidFunctionPointerVoid)(void);
 
+typedef void (*VoidFunctionPointerU32)(u32);
+
 typedef u32 (*U32FunctionPointerU32)(u32);
 
 typedef u8 u8TripleArray[3];

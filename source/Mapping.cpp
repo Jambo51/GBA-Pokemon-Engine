@@ -55,8 +55,7 @@ Overworld::Overworld()
 	memset32((void*)animStruct, 0, (sizeof(TileAnimationStruct) * 10) >> 2);
 	u16* newColours = new u16[512];
 	memset32((void*)newColours, 0, (sizeof(u16) * 512) >> 3);
-	NPCData* data = Game::GetNPCDataPointer();
-	DrawMap(data[0].xLocation, data[0].yLocation, newColours);
+	DrawMap(Game::GetPlayerPos(), newColours);
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
 	Overworld::PlaceNPCs(newColours);
 	Game::FadeToPalette(newColours, true, HalfSecond, true, false);
@@ -86,7 +85,7 @@ void Overworld::PlaceNPCs(u16* newColours)
 	}
 }
 
-void Overworld::WarpTo()
+void Overworld::WarpTo(u32 callbackData)
 {
 	Overworld* ow = (Overworld*)GameModeManager::GetScreen();
 	const WarpEvent &warpData = ow->GetWarpEvent();
@@ -113,7 +112,7 @@ void Overworld::WarpTo()
 	ow->ResetRow();
 	u16* newColours = new u16[512];
 	memset32((void*)newColours, 0, (sizeof(u16) * 512) >> 3);
-	ow->DrawMap(data[0].xLocation, data[0].yLocation, newColours);
+	ow->DrawMap(Game::GetPlayerPos(), newColours);
 	data[0].dataPointer->GetPalette(newColours, header.mapType == Indoors);
 	Game::FadeToPalette(newColours, true, QuarterSecond, false, false);
 }
@@ -464,14 +463,14 @@ void Overworld::DrawColumnOfBlocks(s32 xLocation, s32 yLocation, u32 columnID, u
 	}
 }
 
-void Overworld::DrawMap(u32 xLocation, u32 yLocation, u16* colourLocation)
+void Overworld::DrawMap(const Vector2D &position, u16* colourLocation)
 {
 	PutMapTilesetsInMemory();
 	PutMapPalettesInMemory(colourLocation);
 	u32 y;
 	for (y = 0; y < 16; y++)
 	{
-		DrawRowOfBlocks(xLocation - 7, y + yLocation - 5, y, 0);
+		DrawRowOfBlocks(position.GetX() - 7, y + position.GetY() - 5, y, 0);
 	}
 }
 
@@ -706,7 +705,7 @@ void Overworld::OnCompleteMove(u32 direction)
 			SoundEngine::PlaySong(header.musicTrack, 1);
 		}
 		warpOnCompleteMove = false;
-		Game::SetCustomFadeCallback((VoidFunctionPointerVoid)WarpTo);
+		Game::SetCustomFadeCallback((VoidFunctionPointerU32)WarpTo, 0);
 		return;
 	}
 

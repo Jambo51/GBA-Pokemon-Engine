@@ -91,7 +91,8 @@ private:
 	static u16 regionalDexNumberCaught;
 	static u16 nationalDexNumberSeen;
 	static u16 nationalDexNumberCaught;
-	static VoidFunctionPointerVoid callbackFunction;
+	static u32 callbackData;
+	static VoidFunctionPointerU32 callbackFunction;
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
@@ -147,10 +148,11 @@ public:
 	static void IncrementRegionalCaught() { regionalDexNumberCaught++; }
 	static void IncrementNationalSeen() { nationalDexNumberSeen++; }
 	static void IncrementNationalCaught() { nationalDexNumberCaught++; }
-	static void SetCustomFadeCallback(VoidFunctionPointerVoid function) { callbackFunction = function; }
+	static void SetCustomFadeCallback(VoidFunctionPointerU32 function, u32 data) { callbackFunction = function; callbackData = data; }
 	static bool AddNewPokemonToParty(const Pokemon &p);
 	static const HealingPlace & GetHealingPlace() { return currentHealingPlace; }
 	static void SetHealingPlace(const HealingPlace &newPlace) { currentHealingPlace = newPlace; }
+	static const Vector2D GetPlayerPos() { return Vector2D(overworldData[0].xLocation, overworldData[0].yLocation); }
 };
 
 #endif /* GAME_H_ */

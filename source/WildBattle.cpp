@@ -36,7 +36,9 @@ void WildBattle::Update()
 			if (currentStatus < battleData.numBattlers >> 1)
 			{
 				const WildData &data = *Game::GetCurrentMap().wildDataLocation;
-				enemyPokemon[currentStatus] = *Pokemon::GenerateWildPokemonFromData(data, battleType);
+				Pokemon* thePokemon = Pokemon::GenerateWildPokemonFromData(data, battleType);
+				enemyPokemon[currentStatus] = *thePokemon;
+				delete thePokemon;
 			}
 			else
 			{

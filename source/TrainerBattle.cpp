@@ -105,6 +105,7 @@ void TrainerBattle::Update()
 					}
 				}
 				enemyPokemon[currentStatus] = *thePokemon;
+				delete thePokemon;
 			}
 			else
 			{

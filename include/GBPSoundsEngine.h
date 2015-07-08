@@ -37,4 +37,6 @@ public:
 	void ResumeSongPlaybackAndDisableFanfare();
 	void SwitchWavePattern(u8 patternID) const;
 	void Initialise();
+	bool SFXPlaying();
+	bool FanfarePlaying();
 };

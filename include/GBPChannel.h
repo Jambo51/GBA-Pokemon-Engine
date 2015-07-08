@@ -50,6 +50,7 @@ public:
 	bool IsPaused() const { return tracksIncluded[5]; }
 	void SwitchWavePattern(u8 voiceID) const;
 	u16 GetTempo() const { return tempo; }
+	bool IsPlaying() const { for (int i = 0; i < 4; i++) { if (!tracksIncluded[i]) { return false; } } return true; }
 };
 
 #endif /* GBPCHANNEL_H_ */

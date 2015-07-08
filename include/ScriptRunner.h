@@ -19,6 +19,7 @@ class ScriptRunner : public Callback
 protected:
 	u16 waitFrames;
 	u16 status;
+	u32 scriptBanks[4];
 	u32 callStackPosition;
 	u8* callStack[10];
 	u8* scriptPointer;
@@ -28,15 +29,19 @@ public:
 	virtual ~ScriptRunner();
 	void Update();
 	// So the pointer can easily be cast to other formats
-	u32* GetStatusPointer() const { return (u32*)&status; }
+	u16* GetStatusPointer() const { return (u16*)&status; }
 	u8* GetScriptPointer() const { return scriptPointer; }
 	void IncrementScriptPointer(u32 value) { scriptPointer += value; }
 	void SetScriptPointer(u8* newPointer) { scriptPointer = newPointer; }
+	u16 GetStatus() const { return status; }
+	void SetStatus(u32 value) { status = value; }
 	u16 GetWaitFrames() const { return waitFrames; }
 	void SetWaitFrames(u16 value) { waitFrames = value; }
 	bool DecrementWaitFrames() { if (waitFrames) { waitFrames--; if (!waitFrames) { return true; } else { return false; } } else { return true; } }
 	void Call(u8* newPointer) { if (callStackPosition < 10) { callStack[callStackPosition] = scriptPointer; callStackPosition++; scriptPointer = newPointer; } }
 	void Return() { if (callStackPosition > 0) { callStackPosition--; scriptPointer = callStack[callStackPosition]; } }
+	void SetBank(u32 bankID, u32 value) { if (bankID < 4) { scriptBanks[bankID] = value; } }
+	u32 GetBank(u32 bankID) const { if (bankID < 4) { return scriptBanks[bankID]; } return 0; }
 };
 
 #endif /* SCRIPTRUNNER_H_ */

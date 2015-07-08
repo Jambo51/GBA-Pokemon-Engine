@@ -589,11 +589,12 @@ Pokemon* Pokemon::GenerateEgg(Pokemon* mother, Pokemon* father)
 	return egg;
 }
 
-void Pokemon::GivePokemonToPlayer(u8 level, u16 species, u32 formeIndex)
+void Pokemon::GivePokemonToPlayer(u8 level, u16 species, u16 item, u32 formeIndex)
 {
 	Pokemon* thePokemon = new Pokemon(level, species);
 	thePokemon->Encrypt(OTID, Game::GetPlayer().completeTrainerID);
 	thePokemon->Encrypt(OTName, (u32)&Game::GetPlayer().name);
+	thePokemon->Encrypt(HeldItem, item);
 	InternalBaseData* data = (InternalBaseData*)((void**)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex];
 	thePokemon->Encrypt(Friendship, data[0].baseFriendship);
 	if (formeIndex != 0)

@@ -321,14 +321,52 @@ typedef struct SeasonClockValues {
 	u8 month;
 } SeasonClockValues;
 
+#define NumBagItems 50
+#define NumKeyItems 30
+#define NumBallTypes 20
+#define NumTMsAndHMs 108
+#define NumBerryTypes 30
+
+typedef struct BagData {
+	u32 numItemsBag:6;
+	u32 numItemsKey:5;
+	u32 numItemsBalls:5;
+	u32 numTMs:7;
+	u32 numHMs:4;
+	u32 numBerryItems:5;
+} BagData;
+
 typedef struct Bag {
-	u32 bagInformation;
-	BagItem bagItemsData[40];
-	BagItem keyItemsData[30];
-	BagItem ballItemsData[20];
-	BagItem TMData[103];
-	BagItem berryItemsData[30];
+	union
+	{
+		u32 bagInformationValue;
+		BagData bagInformation;
+	};
+	BagItem bagItemsData[NumBagItems];
+	BagItem keyItemsData[NumKeyItems];
+	BagItem ballItemsData[NumBallTypes];
+	BagItem TMData[NumTMsAndHMs];
+	BagItem berryItemsData[NumBerryTypes];
 } Bag;
+
+#define NumPCBagItems 50
+#define NumPCKeyItems 30
+#define NumPCBallTypes 20
+#define NumPCTMsAndHMs 108
+#define NumPCBerryTypes 30
+
+typedef struct PCStorage {
+	union
+	{
+		u32 bagInformationValue;
+		BagData bagInformation;
+	};
+	BagItem bagItemsData[NumPCBagItems];
+	BagItem keyItemsData[NumPCKeyItems];
+	BagItem ballItemsData[NumPCBallTypes];
+	BagItem TMData[NumPCTMsAndHMs];
+	BagItem berryItemsData[NumPCBerryTypes];
+} PCStorage;
 
 typedef struct GBPTrack {
 	u32 trackType:2;

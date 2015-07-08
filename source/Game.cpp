@@ -25,6 +25,7 @@ EWRAM_LOCATION ALIGN(4) Pokemon Game::partyPokemon[PartyLength];
 EWRAM_LOCATION ALIGN(4) PokemonStorageBoxes Game::storageBoxes;
 EWRAM_LOCATION ALIGN(4) Pokemon Game::temporaryHoldingPokemon;
 EWRAM_LOCATION ALIGN(4) Bag Game::bag;
+EWRAM_LOCATION ALIGN(4) Bag Game::PCItemStorage;
 EWRAM_LOCATION ALIGN(4) Player Game::player;
 EWRAM_LOCATION ALIGN(4) MapHeader Game::currentMap;
 EWRAM_LOCATION ALIGN(4) OptionsStruct Game::options;
@@ -222,11 +223,11 @@ void Game::OnHappinessCycleExpire()
 	{
 		if (partyPokemon[i].Decrypt(PersonalityID) && !partyPokemon[i].Decrypt(IsEgg))
 		{
-			u32 itemEffect = 0;//Items::GetItemEffectFromID(partyPokemon[i].Decrypt(HeldItem));
+			u32 itemEffect = Items::GetItemEffect(partyPokemon[i].Decrypt(HeldItem));
 			u32 value = partyPokemon[i].Decrypt(Friendship);
 			if (itemEffect == Item_Effect_Increase_Happiness_Gain)
 			{
-				value += 1 + 0;//Items::GetItemStrengthFromID(partyPokemon[i].Decrypt(HeldItem));
+				value += 1 + Items::GetItemStrength(partyPokemon[i].Decrypt(HeldItem));
 			}
 			else
 			{
@@ -709,4 +710,297 @@ u16 Game::CountPokedexPokemon(u32 mode, u32 seenCaughtIndex)
 			return regionalDexNumberSeen;
 		}
 	}
+}
+
+bool Game::AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt, const Bag &bagLoc)
+{
+	bool space = false;
+	u32 category = Items::GetItemCategory(itemID);
+	u32 slotID = U32Max;
+	switch (category)
+	{
+		case Item_Category_Items:
+			for (u32 i = 0; i < NumBagItems; i++)
+			{
+				if ((bagLoc.bagItemsData[i].itemID == itemID && bagLoc.bagItemsData[i].quantity + numberOfItems <= 0xFFFF) || bagLoc.bagItemsData[i].itemID == 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.bagItemsData[slotID].quantity += numberOfItems;
+					bagLoc.bagItemsData[slotID].itemID = itemID;
+				}
+			}
+			break;
+		case Item_Category_Balls:
+			for (u32 i = 0; i < NumBallTypes; i++)
+			{
+				if ((bagLoc.ballItemsData[i].itemID == itemID && bagLoc.ballItemsData[i].quantity + numberOfItems <= 0xFFFF) || bagLoc.ballItemsData[i].itemID == 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.ballItemsData[slotID].quantity += numberOfItems;
+					bagLoc.ballItemsData[slotID].itemID = itemID;
+				}
+			}
+			break;
+		case Item_Category_KeyItems:
+			for (u32 i = 0; i < NumKeyItems; i++)
+			{
+				if ((bagLoc.keyItemsData[i].itemID == itemID && bagLoc.keyItemsData[i].quantity + numberOfItems <= 0xFFFF) || bagLoc.keyItemsData[i].itemID == 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.keyItemsData[slotID].quantity += numberOfItems;
+					bagLoc.keyItemsData[slotID].itemID = itemID;
+				}
+			}
+			break;
+		case Item_Category_Berries:
+			for (u32 i = 0; i < NumBerryTypes; i++)
+			{
+				if ((bagLoc.berryItemsData[i].itemID == itemID && bagLoc.berryItemsData[i].quantity + numberOfItems <= 0xFFFF) || bagLoc.berryItemsData[i].itemID == 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.berryItemsData[slotID].quantity += numberOfItems;
+					bagLoc.berryItemsData[slotID].itemID = itemID;
+				}
+			}
+			break;
+		case Item_Category_TMsAndHMs:
+			if (bagLoc.TMData[itemID].quantity + numberOfItems <= 0xFFFF)
+			{
+				slotID = itemID;
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.bagItemsData[slotID].quantity += numberOfItems;
+					bagLoc.bagItemsData[slotID].itemID = itemID;
+				}
+			}
+			break;
+	}
+	return slotID != U32Max;
+}
+
+bool Game::FindItemsInBagLocation(u16 itemID, u16 numberOfItems, const Bag &bagLoc)
+{
+	bool space = false;
+	u32 category = Items::GetItemCategory(itemID);
+	u32 slotID = U32Max;
+	switch (category)
+	{
+		case Item_Category_Items:
+			for (u32 i = 0; i < NumBagItems; i++)
+			{
+				if (bagLoc.bagItemsData[i].itemID == itemID && bagLoc.bagItemsData[i].quantity >= numberOfItems)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			break;
+		case Item_Category_Balls:
+			for (u32 i = 0; i < NumBallTypes; i++)
+			{
+				if (bagLoc.ballItemsData[i].itemID == itemID && bagLoc.ballItemsData[i].quantity >= numberOfItems)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			break;
+		case Item_Category_KeyItems:
+			for (u32 i = 0; i < NumKeyItems; i++)
+			{
+				if (bagLoc.keyItemsData[i].itemID == itemID && bagLoc.keyItemsData[i].quantity >= numberOfItems)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			break;
+		case Item_Category_Berries:
+			for (u32 i = 0; i < NumBerryTypes; i++)
+			{
+				if (bagLoc.berryItemsData[i].itemID == itemID && bagLoc.berryItemsData[i].quantity >= numberOfItems)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			break;
+		case Item_Category_TMsAndHMs:
+			if (bagLoc.TMData[itemID].quantity >= numberOfItems)
+			{
+				slotID = Items::GetItemIndexNumber(itemID);
+			}
+			break;
+	}
+	return slotID != U32Max;
+}
+
+
+bool Game::RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt, const Bag &bagLoc)
+{
+	bool space = false;
+	u32 category = Items::GetItemCategory(itemID);
+	u32 slotID = U32Max;
+	switch (category)
+	{
+		case Item_Category_Items:
+			for (u32 i = 0; i < NumBagItems; i++)
+			{
+				if (bagLoc.bagItemsData[i].itemID == itemID && bagLoc.bagItemsData[i].quantity - numberOfItems >= 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.bagItemsData[slotID].quantity -= numberOfItems;
+					if (!bagLoc.bagItemsData[slotID].quantity)
+					{
+						bagLoc.bagItemsData[slotID].itemID = 0;
+					}
+				}
+			}
+			break;
+		case Item_Category_Balls:
+			for (u32 i = 0; i < NumBallTypes; i++)
+			{
+				if (bagLoc.ballItemsData[i].itemID == itemID && bagLoc.ballItemsData[i].quantity - numberOfItems >= 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.ballItemsData[slotID].quantity -= numberOfItems;
+					if (!bagLoc.ballItemsData[slotID].quantity)
+					{
+						bagLoc.ballItemsData[slotID].itemID = 0;
+					}
+				}
+			}
+			break;
+		case Item_Category_KeyItems:
+			for (u32 i = 0; i < NumKeyItems; i++)
+			{
+				if (bagLoc.keyItemsData[i].itemID == itemID && bagLoc.keyItemsData[i].quantity - numberOfItems >= 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.keyItemsData[slotID].quantity -= numberOfItems;
+					if (!bagLoc.keyItemsData[slotID].quantity)
+					{
+						bagLoc.keyItemsData[slotID].itemID = 0;
+					}
+				}
+			}
+			break;
+		case Item_Category_Berries:
+			for (u32 i = 0; i < NumBerryTypes; i++)
+			{
+				if (bagLoc.berryItemsData[i].itemID == itemID && bagLoc.berryItemsData[i].quantity - numberOfItems >= 0)
+				{
+					slotID = i;
+					break;
+				}
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.berryItemsData[slotID].quantity -= numberOfItems;
+					if (!bagLoc.keyItemsData[slotID].quantity)
+					{
+						bagLoc.berryItemsData[slotID].itemID = 0;
+					}
+				}
+			}
+			break;
+		case Item_Category_TMsAndHMs:
+			if (bagLoc.TMData[itemID].quantity - numberOfItems >= 0)
+			{
+				slotID = Items::GetItemIndexNumber(itemID);
+			}
+			if (slotID != U32Max)
+			{
+				if (doIt)
+				{
+					bagLoc.bagItemsData[slotID].quantity -= numberOfItems;
+				}
+			}
+			break;
+	}
+	return slotID != U32Max;
+}
+
+bool Game::RemoveItemsFromBag(u16 itemID, u16 numberOfItems, bool doIt)
+{
+	return RemoveItemsFromBagLocation(itemID, numberOfItems, doIt);
+}
+
+bool Game::AddItemsToBag(u16 itemID, u16 numberOfItems, bool doIt)
+{
+	return AddItemsToBagLocation(itemID, numberOfItems, doIt);
+}
+
+bool Game::FindItemsInBag(u16 itemID, u16 numberOfItems)
+{
+	return FindItemsInBagLocation(itemID, numberOfItems);
+}
+
+bool Game::RemoveItemsFromPC(u16 itemID, u16 numberOfItems, bool doIt)
+{
+	return RemoveItemsFromBagLocation(itemID, numberOfItems, doIt, PCItemStorage);
+}
+
+bool Game::AddItemsToPC(u16 itemID, u16 numberOfItems, bool doIt)
+{
+	return AddItemsToBagLocation(itemID, numberOfItems, doIt, PCItemStorage);
+}
+
+bool Game::FindItemsInPC(u16 itemID, u16 numberOfItems)
+{
+	return FindItemsInBagLocation(itemID, numberOfItems, PCItemStorage);
 }

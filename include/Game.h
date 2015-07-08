@@ -54,6 +54,7 @@ private:
 	static Pokemon temporaryHoldingPokemon;
 	static PokemonStorageBoxes storageBoxes;
 	static Bag bag;
+	static Bag PCItemStorage;
 	static Player player;
 	static MapHeader currentMap;
 	static HealingPlace currentHealingPlace;
@@ -153,6 +154,15 @@ public:
 	static const HealingPlace & GetHealingPlace() { return currentHealingPlace; }
 	static void SetHealingPlace(const HealingPlace &newPlace) { currentHealingPlace = newPlace; }
 	static const Vector2D GetPlayerPos() { return Vector2D(overworldData[0].xLocation, overworldData[0].yLocation); }
+	static bool AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt = true, const Bag &bagLoc = bag);
+	static bool RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt = true, const Bag &bagLoc = bag);
+	static bool FindItemsInBagLocation(u16 itemID, u16 numberOfItems, const Bag &bagLoc = bag);
+	static bool AddItemsToBag(u16 itemID, u16 numberOfItems, bool doIt = true);
+	static bool RemoveItemsFromBag(u16 itemID, u16 numberOfItems, bool doIt = true);
+	static bool FindItemsInBag(u16 itemID, u16 numberOfItems);
+	static bool AddItemsToPC(u16 itemID, u16 numberOfItems, bool doIt = true);
+	static bool RemoveItemsFromPC(u16 itemID, u16 numberOfItems, bool doIt = true);
+	static bool FindItemsInPC(u16 itemID, u16 numberOfItems);
 };
 
 #endif /* GAME_H_ */

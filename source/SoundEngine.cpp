@@ -66,6 +66,9 @@ void SoundEngine::PlaySong(u16 songID, u8 songStartMode)
 			case 1:
 				valueToWrite = FadeToSong;
 				break;
+			case 2:
+				valueToWrite = FadeIn;
+				break;
 		}
 		songPlayingMode = valueToWrite;
 	}
@@ -107,4 +110,22 @@ void SoundEngine::SetOnSongEndFunction(VoidFunctionPointerVoid ptr)
 	{
 		me->SetSongOnEndFunction(ptr);
 	}
+}
+
+bool SoundEngine::SFXPlaying()
+{
+	if (me)
+	{
+		return me->SFXPlaying();
+	}
+	return false;
+}
+
+bool SoundEngine::FanfarePlaying()
+{
+	if (me)
+	{
+		return me->FanfarePlaying();
+	}
+	return false;
 }

@@ -230,3 +230,15 @@ void GBPSoundsEngine::FadeSongIn()
 	}
 	FadeSong();
 }
+
+bool GBPSoundsEngine::SFXPlaying()
+{
+	const GBPChannel &channel = *channels[3];
+	return channel.IsPlaying();
+}
+
+bool GBPSoundsEngine::FanfarePlaying()
+{
+	const GBPChannel &channel = *channels[2];
+	return channel.IsPlaying();
+}

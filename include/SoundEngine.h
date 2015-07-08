@@ -39,6 +39,8 @@ public:
 	static void FadeSongToSilence();
 	static void StopSong();
 	static void SetOnSongEndFunction(VoidFunctionPointerVoid ptr);
+	static bool SFXPlaying();
+	static bool FanfarePlaying();
 };
 
 #endif /* SOUNDENGINE_H_ */

@@ -50,7 +50,7 @@ public:
 	bool AllowEVAddition(u32 value, u32 index) const { return mainData.AllowEVAddition(value, index); }
 	static Pokemon* GenerateWildPokemonFromData(const WildData &initData, const BattleTypeStruct &battleType);
 	static Pokemon* GenerateEgg(Pokemon* mother, Pokemon* father);
-	static void GivePokemonToPlayer(u8 level, u16 species, u32 formeIndex = 0);
+	static void GivePokemonToPlayer(u8 level, u16 species, u16 item, u32 formeIndex = 0);
 	static Pokemon* GenerateTrainerPokemon(u8 level, u16 species, char* trainerName, u32 id, u32 formeIndex = 0);
 	static u16 FindBabySpeciesInner(u16 sourceSpecies) { return AbridgedPokemon::FindBabySpeciesInner(sourceSpecies); }
 };

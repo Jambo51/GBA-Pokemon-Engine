@@ -12,11 +12,7 @@ ScriptRunner::ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands)
 	scriptPointer = script;
 	commandSet = commands;
 	status = 0;
-	callStackPosition = 0;
-	for (int i = 0; i < 10; i++)
-	{
-		callStack[i] = NULL;
-	}
+	memset32((void*)&scriptBanks, 0, (sizeof(u32) * 5 + sizeof(u8*) * 10) >> 2);
 }
 
 ScriptRunner::~ScriptRunner()

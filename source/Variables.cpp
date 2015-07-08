@@ -17,6 +17,11 @@ bool Variables::ValidateVarID(u32 varID)
 	return (varID >= LowerVarLimit && varID < UpperVarLimit);
 }
 
+bool Variables::IsTemporaryVar(u32 varID)
+{
+	return (varID >= 0x8000 && varID < (0x8000 + NumTempVars));
+}
+
 u16 Variables::GetVar(u32 varID)
 {
 	if (ValidateVarID(varID))

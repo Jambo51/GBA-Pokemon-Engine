@@ -52,8 +52,9 @@ u32 ReturnOverworldScript(ScriptRunner* runner)
 
 u32 CallOverworldScript(ScriptRunner* runner)
 {
+	u8* script = runner->GetScriptPointer();
 	runner->IncrementScriptPointer(5);
-	runner->Call((u8*)UnalignedNumberHandler::LoadUnalignedNumber(runner->GetScriptPointer(), 1, 4));
+	runner->Call((u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4));
 	return NotEnded;
 }
 

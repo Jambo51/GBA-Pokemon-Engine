@@ -23,6 +23,7 @@
 #define NumberOfFlags 0x2000
 #define NumberOfMoves 618
 #define NumberOfOverworlds 24
+#define NumberOfItems 500
 #define PlayerNameLength 7
 #define MaxPlayerCash 9999999
 #define MaxHappinessAllowed 0xD0
@@ -64,8 +65,6 @@ enum Songs { Song_None, Song_CrystalTitleScreen, Song_GSCRoute1, Song_GSCRoute3,
 
 enum Genders { Gender_Male, Gender_Female, Gender_Genderless = 0xFF };
 
-enum ItemCategories { Category_Items, Category_KeyItems, Category_Berries, Category_Apricorns, Category_TechnicalMachines, Category_Balls };
-
 enum Abilities { NoAbility, Stench, Magician, Rock_Head, Moxie, Poison_Touch, Static, Colour_Change, Shield_Dust, Rough_Skin, Effect_Spore, Synchronise, Poison_Point, Flame_Body, Cute_Charm, Steadfast, Anger_Point, Pickpocket, Cursed_Body, Weak_Armour, Mummy, Justified, Rattled, Iron_Barbs, Gooey, Aftermath, Drizzle, Drought, Sand_Stream, Snow_Warning, Trace, Forecast, Intimidate, Download, Anticipation, Forewarn, Illusion, Imposter, Volt_Absorb, Water_Absorb, Sap_Sipper, Flash_Fire, Motor_Drive, Sand_Veil, Compound_Eyes, Swift_Swim, Chlorophyll, Hustle, Plus, Minus, Marvel_Scale, Tangled_Feet, Quick_Feet, Sand_Rush, Victory_Star, Rivalry, Snow_Cloak, Unburden, Solar_Power, Grass_Pelt, Defiant, Competitive, Huge_Power, Guts, Pure_Power, Sheer_Force, Toxic_Boost, Flare_Boost, Sand_Force, Strong_Jaw, Iron_Fist, Overgrow, Blaze, Torrent, Swarm, Reckless, Technician, Analytic, Adaptability, Mega_Launcher, Tough_Claws, Dark_Aura, Fairy_Aura, Clear_Body, Keen_Eye, Hyper_Cutter, White_Smoke, Big_Pecks, Flower_Veil, Leaf_Guard, Wonder_Guard, Levitate, Soundproof, Bulletproof, Lightning_Rod, Storm_Drain, Natural_Cure, Rain_Dish, Ice_Body, Poison_Heal, Cheek_Pouch, Hydration, Healer, Regenerator, Shed_Skin, Dry_Skin, Normalise, Protean, Refrigerate, Pixilate, Aerilate, Mould_Breaker, Turboblaze, Teravolt, Stall, Prankster, Gale_Wings, Speed_Boost, Battle_Armour, Sturdy, Damp, Limber, Oblivious, Cloud_Nine, Insomnia, Immunity, Own_Tempo, Suction_Cups, Shadow_Tag, Serene_Grace, Inner_Focus, Magma_Armour, Water_Veil, Magnet_Pull, Pressure, Thick_Fat, Early_Bird, Run_Away, Pickup, Truant, Sticky_Hold, Liquid_Ooze, Arena_Trap, Vital_Spirit, Shell_Armour, Air_Lock, Gluttony, Heatproof, Simple, Skill_Link, Sniper, Magic_Guard, No_Guard, Klutz, Super_Luck, Unaware, Tinted_Lens, Filter, Solid_Rock, Slow_Start, Scrappy, Frisk, Multitype, Flower_Gift, Bad_Dreams, Contrary, Unnerve, Defeatist, Friend_Guard, Heavy_Metal, Light_Metal, Multiscale, Harvest, Telepathy, Moody, Overcoat, Wonder_Skin, Infiltrator, Magic_Bounce, Zen_Mode, Aroma_Veil, Fur_Coat, Sweet_Veil, Stance_Change, Symbiosis, Aura_Break, Illuminate, Honey_Gather };
 
 enum CryptionIndices { PersonalityID, OTID, Nickname, FormeIndex, Gender, Nature, ForcedShiny, OTName, Mark, Checksum, IsObedient, Species, HeldItem, Move1, Move2, Move3, Move4, Move1PP, Move2PP, Move3PP, Move4PP, PPBonuses, Coolness, Beauty, Cuteness, Experience, HP_EV, Attack_EV, Defence_EV, Speed_EV, Special_Attack_EV, Special_Defence_EV, Friendship, Smartness, PokerusStatus, MetLocation, CaptureLevel, IsObedient2, PokeBall, HP_IV, Attack_IV, Defence_IV, Speed_IV, Special_Attack_IV, Special_Defence_IV, IsEgg, Ability, Toughness, Feel, Type1, Type2, PokerusStrain, PokerusDuration, IsObedient5, IsObedient6, StatusAilment, Level, CurrentHP, MaximumHP, Attack, Defence, Speed, SpecialAttack, SpecialDefence, IsObedient7 };
@@ -90,7 +89,7 @@ enum PokedexModes {	Regional, National };
 
 enum BattleStats { BattleAttack, BattleDefence, BattleSpeed, BattleSpecialAttack, BattleSpecialDefence, Accuracy, Evasion, NumBattleStats };
 
-enum BattleBanks { Target, User, TargetAlly, UserAlly, PokeballTarget, MoveTypeOverrideValue, GenericCounter, GenericCounter2, GenericBufferByte, GenericBufferByte2, CurrentEffectID, CurrentEffectPower, NumBattleBanks };
+enum BattleBanks { Target, User, TargetAlly, UserAlly, NumBattlers, MoveTypeOverrideValue, CurrentEffectID, CurrentEffectPower, MoveSelection1, MoveSelection2, MoveSelectiion3, MoveSelection4, Target1, Target2, Target3, Target4, NumBattleBanks };
 
 enum MoveCategories { Category_Physical, Category_Special, Category_Status };
 

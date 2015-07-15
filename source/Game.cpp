@@ -14,15 +14,14 @@
 #include <tonc.h>
 #include "FlashFunctions.h"
 #include "Mapping.h"
+#include "Items.h"
 
-#define PartyLength 6
-#define EggCycleLength 257
-#define HappinessCycleLength 32
-#define PoisonCycleLength 4
 #define GEN123STYLEPOISON
 
 EWRAM_LOCATION ALIGN(4) Pokemon Game::partyPokemon[PartyLength];
 EWRAM_LOCATION ALIGN(4) PokemonStorageBoxes Game::storageBoxes;
+EWRAM_LOCATION ALIGN(4) Pokemon Game::dayCarePokemon[3];
+EWRAM_LOCATION ALIGN(2) u16 Game::dayCareStatus = 0;
 EWRAM_LOCATION ALIGN(4) Pokemon Game::temporaryHoldingPokemon;
 EWRAM_LOCATION ALIGN(4) Bag Game::bag;
 EWRAM_LOCATION ALIGN(4) Bag Game::PCItemStorage;
@@ -712,7 +711,7 @@ u16 Game::CountPokedexPokemon(u32 mode, u32 seenCaughtIndex)
 	}
 }
 
-bool Game::AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt, const Bag &bagLoc)
+bool Game::AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt, Bag &bagLoc)
 {
 	bool space = false;
 	u32 category = Items::GetItemCategory(itemID);
@@ -867,7 +866,7 @@ bool Game::FindItemsInBagLocation(u16 itemID, u16 numberOfItems, const Bag &bagL
 }
 
 
-bool Game::RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt, const Bag &bagLoc)
+bool Game::RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt, Bag &bagLoc)
 {
 	bool space = false;
 	u32 category = Items::GetItemCategory(itemID);
@@ -1003,4 +1002,51 @@ bool Game::AddItemsToPC(u16 itemID, u16 numberOfItems, bool doIt)
 bool Game::FindItemsInPC(u16 itemID, u16 numberOfItems)
 {
 	return FindItemsInBagLocation(itemID, numberOfItems, PCItemStorage);
+}
+
+bool Game::GivePlayerMoney(u32 cashAwarded)
+{
+	if (player.balance + cashAwarded > MaxPlayerCash)
+	{
+		player.balance = MaxPlayerCash;
+		return false;
+	}
+	player.balance += cashAwarded;
+	return true;
+}
+
+bool Game::RemovePlayerMoney(u32 cashRemoved)
+{
+	if (player.balance < cashRemoved)
+	{
+		return false;
+	}
+	player.balance -= cashRemoved;
+	return true;
+}
+
+bool Game::GivePlayerMumMoney(u32 cashAwarded)
+{
+	if (player.mumBalance + cashAwarded > MaxPlayerCash)
+	{
+		player.mumBalance = MaxPlayerCash;
+		return false;
+	}
+	player.mumBalance += cashAwarded;
+	return true;
+}
+
+bool Game::RemovePlayerMumMoney(u32 cashRemoved)
+{
+	if (player.mumBalance < cashRemoved)
+	{
+		return false;
+	}
+	player.mumBalance -= cashRemoved;
+	return true;
+}
+
+void Game::ClearParty()
+{
+	memset32((void*)&partyPokemon, 0, (sizeof(Pokemon) * 6) >> 2);
 }

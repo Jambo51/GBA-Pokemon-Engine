@@ -7,6 +7,7 @@
 #include "Mapping.h"
 #include "Battles.h"
 #include "GameModeManager.h"
+#include "Items.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,8 +27,15 @@ RODATA_LOCATION ALIGN(4) char* TextFunctions::statBuffStrings2[2][3] = { { "rose
 RODATA_LOCATION ALIGN(4) char* TextFunctions::foeString = "Foe ";
 RODATA_LOCATION ALIGN(4) char* TextFunctions::wildString = "Wild ";
 RODATA_LOCATION ALIGN(4) char* TextFunctions::trainerClasses[] = { "Gym Leader", "Elite Four", "Champion", "Rocket Grunt", "Rocket Duo", "Elite Trainer" };
+RODATA_LOCATION ALIGN(4) char* TextFunctions::standardStrings[] = { "" };
 RODATA_LOCATION ALIGN(4) const TFont* TextFunctions::fonts[] = { &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font };
 RODATA_LOCATION ALIGN(4) const char* TextFunctions::posString = "#{P:%d,%d}";
+RODATA_LOCATION ALIGN(4) IndexTable TextFunctions::localBuffersTable[] = {
+		{ 7, &playerNameLoc },
+		{ 7, &rival1NameLoc },
+		{ 7, &rival2NameLoc },
+		{ 7, &rival3NameLoc }
+};
 
 void TextFunctions::TextFunctions::SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
 {
@@ -131,9 +139,9 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 						}
 						else
 						{
-//							c -= NUMBUFFERS;
-//							length = localBuffersTable[c].index;
-//							pointer = (char*)localBuffersTable[c].pointerToData;
+							c -= NUMBUFFERS;
+							length = localBuffersTable[c].index;
+							pointer = (char*)localBuffersTable[c].pointerToData;
 						}
 						index += StringCopyWithBufferChecks(stringDest, pointer, length, index);
 						pos += 2;
@@ -193,7 +201,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							case 4:
 							{
 								u32 bank = battleData.battleBanks[User];
-								u16 move = battleData.pokemonStats[bank].moves[battleData.moveSelections[bank]];
+								u16 move = battleData.pokemonStats[bank].moves[battleData.battleBanks[MoveSelection1 + bank]];
 								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
@@ -206,7 +214,8 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 5:
 							{
-								u16 move = battleData.pokemonStats[battleData.battleBanks[Target]].moves[battleData.moveSelections[battleData.battleBanks[User]]];
+								u32 bank = battleData.battleBanks[Target];
+								u16 move = battleData.pokemonStats[bank].moves[battleData.battleBanks[MoveSelection1 + bank]];
 								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
@@ -237,7 +246,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 8:
 							{
-								BufferUnsignedLongNumber(battleData.battleDamage, 0);
+								BufferUnsignedLongNumber(battleData.genericBuffer, 0);
 								pointer = Game::GetBufferPointer(0);
 								break;
 							}
@@ -258,7 +267,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 12:
 							{
-								pointer = "Item";
+								pointer = Items::GetItemName(battleData.itemIndex);
 								if (StartsWithVowel(pointer))
 								{
 									index += StringCopyWithBufferChecks(stringDest, "an ", 0, index);
@@ -285,12 +294,12 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 16:
 							{
-								pointer = (char*)&abilityNames[battleData.battleBanks[GenericBufferByte]][0];
+								pointer = (char*)&abilityNames[battleData.genericBuffer];
 								break;
 							}
 							case 17:
 							{
-								u16 move = battleData.battleBanks[GenericBufferByte] | (battleData.battleBanks[GenericBufferByte2] << 8);
+								u16 move = battleData.moveIndex;
 								if (move <= NumberOfMoves)
 								{
 									pointer = (char*)&moveNames[move];
@@ -338,6 +347,11 @@ void TextFunctions::BufferString(char* string, u8 bufferID, u32 maxLength)
 	}
 }
 
+void TextFunctions::BufferStandardString(u16 stringID, u8 bufferID)
+{
+	BufferString(standardStrings[stringID], bufferID, BUFFERLENGTH);
+}
+
 void TextFunctions::BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 {
 	BufferString((char*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
@@ -345,7 +359,12 @@ void TextFunctions::BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 
 void TextFunctions::BufferItemName(u16 itemIndex, u8 bufferID)
 {
-	//BufferString((char*)(&(itemData[itemIndex].name)), bufferID, 11);
+	BufferString(Items::GetItemName(itemIndex), bufferID, 14);
+}
+
+void TextFunctions::BufferMoveName(u16 moveIndex, u8 bufferID)
+{
+	BufferString((char*)(&(moveNames[moveIndex])), bufferID, 14);
 }
 
 void TextFunctions::BufferNatureName(u32 natureID, u8 bufferID)
@@ -585,7 +604,7 @@ void TextFunctions::DrawString(const String &string, u8 x, u8 y)
 	DrawString(string.GetUnderlyingArray(), x, y);
 }
 
-void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void))
+void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(u32))
 {
 	if (string != 0)
 	{
@@ -603,7 +622,7 @@ void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunct
 	}
 }
 
-void TextFunctions::DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(void))
+void TextFunctions::DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(u32))
 {
 	DrawStringOverTime(string.GetUnderlyingArray(), x, y, endFunction);
 }

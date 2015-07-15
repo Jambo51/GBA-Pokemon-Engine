@@ -39,3 +39,8 @@ u32 Items::GetItemIndexNumber(u16 itemID)
 {
 	return items[itemID].index;
 }
+
+char* Items::GetItemName(u16 itemID)
+{
+	return (char*)&items[itemID].name;
+}

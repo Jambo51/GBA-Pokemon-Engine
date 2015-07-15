@@ -1,5 +1,5 @@
 
-GFXDIRS		:= scripts/battleanimationscripts
+GFXDIRS		:= Scripts/BattleAnimationScripts
 
 .PHONY : build clean
 

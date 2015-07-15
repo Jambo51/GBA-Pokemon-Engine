@@ -10,6 +10,13 @@
 
 #include "GlobalDefinitions.h"
 
+typedef struct PPBonusStruct {
+	u8 move1PPBonus:2;
+	u8 move2PPBonus:2;
+	u8 move3PPBonus:2;
+	u8 move4PPBonus:2;
+} PPBonusStruct;
+
 class AbridgedPokemon
 {
 protected:
@@ -30,7 +37,11 @@ protected:
 	u32 formeValue:9;
 	u32 forceShiny:1;
 	u32 hasHiddenAbility:1; // 40
-	u8 ppBonuses; // 41
+	union
+	{
+		PPBonusStruct ppBonusesSplit;
+		u8 ppBonuses; // 41
+	};
 	union
 	{
 		u8 friendship;
@@ -120,7 +131,10 @@ public:
 	u32 CalculateHighestIVIndex() const;
 	u32 CalculateCharacteristicIndex() const;
 	bool AddExperience(u32 exp, u32 level);
+	bool HasMove(u16 moveID) const;
+	const PPBonusStruct & GetPPBonuses() const { return ppBonusesSplit; }
 	static u16 FindBabySpeciesInner(u16 sourceSpecies);
+	static void DeleteAbridgedPokemon(AbridgedPokemon* p);
 };
 
 #endif /* ABRIDGEDPOKEMON_H_ */

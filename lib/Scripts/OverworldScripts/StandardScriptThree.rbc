@@ -1,0 +1,7 @@
+#globalorg @StandardScriptThree
+lockall
+preparemsg 0x0
+waitmsg
+waitkeypress
+releaseall
+return

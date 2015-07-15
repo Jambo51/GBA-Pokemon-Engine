@@ -937,3 +937,29 @@ u32 AbridgedPokemon::CalculateCharacteristicIndex() const
 	u32 IVValue = Decrypt(HP_IV + highestIVIndex);
 	return Maths::UnsignedModulus(IVValue, 5) + highestIVIndex;
 }
+
+bool AbridgedPokemon::HasMove(u16 moveID) const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (Decrypt(Move1 + i) == moveID)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void AbridgedPokemon::DeleteAbridgedPokemon(AbridgedPokemon* p)
+{
+	memset32((void*)p, 0, sizeof(AbridgedPokemon) >> 2);
+	// Note that the compiler will optimise the following code out if it
+	// does not apply, and will not include the if statement
+	if ((sizeof(AbridgedPokemon) & 3) != 0)
+	{
+		for (u32 i = 0; i < (sizeof(AbridgedPokemon) & 3); i++)
+		{
+			*((u8*)p + i) = 0;
+		}
+	}
+}

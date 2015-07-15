@@ -9,7 +9,7 @@
 #include "TextFunctions.h"
 #include "CallbackManager.h"
 
-TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(void)) : Callback()
+TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(u32), u32 functionData) : Callback()
 {
 	// TODO Auto-generated constructor stub
 	string = newString;
@@ -20,6 +20,7 @@ TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunctio
 	textSpeed = speed;
 	stringPosition = 0;
 	EndFunction = endFunction;
+	this->functionData = functionData;
 }
 
 TextDrawer::~TextDrawer()
@@ -53,13 +54,13 @@ void TextDrawer::Update()
 			}
 			else if (c == 0xFE)
 			{
-//				if (IsKeyDownButNotHeld(Key_A) || IsKeyDownButNotHeld(Key_B))
-//				{
-//					memset32((void*)0x0600C000, 0, 0xD00);
-//					data[0].currentX = data[0].initialX;
-//					currentY = 0;
-//					data[0].stringPosition++;
-//				}
+				if (aDown || bDown)
+				{
+					memset32((void*)0x0600C000, 0, 0xD00);
+					currentX = initialX;
+					currentY = 0;
+					stringPosition++;
+				}
 			}
 			else
 			{
@@ -69,12 +70,14 @@ void TextDrawer::Update()
 			}
 			currentY = newCurrentY;
 			framesToWait = textSpeed;
+			aDown = false;
+			bDown = false;
 		}
 		else
 		{
 			if (EndFunction)
 			{
-				EndFunction();
+				EndFunction(functionData);
 			}
 			CallbackManager::RemoveCallback(this);
 		}
@@ -82,5 +85,7 @@ void TextDrawer::Update()
 	else
 	{
 		framesToWait--;
+		aDown = false;
+		bDown = false;
 	}
 }

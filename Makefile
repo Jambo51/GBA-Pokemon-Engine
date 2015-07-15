@@ -45,7 +45,7 @@ else
 SPRITELIB	:= DS
 endif
 
-LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts
+LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts -loverworldscripts
 
 BUILD		:= build
 SRCDIRS		:= source source/Data source/Data/TitleScreen source/Data/Tilesets
@@ -170,7 +170,7 @@ else ifeq ($(strip $(bDEBUG)), 1)
 else
 	CFLAGS		+= -DNDEBUG
 	CXXFLAGS	+= -DNDEBUG
-	ASFLAGS		+= -DNDEBUG
+#	ASFLAGS		+= -DNDEBUG
 endif
 
 

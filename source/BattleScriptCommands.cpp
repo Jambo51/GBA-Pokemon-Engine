@@ -189,20 +189,18 @@ u32 BattlePokemonHasType(PokemonBattleData* data, u32 type)
 u32 CheckForAbilityInBattle(u32 abilityID, u32 side)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
-	u32 i;
-	for (i = 0; i < battleDataPointer.numBattlers; i++)
+	for (u32 i = 0; i < battleDataPointer.battleBanks[NumBattlers]; i++)
 	{
 		if (side == 2 || (i & 1) == side)
 		{
 			u8 ability = battleDataPointer.pokemonStats[i].ability;
 			if (BattleComparisonRoutine(ability, abilityID, Equals) == true)
 			{
-				battleDataPointer.battleBanks[GenericBufferByte2] = i;
-				return true;
+				return i;
 			}
 		}
 	}
-	return false;
+	return -1;
 }
 
 u32 CanItemBeUsed(PokemonBattleData* attacker, PokemonBattleData* defender)
@@ -346,7 +344,6 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	battleDataPointer.moveIndex = battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User]].moves[battleDataPointer.moveSelections[battleDataPointer.battleBanks[User]]];
 	u32 userBank = battleDataPointer.battleBanks[User];
 	PokemonBattleData* attacker = &battleDataPointer.pokemonStats[userBank];
 	PokemonBattleData* defender = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
@@ -439,13 +436,13 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 	{
 		if (battleDataPointer.flags.echoedVoiceRaisedThisTurn == 0)
 		{
-			battleDataPointer.echoedVoiceCounter++;
+			battleDataPointer.counterBits.echoedVoice++;
 			battleDataPointer.flags.echoedVoiceRaisedThisTurn = 1;
 		}
 	}
 	else
 	{
-		battleDataPointer.echoedVoiceCounter = 0;
+		battleDataPointer.counterBits.echoedVoice = 0;
 	}
 	if (moveInfo[0].effectID != Effects_Fury_Cutter)
 	{
@@ -658,7 +655,7 @@ u32 HitMissCalculation(ScriptRunner* runner)
 	return NotEnded;
 }
 
-void StopBattleScriptTextWait()
+void StopBattleScriptTextWait(u32 number)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	battleDataPointer.flags.battleScriptTextWaitFlag = 0;
@@ -695,7 +692,7 @@ u32 DecrementPP(ScriptRunner* runner)
 	if (!attacker[0].secondaryStatusBits.ppReduced)
 	{
 		PokemonBattleData* defender = &battleDataPointer.pokemonStats[defenderBank];
-		u32 moveIndex = battleDataPointer.moveSelections[userBank];
+		u32 moveIndex = battleDataPointer.moveIndex;
 		u32 ppValue = battleDataPointer.pokemonStats[userBank].pp[moveIndex];
 		if (defender[0].ability == Pressure && ppValue > 1)
 		{
@@ -1098,7 +1095,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 	if (ability == Analytic)
 	{
 		u32 i;
-		for (i = 0; i < battleDataPointer.numBattlers; i++)
+		for (i = 0; i < battleDataPointer.battleBanks[NumBattlers]; i++)
 		{
 			if (battleDataPointer.battleOrder[i] == battleDataPointer.battleBanks[Target])
 			{
@@ -1167,7 +1164,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 		if (type == Type_Fire)
 		{
 			u32 i;
-			for (i = 0; i < battleDataPointer.numBattlers; i++)
+			for (i = 0; i < battleDataPointer.battleBanks[NumBattlers]; i++)
 			{
 				if (battleDataPointer.pokemonStats[i].battleStatusFlags.waterSport)
 				{
@@ -1179,7 +1176,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 		if (type == Type_Electric)
 		{
 			u32 i;
-			for (i = 0; i < battleDataPointer.numBattlers; i++)
+			for (i = 0; i < battleDataPointer.battleBanks[NumBattlers]; i++)
 			{
 				if (battleDataPointer.pokemonStats[i].battleStatusFlags.mudSport)
 				{
@@ -1301,7 +1298,7 @@ u8 naturalGiftDamageValues[] = {
 		80
 };
 
-u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo)
+u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo, ScriptRunner* runner)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	const BattleTypeStruct &battleType = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleTypeStruct();
@@ -1381,7 +1378,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			returnable = 20;
 			break;
 		case Effects_Echoed_Voice:
-			returnable = min(moveInfo[0].basePower * (battleDataPointer.echoedVoiceCounter + 1), 200);
+			returnable = min(moveInfo[0].basePower * (battleDataPointer.counterBits.echoedVoice + 1), 200);
 			break;
 		case Effects_Hex:
 			returnable = (defender[0].primaryStatus != 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
@@ -1445,7 +1442,8 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 		}
 		case Effects_Trump_Card:
 		{
-			u32 pp = attacker[0].pp[battleDataPointer.moveSelections[battleDataPointer.battleBanks[User]]];
+			u32 pp = battleDataPointer.battleBanks[User] ^ 2;
+			pp = battleDataPointer.pokemonStats[pp].pp[battleDataPointer.battleBanks[MoveSelection1 + pp]];
 			if (pp < 2)
 			{
 				returnable = 200;
@@ -1472,15 +1470,16 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			returnable = moveInfo[0].basePower;
 			if (battleType.info.isDoubleBattle)
 			{
-				u32 allyID = battleDataPointer.battleBanks[User] ^ 2;
-				if (battleDataPointer.pokemonStats[allyID].moves[battleDataPointer.moveSelections[allyID]] == battleDataPointer.moveIndex)
+				u32 allyMove = battleDataPointer.battleBanks[User] ^ 2;
+				allyMove = battleDataPointer.pokemonStats[allyMove].moves[battleDataPointer.battleBanks[MoveSelection1 + allyMove]];
+				if (allyMove == battleDataPointer.moveIndex)
 				{
 					returnable <<= 1;
 				}
 			}
 			break;
 		case Effects_Triple_Kick:
-			returnable = (battleDataPointer.battleBanks[GenericCounter] + 1) * moveInfo[0].basePower;
+			returnable = (runner->GetBank(3) + 1) * moveInfo[0].basePower;
 			break;
 		case Effects_Wake_Up_Slap:
 			returnable = (defender[0].primaryStatusBits.sleepTurns != 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
@@ -1522,7 +1521,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			break;
 		case Effects_Present:
 		{
-			u32 rand = battleDataPointer.battleBanks[GenericCounter];
+			u32 rand = runner->GetBank(0);
 			if (rand < 60)
 			{
 				returnable = moveInfo[0].basePower;
@@ -1656,7 +1655,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 			u32 category = moveInfo[0].category;
 			if (category == Category_Status)
 			{
-				battleDataPointer.battleDamage = 0;
+				runner->SetBank(0, 0);
 				battleScriptPointer++;
 				return NotEnded;
 			}
@@ -1681,7 +1680,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 		damage = attacker[0].level << 1;
 		damage = Maths::UnsignedDivide(damage, 5);
 		damage += 2;
-		damage *= GetMoveBasePowerFromData(attacker, defender, moveInfo);
+		damage *= GetMoveBasePowerFromData(attacker, defender, moveInfo, runner);
 		{
 			u32 value;
 			{
@@ -1798,8 +1797,8 @@ u32 CalculateDamage(ScriptRunner* runner)
 	{
 		damage = max(1, damage);
 	}
-	damage = Maths::UnsignedFractionalMultiplication(damage, battleDataPointer.battleDamageMultiplier);
-	battleDataPointer.battleDamage = damage;
+	damage = Maths::UnsignedFractionalMultiplication(damage, runner->GetBank(1));
+	runner->SetBank(0, damage);
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2184,7 +2183,7 @@ u32 JumpIf(ScriptRunner* runner)
 		}
 		case JumpIfLoopCounter:
 		{
-			if (BattleComparisonRoutine(battleDataPointer.numBattlers, battleDataPointer.loopCounter, battleScriptPointer[2]) == true)
+			if (BattleComparisonRoutine(battleDataPointer.battleBanks[NumBattlers], runner->GetBank(3), battleScriptPointer[2]) == true)
 			{
 				battleScriptPointer = (u8*)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 3, 4);
 			}
@@ -2195,30 +2194,15 @@ u32 JumpIf(ScriptRunner* runner)
 			}
 			break;
 		}
-		case JumpIfGeneralCounter:
-		{
-			u32 index = (battleScriptPointer[3] == 0) ? GenericCounter : GenericCounter2;
-			if (BattleComparisonRoutine(battleScriptPointer[2], battleDataPointer.battleBanks[index], battleScriptPointer[4]) == true)
-			{
-				battleScriptPointer = (u8*)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 5, 4);
-			}
-			else
-			{
-				battleScriptPointer += 9;
-				runner->SetScriptPointer(battleScriptPointer);
-			}
-			break;
-		}
 	}
 	return NotEnded;
 }
 
 u32 SetMovePrimaryEffect(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	battleDataPointer.moveEffects[0] = battleScriptPointer[1];
-	battleDataPointer.moveEffectsExtraInfo[0] = battleScriptPointer[2];
+	runner->SetBank(1, (runner->GetBank(1) & 0xFFFF0000) | battleScriptPointer[1]);
+	runner->SetBank(2, (runner->GetBank(1) & 0xFFFF0000) | battleScriptPointer[2]);
 	battleScriptPointer += 3;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2226,10 +2210,9 @@ u32 SetMovePrimaryEffect(ScriptRunner* runner)
 
 u32 SetMoveSecondaryEffect(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	battleDataPointer.moveEffects[1] = battleScriptPointer[1];
-	battleDataPointer.moveEffectsExtraInfo[1] = battleScriptPointer[2];
+	runner->SetBank(1, (runner->GetBank(1) & 0xFFFF) | (battleScriptPointer[1] << 0x10));
+	runner->SetBank(2, (runner->GetBank(1) & 0xFFFF) | (battleScriptPointer[2] << 0x10));
 	battleScriptPointer += 3;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2293,7 +2276,7 @@ u32 ApplyCalculatedDamage(ScriptRunner* runner)
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	PokemonBattleData* defender = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
-	if (defender[0].currentHP <= battleDataPointer.battleDamage)
+	if (defender[0].currentHP <= runner->GetBank(0))
 	{
 		if (moveData[battleDataPointer.moveIndex].effectID == Effects_False_Swipe)
 		{
@@ -2306,7 +2289,7 @@ u32 ApplyCalculatedDamage(ScriptRunner* runner)
 	}
 	else
 	{
-		defender[0].currentHP -= battleDataPointer.battleDamage;
+		defender[0].currentHP -= runner->GetBank(0);
 	}
 	defender[0].mainPointer->Encrypt(CurrentHP, defender[0].currentHP);
 	battleScriptPointer++;
@@ -2368,9 +2351,8 @@ u32 FaintIfNecessary(ScriptRunner* runner)
 
 u32 CalculateExperience(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	battleDataPointer.battleDamage = CalculateExperienceGain(0);
+	runner->SetBank(0, CalculateExperienceGain(0));
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2432,7 +2414,7 @@ u32 ApplyMoveEffects(ScriptRunner* runner)
 	u32 i;
 	for (i = 0; i < MaxNumEffects; i++)
 	{
-		u32 effectID = battleDataPointer.moveEffects[i];
+		u32 effectID = (runner->GetBank(1) & (0xFFFF << (0x10 * i)) >> (0x10 * i));
 		if (effectID != 0)
 		{
 			PokemonBattleData* target;
@@ -2461,7 +2443,7 @@ u32 ApplyMoveEffects(ScriptRunner* runner)
 			{
 				case ChangeStat:
 				{
-					u32 strength = battleDataPointer.moveEffectsExtraInfo[i];
+					u32 strength = (runner->GetBank(2) & (0xFFFF << (0x10 * i)) >> (0x10 * i));
 					battleDataPointer.battleBanks[CurrentEffectPower] = strength;
 					u32 stat = strength & 7;
 					u32 direction = (strength & 0x80) >> 7;
@@ -2666,7 +2648,7 @@ u32 ApplyMoveEffects(ScriptRunner* runner)
 						{
 							// Secondary information can be used to set amount of recoil
 							// separately from the chance of an effect happening
-							u32 damage = Maths::UnsignedFractionalMultiplication(battleDataPointer.battleDamage, secondaryInformation);
+							u32 damage = Maths::UnsignedFractionalMultiplication(runner->GetBank(0), secondaryInformation);
 							if (damage == 0)
 							{
 								damage = 1;
@@ -2676,7 +2658,7 @@ u32 ApplyMoveEffects(ScriptRunner* runner)
 							{
 								damage = hp;
 							}
-							battleDataPointer.battleDamage = damage;
+							runner->SetBank(0, damage);
 							// Script to update HP and faint if necessary
 						}
 					}
@@ -2945,7 +2927,7 @@ u32 PrintExperienceMessage(ScriptRunner* runner)
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
 	char* string = (char*)&experienceGainStringTwo;
-	if (battleDataPointer.battleDamage == 1)
+	if (runner->GetBank(0) == 1)
 	{
 		string = (char*)&experienceGainStringOne;
 	}
@@ -3043,7 +3025,7 @@ u32 CalculateTrainerWinnings(ScriptRunner* runner)
 			}
 		}
 	}
-	battleDataPointer.battleDamage = calculatedValue;
+	runner->SetBank(0, calculatedValue);
 	if (Flags::CheckFlag(Flag_MumBank) && (Game::GetPlayer().mumBalance != MaxPlayerCash))
 	{
 		calculatedValue *= 3;
@@ -3063,7 +3045,7 @@ u32 PrintTrainerCashGainMessage(ScriptRunner* runner)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	if (battleDataPointer.battleDamage)
+	if (runner->GetBank(0))
 	{
 		SetTilesForTextRender(runner);
 		battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -3082,7 +3064,7 @@ u32 PrintMumCashGainMessage(ScriptRunner* runner)
 	{
 		if (Game::GetPlayer().mumBalance != MaxPlayerCash)
 		{
-			u32 originalValue = battleDataPointer.battleDamage;
+			u32 originalValue = runner->GetBank(0);
 			u32 value = originalValue >> 2;
 			u32 value2 = originalValue * 3;
 			value2 >>= 2;
@@ -3099,8 +3081,8 @@ u32 PrintMumCashGainMessage(ScriptRunner* runner)
 			{
 				Game::GetPlayer().mumBalance = MaxPlayerCash;
 			}
-			battleDataPointer.battleDamage = value;
-			if (battleDataPointer.battleDamage)
+			runner->SetBank(0, value);
+			if (runner->GetBank(0))
 			{
 				SetTilesForTextRender(runner);
 				battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -3117,17 +3099,17 @@ u32 CalculatePickupWinnings(ScriptRunner* runner)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	battleDataPointer.battleDamage = battleDataPointer.counterBits.payDay * 5;
+	runner->SetBank(0, battleDataPointer.counterBits.payDay * 5);
 	u32 i;
 	for (i = 0; i < 6; i++)
 	{
 		if ((battleDataPointer.participantInfo.participantFlags & (1 << i)) && Items::GetItemEffect(Game::GetPartyPokemon(i)->Decrypt(HeldItem)) == Item_Effect_Double_Cash_Gain)
 		{
-			battleDataPointer.battleDamage <<= 1;
+			runner->SetBank(0, runner->GetBank(0) << 1);
 			break;
 		}
 	}
-	Game::GetPlayer().balance += battleDataPointer.battleDamage;
+	Game::GetPlayer().balance += runner->GetBank(0);
 	if (Game::GetPlayer().balance > MaxPlayerCash)
 	{
 		Game::GetPlayer().balance = MaxPlayerCash;
@@ -3141,7 +3123,7 @@ u32 PrintPayDayCashGainMessage(ScriptRunner* runner)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	if (battleDataPointer.battleDamage)
+	if (runner->GetBank(0))
 	{
 		SetTilesForTextRender(runner);
 		battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -3182,11 +3164,11 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 			if (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[0], Type_Ghost)
 					|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[2], Type_Ghost))
 			{
-				battleDataPointer.battleDamage = Flee_Result_Succeeded;
+				runner->SetBank(0, Flee_Result_Succeeded);
 			}
 			else if (battleDataPointer.pokemonStats[0].ability == Run_Away || battleDataPointer.pokemonStats[2].ability == Run_Away)
 			{
-				battleDataPointer.battleDamage = Flee_Result_Run_Away;
+				runner->SetBank(0, Flee_Result_Run_Away);
 			}
 			else
 			{
@@ -3194,8 +3176,8 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 					&& (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[0], Type_Steel)
 					|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[2], Type_Steel)))
 				{
-					battleDataPointer.battleDamage = Flee_Result_Failed_Trapped_Ability;
-					battleDataPointer.battleBanks[GenericBufferByte] = Magnet_Pull;
+					runner->SetBank(0, Flee_Result_Failed_Trapped_Ability);
+					runner->SetBank(1, Magnet_Pull);
 				}
 				else if (CheckForAbilityInBattle(Arena_Trap, 1)
 						&& (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[0], Type_Flying) == false
@@ -3203,14 +3185,14 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 						&& (battleDataPointer.pokemonStats[0].ability != Levitate
 						|| battleDataPointer.pokemonStats[2].ability != Levitate))
 				{
-					battleDataPointer.battleDamage = Flee_Result_Failed_Trapped_Ability;
-					battleDataPointer.battleBanks[GenericBufferByte] = Arena_Trap;
+					runner->SetBank(0, Flee_Result_Failed_Trapped_Ability);
+					runner->SetBank(1, Arena_Trap);
 				}
 				else if (CheckForAbilityInBattle(Shadow_Tag, 0) == false
 						&& CheckForAbilityInBattle(Shadow_Tag, 1))
 				{
-					battleDataPointer.battleDamage = Flee_Result_Failed_Trapped_Ability;
-					battleDataPointer.battleBanks[GenericBufferByte] = Shadow_Tag;
+					runner->SetBank(0, Flee_Result_Failed_Trapped_Ability);
+					runner->SetBank(1, Shadow_Tag);
 				}
 				else
 				{
@@ -3234,11 +3216,11 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 					}
 					if (Maths::GetDelimitedRandom32BitValue(0x100) < CalculateFleeProbabilityValue(meanSpeed, meanOpponentSpeed))
 					{
-						battleDataPointer.battleDamage = Flee_Result_Succeeded;
+						runner->SetBank(0, Flee_Result_Succeeded);
 					}
 					else
 					{
-						battleDataPointer.battleDamage = Flee_Result_Failed;
+						runner->SetBank(0, Flee_Result_Failed);
 					}
 				}
 			}
@@ -3247,11 +3229,11 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 		{
 			if (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[0], Type_Ghost))
 			{
-				battleDataPointer.battleDamage = Flee_Result_Succeeded;
+				runner->SetBank(0, Flee_Result_Succeeded);
 			}
 			else if (battleDataPointer.pokemonStats[0].ability == Run_Away)
 			{
-				battleDataPointer.battleDamage = Flee_Result_Run_Away;
+				runner->SetBank(0, Flee_Result_Run_Away);
 			}
 			else
 			{
@@ -3259,21 +3241,21 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 					&& (BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[0], Type_Steel)
 					|| BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[2], Type_Steel)))
 				{
-					battleDataPointer.battleDamage = Flee_Result_Failed_Trapped_Ability;
-					battleDataPointer.battleBanks[GenericBufferByte] = Magnet_Pull;
+					runner->SetBank(0, Flee_Result_Failed_Trapped_Ability);
+					runner->SetBank(1, Magnet_Pull);
 				}
 				else if (CheckForAbilityInBattle(Arena_Trap, 1)
 						&& BattlePokemonHasType((PokemonBattleData*)&battleDataPointer.pokemonStats[0], Type_Flying) == false
 						&& battleDataPointer.pokemonStats[0].ability != Levitate)
 				{
-					battleDataPointer.battleDamage = Flee_Result_Failed_Trapped_Ability;
-					battleDataPointer.battleBanks[GenericBufferByte] = Arena_Trap;
+					runner->SetBank(0, Flee_Result_Failed_Trapped_Ability);
+					runner->SetBank(1, Arena_Trap);
 				}
 				else if (CheckForAbilityInBattle(Shadow_Tag, 0) == false
 						&& CheckForAbilityInBattle(Shadow_Tag, 1))
 				{
-					battleDataPointer.battleDamage = Flee_Result_Failed_Trapped_Ability;
-					battleDataPointer.battleBanks[GenericBufferByte] = Shadow_Tag;
+					runner->SetBank(0, Flee_Result_Failed_Trapped_Ability);
+					runner->SetBank(1, Shadow_Tag);
 				}
 				else
 				{
@@ -3297,11 +3279,11 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 					}
 					if (Maths::GetDelimitedRandom32BitValue(0x100) < CalculateFleeProbabilityValue(meanSpeed, meanOpponentSpeed))
 					{
-						battleDataPointer.battleDamage = Flee_Result_Succeeded;
+						runner->SetBank(0, Flee_Result_Succeeded);
 					}
 					else
 					{
-						battleDataPointer.battleDamage = Flee_Result_Failed;
+						runner->SetBank(0, Flee_Result_Failed);
 					}
 				}
 			}
@@ -3309,7 +3291,7 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 	}
 	else
 	{
-		battleDataPointer.battleDamage = Flee_Result_Cannot_Flee;
+		runner->SetBank(0, Flee_Result_Cannot_Flee);
 	}
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -3351,7 +3333,7 @@ u32 PrintFleeEffectMessage(ScriptRunner* runner)
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-	switch (battleDataPointer.battleDamage)
+	switch (runner->GetBank(0))
 	{
 		case Flee_Result_Cannot_Flee:
 			TextFunctions::DrawStringOverTime((char*)&noFlee, 0, 0, &StopBattleScriptTextWait);
@@ -3386,15 +3368,14 @@ u32 PrintFleeEffectMessage(ScriptRunner* runner)
 
 u32 IncrementLoopCounter(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (battleScriptPointer[1] == 1)
 	{
-		battleDataPointer.loopCounter--;
+		runner->SetBank(3, runner->GetBank(3) - 1);
 	}
 	else
 	{
-		battleDataPointer.loopCounter++;
+		runner->SetBank(3, runner->GetBank(3) + 1);
 	}
 	battleScriptPointer += 2;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -3403,38 +3384,19 @@ u32 IncrementLoopCounter(ScriptRunner* runner)
 
 u32 SetLoopCounter(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u16 value = (u16)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 2);
-	battleDataPointer.loopCounter = value;
+	runner->SetBank(3, value);
 	battleScriptPointer += 3;
-	runner->SetScriptPointer(battleScriptPointer);
-	return NotEnded;
-}
-
-u32 CopyLoopCounterTo(ScriptRunner* runner)
-{
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
-	u8* battleScriptPointer = runner->GetScriptPointer();
-	if (battleScriptPointer[1] == 1)
-	{
-		battleDataPointer.battleBanks[Target] = battleDataPointer.loopCounter;
-	}
-	else
-	{
-		battleDataPointer.battleBanks[User] = battleDataPointer.loopCounter;
-	}
-	battleScriptPointer += 2;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
 }
 
 u32 SetBattleDamageMultiplier(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 value = UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 4);
-	battleDataPointer.battleDamageMultiplier = value;
+	runner->SetBank(1, value);
 	battleScriptPointer += 5;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -3470,53 +3432,16 @@ u32 SetSpecialBattleStatus(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 IncrementGeneralCounter(ScriptRunner* runner)
-{
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
-	u8* battleScriptPointer = runner->GetScriptPointer();
-	s32 value = (battleScriptPointer[2] == 0) ? 1 : -1;
-	if (battleScriptPointer[1] == 1)
-	{
-		battleDataPointer.battleBanks[GenericCounter2] += value;
-	}
-	else
-	{
-		battleDataPointer.battleBanks[GenericCounter] += value;
-	}
-	battleScriptPointer += 3;
-	runner->SetScriptPointer(battleScriptPointer);
-	return NotEnded;
-}
-
-u32 SetGeneralCounter(ScriptRunner* runner)
-{
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
-	u8* battleScriptPointer = runner->GetScriptPointer();
-	u32 index = (battleScriptPointer[1] == 1) ? GenericCounter2 : GenericCounter;
-	battleDataPointer.battleBanks[index] = battleScriptPointer[2];
-	battleScriptPointer += 3;
-	runner->SetScriptPointer(battleScriptPointer);
-	return NotEnded;
-}
-
 u32 GetRandomValue(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	u16 limit = battleScriptPointer[2];
+	u16 limit = battleScriptPointer[1];
 	if (limit == 0)
 	{
 		limit = 0x100;
 	}
 	u32 value = Maths::GetDelimitedRandom32BitValue(limit);
-	if (battleScriptPointer[1] == 1)
-	{
-		battleDataPointer.battleBanks[GenericCounter2] = value;
-	}
-	else
-	{
-		battleDataPointer.battleBanks[GenericCounter] = value;
-	}
+	runner->SetBank(0, value);
 	battleScriptPointer += 3;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;

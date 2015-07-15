@@ -30,6 +30,18 @@ Pokemon::Pokemon(u32 species, u32 level, char* nickname)
 	CalculateStats();
 }
 
+Pokemon::Pokemon(const AbridgedPokemon &p)
+{
+	mainData = p;
+	CalculateStats();
+}
+
+Pokemon::Pokemon(const AbridgedPokemon* p)
+{
+	mainData = *p;
+	CalculateStats();
+}
+
 u32 Pokemon::Decrypt(u8 index) const
 {
 	if (index < StatusAilment)
@@ -582,16 +594,16 @@ Pokemon* Pokemon::GenerateEgg(Pokemon* mother, Pokemon* father)
 			break;
 		}
 	}
-	Pokemon* egg = new Pokemon(0, species);
+	Pokemon* egg = new Pokemon(species, 0);
 	egg->Encrypt(IsEgg, true);
 	egg->Encrypt(Friendship, pokemonBaseData[species].hatchSteps);
 	// Calculate Egg Moves and award where necessary
 	return egg;
 }
 
-void Pokemon::GivePokemonToPlayer(u8 level, u16 species, u16 item, u32 formeIndex)
+void Pokemon::GivePokemonToPlayer(u16 species, u8 level, u16 item, u32 formeIndex)
 {
-	Pokemon* thePokemon = new Pokemon(level, species);
+	Pokemon* thePokemon = new Pokemon(species, level);
 	thePokemon->Encrypt(OTID, Game::GetPlayer().completeTrainerID);
 	thePokemon->Encrypt(OTName, (u32)&Game::GetPlayer().name);
 	thePokemon->Encrypt(HeldItem, item);
@@ -605,9 +617,18 @@ void Pokemon::GivePokemonToPlayer(u8 level, u16 species, u16 item, u32 formeInde
 	delete thePokemon;
 }
 
-Pokemon* Pokemon::GenerateTrainerPokemon(u8 level, u16 species, char* trainerName, u32 id, u32 formeIndex)
+void Pokemon::GiveEggToPlayer(u16 species)
 {
-	Pokemon* thePokemon = new Pokemon(level, species);
+	Pokemon* egg = new Pokemon(species, 1);
+	egg->Encrypt(IsEgg, true);
+	egg->Encrypt(Friendship, pokemonBaseData[species].hatchSteps);
+	Game::AddNewPokemon(*egg);
+	delete egg;
+}
+
+Pokemon* Pokemon::GenerateTrainerPokemon(u16 species, u8 level, char* trainerName, u32 id, u32 formeIndex)
+{
+	Pokemon* thePokemon = new Pokemon(species, level);
 	thePokemon->Encrypt(OTID, id);
 	thePokemon->Encrypt(OTName, (u32)trainerName);
 	InternalBaseData* data = (InternalBaseData*)((void**)pokemonBaseData[species].baseDataInfo.pointerToData)[formeIndex];
@@ -660,4 +681,18 @@ Pokemon* Pokemon::GenerateWildPokemonFromData(const WildData &initData, const Ba
 		}
 	}
 	return new Pokemon(pointer[loopCounter].species, calculatedLevel);
+}
+
+void Pokemon::DeletePokemon(Pokemon* p)
+{
+	memset32((void*)p, 0, sizeof(Pokemon) >> 2);
+	// Note that the compiler will optimise the following code out if it
+	// does not apply, and will not include the if statement
+	if ((sizeof(Pokemon) & 3) != 0)
+	{
+		for (u32 i = 0; i < (sizeof(Pokemon) & 3); i++)
+		{
+			*((u8*)p + i) = 0;
+		}
+	}
 }

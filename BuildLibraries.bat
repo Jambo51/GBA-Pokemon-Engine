@@ -1,5 +1,12 @@
 cd lib
+
 BuildAudioArchive.bat
+
 BuildDSSpriteArchive.bat
 BuildGBASpriteArchive.bat
+
 BuildTilesArchive.bat
+
+BuildBattleScriptArchive.bat
+BuildBattleAnimationScriptArchive.bat
+BuildOverworldScriptArchive.bat

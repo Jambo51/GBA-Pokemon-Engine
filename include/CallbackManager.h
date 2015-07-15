@@ -16,6 +16,7 @@ class CallbackManager
 {
 private:
 	static LinkedList callbacks;
+	static LinkedList callbacksToRemove;
 	CallbackManager();
 	~CallbackManager();
 public:

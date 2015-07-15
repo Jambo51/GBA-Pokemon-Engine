@@ -1,0 +1,6 @@
+#globalorg @StandardScriptSix
+preparemsg 0x0
+waitmsg
+waitkeypress
+release
+return

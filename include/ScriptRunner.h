@@ -24,6 +24,10 @@ protected:
 	u8* callStack[10];
 	u8* scriptPointer;
 	U32FunctionPointerScriptRunner* commandSet;
+	bool text;
+	bool keyPressReceived;
+	bool textWait;
+	bool eventHandlerSet;
 	ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands);
 public:
 	virtual ~ScriptRunner();
@@ -42,6 +46,14 @@ public:
 	void Return() { if (callStackPosition > 0) { callStackPosition--; scriptPointer = callStack[callStackPosition]; } }
 	void SetBank(u32 bankID, u32 value) { if (bankID < 4) { scriptBanks[bankID] = value; } }
 	u32 GetBank(u32 bankID) const { if (bankID < 4) { return scriptBanks[bankID]; } return 0; }
+	bool KeyPressReceived() const { return keyPressReceived; }
+	void KeyPressReceived(bool value) { keyPressReceived = value; }
+	bool Text() const { return text; }
+	void Text(bool value) { text = value; }
+	bool TextWait() const { return textWait; }
+	void TextWait(bool value) { textWait = value; }
+	bool EventHandlerSet() const { return eventHandlerSet; }
+	void EventHandlerSet(bool value) { eventHandlerSet = value; }
 };
 
 #endif /* SCRIPTRUNNER_H_ */

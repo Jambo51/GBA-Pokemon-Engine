@@ -13,6 +13,11 @@
 #include "Pokemon.h"
 #include "Vector2D.h"
 
+#define PartyLength 6
+#define EggCycleLength 257
+#define HappinessCycleLength 32
+#define PoisonCycleLength 4
+
 enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
 
 enum FadeIDs { EighthSecond, QuarterSecond, HalfSecond, Second, TwoSecond, MaxFadeIDs };
@@ -52,6 +57,8 @@ class Game
 private:
 	static Pokemon partyPokemon[];
 	static Pokemon temporaryHoldingPokemon;
+	static Pokemon dayCarePokemon[];
+	static u16 dayCareStatus;
 	static PokemonStorageBoxes storageBoxes;
 	static Bag bag;
 	static Bag PCItemStorage;
@@ -154,8 +161,8 @@ public:
 	static const HealingPlace & GetHealingPlace() { return currentHealingPlace; }
 	static void SetHealingPlace(const HealingPlace &newPlace) { currentHealingPlace = newPlace; }
 	static const Vector2D GetPlayerPos() { return Vector2D(overworldData[0].xLocation, overworldData[0].yLocation); }
-	static bool AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt = true, const Bag &bagLoc = bag);
-	static bool RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt = true, const Bag &bagLoc = bag);
+	static bool AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt = true, Bag &bagLoc = bag);
+	static bool RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt = true, Bag &bagLoc = bag);
 	static bool FindItemsInBagLocation(u16 itemID, u16 numberOfItems, const Bag &bagLoc = bag);
 	static bool AddItemsToBag(u16 itemID, u16 numberOfItems, bool doIt = true);
 	static bool RemoveItemsFromBag(u16 itemID, u16 numberOfItems, bool doIt = true);
@@ -163,6 +170,13 @@ public:
 	static bool AddItemsToPC(u16 itemID, u16 numberOfItems, bool doIt = true);
 	static bool RemoveItemsFromPC(u16 itemID, u16 numberOfItems, bool doIt = true);
 	static bool FindItemsInPC(u16 itemID, u16 numberOfItems);
+	static bool GivePlayerMoney(u32 cashAwarded);
+	static bool RemovePlayerMoney(u32 cashRemoved);
+	static bool GivePlayerMumMoney(u32 cashAwarded);
+	static bool RemovePlayerMumMoney(u32 cashRemoved);
+	static void ClearParty();
+	static Pokemon* GetDayCarePokemon(u32 indexID) { if (indexID < 3) { return &dayCarePokemon[indexID]; } return NULL; }
+	static u16 GetDayCareStatus() { return dayCareStatus; }
 };
 
 #endif /* GAME_H_ */

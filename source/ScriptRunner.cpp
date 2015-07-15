@@ -6,9 +6,11 @@
  */
 
 #include "ScriptRunner.h"
+#include "CallbackManager.h"
 
 ScriptRunner::ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands)
 {
+	waitFrames = 0;
 	scriptPointer = script;
 	commandSet = commands;
 	status = 0;
@@ -31,7 +33,8 @@ void ScriptRunner::Update()
 		scriptEnded = Command(this);
 		if (scriptEnded == WaitForFrames)
 		{
-			break;
+			return;
 		}
 	}
+	CallbackManager::RemoveCallback(this);
 }

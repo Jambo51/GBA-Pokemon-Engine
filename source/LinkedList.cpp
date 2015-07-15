@@ -163,6 +163,8 @@ void LinkedList::Clear()
 		} while (frontNode);
 	}
 	numItems = 0;
+	backNode = NULL;
+	frontNode = NULL;
 }
 
 void LinkedList::PushAt(void* item, int index)

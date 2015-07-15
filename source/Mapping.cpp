@@ -24,6 +24,7 @@
 #include "WildBattle.h"
 #include "TrainerBattle.h"
 #include "GameModeManager.h"
+#include "OverworldScriptRunner.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -60,7 +61,6 @@ Overworld::Overworld()
 	Overworld::PlaceNPCs(newColours);
 	Game::FadeToPalette(newColours, true, HalfSecond, true, false);
 	exitContext = 0;
-	Variables::SetVar(0x4050, 1);
 }
 
 Overworld::~Overworld()
@@ -629,6 +629,8 @@ void Overworld::OnEnterCallback()
 			SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 0);
 			Game::MainGame(true);
 			break;
+		case 1:
+			new OverworldScriptRunner((u8*)0);
 		default:
 			break;
 	}

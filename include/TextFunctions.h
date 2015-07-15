@@ -27,8 +27,10 @@ private:
 	static char* foeString;
 	static char* wildString;
 	static char* trainerClasses[];
+	static char* standardStrings[];
 	static const TFont* fonts[];
 	static const char* posString;
+	static IndexTable localBuffersTable[];
 	TextFunctions() { }
 	~TextFunctions() { }
 	static void InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet);
@@ -60,10 +62,12 @@ public:
 	static s32 CharacterComparison(u8 charOne, u8 charTwo);
 	static void DrawCharacter(char c, u8 x, u8 y);
 	static void DrawString(char* string, u8 x, u8 y);
-	static void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(void));
+	static void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(u32));
 	static void DrawString(const String &string, u8 x, u8 y);
-	static void DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(void));
+	static void DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(u32));
 	static void InitialiseTextEngine(u32 textSetID);
+	static void BufferMoveName(u16 moveIndex, u8 bufferID);
+	static void BufferStandardString(u16 stringID, u8 bufferID);
 };
 
 #endif /* TEXTFUNCTIONS_H_ */

@@ -1,0 +1,6 @@
+#globalorg @StandardScriptFour
+preparemsg 0x0
+#globalorg @StandardScriptFourAlt
+waitmsg
+waitkeypress
+return

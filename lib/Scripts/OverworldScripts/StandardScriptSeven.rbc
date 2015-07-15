@@ -1,0 +1,44 @@
+#include "std"
+
+#globalorg @StandardScriptSeven
+gettimeofday
+switch LASTRESULT 4 @standard7switchtable
+preparemsg 0x0
+waitmsg
+waitkeypress
+release
+return
+
+#org @standard7day
+bufferstring 0x0 @standard7daystring
+return
+
+#org @standard7night
+bufferstring 0x0 @standard7nightstring
+return
+
+#org @standard7morning
+bufferstring 0x0 @standard7morningstring
+return
+
+#org @standard7afternoon
+bufferstring 0x0 @standard7afternoonstring
+return
+
+#org @standard7switchtable
+#pointer @standard7day
+#pointer @standard7morning
+#pointer @standard7afternoon
+#pointer @standard7night
+
+#org @standard7daystring
+#text day
+
+#org @standard7morningstring
+#text morning
+
+#org @standard7afternoonstring
+#text afternoon
+
+#org @standard7nightstring
+#text evening

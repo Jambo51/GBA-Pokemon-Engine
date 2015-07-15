@@ -20,6 +20,7 @@ private:
 	TileAnimationStruct* animStruct;
 	bool warpOnCompleteMove;
 	WarpEvent warpData;
+	u32 entryData;
 	static IndexTable dataForTilesets[2][2];
 	static TileAnimationStruct emptyAnimStruct;
 	static u8 maxBanks;

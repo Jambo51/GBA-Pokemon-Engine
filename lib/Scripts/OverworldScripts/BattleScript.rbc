@@ -1,0 +1,10 @@
+#include "std"
+
+#globalorg @InitialiseTrainerBattle
+special 0x38
+
+#globalorg @InitialiseTrainerBattleNoEncounter
+preparemsg 0x1
+call @StandardScriptFourAlt
+repeattrainerbattle
+end

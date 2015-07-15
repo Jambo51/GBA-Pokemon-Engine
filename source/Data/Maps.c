@@ -247,7 +247,7 @@ const WildData mapWildData = { { (WildPokemonData*)&wildDataInner, 0, 0, 0, 0 } 
 const NPCEvent npcEvents3_0[] = { { 1, 23, 1, 4, 3, 10, 0, 0, 0, 0, 0 }, { 2, 27, 6, 2, 0xD, 17, 0, 0, 0, 0, 0 }, { 2, 71, 1, 1, 10, 8, 0, 0, 0, 0x2C, 0 } };
 const SignpostEvent signpostEvents3_0[] = { { 16, 16, 0, 0, 0 }, { 4, 7, 0, 0, 0 }, { 13, 7, 0, 0, 0 }, { 9, 11, 0, 0, 0 }, { 5, 14, 0, 0, 0 } };
 const WarpEvent warpEvents3_0[] = { { 6, 7, 0, 4, 0, 0 }, { 15, 7, 0, 4, 2, 0 }, { 16, 13, 0, 4, 3, 0 } };
-const TileScriptEvent tileScriptEvents3_0[] = { { 12, 1, 0x4050, 0, 0 }, { 13, 1, 0x4050, 0, 0 } };
+const TileScriptEvent tileScriptEvents3_0[] = { { 12, 1, 0x4050, 0, (u8*)0x08800000 }, { 13, 1, 0x4050, 0, (u8*)0x08800000 } };
 
 const EventsHeader eventsHeader3_0 = { 3, 5, 3, 2, (NPCEvent*)&npcEvents3_0, (SignpostEvent*)&signpostEvents3_0, (WarpEvent*)&warpEvents3_0, (TileScriptEvent*)&tileScriptEvents3_0 };
 

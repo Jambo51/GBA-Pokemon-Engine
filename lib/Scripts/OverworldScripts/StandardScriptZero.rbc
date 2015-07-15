@@ -1,0 +1,102 @@
+#include "std"
+
+'---------------
+#globalorg @StandardScriptZero
+additem 0x8000 0x8001
+copyvar 0x8007 LASTRESULT
+call @standard0part1
+return
+
+'---------------
+#org @standard0part1
+bufferitems 0x1 0x8000 0x8001
+checkitemtype 0x8000
+call @standard0part2
+switch 0x8007 2 @standard0switchtable
+return
+
+#org @standard0switchtable
+#pointer 0x08@standard0part3
+#pointer 0x08@standard0part4
+
+'---------------
+#org @standard0part2
+copyvar 0x8000 LASTRESULT
+switch 0x8000 6 @standard0switchtable2
+end
+
+#org @standard0switchtable2
+#pointer @standard0part5
+#pointer @standard0part5
+#pointer @standard0part6
+#pointer @standard0part7
+#pointer @standard0part8
+#pointer @standard0part9
+
+'---------------
+#org @standard0part3
+preparemsg @standard0string1 '"Obtained the [buffer2]!"
+waitfanfare
+msgbox @standard0string2 MSG_KEEPOPEN '"[player] put away the [buffer2]\ni..."
+setvar LASTRESULT 0x1
+return
+
+'---------------
+#org @standard0part4
+setvar LASTRESULT 0x0
+return
+
+'---------------
+#org @standard0part5
+bufferstd 0x2 0xE
+compare 0x8007 0x1
+if 0x1 call @standard0part10
+return
+
+'---------------
+#org @standard0part9
+bufferstd 0x2 0xF
+compare 0x8007 0x1
+if 0x1 call @standard0part10
+return
+
+'---------------
+#org @standard0part6
+bufferstd 0x2 0x10
+compare 0x8007 0x1
+if 0x1 call @standard0part10
+return
+
+'---------------
+#org @standard0part7
+bufferstd 0x2 0x11
+compare 0x8007 0x1
+if 0x1 call @standard0part11
+return
+
+'---------------
+#org @standard0part8
+bufferstd 0x2 0x12
+compare 0x8007 0x1
+if 0x1 call @standard0part10
+return
+
+'---------------
+#org @standard0part10
+fanfare 0x172
+return
+
+'---------------
+#org @standard0part11
+fanfare 0x174
+return
+
+
+'---------
+' Strings
+'---------
+#org @standard0string1
+#text Obtained the [buffer2]!
+
+#org @standard0string2
+#text [player] put away the [buffer2]\nin the [buffer3] POCKET.

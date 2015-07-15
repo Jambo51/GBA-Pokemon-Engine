@@ -165,8 +165,10 @@ typedef struct BattleCounterBits {
 	u32 trickRoom:3;
 	u32 wonderRoom:3;
 	u32 magicRoom:3;
-	u32 payDay:23;
-	u32 escapeAttempts;
+	u32 echoedVoice:8;
+	u32 unusedCounter:15;
+	u32 escapeAttempts:12;
+	u32 payDay:20;
 } BattleCounterBits;
 
 typedef struct BattleParticipantBits {
@@ -218,39 +220,24 @@ typedef struct TrainerBattleData {
 	u32 trainerID;
 	TrainerData* pointerToData;
 	char* afterBattleText;
+	u8* afterBattleScript;
 } TrainerBattleData;
 
 typedef struct BattleData {
 	PokemonBattleData* pokemonStats;
 	u8 battleBanks[NumBattleBanks];
-	u8 mainSelection[2];
-	u8 internalSelection[2];
-	union
-	{
-		u8 selectorIndex;
-		u8 currentBattlerIndex;
-	};
-	u8 moveSelections[4];
-	u8 targets[4];
+	u32 currentBattlerIndex;
 	union
 	{
 		u8 battleOrder[4];
 		u32 combinedOrder;
 	};
-	u8 conversionIndices[4];
-	u8 battlePartyPositions[6];
-	u8 numBattlers;
-	u8 positionInCallStack;
-	u8 moveEffects[MaxNumEffects];
-	u8 moveEffectsExtraInfo[MaxNumEffects];
 	u16 battleTurnsCounter;
 	union
 	{
 		u16 weather;
 		BattleWeatherBits weatherBits;
 	};
-	u32 battleDamageMultiplier;
-	u32 battleDamage;
 	union
 	{
 		u32 battleFlags;
@@ -258,18 +245,15 @@ typedef struct BattleData {
 	};
 	u16 moveIndex;
 	u16 itemIndex;
-	u8* callStack[0x10];
-	u16 loopCounter;
-	u16 echoedVoiceCounter;
 	union
 	{
 		u32 counters[2];
 		BattleCounterBits counterBits;
 	};
 	BattleParticipantBits participantInfo;
-	BattleAIData* battleAIData;
 	TrainerBattleData* trainerData;
 	u32 (*typeChartCallback)(u32);
+	u32 genericBuffer;
 } BattleData;
 
 class BattleScreen : public GameScreen

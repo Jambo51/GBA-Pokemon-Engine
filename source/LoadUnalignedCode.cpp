@@ -13,10 +13,9 @@ u32 UnalignedNumberHandler::LoadUnalignedNumber(u8* location, u32 modifier, u8 l
 
 u32* UnalignedNumberHandler::LoadUIntPointer(u8* location, u32 modifier)
 {
-	u8 alignment = ((u32)(location) + modifier) & 0xF;
-	if ((alignment & 0xB) == 0)
+	if (((u32)location + modifier) & 3 == 0)
 	{
-		return *((u32*)((u32)(location) + modifier));
+		return *((u32**)((u32)(location) + modifier));
 	}
 	else
 	{

@@ -39,12 +39,14 @@ RODATA_LOCATION TrainerData TrainerBattle::trainerBattleDataTable[] = {
 		{ 1, 0, 0, Class_Evil_Team_Duo, { 0, 0, 0, 0 }, { 'J', 'e', 's', 's', 'i', 'e', ' ', '&', ' ', 'J', 'a', 'm', 'e', 's', '\0', 0 }, (TrainerPokemonData*)&weezing1 }
 };
 
-TrainerBattle::TrainerBattle(const BattleTypeStruct &bts, u16 trainerID, const char* afterText) : BattleScreen(bts)
+TrainerBattle::TrainerBattle(const BattleTypeStruct &bts, u32 trainerIDAndInformation, const char* afterText, const u8* afterScript) : BattleScreen(bts)
 {
 	// TODO Auto-generated constructor stub
 	battleData.trainerData = new TrainerBattleData();
+	u16 trainerID = trainerIDAndInformation & 0xFFFF;
 	battleData.trainerData->pointerToData = (TrainerData*)&trainerBattleDataTable[trainerID];
 	battleData.trainerData->afterBattleText = (char*)afterText;
+	battleData.trainerData->afterBattleScript = (u8*)afterScript;
 	battleData.trainerData->trainerID = Maths::GetRandom32BitValue();
 	SoundEngine::PlaySong(CalculateBattleTrack(), 0);
 }
@@ -59,9 +61,8 @@ void TrainerBattle::Update()
 {
 	if (currentStatus == 0)
 	{
-		battleData = BattleData();
-		battleData.numBattlers = 2 << battleType.info.isDoubleBattle;
-		battleData.pokemonStats = new PokemonBattleData[battleData.numBattlers];
+		battleData.battleBanks[NumBattlers] = 2 << battleType.info.isDoubleBattle;
+		battleData.pokemonStats = new PokemonBattleData[battleData.battleBanks[NumBattlers]];
 	}
 	switch (currentStatus)
 	{

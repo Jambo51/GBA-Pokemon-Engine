@@ -58,12 +58,12 @@ RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner BattleScriptRunner::batt
 		(U32FunctionPointerScriptRunner)&PrintFleeEffectMessage,
 		(U32FunctionPointerScriptRunner)&IncrementLoopCounter,
 		(U32FunctionPointerScriptRunner)&SetLoopCounter,
-		(U32FunctionPointerScriptRunner)&CopyLoopCounterTo,
+		(U32FunctionPointerScriptRunner)0,
 		(U32FunctionPointerScriptRunner)&SetBattleDamageMultiplier,
 		(U32FunctionPointerScriptRunner)&SetSecondaryStatus,
 		(U32FunctionPointerScriptRunner)&SetSpecialBattleStatus,
-		(U32FunctionPointerScriptRunner)&IncrementGeneralCounter,
-		(U32FunctionPointerScriptRunner)&SetGeneralCounter,
+		(U32FunctionPointerScriptRunner)0,
+		(U32FunctionPointerScriptRunner)0,
 		(U32FunctionPointerScriptRunner)&GetRandomValue
 };
 RODATA_LOCATION ALIGN(4) u8* BattleScriptRunner::errorScript = NULL;

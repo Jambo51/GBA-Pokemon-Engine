@@ -1,5 +1,5 @@
 
-GFXDIRS		:= audio/gbppokemoncries audio/gbpsongs audio/m4apokemoncries audio/m4asamples audio/m4awavesamples audio/m4asoundbanks audio/m4asongs
+GFXDIRS		:= Audio/gbppokemoncries Audio/gbpsongs Audio/m4apokemoncries Audio/m4asamples Audio/m4awavesamples Audio/m4asoundbanks Audio/m4asongs
 
 .PHONY : build clean
 

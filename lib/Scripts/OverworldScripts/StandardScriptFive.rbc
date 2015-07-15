@@ -1,0 +1,5 @@
+#globalorg @StandardScriptFive
+preparemsg 0x0
+waitmsg
+yesnobox 0x14 0x8
+return

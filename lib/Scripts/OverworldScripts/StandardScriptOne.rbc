@@ -1,0 +1,146 @@
+#include "std"
+
+'---------------
+#globalorg @StandardScriptOne
+lock
+faceplayer
+checksound
+copyvar 0x8004 0x8000
+copyvar 0x8005 0x8001
+checkitemroom 0x8000 0x8001
+copyvar 0x8007 LASTRESULT
+bufferitems 0x1 0x8000 0x8001
+checkitemtype 0x8000
+call @standard1part1
+switchgoto 0x8007 2 @standard1switchtable
+release
+return
+
+#org @standard1switchtable
+#pointer @standard1part2
+#pointer @standard1part3
+
+'---------------
+#org @standard1part1
+copyvar 0x8000 LASTRESULT
+switch 0x8000 6 @standard1switchtable2
+end
+
+#org @standard1switchtable2
+#pointer @standard1part4
+#pointer @standard1part4
+#pointer @standard1part5
+#pointer @standard1part6
+#pointer @standard1part7
+#pointer @standard1part8
+
+'---------------
+#org @standard1part3
+hidesprite LASTTALKED
+additem 0x8004 0x8005
+special2 LASTRESULT 0x19E
+copyvar 0x8008 LASTRESULT
+switch 0x8008 2 @standard1switchtable3
+waitfanfare
+waitmsg
+bufferitems 0x1 0x8004 0x8005
+setvar 0x8004 0xC
+special 0xF3
+compare LASTRESULT 0x1
+if 0x1 goto @standard1part11
+msgbox @standard1string1 MSG_KEEPOPEN '"[player] put away the [buffer2]\ni..."
+return
+
+#org @standard1switchtable3
+#pointer @standard1part10
+#pointer @standard1part9
+
+'---------------
+#org @standard1part2
+msgbox @standard1string2 MSG_KEEPOPEN '"Obtained the [buffer2]!"
+msgbox @standard1string3 MSG_KEEPOPEN '"Too bad!\nThe BAG is full[.]"
+setvar LASTRESULT 0x0
+return
+
+'---------------
+#org @standard1part4
+bufferstd 0x2 0xE
+compare 0x8007 0x1
+if 0x1 call @standard1part12
+return
+
+'---------------
+#org @standard1part8
+bufferstd 0x2 0xF
+compare 0x8007 0x1
+if 0x1 call @standard1part12
+return
+
+'---------------
+#org @standard1part5
+bufferstd 0x2 0x10
+compare 0x8007 0x1
+if 0x1 call @standard1part12
+return
+
+'---------------
+#org @standard1part6
+bufferstd 0x2 0x11
+compare 0x8007 0x1
+if 0x1 call @standard1part13
+return
+
+'---------------
+#org @standard1part7
+bufferstd 0x2 0x12
+compare 0x8007 0x1
+if 0x1 call @standard1part12
+return
+
+'---------------
+#org @standard1part9
+bufferitems 0x0 0x8004 0x8005
+preparemsg @standard1string4 '"[player] found one [buffer1]\n[buf..."
+return
+
+'---------------
+#org @standard1part10
+preparemsg @standard1string5 '"[player] found one [buffer2]!"
+return
+
+'---------------
+#org @standard1part11
+msgbox @standard1string6 MSG_KEEPOPEN '"[player] put away the [buffer2]\ni..."
+return
+
+'---------------
+#org @standard1part12
+fanfare 0x172
+return
+
+'---------------
+#org @standard1part13
+fanfare 0x174
+return
+
+
+'---------
+' Strings
+'---------
+#org @standard1string1
+#text [player] put away the [buffer2]\nin the [buffer3] POCKET.
+
+#org @standard1string2
+#text Obtained the [buffer2]!
+
+#org @standard1string3
+#text Too bad!\nThe BAG is full[.]
+
+#org @standard1string4
+#text [player] found one [buffer1]\n[buffer2]!
+
+#org @standard1string5
+#text [player] found one [buffer2]!
+
+#org @standard1string6
+#text [player] put away the [buffer2]\nin the BAG.

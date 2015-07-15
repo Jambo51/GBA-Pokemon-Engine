@@ -1,0 +1,85 @@
+#define LASTRESULT 0x800D
+#define LASTTALKED 0x800F
+
+#define PLAYERFACING 0x800C
+#define FACE_DOWN 0x1
+#define FACE_UP 0x2
+#define FACE_LEFT 0x3
+#define FACE_RIGHT 0x4
+
+#define MSG_OBTAIN 0x0
+#define MSG_FIND 0x1
+#define MSG_FACE 0x2
+#define MSG_SIGN 0x3
+#define MSG_KEEPOPEN 0x4
+#define MSG_YESNO 0x5
+#define MSG_NORMAL 0x6
+#define MSG_POKENAV 0xA
+
+#define MOVE_PLAYER 0xFF
+#define MOVE_CAMERA 0x7F
+
+#define B_FALSE 0x0
+#define B_TRUE 0x1
+#define B_NO 0x0
+#define B_YES 0x1
+#define B_BOY 0x0
+#define B_GIRL 0x1
+
+#define B_< 0x0
+#define B_<< 0x0
+#define B_= 0x1
+#define B_== 0x1
+#define B_> 0x2
+#define B_>> 0x2
+#define B_<= 0x3
+#define B_>= 0x4
+#define B_!= 0x5
+#define B_<> 0x5
+
+#define SP_HEALPKMN 0x0
+#define SP_CHOOSEPKMN 0x9C
+#define SP_CATCHPKMN 0x9D
+#define SP_FRNATIONAL 0x16F
+#define SP_EMNATIONAL 0x1F3
+
+#define RS_PKMNMENU 0x800
+#define RS_POKEDEX 0x801
+#define RS_POKENAV 0x802
+#define RS_RUNNINGSHOES 0x860
+
+#define RS_BADGE1 0x807
+#define RS_BADGE2 0x808
+#define RS_BADGE3 0x809
+#define RS_BADGE4 0x80A
+#define RS_BADGE5 0x80B
+#define RS_BADGE6 0x80C
+#define RS_BADGE7 0x80D
+#define RS_BADGE8 0x80E
+
+#define EM_PKMNMENU 0x860
+#define EM_POKEDEX 0x861
+#define EM_POKENAV 0x862
+#define EM_RUNNINGSHOES 0x8C0
+
+#define EM_BADGE1 0x867
+#define EM_BADGE2 0x868
+#define EM_BADGE3 0x869
+#define EM_BADGE4 0x86A
+#define EM_BADGE5 0x86B
+#define EM_BADGE6 0x86C
+#define EM_BADGE7 0x86D
+#define EM_BADGE8 0x86E
+
+#define FR_PKMNMENU 0x828
+#define FR_POKEDEX 0x829
+#define FR_RUNNINGSHOES 0x82F
+
+#define FR_BADGE1 0x820
+#define FR_BADGE2 0x821
+#define FR_BADGE3 0x822
+#define FR_BADGE4 0x823
+#define FR_BADGE5 0x824
+#define FR_BADGE6 0x825
+#define FR_BADGE7 0x826
+#define FR_BADGE8 0x827

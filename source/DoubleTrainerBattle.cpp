@@ -37,8 +37,8 @@ void DoubleTrainerBattle::Update()
 	if (currentStatus == 0)
 	{
 		battleData = BattleData();
-		battleData.numBattlers = 2 << battleType.info.isDoubleBattle;
-		battleData.pokemonStats = new PokemonBattleData[battleData.numBattlers];
+		battleData.battleBanks[NumBattlers] = 2 << battleType.info.isDoubleBattle;
+		battleData.pokemonStats = new PokemonBattleData[battleData.battleBanks[NumBattlers]];
 	}
 	switch (currentStatus)
 	{

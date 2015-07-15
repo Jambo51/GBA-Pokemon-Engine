@@ -1,5 +1,5 @@
 
-GFXDIRS		:= sprites/dssprites
+GFXDIRS		:= Sprites/DSSprites
 
 .PHONY : build clean
 

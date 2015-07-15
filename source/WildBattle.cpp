@@ -24,16 +24,15 @@ void WildBattle::Update()
 {
 	if (currentStatus == 0)
 	{
-		battleData = BattleData();
-		battleData.numBattlers = 2 << battleType.info.isDoubleBattle;
-		battleData.pokemonStats = new PokemonBattleData[battleData.numBattlers];
+		battleData.battleBanks[NumBattlers] = 2 << battleType.info.isDoubleBattle;
+		battleData.pokemonStats = new PokemonBattleData[battleData.battleBanks[NumBattlers]];
 	}
 	switch (currentStatus)
 	{
 		case 0:
 		case 1:
 		{
-			if (currentStatus < battleData.numBattlers >> 1)
+			if (currentStatus < battleData.battleBanks[NumBattlers] >> 1)
 			{
 				const WildData &data = *Game::GetCurrentMap().wildDataLocation;
 				Pokemon* thePokemon = Pokemon::GenerateWildPokemonFromData(data, battleType);

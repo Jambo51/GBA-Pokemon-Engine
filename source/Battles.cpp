@@ -34,7 +34,7 @@ RODATA_LOCATION ALIGN(2) u16 BattleScreen::criticalCaptureValues[6][2] = {
 RODATA_LOCATION ALIGN(4) u32 BattleScreen::battleTextPalette[] = { 0x7FFF0000, 0x4D8A001F, 0x7FFF5E2D, 0x6B3A396D, 0x18C53D28, 0x737C7C1F, 0x0DF37C1F, 0x354526B9 };
 RODATA_LOCATION ALIGN(1) u8 BattleScreen::numRegions = NumRegions;
 RODATA_LOCATION ALIGN(4) BattleMusicStorage BattleScreen::musicValues[NumRegions] = { { Song_KantoWildBattle, Song_RBYWildBattle, Song_JohtoWildBattle, Song_LegendaryBeastBattle, Song_KantoTrainerBattle, Song_KantoGymBattle, Song_JohtoGymBattle, Song_GSCChampionBattle, Song_JohtoTrainerBattle } };
-RODATA_LOCATION ALIGN(4) TrainerClassMusic BattleScreen::classValues[] = { { 0xFFFF, 0x0000 } };
+RODATA_LOCATION ALIGN(4) TrainerClassMusic BattleScreen::classValues[] = { { Class_Evil_Team, Song_TeamRocketBattle }, { Class_Evil_Team_Duo, Song_TeamRocketBattle }, { 0xFFFF, 0x0000 } };
 RODATA_LOCATION ALIGN(4) TrainerClassMusic BattleScreen::legendaryValues[] = { { 0xFFFF, 0x0000 } };
 RODATA_LOCATION ALIGN(4) TrainerClassMusic BattleScreen::roamingValues[] = { { 0xFFFF, 0x0000 } };
 RODATA_LOCATION ALIGN(4) U32FunctionPointerVoid BattleScreen::ballBonusRates[] = {
@@ -225,12 +225,12 @@ u32 BattleScreen::LevelBallPokeball()
 	u32 retValue;
 	const BattleData &battleData = instance->GetBattleData();
 	const BattleTypeStruct &battleType = instance->GetBattleTypeStruct();
-	u8 level = battleData.pokemonStats[0].level;
+	u32 level = battleData.pokemonStats[0].level;
 	if (battleType.info.isDoubleBattle)
 	{
 		level = ((level + battleData.pokemonStats[2].level) >> 1);
 	}
-	u8 opponentLevel = battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].level;
+	u32 opponentLevel = battleData.pokemonStats[battleData.battleBanks[Target]].level;
 	if ((opponentLevel << 2) <= level)
 	{
 		retValue = 800;
@@ -254,7 +254,7 @@ u32 BattleScreen::MoonBallPokeball()
 {
 	const BattleData &battleData = instance->GetBattleData();
 	u32 retValue = 100;
-	IndexTable* data = (IndexTable*)&evoData[battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].species];
+	IndexTable* data = (IndexTable*)&evoData[battleData.pokemonStats[battleData.battleBanks[Target]].species];
 	EvolutionData* innerData = (EvolutionData*)data[0].pointerToData;
 	u32 i;
 	for (i = 0; i < data[0].index; i++)
@@ -280,8 +280,8 @@ u32 BattleScreen::LoveBallPokeball()
 	u32 retValue = 100;
 	u8 gender = battleData.pokemonStats[0].gender;
 	u16 species = battleData.pokemonStats[0].species;
-	u8 opponentGender = battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].level;
-	u16 opponentSpecies = battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].species;
+	u32 opponentGender = battleData.pokemonStats[battleData.battleBanks[Target]].level;
+	u16 opponentSpecies = battleData.pokemonStats[battleData.battleBanks[Target]].species;
 	if (gender != Gender_Genderless
 			&& opponentGender != Gender_Genderless
 			&& gender != opponentGender
@@ -296,7 +296,7 @@ u32 BattleScreen::HeavyBallPokeball()
 {
 	const BattleData &battleData = instance->GetBattleData();
 	u32 retValue = 100;
-	PokedexData* data = (PokedexData*)&pokedexData[battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].species];
+	PokedexData* data = (PokedexData*)&pokedexData[battleData.pokemonStats[battleData.battleBanks[Target]].species];
 	u16 weight = data[0].weight;
 	if (weight < 2048)
 	{
@@ -321,8 +321,8 @@ u32 BattleScreen::FastBallPokeball()
 {
 	const BattleData &battleData = instance->GetBattleData();
 	u32 retValue = 100;
-	u8 forme = battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].forme;
-	InternalBaseData* data = (InternalBaseData*)pokemonBaseData[battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].species].baseDataInfo.pointerToData;
+	u8 forme = battleData.pokemonStats[battleData.battleBanks[Target]].forme;
+	InternalBaseData* data = (InternalBaseData*)pokemonBaseData[battleData.pokemonStats[battleData.battleBanks[Target]].species].baseDataInfo.pointerToData;
 	if (data[forme].baseSpeed >= 100)
 	{
 		retValue = 400;
@@ -334,7 +334,7 @@ u32 BattleScreen::RepeatBallPokeball()
 {
 	const BattleData &battleData = instance->GetBattleData();
 	u32 retValue = 100;
-	u16 species = battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].species;
+	u16 species = battleData.pokemonStats[battleData.battleBanks[Target]].species;
 	if (Flags::GetSeenCaughtStatus(species, 2))
 	{
 		retValue = 300;
@@ -362,7 +362,7 @@ u32 BattleScreen::NestBallPokeball()
 {
 	const BattleData &battleData = instance->GetBattleData();
 	u32 retValue = 100;
-	u32 opponentLevel = battleData.pokemonStats[battleData.battleBanks[PokeballTarget]].level;
+	u32 opponentLevel = battleData.pokemonStats[battleData.battleBanks[Target]].level;
 	if (opponentLevel < 31)
 	{
 		retValue = (41 - opponentLevel) * 10;
@@ -469,7 +469,7 @@ void BattleScreen::DrawMainSelectionMenu()
 	TextFunctions::DrawString((char*)&whatToDoString, 8, 0);
 	TextFunctions::DrawString((char*)&whatToDoString2, 8, 0x10);
 	TextFunctions::SetTextColour(15, 3, 1);
-	TextFunctions::DrawCharacter(ARROWCHAR, (0x30 * (battleData.mainSelection[battleData.selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleData.mainSelection[battleData.selectorIndex >> 1] >> 1));
+	//TextFunctions::DrawCharacter(ARROWCHAR, (0x30 * (battleData.mainSelection[battleData.selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleData.mainSelection[battleData.selectorIndex >> 1] >> 1));
 	TextFunctions::DrawString("Battle", 0x78, 0);
 	TextFunctions::DrawString("Bag", 0xA8, 0);
 	TextFunctions::DrawString("Party", 0x78, 0x10);
@@ -520,7 +520,7 @@ void BattleScreen::MoveSelectionRender()
 			}
 		}
 	}
-	TextFunctions::DrawCharacter(ARROWCHAR, (80 * (battleData.internalSelection[battleData.selectorIndex >> 1] & 1)) + 8, 0x10 * (battleData.internalSelection[battleData.selectorIndex >> 1] >> 1));
+	//TextFunctions::DrawCharacter(ARROWCHAR, (80 * (battleData.internalSelection[battleData.selectorIndex >> 1] & 1)) + 8, 0x10 * (battleData.internalSelection[battleData.selectorIndex >> 1] >> 1));
 }
 
 inline u32 InterpretStatus(u32 status)
@@ -636,7 +636,7 @@ u32 BattleScreen::PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 	PokemonBattleData* pkmn2 = &battleData.pokemonStats[index2];
 	s32 priorityValue = 0;
 	{
-		u8 selection = battleData.moveSelections[index1];
+		u32 selection = battleData.battleBanks[MoveSelection1 + index1];
 		if (selection >= Selections_Switch)
 		{
 			priorityValue = 6;
@@ -647,7 +647,7 @@ u32 BattleScreen::PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 		}
 		else
 		{
-			u16 move = pkmn1[0].moves[battleData.moveSelections[index1]];
+			u16 move = pkmn1[0].moves[battleData.battleBanks[MoveSelection1 + index1]];
 			s8 priority = moveData[move].priority;
 			if ((moveData[move].category == Category_Status && pkmn1[0].ability == Prankster) || (moveData[move].type == Type_Flying && pkmn1[0].ability == Gale_Wings))
 			{
@@ -655,14 +655,14 @@ u32 BattleScreen::PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 			}
 			priorityValue = priority;
 		}
-		selection = battleData.moveSelections[index2];
+		selection = battleData.battleBanks[MoveSelection1 + index2];
 		if (selection >= Selections_Switch)
 		{
 			priorityValue = 0;
 		}
 		else
 		{
-			u16 move = pkmn2[0].moves[battleData.moveSelections[index2]];
+			u16 move = pkmn2[0].moves[battleData.battleBanks[MoveSelection1 + index2]];
 			s8 priority = moveData[move].priority;
 			if ((moveData[move].category == Category_Status && pkmn2[0].ability == Prankster) || (moveData[move].type == Type_Flying && pkmn2[0].ability == Gale_Wings))
 			{
@@ -771,7 +771,7 @@ void BattleScreen::RecalculateAllEffectiveStats(PokemonBattleData &dataLocation)
 
 void BattleScreen::PrioritisePokemon()
 {
-	u32 numBattlers = battleData.numBattlers;
+	u32 numBattlers = battleData.battleBanks[NumBattlers];
 	u32 i;
 	for (i = 0; i < numBattlers; i++)
 	{
@@ -809,7 +809,7 @@ void BattleScreen::UpdateCounters()
 		// Script to indicate continued weather
 	}
 	u32 i;
-	for (i = 0; i < battleData.numBattlers; i++)
+	for (i = 0; i < battleData.battleBanks[NumBattlers]; i++)
 	{
 		PokemonBattleData* pkmn = &battleData.pokemonStats[i];
 		pkmn[0].secondaryStatusBits.ppReduced = 0;

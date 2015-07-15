@@ -27,6 +27,8 @@ private:
 public:
 	Pokemon() { }
 	Pokemon(u32 level, u32 species, char* nickname = NULL);
+	Pokemon(const AbridgedPokemon &p);
+	Pokemon(const AbridgedPokemon* p);
 	u32 Decrypt(u8 index) const;
 	void Encrypt(u8 index, u32 value);
 	void CalculateStats();
@@ -44,15 +46,19 @@ public:
 	void* GetPokeballPalette() const { return mainData.GetPokeballPalette(); }
 	const AbridgedPokemon & GetMainData() const { return mainData; }
 	const PrimaryStatusStruct & GetStatus() { return statusAilmentBits; }
+	const PPBonusStruct & GetPPBonuses() const { return mainData.GetPPBonuses(); }
 	void SetBasicTypes() { mainData.SetBasicTypes(); }
 	bool IsFullyEvolved() const { return mainData.IsFullyEvolved(); }
 	u32 SumEVs() const { return mainData.SumEVs(); }
 	bool AllowEVAddition(u32 value, u32 index) const { return mainData.AllowEVAddition(value, index); }
 	static Pokemon* GenerateWildPokemonFromData(const WildData &initData, const BattleTypeStruct &battleType);
 	static Pokemon* GenerateEgg(Pokemon* mother, Pokemon* father);
-	static void GivePokemonToPlayer(u8 level, u16 species, u16 item, u32 formeIndex = 0);
-	static Pokemon* GenerateTrainerPokemon(u8 level, u16 species, char* trainerName, u32 id, u32 formeIndex = 0);
+	static void GivePokemonToPlayer(u16 species, u8 level, u16 item, u32 formeIndex = 0);
+	static Pokemon* GenerateTrainerPokemon(u16 species, u8 level, char* trainerName, u32 id, u32 formeIndex = 0);
 	static u16 FindBabySpeciesInner(u16 sourceSpecies) { return AbridgedPokemon::FindBabySpeciesInner(sourceSpecies); }
+	static void GiveEggToPlayer(u16 species);
+	bool HasMove(u16 moveID) const { return mainData.HasMove(moveID); }
+	static void DeletePokemon(Pokemon* p);
 };
 
 #endif

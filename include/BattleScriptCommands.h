@@ -58,12 +58,9 @@ u32 PrintCallEffectMessage(ScriptRunner* runner);
 u32 PrintFleeEffectMessage(ScriptRunner* runner);
 u32 IncrementLoopCounter(ScriptRunner* runner);
 u32 SetLoopCounter(ScriptRunner* runner);
-u32 CopyLoopCounterTo(ScriptRunner* runner);
 u32 SetBattleDamageMultiplier(ScriptRunner* runner);
 u32 SetSecondaryStatus(ScriptRunner* runner);
 u32 SetSpecialBattleStatus(ScriptRunner* runner);
-u32 IncrementGeneralCounter(ScriptRunner* runner);
-u32 SetGeneralCounter(ScriptRunner* runner);
 u32 GetRandomValue(ScriptRunner* runner);
 
 #endif /* BATTLESCRIPTCOMMANDS_H_ */

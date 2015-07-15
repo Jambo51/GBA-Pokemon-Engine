@@ -1,0 +1,8 @@
+#globalorg @StandardScriptTwo
+lock
+faceplayer
+preparemsg 0x0
+waitmsg
+waitkeypress
+release
+return

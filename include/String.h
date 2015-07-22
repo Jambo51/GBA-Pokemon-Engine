@@ -8,6 +8,8 @@
 #ifndef STRING_H_
 #define STRING_H_
 
+#include "GlobalDefinitions.h"
+
 class String
 {
 private:
@@ -23,6 +25,7 @@ private:
 		}
 		return count;
 	}
+	void SetLength(u32 newLength) { stringSize = newLength; }
 public:
 	String(char* string);
 	String(const String &string);
@@ -40,6 +43,14 @@ public:
 	{
 		return String(rhs);
 	}
+
+	bool EndsWith(char c);
+	String SubString(s32 startIndex, u32 length = 0);
+	bool EndsWith(char* c);
+	bool EndsWith(const String &rhs);
+	bool StartsWith(char c);
+	bool StartsWith(char* c);
+	bool StartsWith(const String &rhs);
 
 	bool operator==(char* c)
 	{

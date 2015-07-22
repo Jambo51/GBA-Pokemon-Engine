@@ -1,20 +1,9 @@
+#include stdpoke.rbh
+#include std.rbh
+
 #dynamic 0x800000
 
 #org @start
-playsong 0x39 0x0
-trainerbattle 0x1 0x3 0x0 @talk @after @afterscript
+giveitem 0x0 0x1 MSG_OBTAIN
+giveitem 0x0 0x1 MSG_FIND
 end
-
-#org @talk
-= Blarg!
-
-#org @after
-= You won!
-
-#org @afterscript
-msgbox @aftertalk 0x4
-setflag 0x1
-end
-
-#org @aftertalk
-== Grats! Have this badge!

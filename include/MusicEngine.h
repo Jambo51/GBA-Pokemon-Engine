@@ -22,5 +22,6 @@ public:
 	virtual void Initialise() = 0;
 	virtual bool SFXPlaying() = 0;
 	virtual bool FanfarePlaying() = 0;
+	virtual void ResumeSong() = 0;
 	u16* GetBufferAddress() const { return (u16*)&buffer; }
 };

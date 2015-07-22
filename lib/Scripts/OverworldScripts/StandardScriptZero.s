@@ -31,8 +31,8 @@ standard0part1:
 	.byte Return
 
 standard0switchtable:
-	.word 0x08@standard0part3
-	.word 0x08@standard0part4
+	.word standard0part3
+	.word standard0part4
 
 
 standard0part2:
@@ -43,7 +43,7 @@ standard0part2:
 	.short 0x8000
 	.short 0x0006
 	.word standard0switchtable2
-	.byte End
+	.byte Return
 
 standard0switchtable2:
 	.word standard0part5
@@ -143,13 +143,13 @@ standard0part8:
 
 standard0part10:
 	.byte PlayFanfare
-	.short 0x0172
+	.short 0x0005
 	.byte Return
 
 
 standard0part11:
 	.byte PlayFanfare
-	.short 0x0174
+	.short 0x000D
 	.byte Return
 
 

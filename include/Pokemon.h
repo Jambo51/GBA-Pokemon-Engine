@@ -27,8 +27,8 @@ private:
 public:
 	Pokemon() { }
 	Pokemon(u32 level, u32 species, char* nickname = NULL);
-	Pokemon(const AbridgedPokemon &p);
-	Pokemon(const AbridgedPokemon* p);
+	Pokemon(const AbridgedPokemon &p, bool newPokemon = false);
+	Pokemon(const AbridgedPokemon* p, bool newPokemon = false);
 	u32 Decrypt(u8 index) const;
 	void Encrypt(u8 index, u32 value);
 	void CalculateStats();
@@ -59,6 +59,7 @@ public:
 	static void GiveEggToPlayer(u16 species);
 	bool HasMove(u16 moveID) const { return mainData.HasMove(moveID); }
 	static void DeletePokemon(Pokemon* p);
+	u32 CalculateLevelFromExperience();
 };
 
 #endif

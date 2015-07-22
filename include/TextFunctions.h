@@ -68,6 +68,7 @@ public:
 	static void InitialiseTextEngine(u32 textSetID);
 	static void BufferMoveName(u16 moveIndex, u8 bufferID);
 	static void BufferStandardString(u16 stringID, u8 bufferID);
+	static void BufferPluralItemName(u16 itemIndex, u8 bufferID);
 };
 
 #endif /* TEXTFUNCTIONS_H_ */

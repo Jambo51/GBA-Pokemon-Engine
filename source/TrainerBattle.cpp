@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "Maths.h"
 #include "PokemonBaseData.h"
+#include "BattleTransitionScriptRunner.h"
 
 const TrainerPokemonData weezing1 = {
 		Weezing, 40, 0, 0
@@ -31,12 +32,17 @@ const TrainerPokemonData alakazam1 = {
 		Alakazam, 40, 0, 0
 };
 
-RODATA_LOCATION TrainerData TrainerBattle::trainerBattleDataTable[] = {
-		{ 1, 0, 0, Class_Elite_Trainer, { 0, 0, 0, 0 }, { 'J', 'e', 'r', 'e', 'm', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&pidgeot1 },
+RODATA_LOCATION ALIGN(4) TrainerData TrainerBattle::trainerBattleDataTable[] = {
+		{ 1, 4, 0, Class_Elite_Trainer, { 0, 0, 0, 0 }, { 'J', 'e', 'r', 'e', 'm', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&pidgeot1 },
 		{ 1, 0, 0, Class_Champion, { 0, 0, 0, 0 }, { 'G', 'a', 'r', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&alakazam1 },
 		{ 1, 0, 0, Class_Gym_Leader, { 0, 0, 0, 0 }, { 'B', 'r', 'o', 'c', 'k', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&golem1 },
-		{ 1, 0, 0, Class_Evil_Team, { 0, 0, 0, 0 }, { 'J', 'a', 'm', 'e', 's', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&ekans1 },
-		{ 1, 0, 0, Class_Evil_Team_Duo, { 0, 0, 0, 0 }, { 'J', 'e', 's', 's', 'i', 'e', ' ', '&', ' ', 'J', 'a', 'm', 'e', 's', '\0', 0 }, (TrainerPokemonData*)&weezing1 }
+		{ 1, 6, 0, Class_Evil_Team, { 0, 0, 0, 0 }, { 'J', 'a', 'm', 'e', 's', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&ekans1 },
+		{ 1, 6, 0, Class_Evil_Team_Duo, { 0, 0, 0, 0 }, { 'J', 'e', 's', 's', 'i', 'e', ' ', '&', ' ', 'J', 'a', 'm', 'e', 's', '\0', 0 }, (TrainerPokemonData*)&weezing1 },
+		{ 1, 0, 0, Class_Rival, { 0, 0, 0, 0 }, { 'G', 'a', 'r', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&pidgeot1 }
+};
+RODATA_LOCATION ALIGN(4) IndexTable TrainerBattle::transitionScripts[NumTrainerBattleTransitions] = {
+		//{ Class_Evil_Team, (void*)&Evil_Team_Transition },
+		//{ Class_Evil_Team_Duo, (void*)&Evil_Team_Transition }
 };
 
 TrainerBattle::TrainerBattle(const BattleTypeStruct &bts, u32 trainerIDAndInformation, const char* afterText, const u8* afterScript) : BattleScreen(bts)
@@ -48,6 +54,15 @@ TrainerBattle::TrainerBattle(const BattleTypeStruct &bts, u32 trainerIDAndInform
 	battleData.trainerData->afterBattleText = (char*)afterText;
 	battleData.trainerData->afterBattleScript = (u8*)afterScript;
 	battleData.trainerData->trainerID = Maths::GetRandom32BitValue();
+	u8* script = NULL;
+	for (u32 i = 0; i < NumTrainerBattleTransitions; i++)
+	{
+		if (transitionScripts[i].index == trainerID)
+		{
+			script = (u8*)transitionScripts[i].pointerToData;
+		}
+	}
+	new BattleTransitionScriptRunner(script, this);
 	SoundEngine::PlaySong(CalculateBattleTrack(), 0);
 }
 
@@ -128,4 +143,9 @@ void TrainerBattle::Update()
 		default:
 			break;
 	}
+}
+
+u32 TrainerBattle::GetEncounterTrackID(u32 trainerID)
+{
+	return trainerBattleDataTable[trainerID].introThemeSlot;
 }

@@ -1,0 +1,19 @@
+#include "std"
+
+#globalorg @StandardErrorScript
+message @errormessage MSG_KEEPOPEN
+end
+
+#globalorg @StandardErrorScriptSignpost
+message @errormessage MSG_SIGN
+end
+
+#globalorg @StandardErrorScriptNPC
+lock
+faceplayer
+message @errormessage MSG_KEEPOPEN
+release
+end
+
+#org @errormessage
+#text This is a standard error message.\pYou are seeing this because the\nengine failed to detect the\pcorrect message to show you\nor you didn't set a script.

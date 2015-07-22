@@ -12,6 +12,8 @@
 #include "Flags.h"
 #include "Mapping.h"
 #include "GameModeManager.h"
+#include "StartMenuInputEventHandler.h"
+#include "InputHandler.h"
 
 OverworldInputEventHandler::OverworldInputEventHandler()
 {
@@ -40,7 +42,7 @@ void OverworldInputEventHandler::OnPressStart()
 	InputEventHandler::OnPressStart();
 	if (!keyHeld[Key_Start] && !movementWord.movement.isMoving)
 	{
-
+		InputHandler::SetEventHandler(new StartMenuInputEventHandler());
 	}
 }
 

@@ -113,5 +113,6 @@ extern u32 MultiplyVarByVar(ScriptRunner* runner);
 extern u32 DivideVar(ScriptRunner* runner);
 extern u32 DivideVarByVar(ScriptRunner* runner);
 extern u32 GetTimeOfDay(ScriptRunner* runner);
+extern u32 BufferPluralItem(ScriptRunner* runner);
 
 #endif /* INCLUDE_OVERWORLDSCRIPTCOMMANDS_H_ */

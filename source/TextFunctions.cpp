@@ -362,6 +362,11 @@ void TextFunctions::BufferItemName(u16 itemIndex, u8 bufferID)
 	BufferString(Items::GetItemName(itemIndex), bufferID, 14);
 }
 
+void TextFunctions::BufferPluralItemName(u16 itemIndex, u8 bufferID)
+{
+	BufferString(Items::GetPluralisedItemName(itemIndex), bufferID, 14);
+}
+
 void TextFunctions::BufferMoveName(u16 moveIndex, u8 bufferID)
 {
 	BufferString((char*)(&(moveNames[moveIndex])), bufferID, 14);

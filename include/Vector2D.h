@@ -65,6 +65,16 @@ public:
 		this->xPos *= rhs;
 		this->yPos *= rhs;
 	}
+
+	bool operator==(const Vector2D &rhs)
+	{
+		return this->xPos == rhs.GetX() && this->yPos == rhs.GetY();
+	}
+
+	bool operator!=(const Vector2D &rhs)
+	{
+		return this->xPos != rhs.GetX() || this->yPos != rhs.GetY();
+	}
 };
 
 #endif /* VECTOR2D_H_ */

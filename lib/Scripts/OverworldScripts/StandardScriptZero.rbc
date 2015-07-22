@@ -16,14 +16,14 @@ switch 0x8007 2 @standard0switchtable
 return
 
 #org @standard0switchtable
-#pointer 0x08@standard0part3
-#pointer 0x08@standard0part4
+#pointer @standard0part3
+#pointer @standard0part4
 
 '---------------
 #org @standard0part2
 copyvar 0x8000 LASTRESULT
 switch 0x8000 6 @standard0switchtable2
-end
+return
 
 #org @standard0switchtable2
 #pointer @standard0part5
@@ -83,12 +83,12 @@ return
 
 '---------------
 #org @standard0part10
-fanfare 0x172
+fanfare 0x5
 return
 
 '---------------
 #org @standard0part11
-fanfare 0x174
+fanfare 0xD
 return
 
 

@@ -1,0 +1,44 @@
+#include "std"
+
+#globalorg @StandardScriptEight
+bufferitems 0x1 0x8000 0x8001
+checkitemtype 0x8000
+call @standard8part1
+msgbox @standard8string MSG_KEEPOPEN '"[player] put the [buffer2]\nin the..."
+return
+
+#org @standard8part1
+copyvar 0x8000 LASTRESULT
+switch 0x8000 6 @standard8switchtable1
+return
+
+#org @standard8switchtable1
+#pointer @standard8part2
+#pointer @standard8part2
+#pointer @standard8part3
+#pointer @standard8part4
+#pointer @standard8part5
+#pointer @standard8part6
+
+#org @standard8part2
+bufferstd 0x2 0x18
+return
+
+#org @standard8part3
+bufferstd 0x2 0x19
+return
+
+#org @standard8part4
+bufferstd 0x2 0x1A
+return
+
+#org @standard8part5
+bufferstd 0x2 0x1B
+return
+
+#org @standard8part6
+bufferstd 0x2 0x1C
+return
+
+#org @standard8string
+#text [player] put the [buffer2]\nin the [buffer3].

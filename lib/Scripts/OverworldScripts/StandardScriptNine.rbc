@@ -1,0 +1,9 @@
+#globalorg @StandardScriptNine
+textcolor 0x3
+fanfare 0x8002
+preparemsg 0x0
+waitmsg
+waitfanfare
+giveitem 0x8000 0x8001 0x8
+copyvar 0x8012 0x8013
+return

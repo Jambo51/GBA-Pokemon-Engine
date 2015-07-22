@@ -802,6 +802,7 @@ void Overworld::OnCompleteMove(u32 direction)
 			{
 				if (Variables::GetVar(tileScripts[i].varID) == tileScripts[i].varValue)
 				{
+					Variables::SetVar(LASTTALKED, U16Max);
 					new OverworldScriptRunner(tileScripts[i].scriptPointer);
 					break;
 				}

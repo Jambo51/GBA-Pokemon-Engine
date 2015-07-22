@@ -9,6 +9,7 @@
 #include "MemoryLocations.h"
 #include "TextFunctions.h"
 #include "RTC.h"
+#include "PokemonBaseData.h"
 
 const RODATA_LOCATION ALIGN(1) char name[] = { 0xFB, 0x00, '\0' };
 const RODATA_LOCATION ALIGN(1) char number[] = { 0xFB, 0x01, '\0' };
@@ -27,19 +28,55 @@ StringAndPositionStruct pageOneStrings[] = {
 Pokemon::Pokemon(u32 species, u32 level, char* nickname)
 {
 	mainData = AbridgedPokemon(species, level, nickname);
+	this->level = level;
 	CalculateStats();
 }
 
-Pokemon::Pokemon(const AbridgedPokemon &p)
+Pokemon::Pokemon(const AbridgedPokemon &p, bool newPokemon)
 {
 	mainData = p;
+	if (newPokemon)
+	{
+		// Note that this trick does NOT work for re-generating a Pokémon
+		// from the storage box, hence the check for whether it is a new
+		// Pokémon or not
+		this->level = mainData.Decrypt(CaptureLevel);
+	}
+	else
+	{
+		this->level = CalculateLevelFromExperience();
+	}
 	CalculateStats();
 }
 
-Pokemon::Pokemon(const AbridgedPokemon* p)
+Pokemon::Pokemon(const AbridgedPokemon* p, bool newPokemon)
 {
 	mainData = *p;
+	if (newPokemon)
+	{
+		// Note that this trick does NOT work for re-generating a Pokémon
+		// from the storage box, hence the check for whether it is a new
+		// Pokémon or not
+		this->level = mainData.Decrypt(CaptureLevel);
+	}
+	else
+	{
+		this->level = CalculateLevelFromExperience();
+	}
 	CalculateStats();
+}
+
+u32 Pokemon::CalculateLevelFromExperience()
+{
+	u32 theLevel = 0;
+	u32* dataPosition = (u32*)&pokemonBaseExperiences[pokemonBaseData[mainData.Decrypt(Species)].levelUpType];
+	u32 experience = mainData.Decrypt(Experience);
+	while (experience >= *dataPosition)
+	{
+		theLevel++;
+		dataPosition++;
+	}
+	return theLevel;
 }
 
 u32 Pokemon::Decrypt(u8 index) const

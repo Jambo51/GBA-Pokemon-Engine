@@ -90,13 +90,15 @@ void GBPSoundsEngine::Update()
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		if (!channels[i]->Update())
+		if (!channels[i]->Update() && channelsPlaying[i])
 		{
+			channelsPlaying[i] = false;
 			channels[i]->ExecuteOnEndFunction();
 			channels[i]->Clear();
 		}
 	}
 	MusicEngine::Update();
+	skipWaveChange = false;
 }
 
 void GBPSoundsEngine::StartSong(u16 songID, bool startWithZeroVolume)
@@ -108,6 +110,8 @@ void GBPSoundsEngine::StartSong(u16 songID, bool startWithZeroVolume)
 		channels[0]->StartTrack(gbpSongs[songID - 1]);
 		buffer[0x10] = 0xFF77;
 		SwitchWavePattern(0);
+		skipWaveChange = true;
+		channelsPlaying[0] = true;
 	}
 }
 
@@ -123,30 +127,44 @@ void GBPSoundsEngine::SwitchWavePattern(u8 patternID) const
 	}
 }
 
-void GBPSoundsEngine::ResumeSongPlaybackAndDisableFanfare()
+void GBPSoundsEngine::ResumeSong()
 {
 	channels[0]->Unpause();
-	if (channels[0]->GetWave().GetCurrentVoice() != channels[1]->GetWave().GetCurrentVoice())
+	if (!skipWaveChange && channels[0]->GetWave().GetCurrentVoice() != channels[1]->GetWave().GetCurrentVoice())
 	{
 		SwitchWavePattern(channels[0]->GetWave().GetCurrentVoice());
 	}
+	if (!channels[0]->Update() && channelsPlaying[0])
+	{
+		channelsPlaying[0] = false;
+		channels[0]->ExecuteOnEndFunction();
+		channels[0]->Clear();
+	}
+}
+
+void GBPSoundsEngine::ResumeSongStatic()
+{
+	SoundEngine::ResumeSong();
 }
 
 void GBPSoundsEngine::StartFanfare(u16 fanfareID)
 {
-	channels[1]->StartTrack(gbpSongs[fanfareID - 1]);
 	channels[0]->Pause();
-	channels[1]->SetOnTrackEndFunction((VoidFunctionPointerVoid)&GBPSoundsEngine::ResumeSongPlaybackAndDisableFanfare);
+	channels[1]->StartTrack(gbpSongs[fanfareID - 1]);
+	channelsPlaying[1] = true;
+	channels[1]->SetOnTrackEndFunction((VoidFunctionPointerVoid)&ResumeSongStatic);
 }
 
 void GBPSoundsEngine::StartSFX(u16 sfxID)
 {
-
+	channelsPlaying[2] = true;
 }
 
 void GBPSoundsEngine::Interrupt()
 {
-
+	// Unnecessary for this engine, but since the M4A requires it
+	// This function needs to simply return
+	return;
 }
 
 void GBPSoundsEngine::SetSongOnEndFunction(VoidFunctionPointerVoid function)
@@ -233,12 +251,12 @@ void GBPSoundsEngine::FadeSongIn()
 
 bool GBPSoundsEngine::SFXPlaying()
 {
-	const GBPChannel &channel = *channels[3];
+	const GBPChannel &channel = *channels[2];
 	return channel.IsPlaying();
 }
 
 bool GBPSoundsEngine::FanfarePlaying()
 {
-	const GBPChannel &channel = *channels[2];
+	const GBPChannel &channel = *channels[1];
 	return channel.IsPlaying();
 }

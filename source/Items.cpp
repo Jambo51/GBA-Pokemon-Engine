@@ -6,6 +6,7 @@
  */
 
 #include "Items.h"
+#include "String.h"
 
 Item Items::items[] = { };
 
@@ -43,4 +44,19 @@ u32 Items::GetItemIndexNumber(u16 itemID)
 char* Items::GetItemName(u16 itemID)
 {
 	return (char*)&items[itemID].name;
+}
+
+char* Items::GetPluralisedItemName(u16 itemID)
+{
+	String s = (char*)&items[itemID].name;
+	if (s.EndsWith('y'))
+	{
+		s = s.SubString(-1);
+		s += "ies";
+	}
+	else
+	{
+		s += 's';
+	}
+	return s.GetUnderlyingArray();
 }

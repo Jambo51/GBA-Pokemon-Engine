@@ -24,7 +24,7 @@ return
 #org @standard1part1
 copyvar 0x8000 LASTRESULT
 switch 0x8000 6 @standard1switchtable2
-end
+return
 
 #org @standard1switchtable2
 #pointer @standard1part4
@@ -115,12 +115,12 @@ return
 
 '---------------
 #org @standard1part12
-fanfare 0x172
+fanfare 0x5
 return
 
 '---------------
 #org @standard1part13
-fanfare 0x174
+fanfare 0xD
 return
 
 

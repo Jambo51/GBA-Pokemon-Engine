@@ -28,6 +28,15 @@
 #define MaxPlayerCash 9999999
 #define MaxHappinessAllowed 0xD0
 #define U32Max 0xFFFFFFFF
+#define U16Max 0xFFFF
+#define U8Max 0xFF
+#define S32Max 0x7FFFFFFF
+#define S16Max 0x7FFF
+#define S8Max 0x7F
+// Uses 2's complement
+#define S32Min 0x80000000
+#define S16Min 0x8000
+#define S8Min 0x80
 #define ARROWCHAR ('~' + 1)
 #define BATTLEBGCOLOUR U32Max
 #define WHITETEXTBG 0x11111111
@@ -111,7 +120,7 @@ enum SecondaryMoveEffects { NoSecondaryEffect, ChangeStat, Sleep, Burn, Paralyse
 
 enum BattleTrackIDs { Track_Battle_Wild, Track_Battle_Rare_Wild, Track_Battle_Link, Track_Battle_Trainer, Track_Battle_Gym_Leader, Track_Battle_Elite_Four, Track_Battle_Champion, Track_Battle_Legendary, Track_Battle_Roaming, NumBattleTrackIDs };
 
-enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team, Class_Evil_Team_Duo, Class_Elite_Trainer };
+enum TrainerClasses { Class_Gym_Leader, Class_Elite_Four, Class_Champion, Class_Evil_Team, Class_Evil_Team_Duo, Class_Elite_Trainer, Class_Rival };
 
 enum BattleSelectionIndices { Selections_Move1, Selections_Move2, Selections_Move3, Selections_Move4, Selections_AI_Fleeing, Selections_Switch, Selections_Item, Selections_Flee };
 
@@ -671,6 +680,18 @@ typedef struct StringAndPositionStruct {
 	u16 xPos;
 	u16 yPos;
 } StringAndPositionStruct;
+
+typedef struct StringAndFunctionPointerStruct {
+	char* string;
+	VoidFunctionPointerVoid function;
+} StringAndFunctionPointerStruct;
+
+typedef struct StringAndFunctionPointerWithFlagIDStruct {
+	char* string;
+	VoidFunctionPointerVoid function;
+	u16 flagID;
+	u16 alignment;
+} StringAndFunctionPointerWithFlagIDStruct;
 
 typedef struct EntityManagerEntryFlags {
 	u8 isAlive:1;

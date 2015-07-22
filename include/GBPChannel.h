@@ -45,12 +45,12 @@ public:
 	const WaveTrack & GetWave() const { return *waveTrack; }
 	const ToneTrack & GetToneOne() const { return *toneTracks[0]; }
 	const ToneTrack & GetToneTwo() const { return *toneTracks[1]; }
-	void Pause() { tracksIncluded[5] = true; }
-	void Unpause() { tracksIncluded[5] = false; }
+	void Pause() { tracksIncluded[4] = true; }
+	void Unpause() { tracksIncluded[4] = false; }
 	bool IsPaused() const { return tracksIncluded[5]; }
 	void SwitchWavePattern(u8 voiceID) const;
 	u16 GetTempo() const { return tempo; }
-	bool IsPlaying() const { for (int i = 0; i < 4; i++) { if (!tracksIncluded[i]) { return false; } } return true; }
+	bool IsPlaying() const { for (int i = 0; i < 4; i++) { if (tracksIncluded[i]) { return true; } } return false; }
 };
 
 #endif /* GBPCHANNEL_H_ */

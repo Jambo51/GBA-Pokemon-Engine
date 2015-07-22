@@ -91,6 +91,7 @@ void GBPChannel::Clear()
 	{
 		tracksIncluded[i] = false;
 	}
+	onEndFunction = NULL;
 }
 
 void GBPChannel::StartTrack(GBPTrackHeader* header)
@@ -113,6 +114,7 @@ void GBPChannel::StartTrack(GBPTrackHeader* header)
 			tracksIncluded[2] = true;
 			waveTrack->SetNextInstruction(header->songData);
 			waveTrack->SetPan(0xFF);
+			SwitchWavePattern(0);
 			break;
 		case 3:
 			tracksIncluded[3] = true;
@@ -138,6 +140,7 @@ void GBPChannel::StartTrack(GBPTrackHeader* header)
 				tracksIncluded[2] = true;
 				waveTrack->SetNextInstruction(header->theTracks[i - 1].songData);
 				waveTrack->SetPan(0xFF);
+				SwitchWavePattern(0);
 				break;
 				case 3:
 				tracksIncluded[3] = true;
@@ -146,6 +149,7 @@ void GBPChannel::StartTrack(GBPTrackHeader* header)
 				break;
 			}
 		}
+		tracksIncluded[4] = false;
 		tempo = 0x100;
 	}
 }

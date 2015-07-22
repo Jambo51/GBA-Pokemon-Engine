@@ -7,6 +7,7 @@
 
 #include "OverworldScriptRunner.h"
 #include "OverworldScriptCommands.h"
+#include "liboverworldscripts.h"
 
 RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner OverworldScriptRunner::overworldCommands[0xFF] = {
 		(U32FunctionPointerScriptRunner)&NoOperation,
@@ -213,6 +214,7 @@ RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner OverworldScriptRunner::o
 		(U32FunctionPointerScriptRunner)&NoOperation,
 		(U32FunctionPointerScriptRunner)&NoOperation,
 		(U32FunctionPointerScriptRunner)&NoOperation,
+		(U32FunctionPointerScriptRunner)&NoOperation,
 		(U32FunctionPointerScriptRunner)&SetObedience,
 		(U32FunctionPointerScriptRunner)&CheckObedience,
 		(U32FunctionPointerScriptRunner)&NoOperation,
@@ -220,7 +222,7 @@ RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner OverworldScriptRunner::o
 		(U32FunctionPointerScriptRunner)&NoOperation,
 		(U32FunctionPointerScriptRunner)&SetCatchLocation,
 		(U32FunctionPointerScriptRunner)&NoOperation,
-		(U32FunctionPointerScriptRunner)&NoOperation,
+		(U32FunctionPointerScriptRunner)&BufferPluralItem,
 		(U32FunctionPointerScriptRunner)&NoOperation,
 		(U32FunctionPointerScriptRunner)&MultiplyVar,
 		(U32FunctionPointerScriptRunner)&DivideVar,
@@ -236,7 +238,7 @@ RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner OverworldScriptRunner::o
 		(U32FunctionPointerScriptRunner)&SetupDoubleWildBattle,
 		(U32FunctionPointerScriptRunner)&GetTimeOfDay
 };
-RODATA_LOCATION ALIGN(4) u8* OverworldScriptRunner::errorScript = NULL;
+RODATA_LOCATION ALIGN(4) u8* OverworldScriptRunner::errorScript = (u8*)&StandardErrorScript;
 
 OverworldScriptRunner::OverworldScriptRunner(u8* script) : ScriptRunner(script, (U32FunctionPointerScriptRunner*)&overworldCommands)
 {

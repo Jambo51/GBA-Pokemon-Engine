@@ -16,6 +16,8 @@
 #include "Mapping.h"
 #include "GameModeManager.h"
 #include "TextFunctions.h"
+#include "TrainerBattle.h"
+#include "SoundEngine.h"
 
 u16 Special0HealParty(ScriptRunner* runner)
 {
@@ -53,6 +55,44 @@ u16 Special0HealParty(ScriptRunner* runner)
 		}
 	}
 	return (u16)pokemonFound;
+}
+
+u16 EmptySpecial(ScriptRunner* runner)
+{
+	return 0;
+}
+
+#define NumEncounterSlots 12
+
+TEXT_LOCATION ALIGN(2) u16 encounterSlots[NumEncounterSlots] = {
+		Song_HikerEncounter,
+		Song_ClassicLassEncounter,
+		Song_PolicemanEncounter,
+		Song_KimonoGirlEncounter,
+		Song_YoungsterEncounter,
+		Song_GSCLassEncounter,
+		Song_TeamRocketEncounter,
+		Song_PokecollectorEncounter,
+		Song_SageEncounter,
+		Song_RBYEvilEncounter,
+		Song_RBYFemaleEncounter,
+		Song_RBYMaleEncounter
+};
+
+u16 Special38PlayTrainerMusic(ScriptRunner* runner)
+{
+	if (Variables::GetVar(LASTTALKED) != U16Max)
+	{
+		u32 trainerID = runner->GetBank(0) & U16Max;
+		trainerID = TrainerBattle::GetEncounterTrackID(trainerID);
+		if (trainerID >= NumEncounterSlots)
+		{
+			trainerID = 0;
+		}
+		SoundEngine::PlaySong(encounterSlots[trainerID], 0);
+		return true;
+	}
+	return false;
 }
 
 u16 SpecialB5BufferDaycarePokemonNames(ScriptRunner* runner)

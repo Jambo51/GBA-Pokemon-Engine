@@ -20,5 +20,11 @@ extern const RODATA_LOCATION u8 StandardScriptFour[];
 extern const RODATA_LOCATION u8 StandardScriptFive[];
 extern const RODATA_LOCATION u8 StandardScriptSix[];
 extern const RODATA_LOCATION u8 StandardScriptSeven[];
+extern const RODATA_LOCATION u8 StandardScriptEight[];
+extern const RODATA_LOCATION u8 StandardScriptNine[];
+extern const RODATA_LOCATION u8 StandardScriptTen[];
+extern const RODATA_LOCATION u8 StandardErrorScript[];
+extern const RODATA_LOCATION u8 StandardErrorScriptSignpost[];
+extern const RODATA_LOCATION u8 StandardErrorScriptNPC[];
 
 #endif /* INCLUDE_LIBOVERWORLDSCRIPTS_H_ */

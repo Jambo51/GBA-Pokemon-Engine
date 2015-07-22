@@ -129,3 +129,11 @@ bool SoundEngine::FanfarePlaying()
 	}
 	return false;
 }
+
+void SoundEngine::ResumeSong()
+{
+	if (me)
+	{
+		me->ResumeSong();
+	}
+}

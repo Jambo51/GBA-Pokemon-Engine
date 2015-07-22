@@ -48,7 +48,14 @@ u32 ScriptSwitch(ScriptRunner* runner)
 	}
 	u8** table = (u8**)UnalignedNumberHandler::LoadUnalignedNumber(script, 5, 4);
 	runner->IncrementScriptPointer(9);
-	runner->Call(table[varValue]);
+	if (((u32)table & 3) == 0)
+	{
+		runner->Call(table[varValue]);
+	}
+	else
+	{
+		runner->Call((u8*)UnalignedNumberHandler::LoadUnalignedNumber((u8*)table, varValue * 4, 4));
+	}
 	return NotEnded;
 }
 
@@ -158,7 +165,7 @@ u32 IfCall(ScriptRunner* runner)
 	return NotEnded;
 }
 
-#define NumStdScripts 8
+#define NumStdScripts 11
 
 TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptZero,
@@ -168,7 +175,10 @@ TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptFour,
 		(u8*)StandardScriptFive,
 		(u8*)StandardScriptSix,
-		(u8*)StandardScriptSeven
+		(u8*)StandardScriptSeven,
+		(u8*)StandardScriptEight,
+		(u8*)StandardScriptNine,
+		(u8*)StandardScriptTen
 };
 
 u32 GotoStandardScript(ScriptRunner* runner)
@@ -634,7 +644,65 @@ u32 CallASM2(ScriptRunner* runner)
 
 typedef u16 (*SpecialFunctionPointer)(ScriptRunner*);
 
-TEXT_LOCATION ALIGN(4) SpecialFunctionPointer specials[] = { (SpecialFunctionPointer)&Special0HealParty };
+TEXT_LOCATION ALIGN(4) SpecialFunctionPointer specials[] = {
+		(SpecialFunctionPointer)&Special0HealParty,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&Special38PlayTrainerMusic
+};
 
 u32 Special(ScriptRunner* runner)
 {
@@ -754,9 +822,14 @@ u32 CheckSound(ScriptRunner* runner)
 
 u32 PlayFanfare(ScriptRunner* runner)
 {
-	SoundEngine::PlayFanfare(UnalignedNumberHandler::LoadUShortNumber(runner->GetScriptPointer(), 1));
+	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(runner->GetScriptPointer(), 1);
+	if (Variables::ValidateVarID(flagID) || Variables::IsTemporaryVar(flagID))
+	{
+		flagID = Variables::GetVar(flagID);
+	}
+	SoundEngine::PlayFanfare(flagID);
 	runner->IncrementScriptPointer(3);
-	return NotEnded;
+	return WaitForFrames;
 }
 
 u32 CheckFanfare(ScriptRunner* runner)
@@ -1340,6 +1413,40 @@ u32 BufferItem(ScriptRunner* runner)
 		TextFunctions::BufferItemName(attackID, buffer);
 	}
 	runner->IncrementScriptPointer(4);
+	return NotEnded;
+}
+
+u32 BufferPluralItem(ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
+	if (Variables::ValidateVarID(attackID) || Variables::IsTemporaryVar(attackID))
+	{
+		attackID = Variables::GetVar(attackID);
+	}
+	if (attackID >= NumberOfItems)
+	{
+		attackID = 1;
+	}
+	u16 amount = UnalignedNumberHandler::LoadUShortNumber(script, 4);
+	if (Variables::ValidateVarID(attackID) || Variables::IsTemporaryVar(attackID))
+	{
+		amount = Variables::GetVar(attackID);
+	}
+	u8 buffer = *(script + 1);
+	Variables::SetVar(LASTRESULT, buffer < NUMBUFFERS);
+	if (buffer < NUMBUFFERS)
+	{
+		if (amount > 1)
+		{
+			TextFunctions::BufferPluralItemName(attackID, buffer);
+		}
+		else
+		{
+			TextFunctions::BufferItemName(attackID, buffer);
+		}
+	}
+	runner->IncrementScriptPointer(6);
 	return NotEnded;
 }
 

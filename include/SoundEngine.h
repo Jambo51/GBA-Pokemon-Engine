@@ -41,6 +41,7 @@ public:
 	static void SetOnSongEndFunction(VoidFunctionPointerVoid ptr);
 	static bool SFXPlaying();
 	static bool FanfarePlaying();
+	static void ResumeSong();
 };
 
 #endif /* SOUNDENGINE_H_ */

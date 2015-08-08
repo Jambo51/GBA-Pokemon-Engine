@@ -282,3 +282,12 @@ void Maths::ReseedRNG()
 	u32 seed = (REG_TM3D << 16) | REG_TM2D;
 	Maths::SeedRNG(seed);
 }
+
+u32 Maths::Power(u32 value, u32 powerValue)
+{
+	if (powerValue == 0)
+	{
+		return 1;
+	}
+	return value * Power(value, powerValue - 1);
+}

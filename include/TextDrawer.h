@@ -14,11 +14,13 @@ typedef void(*EndFunctionType)(u32);
 
 class TextDrawer : public Callback
 {
-private:
+protected:
 	char* string;
 	u32 stringPosition;
+	u32 bufferPos;
 	EndFunctionType EndFunction;
 	u32 functionData;
+	u32 inkColour;
 	u8 currentX;
 	u8 currentY;
 	u8 initialX;
@@ -26,9 +28,11 @@ private:
 	u8 textSpeed;
 	bool aDown;
 	bool bDown;
+	void HandleCharacter(char c, const TFont* font);
+	virtual void Initialise();
 public:
-	TextDrawer(char* newString, u8 x, u8 y, u32 speed, EndFunctionType endFunction = (EndFunctionType)NULL, u32 functionData = 0);
-	~TextDrawer();
+	TextDrawer(char* newString, u8 x, u8 y, u32 speed, EndFunctionType endFunction = (EndFunctionType)NULL, u32 functionData = 0, u32 inkColour = 3);
+	virtual ~TextDrawer();
 	void Update();
 	void ADown(bool value) { aDown = value; }
 	void BDown(bool value) { bDown = value; }

@@ -41,4 +41,4 @@ bufferstd 0x2 0x1C
 return
 
 #org @standard8string
-#text [player] put the [buffer2]\nin the [buffer3].
+#text [player] put the [buffer1]\nin the [buffer2].

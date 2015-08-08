@@ -8,7 +8,7 @@
 #include "Items.h"
 #include "String.h"
 
-Item Items::items[] = { };
+RODATA_LOCATION ALIGN(4) Item Items::items[] = { { { 'M', 'a', 's', 't', 'e', 'r', 'b', 'a', 'l', 'l', '\0', 0, 0, 0 }, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
 Items::Items()
 {
@@ -46,7 +46,7 @@ char* Items::GetItemName(u16 itemID)
 	return (char*)&items[itemID].name;
 }
 
-char* Items::GetPluralisedItemName(u16 itemID)
+String Items::GetPluralisedItemName(u16 itemID)
 {
 	String s = (char*)&items[itemID].name;
 	if (s.EndsWith('y'))
@@ -58,5 +58,5 @@ char* Items::GetPluralisedItemName(u16 itemID)
 	{
 		s += 's';
 	}
-	return s.GetUnderlyingArray();
+	return s;
 }

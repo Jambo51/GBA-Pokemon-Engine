@@ -7,7 +7,6 @@
 
 #include "GlobalDefinitions.h"
 #include "MemoryLocations.h"
-#include "PokemonBaseData.h"
 #include "BattleStrings.h"
 #include "LoadUnalignedCode.h"
 #include "Pokemon.h"
@@ -22,6 +21,7 @@
 #include "Game.h"
 #include "Flags.h"
 #include "Items.h"
+#include "Moves.h"
 
 #define FALSE 0
 #define TRUE 1
@@ -373,7 +373,7 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 	{
 		// do obedience stuff
 	}
-	MoveData* moveInfo = &moveData[battleDataPointer.moveIndex];
+	const MoveData &moveInfo = *Moves::GetMoveDataByIndex(battleDataPointer.moveIndex);
 	if (attacker[0].primaryStatusBits.sleepTurns > 0)
 	{
 		if (attacker[0].ability == Early_Bird && attacker[0].primaryStatusBits.sleepTurns > 1)
@@ -432,7 +432,7 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 		}
 	}
 #endif
-	if (moveInfo[0].effectID == Effects_Echoed_Voice)
+	if (moveInfo.effectID == Effects_Echoed_Voice)
 	{
 		if (battleDataPointer.flags.echoedVoiceRaisedThisTurn == 0)
 		{
@@ -444,23 +444,23 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 	{
 		battleDataPointer.counterBits.echoedVoice = 0;
 	}
-	if (moveInfo[0].effectID != Effects_Fury_Cutter)
+	if (moveInfo.effectID != Effects_Fury_Cutter)
 	{
 		attacker[0].secondaryStatusBits.furyCutterCounter = 0;
 	}
-	if (moveInfo[0].effectID != Effects_Rollout)
+	if (moveInfo.effectID != Effects_Rollout)
 	{
 		attacker[0].secondaryStatusBits.rolloutUses = 0;
 	}
-	if (moveInfo[0].effectID == Effects_Judgement && attacker[0].heldItem >= Item_Fighting_Plate && attacker[0].heldItem <= Item_Fairy_Plate && battleDataPointer.counterBits.magicRoom == 0)
+	if (moveInfo.effectID == Effects_Judgement && attacker[0].heldItem >= Item_Fighting_Plate && attacker[0].heldItem <= Item_Fairy_Plate && battleDataPointer.counterBits.magicRoom == 0)
 	{
 		battleDataPointer.flags.moveTypeOverride = 1;
 		battleDataPointer.battleBanks[MoveTypeOverrideValue] = attacker[0].heldItem - Item_Fighting_Plate + 1;
 	}
-	if (moveInfo[0].effectID == Effects_Techno_Blast && attacker[0].heldItem >= Item_Burn_Drive && attacker[0].heldItem <= Item_Shock_Drive)
+	if (moveInfo.effectID == Effects_Techno_Blast && attacker[0].heldItem >= Item_Burn_Drive && attacker[0].heldItem <= Item_Shock_Drive)
 	{
 		battleDataPointer.flags.moveTypeOverride = 1;
-		u32 type = moveInfo[0].type;
+		u32 type = moveInfo.type;
 		switch (attacker[0].heldItem)
 		{
 			case Item_Burn_Drive:
@@ -478,7 +478,7 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 		}
 		battleDataPointer.battleBanks[MoveTypeOverrideValue] = type;
 	}
-	else if (moveInfo[0].effectID == Effects_Weather_Ball)
+	else if (moveInfo.effectID == Effects_Weather_Ball)
 	{
 		if (battleDataPointer.weatherBits.sunny)
 		{
@@ -501,7 +501,7 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 			battleDataPointer.battleBanks[MoveTypeOverrideValue] = Type_Rock;
 		}
 	}
-	else if (moveInfo[0].effectID == Effects_Hidden_Power)
+	else if (moveInfo.effectID == Effects_Hidden_Power)
 	{
 		u32 i;
 		u32 counter = 0;
@@ -514,7 +514,7 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 		battleDataPointer.flags.moveTypeOverride = 1;
 		battleDataPointer.battleBanks[MoveTypeOverrideValue] = Type_Fighting + counter;
 	}
-	else if (moveInfo[0].effectID == Effects_Natural_Gift)
+	else if (moveInfo.effectID == Effects_Natural_Gift)
 	{
 		if (attacker[0].ability != Klutz)
 		{
@@ -551,7 +551,7 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 		battleDataPointer.flags.moveTypeOverride = 1;
 		battleDataPointer.battleBanks[MoveTypeOverrideValue] = Type_Normal;
 	}
-	else if (moveInfo[0].type == Type_Normal)
+	else if (moveInfo.type == Type_Normal)
 	{
 		if (battleDataPointer.flags.ionDeluge)
 		{
@@ -574,24 +574,24 @@ u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 			battleDataPointer.battleBanks[MoveTypeOverrideValue] = Type_Ice;
 		}
 	}
-	if (moveInfo[0].effectID != Effects_Hits_Through_Protect)
+	if (moveInfo.effectID != Effects_Hits_Through_Protect)
 	{
 		if (defender[0].battleStatusFlags.protectedFlag)
 		{
 			battleScriptPointer = (u8*)&Script_Protect_Triggered;
 			return NotEnded;
 		}
-		if (defender[0].battleStatusFlags.highPriorityProtected && moveInfo[0].priority > 0)
+		if (defender[0].battleStatusFlags.highPriorityProtected && moveInfo.priority > 0)
 		{
 			battleScriptPointer = (u8*)&Script_Quick_Guard_Triggered;
 			return NotEnded;
 		}
-		if (defender[0].battleStatusFlags.wideGuardProtected && moveInfo[0].targets != 50)
+		if (defender[0].battleStatusFlags.wideGuardProtected && moveInfo.targets != 50)
 		{
 			battleScriptPointer = (u8*)&Script_Wide_Guard_Triggered;
 			return NotEnded;
 		}
-		if (defender[0].battleStatusFlags.craftyShieldProtected && moveInfo[0].effectID != Effects_Perish_Song && moveInfo[0].category == Category_Status)
+		if (defender[0].battleStatusFlags.craftyShieldProtected && moveInfo.effectID != Effects_Perish_Song && moveInfo.category == Category_Status)
 		{
 			battleScriptPointer = (u8*)&Script_Crafty_Shield_Triggered;
 			return NotEnded;
@@ -625,19 +625,19 @@ u32 HitMissCalculation(ScriptRunner* runner)
 	u32 defenderBank = battleDataPointer.battleBanks[Target];
 	PokemonBattleData* attacker = &battleDataPointer.pokemonStats[userBank];
 	PokemonBattleData* defender = &battleDataPointer.pokemonStats[defenderBank];
-	MoveData* moveInfo = &moveData[battleDataPointer.moveIndex];
-	u32 accuracy = moveInfo[0].accuracy;
+	const MoveData &moveInfo = *Moves::GetMoveDataByIndex(battleDataPointer.moveIndex);
+	u32 accuracy = moveInfo.accuracy;
 	if (accuracy != 0)
 	{
-		if ((defender[0].battleStatusFlags.chargingDive && moveInfo[0].specialFlagsStruct.hitsThroughDive == 0) ||
-				(defender[0].battleStatusFlags.chargingFly && moveInfo[0].specialFlagsStruct.hitsThroughFly == 0) ||
-				(defender[0].battleStatusFlags.chargingDig && moveInfo[0].specialFlagsStruct.hitsThroughDig == 0))
+		if ((defender[0].battleStatusFlags.chargingDive && moveInfo.specialFlagsStruct.hitsThroughDive == 0) ||
+				(defender[0].battleStatusFlags.chargingFly && moveInfo.specialFlagsStruct.hitsThroughFly == 0) ||
+				(defender[0].battleStatusFlags.chargingDig && moveInfo.specialFlagsStruct.hitsThroughDig == 0))
 		{
 			battleScriptPointer = (u8*)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 4);
 			return NotEnded;
 		}
 		accuracy *= evasionAccuracyChart[attacker[0].statLevels[Accuracy]];
-		if (moveInfo[0].effectID == Effects_Sacred_Sword)
+		if (moveInfo.effectID == Effects_Sacred_Sword)
 		{
 			accuracy = Maths::UnsignedDivide(accuracy, 100);
 		}
@@ -913,11 +913,11 @@ u32 ApplyCriticalHitModifiers(u32 currentDamage, PokemonBattleData* attacker, Po
 	return currentDamage;
 }
 
-u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo)
+u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, const MoveData &moveInfo)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	const BattleTypeStruct &battleType = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleTypeStruct();
-	u32 moveType = moveInfo[0].type;
+	u32 moveType = moveInfo.type;
 	if (battleDataPointer.flags.moveTypeOverride)
 	{
 		moveType = battleDataPointer.battleBanks[MoveTypeOverrideValue];
@@ -935,7 +935,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 			{
 				currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 			}
-			else if (attacker[0].primaryStatusBits.burned && moveInfo[0].category == Category_Physical)
+			else if (attacker[0].primaryStatusBits.burned && moveInfo.category == Category_Physical)
 			{
 				currentDamage >>= 1;
 			}
@@ -961,19 +961,19 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 		{
 			currentDamage >>= 1;
 		}
-		if ((attackerAbility == Pure_Power || attackerAbility == Huge_Power) && moveInfo[0].category == Category_Physical)
+		if ((attackerAbility == Pure_Power || attackerAbility == Huge_Power) && moveInfo.category == Category_Physical)
 		{
 			currentDamage <<= 1;
 		}
-		if (attackerAbility == Solar_Power && battleDataPointer.weatherBits.sunny && moveInfo[0].category == Category_Special)
+		if (attackerAbility == Solar_Power && battleDataPointer.weatherBits.sunny && moveInfo.category == Category_Special)
 		{
 			currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 		}
-		if (attackerAbility == Hustle && moveInfo[0].category == Category_Physical)
+		if (attackerAbility == Hustle && moveInfo.category == Category_Physical)
 		{
 			currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 		}
-		if (attackerAbility == Slow_Start && moveInfo[0].category == Category_Physical && attacker[0].slowStartCounter < 4)
+		if (attackerAbility == Slow_Start && moveInfo.category == Category_Physical && attacker[0].slowStartCounter < 4)
 		{
 			currentDamage >>= 1;
 		}
@@ -981,7 +981,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 		{
 			currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 		}
-		if (battleType.info.isDoubleBattle && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User] ^ 2].species == Cherrim && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User] ^ 2].ability == Flower_Gift && moveInfo[0].category == Category_Physical)
+		if (battleType.info.isDoubleBattle && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User] ^ 2].species == Cherrim && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User] ^ 2].ability == Flower_Gift && moveInfo.category == Category_Physical)
 		{
 			currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 		}
@@ -998,7 +998,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 					}
 					break;
 				case Damp:
-					if (moveInfo[0].effectID == Effects_Self_Destruct)
+					if (moveInfo.effectID == Effects_Self_Destruct)
 					{
 						battleDataPointer.flags.attackEffectiveness = NoEffect;
 						battleDataPointer.flags.dampTriggered = 1;
@@ -1073,14 +1073,14 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 			}
 		}
 	}
-	if (battleType.info.isDoubleBattle && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target] ^ 2].species == Cherrim && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target] ^ 2].ability == Flower_Gift && moveInfo[0].category == Category_Physical)
+	if (battleType.info.isDoubleBattle && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target] ^ 2].species == Cherrim && battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target] ^ 2].ability == Flower_Gift && moveInfo.category == Category_Physical)
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 67);
 	}
 	return currentDamage;
 }
 
-u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo)
+u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, const MoveData &moveInfo)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	u32 ability = attacker[0].ability;
@@ -1088,7 +1088,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 	}
-	if (ability == Flare_Boost && attacker[0].primaryStatusBits.burned && moveInfo[0].category == Category_Physical)
+	if (ability == Flare_Boost && attacker[0].primaryStatusBits.burned && moveInfo.category == Category_Physical)
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 	}
@@ -1108,15 +1108,15 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 			}
 		}
 	}
-	if (ability == Reckless && moveInfo[0].effectID == Effects_Recoil)
+	if (ability == Reckless && moveInfo.effectID == Effects_Recoil)
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 120);
 	}
-	if (ability == Iron_Fist && moveInfo[0].specialFlagsStruct.punching)
+	if (ability == Iron_Fist && moveInfo.specialFlagsStruct.punching)
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 120);
 	}
-	if (ability == Toxic_Boost && (attacker[0].primaryStatusBits.poisoned || attacker[0].primaryStatusBits.badlyPoisoned) && moveInfo[0].category == Category_Physical)
+	if (ability == Toxic_Boost && (attacker[0].primaryStatusBits.poisoned || attacker[0].primaryStatusBits.badlyPoisoned) && moveInfo.category == Category_Physical)
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 	}
@@ -1137,7 +1137,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 		}
 	}
 	{
-		u32 type = moveInfo[0].type;
+		u32 type = moveInfo.type;
 		if (battleDataPointer.flags.moveTypeOverride)
 		{
 			type = battleDataPointer.battleBanks[MoveTypeOverrideValue];
@@ -1186,28 +1186,28 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 			}
 		}
 	}
-	if (ability == Sheer_Force && moveInfo[0].specialFlagsStruct.sheerForceBlockable)
+	if (ability == Sheer_Force && moveInfo.specialFlagsStruct.sheerForceBlockable)
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 130);
 		battleDataPointer.flags.extraEffectBlock = 1;
 	}
-	if (moveInfo[0].effectID == Effects_Facade && (attacker[0].primaryStatusBits.paralysed || attacker[0].primaryStatusBits.burned || attacker[0].primaryStatusBits.poisoned || attacker[0].primaryStatusBits.badlyPoisoned))
+	if (moveInfo.effectID == Effects_Facade && (attacker[0].primaryStatusBits.paralysed || attacker[0].primaryStatusBits.burned || attacker[0].primaryStatusBits.poisoned || attacker[0].primaryStatusBits.badlyPoisoned))
 	{
 		currentDamage <<= 1;
 	}
-	if (moveInfo[0].effectID == Effects_Brine && (defender[0].currentHP <= (defender[0].maximumHP >> 1)))
+	if (moveInfo.effectID == Effects_Brine && (defender[0].currentHP <= (defender[0].maximumHP >> 1)))
 	{
 		currentDamage <<= 1;
 	}
-	if (moveInfo[0].effectID == Effects_Venoshock && (defender[0].primaryStatusBits.badlyPoisoned || defender[0].primaryStatusBits.poisoned))
+	if (moveInfo.effectID == Effects_Venoshock && (defender[0].primaryStatusBits.badlyPoisoned || defender[0].primaryStatusBits.poisoned))
 	{
 		currentDamage <<= 1;
 	}
-	if (moveInfo[0].effectID == Effects_Retaliate && attacker[0].battleStatusFlags.retaliatePowerUp)
+	if (moveInfo.effectID == Effects_Retaliate && attacker[0].battleStatusFlags.retaliatePowerUp)
 	{
 		currentDamage <<= 1;
 	}
-	if (moveInfo[0].effectID == Effects_Fusion_Move && attacker[0].battleStatusFlags.fusionPowerUp)
+	if (moveInfo.effectID == Effects_Fusion_Move && attacker[0].battleStatusFlags.fusionPowerUp)
 	{
 		currentDamage <<= 1;
 	}
@@ -1215,7 +1215,7 @@ u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, Poke
 	{
 		currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, 150);
 	}
-	if (moveInfo[0].effectID == Effects_SolarBeam && battleDataPointer.weatherBits.sunny == 0 && battleDataPointer.weather != 0)
+	if (moveInfo.effectID == Effects_SolarBeam && battleDataPointer.weatherBits.sunny == 0 && battleDataPointer.weather != 0)
 	{
 		currentDamage >>= 1;
 	}
@@ -1298,18 +1298,18 @@ u8 naturalGiftDamageValues[] = {
 		80
 };
 
-u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* defender, MoveData* moveInfo, ScriptRunner* runner)
+u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* defender, const MoveData &moveInfo, ScriptRunner* runner)
 {
 	BattleData &battleDataPointer = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleData();
 	const BattleTypeStruct &battleType = ((BattleScreen*)GameModeManager::GetScreen())->GetBattleTypeStruct();
 	u32 returnable;
-	switch (moveInfo[0].effectID)
+	switch (moveInfo.effectID)
 	{
 		case Effects_Frustration:
 			returnable = max(Maths::UnsignedDivide((255 - attacker[0].happiness) * 10, 25), 1);
 			break;
 		case Effects_Payback:
-			returnable = ((defender[0].battleStatusFlags.moved) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower);
+			returnable = ((defender[0].battleStatusFlags.moved) ? moveInfo.basePower << 1 : moveInfo.basePower);
 			break;
 		case Effects_Return:
 			returnable = max(Maths::UnsignedDivide(attacker[0].happiness * 10, 25), 1);
@@ -1342,17 +1342,17 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			break;
 		}
 		case Effects_Avalanche:
-			returnable = (attacker[0].damageReceivedThisTurn) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (attacker[0].damageReceivedThisTurn) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Gyro_Ball:
 		{
 			u32 speed1 = (defender[0].ability == Unaware) ? attacker[0].stats[BattleSpeed] : attacker[0].effectiveStats[BattleSpeed];
 			u32 speed2 = (attacker[0].ability == Unaware) ? defender[0].stats[BattleSpeed] : defender[0].effectiveStats[BattleSpeed];
-			returnable = min(moveInfo[0].basePower, 25 * Maths::UnsignedDivide(speed2, speed1));
+			returnable = min(moveInfo.basePower, 25 * Maths::UnsignedDivide(speed2, speed1));
 			break;
 		}
 		case Effects_Eruption:
-			returnable = max(Maths::UnsignedDivide(moveInfo[0].basePower * attacker[0].currentHP, attacker[0].maximumHP), 1);
+			returnable = max(Maths::UnsignedDivide(moveInfo.basePower * attacker[0].currentHP, attacker[0].maximumHP), 1);
 			break;
 		case Effects_Punishment:
 		{
@@ -1366,28 +1366,28 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 					counter += value - 6;
 				}
 			}
-			returnable = max((moveInfo[0].basePower >> 1) + (20 * counter), moveInfo[0].basePower);
-			returnable = min(returnable, moveInfo[0].secondaryInformation);
+			returnable = max((moveInfo.basePower >> 1) + (20 * counter), moveInfo.basePower);
+			returnable = min(returnable, moveInfo.secondaryInformation);
 			break;
 		}
 		case Effects_Fury_Cutter:
-			returnable = moveInfo[0].basePower * (1 << attacker[0].secondaryStatusBits.furyCutterCounter);
+			returnable = moveInfo.basePower * (1 << attacker[0].secondaryStatusBits.furyCutterCounter);
 			break;
 		case Effects_Low_Kick:
 			// Note, Pokédex data not complete, so not done as yet
 			returnable = 20;
 			break;
 		case Effects_Echoed_Voice:
-			returnable = min(moveInfo[0].basePower * (battleDataPointer.counterBits.echoedVoice + 1), 200);
+			returnable = min(moveInfo.basePower * (battleDataPointer.counterBits.echoedVoice + 1), 200);
 			break;
 		case Effects_Hex:
-			returnable = (defender[0].primaryStatus != 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (defender[0].primaryStatus != 0) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Wring_Out:
-			returnable = Maths::UnsignedDivide(moveInfo[0].basePower * Maths::UnsignedDivide(defender[0].currentHP * 100, defender[0].maximumHP), 100);
+			returnable = Maths::UnsignedDivide(moveInfo.basePower * Maths::UnsignedDivide(defender[0].currentHP * 100, defender[0].maximumHP), 100);
 			break;
 		case Effects_Assurance:
-			returnable = (defender[0].battleStatusFlags.damaged) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (defender[0].battleStatusFlags.damaged) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Heat_Crash:
 			// Not yet implemented, same as low kick
@@ -1405,11 +1405,11 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 					counter += value - 6;
 				}
 			}
-			returnable = moveInfo[0].basePower * (counter + 1);
+			returnable = moveInfo.basePower * (counter + 1);
 			break;
 		}
 		case Effects_Acrobatics:
-			returnable = (attacker[0].heldItem == 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (attacker[0].heldItem == 0) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Flail:
 		{
@@ -1467,7 +1467,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			break;
 		}
 		case Effects_Round:
-			returnable = moveInfo[0].basePower;
+			returnable = moveInfo.basePower;
 			if (battleType.info.isDoubleBattle)
 			{
 				u32 allyMove = battleDataPointer.battleBanks[User] ^ 2;
@@ -1479,24 +1479,24 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			}
 			break;
 		case Effects_Triple_Kick:
-			returnable = (runner->GetBank(3) + 1) * moveInfo[0].basePower;
+			returnable = (runner->GetBank(3) + 1) * moveInfo.basePower;
 			break;
 		case Effects_Wake_Up_Slap:
-			returnable = (defender[0].primaryStatusBits.sleepTurns != 0) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (defender[0].primaryStatusBits.sleepTurns != 0) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Smelling_Salt:
-			returnable = (defender[0].primaryStatusBits.paralysed) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (defender[0].primaryStatusBits.paralysed) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Weather_Ball:
-			returnable = (battleDataPointer.weather) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (battleDataPointer.weather) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Gust:
-			returnable = (defender[0].battleStatusFlags.chargingFly) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (defender[0].battleStatusFlags.chargingFly) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Hidden_Power:
 		{
 #if GenVIHiddenPower == TRUE
-			returnable = moveInfo[0].basePower;
+			returnable = moveInfo.basePower;
 #else
 			u32 i;
 			u32 counter = 0;
@@ -1514,25 +1514,25 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			break;
 		}
 		case Effects_Spit_Up:
-			returnable = moveInfo[0].basePower * defender[0].secondaryStatusBits.stockpile;
+			returnable = moveInfo.basePower * defender[0].secondaryStatusBits.stockpile;
 			break;
 		case Effects_Pursuit:
-			returnable = (defender[0].battleStatusFlags.switching) ? moveInfo[0].basePower << 1 : moveInfo[0].basePower;
+			returnable = (defender[0].battleStatusFlags.switching) ? moveInfo.basePower << 1 : moveInfo.basePower;
 			break;
 		case Effects_Present:
 		{
 			u32 rand = runner->GetBank(0);
 			if (rand < 60)
 			{
-				returnable = moveInfo[0].basePower;
+				returnable = moveInfo.basePower;
 			}
 			else if (rand < 90)
 			{
-				returnable = moveInfo[0].basePower << 1;
+				returnable = moveInfo.basePower << 1;
 			}
 			else
 			{
-				returnable = moveInfo[0].basePower * 3;
+				returnable = moveInfo.basePower * 3;
 			}
 			break;
 		}
@@ -1545,7 +1545,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 			}
 			else
 			{
-				returnable = moveInfo[0].basePower;
+				returnable = moveInfo.basePower;
 			}
 			break;
 		}
@@ -1581,23 +1581,23 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 				factor = 7;
 			}
 			battleDataPointer.flags.damageTypeDealt = factor;
-			returnable = moveInfo[0].basePower + (moveInfo[0].secondaryInformation * factor);
+			returnable = moveInfo.basePower + (moveInfo.secondaryInformation * factor);
 			break;
 		}
 		case Effects_Rollout:
-			returnable = moveInfo[0].basePower * (1 << (attacker[0].secondaryStatusBits.rolloutUses + attacker[0].battleStatusFlags.usedDefenceCurl));
+			returnable = moveInfo.basePower * (1 << (attacker[0].secondaryStatusBits.rolloutUses + attacker[0].battleStatusFlags.usedDefenceCurl));
 			break;
 		case Effects_Fling:
-			returnable = moveInfo[0].basePower * (1 << (attacker[0].secondaryStatusBits.rolloutUses + attacker[0].battleStatusFlags.usedDefenceCurl));
+			returnable = moveInfo.basePower * (1 << (attacker[0].secondaryStatusBits.rolloutUses + attacker[0].battleStatusFlags.usedDefenceCurl));
 			break;
 		case Effects_Pledge:
-			returnable = (attacker[0].battleStatusFlags.pledgeTriggered) ? moveInfo[0].secondaryInformation : moveInfo[0].basePower;
+			returnable = (attacker[0].battleStatusFlags.pledgeTriggered) ? moveInfo.secondaryInformation : moveInfo.basePower;
 			break;
 		case Effects_Knock_Off:
-			returnable = (CanKnockItemOff(defender, true)) ? Maths::UnsignedFractionalMultiplication(moveInfo[0].basePower, 150) : moveInfo[0].basePower;
+			returnable = (CanKnockItemOff(defender, true)) ? Maths::UnsignedFractionalMultiplication(moveInfo.basePower, 150) : moveInfo.basePower;
 			break;
 		default:
-			returnable = moveInfo[0].basePower;
+			returnable = moveInfo.basePower;
 			break;
 	}
 	returnable = ApplyBasePowerModifiers(returnable, attacker, defender, moveInfo);
@@ -1614,10 +1614,10 @@ u32 CalculateDamage(ScriptRunner* runner)
 	PokemonBattleData* defender = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
 	u32 attackerIndex;
 	u32 defenderIndex;
-	MoveData* moveInfo = &moveData[moveID];
-	if (moveInfo[0].specialFlagsStruct.specialistDamageRoutine)
+	const MoveData &moveInfo = *Moves::GetMoveDataByIndex(moveID);
+	if (moveInfo.specialFlagsStruct.specialistDamageRoutine)
 	{
-		switch (moveInfo[0].effectID)
+		switch (moveInfo.effectID)
 		{
 			case Effects_Psywave:
 				damage = max(1, Maths::UnsignedDivide((Maths::GetDelimitedRandom32BitValue(101) + 50) * attacker[0].level, 100));
@@ -1626,7 +1626,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 				damage = attacker[0].level;
 				break;
 			case Effects_Sonic_Boom:
-				damage = moveInfo[0].basePower;
+				damage = moveInfo.basePower;
 				break;
 			case Effects_Super_Fang:
 				damage = max(1, defender[0].currentHP >> 1);
@@ -1652,14 +1652,14 @@ u32 CalculateDamage(ScriptRunner* runner)
 	else
 	{
 		{
-			u32 category = moveInfo[0].category;
+			u32 category = moveInfo.category;
 			if (category == Category_Status)
 			{
 				runner->SetBank(0, 0);
 				battleScriptPointer++;
 				return NotEnded;
 			}
-			if (moveInfo[0].category == Category_Physical)
+			if (moveInfo.category == Category_Physical)
 			{
 				attackerIndex = BattleAttack;
 				defenderIndex = BattleDefence;
@@ -1667,7 +1667,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 			else
 			{
 				attackerIndex = BattleSpecialAttack;
-				if (moveInfo[0].effectID == Effects_Special_Physical)
+				if (moveInfo.effectID == Effects_Special_Physical)
 				{
 					defenderIndex = BattleDefence;
 				}
@@ -1684,7 +1684,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 		{
 			u32 value;
 			{
-				if (moveInfo[0].effectID == Effects_Foul_Play)
+				if (moveInfo.effectID == Effects_Foul_Play)
 				{
 					if (defender[0].ability == Unaware)
 					{
@@ -1713,7 +1713,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 				{
 					value <<= 1;
 				}
-				if (attacker[0].species == Clamperl && attacker[0].heldItem == Item_Deep_Sea_Tooth && moveInfo[0].category == Category_Special)
+				if (attacker[0].species == Clamperl && attacker[0].heldItem == Item_Deep_Sea_Tooth && moveInfo.category == Category_Special)
 				{
 					value <<= 1;
 				}
@@ -1721,15 +1721,15 @@ u32 CalculateDamage(ScriptRunner* runner)
 				{
 					value <<= 1;
 				}
-				if ((attacker[0].species == Latios || attacker[0].species == Latias) && attacker[0].heldItem == Item_Soul_Dew && moveInfo[0].category == Category_Special)
+				if ((attacker[0].species == Latios || attacker[0].species == Latias) && attacker[0].heldItem == Item_Soul_Dew && moveInfo.category == Category_Special)
 				{
 					value = Maths::UnsignedFractionalMultiplication(value, 150);
 				}
-				if (attacker[0].heldItem == Item_Choice_Band && moveInfo[0].category == Category_Physical)
+				if (attacker[0].heldItem == Item_Choice_Band && moveInfo.category == Category_Physical)
 				{
 					value = Maths::UnsignedFractionalMultiplication(value, 150);
 				}
-				if (attacker[0].heldItem == Item_Choice_Specs && moveInfo[0].category == Category_Special)
+				if (attacker[0].heldItem == Item_Choice_Specs && moveInfo.category == Category_Special)
 				{
 					value = Maths::UnsignedFractionalMultiplication(value, 150);
 				}
@@ -1738,7 +1738,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 		}
 		{
 			u32 defenderValue;
-			if (attacker[0].ability == Unaware || moveInfo[0].effectID == Effects_Chip_Away)
+			if (attacker[0].ability == Unaware || moveInfo.effectID == Effects_Chip_Away)
 			{
 				defenderValue = defender[0].stats[defenderIndex];
 			}
@@ -1748,19 +1748,19 @@ u32 CalculateDamage(ScriptRunner* runner)
 			}
 			if (defender[0].ability != Klutz)
 			{
-				if (defender[0].heldItem == Item_Marvel_Scale && defender[0].primaryStatus && moveInfo[0].category == Category_Physical)
+				if (defender[0].heldItem == Item_Marvel_Scale && defender[0].primaryStatus && moveInfo.category == Category_Physical)
 				{
 					defenderValue = Maths::UnsignedFractionalMultiplication(defenderValue, 150);
 				}
-				if (defender[0].species == Clamperl && defender[0].heldItem == Item_Deep_Sea_Scale && moveInfo[0].category == Category_Special)
+				if (defender[0].species == Clamperl && defender[0].heldItem == Item_Deep_Sea_Scale && moveInfo.category == Category_Special)
 				{
 					defenderValue = Maths::UnsignedFractionalMultiplication(defenderValue, 150);
 				}
-				if (defender[0].species == Ditto && defender[0].heldItem == Item_Metal_Powder && moveInfo[0].category == Category_Physical && defender[0].battleStatusFlags.transformed == 0)
+				if (defender[0].species == Ditto && defender[0].heldItem == Item_Metal_Powder && moveInfo.category == Category_Physical && defender[0].battleStatusFlags.transformed == 0)
 				{
 					defenderValue <<= 1;
 				}
-				if ((defender[0].species == Latios || defender[0].species == Latias) && defender[0].heldItem == Item_Soul_Dew && moveInfo[0].category == Category_Special)
+				if ((defender[0].species == Latios || defender[0].species == Latias) && defender[0].heldItem == Item_Soul_Dew && moveInfo.category == Category_Special)
 				{
 					defenderValue = Maths::UnsignedFractionalMultiplication(defenderValue, 150);
 				}
@@ -1779,7 +1779,7 @@ u32 CalculateDamage(ScriptRunner* runner)
 		damage += 2;
 		// Multi-target Modifier - absent
 		// as moves do not currently have such a setting
-		u32 type = moveInfo[0].type;
+		u32 type = moveInfo.type;
 		if (battleDataPointer.flags.moveTypeOverride)
 		{
 			type = battleDataPointer.battleBanks[MoveTypeOverrideValue];
@@ -2157,7 +2157,7 @@ u32 JumpIf(ScriptRunner* runner)
 		}
 		case JumpIfMoveEffect:
 		{
-			if (BattleComparisonRoutine(moveData[battleDataPointer.moveIndex].effectID, UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 2, 2), battleScriptPointer[4]) == true)
+			if (BattleComparisonRoutine(Moves::GetMoveDataByIndex(battleDataPointer.moveIndex)->effectID, UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 2, 2), battleScriptPointer[4]) == true)
 			{
 				battleScriptPointer = (u8*)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 5, 4);
 			}
@@ -2278,7 +2278,7 @@ u32 ApplyCalculatedDamage(ScriptRunner* runner)
 	PokemonBattleData* defender = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
 	if (defender[0].currentHP <= runner->GetBank(0))
 	{
-		if (moveData[battleDataPointer.moveIndex].effectID == Effects_False_Swipe)
+		if (Moves::GetMoveDataByIndex(battleDataPointer.moveIndex)->effectID == Effects_False_Swipe)
 		{
 			defender[0].currentHP = 1;
 		}
@@ -2434,9 +2434,9 @@ u32 ApplyMoveEffects(ScriptRunner* runner)
 			}
 			else
 			{
-				chanceValue = moveData[battleDataPointer.moveIndex].effectAccuracy;
+				chanceValue = Moves::GetMoveDataByIndex(battleDataPointer.moveIndex)->effectAccuracy;
 			}
-			u32 secondaryInformation = moveData[battleDataPointer.moveIndex].secondaryInformation;
+			u32 secondaryInformation = Moves::GetMoveDataByIndex(battleDataPointer.moveIndex)->secondaryInformation;
 			effectID &= 0x3F;
 			battleDataPointer.battleBanks[CurrentEffectID] = effectID;
 			switch (effectID)

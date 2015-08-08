@@ -31,8 +31,8 @@ standard0part1:
 	.byte Return
 
 standard0switchtable:
-	.word standard0part3
 	.word standard0part4
+	.word standard0part3
 
 
 standard0part2:
@@ -170,7 +170,7 @@ standard0string1:
 	.byte 0x65
 	.byte 0x20
 	.byte 0xFB
-	.byte 0x02
+	.byte 0x01
 	.byte 0x21
 	.byte 0x00
 
@@ -193,7 +193,7 @@ standard0string2:
 	.byte 0x65
 	.byte 0x20
 	.byte 0xFB
-	.byte 0x02
+	.byte 0x01
 	.byte 0x0A
 	.byte 0x69
 	.byte 0x6E
@@ -203,7 +203,7 @@ standard0string2:
 	.byte 0x65
 	.byte 0x20
 	.byte 0xFB
-	.byte 0x03
+	.byte 0x02
 	.byte 0x20
 	.byte 0x50
 	.byte 0x4F

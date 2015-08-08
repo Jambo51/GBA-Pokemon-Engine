@@ -9,9 +9,10 @@
 #include "Maths.h"
 #include "PokeSprites.h"
 #include "PokeStats.h"
-#include "PokemonBaseData.h"
 #include "Game.h"
 #include "TextFunctions.h"
+#include "Pokemon.h"
+#include "Moves.h"
 
 RODATA_LOCATION ALIGN(4) void* AbridgedPokemon::spriteLookupFromIndices[] = { (void*)&PokemonSprites::pokemonFrontSprite, (void*)&PokemonSprites::pokemonBackSprite, (void*)&PokemonSprites::pokemonNormalPalette, (void*)&PokemonSprites::pokemonShinyPalette };
 RODATA_LOCATION ALIGN(2) u16 AbridgedPokemon::numberOfPokemon = NumberOfPokemon - 1;
@@ -34,7 +35,7 @@ AbridgedPokemon::AbridgedPokemon(u32 species, u32 level, char* nickname)
 	}
 	else
 	{
-		Encrypt(Nickname, (u32)(&pokemonNames[species]));
+		Encrypt(Nickname, (u32)Pokemon::GetSpeciesName(species));
 	}
 	personalityID = GeneratePID();
 	(species != Unown)?Encrypt(FormeIndex, 0):SetFormeByUnownLetter();
@@ -59,8 +60,8 @@ AbridgedPokemon::AbridgedPokemon(u32 species, u32 level, char* nickname)
 
 void AbridgedPokemon::SetBaseExperienceFromLevel(u32 level)
 {
-	u8 expType = pokemonBaseData[species].levelUpType;
-	Encrypt(Experience, pokemonBaseExperiences[expType][level]);
+	u32 expType = pokemonBaseData[species].levelUpType;
+	Encrypt(Experience, Pokemon::GetBaseExperienceByTypeAndLevel(expType, level));
 }
 
 u32 AbridgedPokemon::GeneratePID()
@@ -113,7 +114,7 @@ bool AbridgedPokemon::IsFullyEvolved() const
 
 u32 AbridgedPokemon::GetExperienceAtLevel(u32 level)
 {
-	return pokemonBaseExperiences[pokemonBaseData[species].levelUpType][level - 1];
+	return Pokemon::GetBaseExperienceByTypeAndLevel(pokemonBaseData[species].levelUpType, level - 1);
 }
 
 u32 AbridgedPokemon::GetLevel100MaxExperience()
@@ -153,7 +154,7 @@ u32 AbridgedPokemon::Decrypt(u8 index) const
 			return forceShiny;
 			break;
 		case OTName:
-			return (u32)originalTrainerName;
+			return (u32)&originalTrainerName;
 			break;
 		case Mark:
 			return mark;
@@ -324,9 +325,13 @@ void AbridgedPokemon::Encrypt(u8 index, u32 value)
 			}
 			break;
 		case Gender:
-			if (value == Gender_Male || value == Gender_Female || value == Gender_Genderless)
+			if (value == Gender_Male || value == Gender_Female || value == Gender_Genderless && Pokemon::IsGenderLegitimate(value, species))
 			{
 				gender = value;
+			}
+			else
+			{
+				gender = Pokemon::CalculateValidGender(species);
 			}
 			break;
 		case Nature:
@@ -342,7 +347,7 @@ void AbridgedPokemon::Encrypt(u8 index, u32 value)
 			}
 			break;
 		case OTName:
-			//StringCopy((char*)&originalTrainerName, (char*)value, 7);
+			TextFunctions::StringCopy((char*)&originalTrainerName, (char*)value, 7);
 			break;
 		case Mark:
 			if (value <= 0xF)
@@ -743,16 +748,17 @@ void AbridgedPokemon::SetFormeByUnownLetter()
 
 void AbridgedPokemon::SetMoves(u32 currentLevel)
 {
-	MovesetEntry* theMoveset = (MovesetEntry*)movesets[species];
+	MovesetEntry* theMoveset = Pokemon::GetMovesetByIndex(species);
 	u32 i = 0;
 	u32 currentIndex = 0;
 	u32 level = theMoveset[i].level;
+	const MoveData &moveData = *Moves::GetMoveDataByIndex(theMoveset[i].moveID);
 	while (level != 0xFF)
 	{
 		if (currentLevel >= level)
 		{
 			Encrypt(Move1 + currentIndex, theMoveset[i].moveID);
-			Encrypt(Move1PP + currentIndex, moveData[theMoveset[i].moveID].basePP);
+			Encrypt(Move1PP + currentIndex, moveData.basePP);
 			Encrypt(PPBonuses, ppBonuses ^ (3 << (currentIndex << 1)));
 		}
 		i++;

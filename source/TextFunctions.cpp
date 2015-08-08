@@ -8,12 +8,14 @@
 #include "Battles.h"
 #include "GameModeManager.h"
 #include "Items.h"
+#include "Moves.h"
+#include "Pokemon.h"
+#include "BackgroundFunctions.h"
+#include "String.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include <tonc_tte.h>
-#include "PokemonBaseData.h"
-#include "MemoryLocations.h"
 #ifdef __cplusplus
 }
 #endif
@@ -27,22 +29,80 @@ RODATA_LOCATION ALIGN(4) char* TextFunctions::statBuffStrings2[2][3] = { { "rose
 RODATA_LOCATION ALIGN(4) char* TextFunctions::foeString = "Foe ";
 RODATA_LOCATION ALIGN(4) char* TextFunctions::wildString = "Wild ";
 RODATA_LOCATION ALIGN(4) char* TextFunctions::trainerClasses[] = { "Gym Leader", "Elite Four", "Champion", "Rocket Grunt", "Rocket Duo", "Elite Trainer" };
-RODATA_LOCATION ALIGN(4) char* TextFunctions::standardStrings[] = { "" };
+RODATA_LOCATION ALIGN(4) char* TextFunctions::standardStrings[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Balls", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB" };
 RODATA_LOCATION ALIGN(4) const TFont* TextFunctions::fonts[] = { &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font, &pokefont_b4Font };
 RODATA_LOCATION ALIGN(4) const char* TextFunctions::posString = "#{P:%d,%d}";
-RODATA_LOCATION ALIGN(4) IndexTable TextFunctions::localBuffersTable[] = {
+RODATA_LOCATION ALIGN(4) IndexTable TextFunctions::localBuffersTable[NumLocalBuffers] = {
 		{ 7, &playerNameLoc },
 		{ 7, &rival1NameLoc },
 		{ 7, &rival2NameLoc },
 		{ 7, &rival3NameLoc }
 };
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::primaryTextPalette[] = {
+		0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20664, 0x7B146546, 0x6F5B3529, 0x663156F5, 0x18C541AE
+};
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::primaryOutlinePalette[] = {
+		0x7FFF532E, 0x675A318C, 0x3AFF043C, 0x4BD20664, 0x7B146546, 0x6F5B3529, 0x663156F5, 0x18C541AE
+};
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::pauseOutline[][8] = {
+	{ 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEEEEEDF0, 0xEEEEEDF0, 0xBCEEEDF0, 0x11CEEDF0, 0x11BEEDF0 },
+	{ 0x00000000, 0xFFFFFFFF, 0xDDDDDDDD, 0xEEEEEEEE, 0xEEEEEEEE, 0xBBBBBBBB, 0x11111111, 0x11111111 },
+	{ 0x00000000, 0x00FFFFFF, 0x0FADDDDD, 0x0FEEEEEE, 0x0FAEEEEE, 0x0FAEEECB, 0x0FAEEC11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0 },
+	{ 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111 },
+	{ 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11CEEDF0, 0xBCEEEDF0, 0xEEEEEDF0, 0xEEEEEEF0, 0xAAAAAFF0, 0xFFFFFF00, 0x00000000 },
+	{ 0x11111111, 0x11111111, 0xBBBBBBBB, 0xEEEEEEEE, 0xEEEEEEEE, 0xAAAAAAAA, 0xFFFFFFFF, 0x00000000 },
+	{ 0x0FAEEB11, 0x0FAEEC11, 0x0FAEEECB, 0x0FAEEEEE, 0x0FAEEEEE, 0x0FFAAAAA, 0x00FFFFFF, 0x00000000 }
+};
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::textOutline[][16] = {
+	{ 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEEEEEDF0, 0xEEEEEDF0, 0xBCEEEDF0, 0x11CEEDF0, 0x11BEEDF0 },
+	{ 0x00000000, 0xFFFFFFFF, 0xDDDDDDDD, 0xEEEEEEEE, 0xEEEEEEEE, 0xBBBBBBBB, 0x11111111, 0x11111111 },
+	{ 0x00000000, 0x00FFFFFF, 0x0FADDDDD, 0x0FEEEEEE, 0x0FAEEEEE, 0x0FAEEECB, 0x0FAEEC11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0 },
+	{ 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111 },
+	{ 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11CEEDF0, 0xBCEEEDF0, 0xEEEEEDF0, 0xEEEEEEF0, 0xAAAAAFF0, 0xFFFFFF00, 0x00000000 },
+	{ 0x11111111, 0x11111111, 0xBBBBBBBB, 0xEEEEEEEE, 0xEEEEEEEE, 0xAAAAAAAA, 0xFFFFFFFF, 0x00000000 },
+	{ 0x0FAEEB11, 0x0FAEEC11, 0x0FAEEECB, 0x0FAEEEEE, 0x0FAEEEEE, 0x0FFAAAAA, 0x00FFFFFF, 0x00000000 }
+};
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::battlePauseOutline[][8] = {
+	{ 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEEEEEDF0, 0xEEEEEDF0, 0xBCEEEDF0, 0x11CEEDF0, 0x11BEEDF0 },
+	{ 0x00000000, 0xFFFFFFFF, 0xDDDDDDDD, 0xEEEEEEEE, 0xEEEEEEEE, 0xBBBBBBBB, 0x11111111, 0x11111111 },
+	{ 0x00000000, 0x00FFFFFF, 0x0FADDDDD, 0x0FEEEEEE, 0x0FAEEEEE, 0x0FAEEECB, 0x0FAEEC11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0 },
+	{ 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111 },
+	{ 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11CEEDF0, 0xBCEEEDF0, 0xEEEEEDF0, 0xEEEEEEF0, 0xAAAAAFF0, 0xFFFFFF00, 0x00000000 },
+	{ 0x11111111, 0x11111111, 0xBBBBBBBB, 0xEEEEEEEE, 0xEEEEEEEE, 0xAAAAAAAA, 0xFFFFFFFF, 0x00000000 },
+	{ 0x0FAEEB11, 0x0FAEEC11, 0x0FAEEECB, 0x0FAEEEEE, 0x0FAEEEEE, 0x0FFAAAAA, 0x00FFFFFF, 0x00000000 }
+};
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::battleTextOutline[][16] = {
+	{ 0x00000000, 0xFFFFFF00, 0xDDDDDAF0, 0xEEEEEDF0, 0xEEEEEDF0, 0xBCEEEDF0, 0x11CEEDF0, 0x11BEEDF0 },
+	{ 0x00000000, 0xFFFFFFFF, 0xDDDDDDDD, 0xEEEEEEEE, 0xEEEEEEEE, 0xBBBBBBBB, 0x11111111, 0x11111111 },
+	{ 0x00000000, 0x00FFFFFF, 0x0FADDDDD, 0x0FEEEEEE, 0x0FAEEEEE, 0x0FAEEECB, 0x0FAEEC11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0, 0x11BEEDF0 },
+	{ 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111 },
+	{ 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11, 0x0FAEEB11 },
+	{ 0x11BEEDF0, 0x11CEEDF0, 0xBCEEEDF0, 0xEEEEEDF0, 0xEEEEEEF0, 0xAAAAAFF0, 0xFFFFFF00, 0x00000000 },
+	{ 0x11111111, 0x11111111, 0xBBBBBBBB, 0xEEEEEEEE, 0xEEEEEEEE, 0xAAAAAAAA, 0xFFFFFFFF, 0x00000000 },
+	{ 0x0FAEEB11, 0x0FAEEC11, 0x0FAEEECB, 0x0FAEEEEE, 0x0FAEEEEE, 0x0FFAAAAA, 0x00FFFFFF, 0x00000000 }
+};
+RODATA_LOCATION ALIGN(4) u32 TextFunctions::colourIndexesFromInkColours[] = {
+		0x8, 0x4, 0x8, 0x2, 0xD, 0x6, 0x5
+};
 
-void TextFunctions::TextFunctions::SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
+void TextFunctions::SetTextColour(u32 colour, u32 shadowColour, u32 paperColour)
 {
 	TTC* context = tte_get_context();
 	context->cattr[TTE_INK] = colour & 0xF;
 	context->cattr[TTE_SHADOW] = shadowColour & 0xF;
 	context->cattr[TTE_PAPER] = paperColour & 0xF;
+}
+
+void TextFunctions::SetTextColourFromInkColour(u32 colourID)
+{
+	SetTextColour(colourIndexesFromInkColours[colourID]);
 }
 
 void TextFunctions::SetTextPaletteSlot(u32 paletteID)
@@ -81,33 +141,36 @@ void TextFunctions::StringCopy(char* stringDest, char* stringSource, u32 length)
 	stringDest[index] = currentChar;
 }
 
-char ToUpper(char c)
+char* TextFunctions::GetBufferAddress(u32 bufferID)
 {
-	if (c >= 'a' && c <= 'z')
+	if (bufferID < NUMBUFFERS)
 	{
-		c -= ('a' - 'A');
+		return Game::GetBufferPointer(bufferID);
 	}
-	return c;
+	else
+	{
+		if (bufferID - NUMBUFFERS < NumLocalBuffers)
+		{
+			return *(char**)localBuffersTable[bufferID - NUMBUFFERS].pointerToData;
+		}
+	}
+	return NULL;
 }
 
-char ToLower(char c)
+u32 TextFunctions::GetBufferLength(u32 bufferID)
 {
-	if (c >= 'A' && c <= 'Z')
+	if (bufferID < NUMBUFFERS)
 	{
-		c += ('a' - 'A');
+		return BUFFERLENGTH;
 	}
-	return c;
-}
-
-u32 StartsWithVowel(char* pointer)
-{
-	char c = pointer[0];
-	c = ToUpper(c);
-	if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')
+	else
 	{
-		return true;
+		if (bufferID - NUMBUFFERS < NumLocalBuffers)
+		{
+			return localBuffersTable[bufferID - NUMBUFFERS].index;
+		}
 	}
-	return false;
+	return 0;
 }
 
 u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSource, u32 length, u32 secondaryIndex)
@@ -193,37 +256,23 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 								break;
 							}
 							case 2:
-								pointer = (char*)&abilityNames[battleData.pokemonStats[battleData.battleBanks[User]].ability][0];
+								pointer = Pokemon::GetAbilityName(battleData.pokemonStats[battleData.battleBanks[User]].ability);
 								break;
 							case 3:
-								pointer = (char*)&abilityNames[battleData.pokemonStats[battleData.battleBanks[Target]].ability][0];
+								pointer = Pokemon::GetAbilityName(battleData.pokemonStats[battleData.battleBanks[Target]].ability);
 								break;
 							case 4:
 							{
 								u32 bank = battleData.battleBanks[User];
 								u16 move = battleData.pokemonStats[bank].moves[battleData.battleBanks[MoveSelection1 + bank]];
-								if (move <= NumberOfMoves)
-								{
-									pointer = (char*)&moveNames[move];
-								}
-								else
-								{
-									pointer = (char*)&moveNames[0];
-								}
+								pointer = Moves::GetMoveNameByIndex(move);
 								break;
 							}
 							case 5:
 							{
 								u32 bank = battleData.battleBanks[Target];
 								u16 move = battleData.pokemonStats[bank].moves[battleData.battleBanks[MoveSelection1 + bank]];
-								if (move <= NumberOfMoves)
-								{
-									pointer = (char*)&moveNames[move];
-								}
-								else
-								{
-									pointer = (char*)&moveNames[0];
-								}
+								pointer = Moves::GetMoveNameByIndex(move);
 								break;
 							}
 							case 6:
@@ -246,7 +295,7 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 8:
 							{
-								BufferUnsignedLongNumber(battleData.genericBuffer, 0);
+								//BufferNumber(battleData.genericBuffer, 0);
 								pointer = Game::GetBufferPointer(0);
 								break;
 							}
@@ -267,8 +316,9 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 12:
 							{
-								pointer = Items::GetItemName(battleData.itemIndex);
-								if (StartsWithVowel(pointer))
+								String tempPointer = Items::GetItemName(battleData.itemIndex);
+								pointer = tempPointer.GetUnderlyingArray();
+								if (tempPointer.StartsWithVowel())
 								{
 									index += StringCopyWithBufferChecks(stringDest, "an ", 0, index);
 								}
@@ -294,20 +344,13 @@ u32 TextFunctions::StringCopyWithBufferChecks(char* stringDest, char* stringSour
 							}
 							case 16:
 							{
-								pointer = (char*)&abilityNames[battleData.genericBuffer];
+								pointer = Pokemon::GetAbilityName(battleData.genericBuffer);
 								break;
 							}
 							case 17:
 							{
 								u16 move = battleData.moveIndex;
-								if (move <= NumberOfMoves)
-								{
-									pointer = (char*)&moveNames[move];
-								}
-								else
-								{
-									pointer = (char*)&moveNames[0];
-								}
+								pointer = Moves::GetMoveNameByIndex(move);
 								break;
 							}
 						}
@@ -347,6 +390,12 @@ void TextFunctions::BufferString(char* string, u8 bufferID, u32 maxLength)
 	}
 }
 
+void TextFunctions::BufferString(const String &string, u8 bufferID, u32 maxLength)
+{
+	char* buffer = Game::GetBufferPointer(bufferID);
+	StringCopy(buffer, string.GetUnderlyingArray(), maxLength);
+}
+
 void TextFunctions::BufferStandardString(u16 stringID, u8 bufferID)
 {
 	BufferString(standardStrings[stringID], bufferID, BUFFERLENGTH);
@@ -354,7 +403,7 @@ void TextFunctions::BufferStandardString(u16 stringID, u8 bufferID)
 
 void TextFunctions::BufferPokemonSpeciesName(u16 pokemonIndex, u8 bufferID)
 {
-	BufferString((char*)(&(pokemonNames[pokemonIndex])), bufferID, 11);
+	BufferString(Pokemon::GetSpeciesName(pokemonIndex), bufferID, 11);
 }
 
 void TextFunctions::BufferItemName(u16 itemIndex, u8 bufferID)
@@ -364,17 +413,22 @@ void TextFunctions::BufferItemName(u16 itemIndex, u8 bufferID)
 
 void TextFunctions::BufferPluralItemName(u16 itemIndex, u8 bufferID)
 {
-	BufferString(Items::GetPluralisedItemName(itemIndex), bufferID, 14);
+	BufferString(Items::GetPluralisedItemName(itemIndex), bufferID, 17);
 }
 
 void TextFunctions::BufferMoveName(u16 moveIndex, u8 bufferID)
 {
-	BufferString((char*)(&(moveNames[moveIndex])), bufferID, 14);
+	BufferString(Moves::GetMoveNameByIndex(moveIndex), bufferID, 14);
 }
 
 void TextFunctions::BufferNatureName(u32 natureID, u8 bufferID)
 {
-	BufferString((char*)(&(natureNames[natureID])), bufferID, 5);
+	BufferString(Pokemon::GetNatureName(natureID), bufferID, 8);
+}
+
+void TextFunctions::BufferAbilityName(u32 abilityID, u8 bufferID)
+{
+	BufferString(Pokemon::GetAbilityName(abilityID), bufferID, 14);
 }
 
 void TextFunctions::BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID)
@@ -425,158 +479,135 @@ void TextFunctions::BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID)
 	BufferString(Overworld::GetMapNamesTablePointer()[mapHeaderNameID], bufferID, BUFFERLENGTH);
 }
 
-void TextFunctions::BufferNumber(u32 number, u32 length, u8 bufferID)
+void TextFunctions::BufferNumber(u32 number, u32 length, u8 bufferID, u32 leadingZeroes)
+{
+	if (number > 0)
+	{
+		u32 chars = Maths::ToDecimal(number);
+		String string = "";
+		bool firstValueFound = false;
+		for (u32 i = length; i > 0; i--)
+		{
+			u32 value = (chars & (0xF << ((i - 1) << 2))) >> ((i - 1) << 2);
+			if (value != 0)
+			{
+				firstValueFound = true;
+			}
+			if (firstValueFound)
+			{
+				if (value <= 9)
+				{
+					string += (char)('0' + value);
+				}
+			}
+		}
+		while (string.Size() < leadingZeroes)
+		{
+			string.Prepend('0');
+		}
+		BufferString(string, bufferID, 0);
+	}
+	else
+	{
+		BufferString("0", bufferID, 0);
+	}
+}
+
+void TextFunctions::BufferNegativeNumber(s32 number, u32 length, u8 bufferID, u32 leadingZeroes)
+{
+	if (number < 0)
+	{
+		number *= -1;
+		u32 chars = Maths::ToDecimal(number);
+		String string = "";
+		bool firstValueFound = false;
+		for (u32 i = length; i > 0; i--)
+		{
+			u32 value = (chars & (0xF << ((i - 1) << 2))) >> ((i - 1) << 2);
+			if (value != 0)
+			{
+				firstValueFound = true;
+			}
+			if (firstValueFound)
+			{
+				if (value <= 9)
+				{
+					string += (char)('0' + value);
+				}
+			}
+		}
+		while (string.Size() < leadingZeroes)
+		{
+			string.Prepend('0');
+		}
+		string.Prepend('-');
+		BufferString(string, bufferID, 0);
+	}
+	else
+	{
+		BufferNumber((u32)number, length, bufferID, leadingZeroes);
+	}
+}
+
+void TextFunctions::BufferFractionalNumber(u32 number, u32 length, u8 bufferID, u32 positionOfDecimalPoint)
 {
 	u32 chars = Maths::ToDecimal(number);
-	u32 i;
-	char* string = new char[sizeof(char) * length + 1];
-	for (i = 0; i < length; i++)
+	String string = "";
+	bool firstValueFound = false;
+	for (u32 i = length; i > 0; i--)
 	{
-		u32 value = (chars & (0xF << (i << 2))) >> (i << 2);
-		if (value <= 9)
+		u32 value = (chars & (0xF << ((i - 1) << 2))) >> ((i - 1) << 2);
+		if (value != 0)
 		{
-			string[length - 1 - i] = '0' + value;
+			firstValueFound = true;
+		}
+		if (firstValueFound)
+		{
+			if (value <= 9)
+			{
+				string += (char)('0' + value);
+			}
 		}
 	}
-	string[length] = END;
+	String s = string.SubString(positionOfDecimalPoint);
+	string = string.SubString(0, positionOfDecimalPoint);
+	string += '.';
+	string += s;
 	BufferString(string, bufferID, 0);
-	delete[] string;
 }
 
-void TextFunctions::BufferNegativeNumber(s32 number, u32 length, u8 bufferID)
+void TextFunctions::BufferSignedFractionalNumber(s32 number, u32 length, u8 bufferID, u32 positionOfDecimalPoint)
 {
-	number *= -1;
-	u32 chars = Maths::ToDecimal(number);
-	u32 i;
-	char* string = new char[sizeof(char) * length + 1];
-	for (i = 0; i < length; i++)
+	if (number < 0)
 	{
-		u32 value = (chars & (0xF << (i << 2))) >> (i << 2);
-		if (value <= 9)
+		u32 chars = Maths::ToDecimal(number);
+		String string = "";
+		bool firstValueFound = false;
+		for (u32 i = length; i > 0; i--)
 		{
-			string[length - 1 - i] = '0' + value;
+			u32 value = (chars & (0xF << ((i - 1) << 2))) >> ((i - 1) << 2);
+			if (value != 0)
+			{
+				firstValueFound = true;
+			}
+			if (firstValueFound)
+			{
+				if (value <= 9)
+				{
+					string += (char)('0' + value);
+				}
+			}
 		}
-	}
-	string[length] = END;
-	for (i = 1; i < length; i++)
-	{
-		if (string[i] != '0' || (i == (length - 1)))
-		{
-			string[i - 1] = '-';
-			BufferString(&string[i - 1], bufferID, 0);
-			break;
-		}
-	}
-	delete[] string;
-}
-
-void TextFunctions::BufferUnsignedFractionalNumber(u32 number, u8 bufferID, u32 positionOfDecimalPoint)
-{
-	if (number > 99999999)
-	{
-		// Since the decimalisation code only has 32 bits to return to
-		// the maximum value for this is as above
-		// Therefore, to prevent errors, the value is clamped between
-		// 0 and the maximum decimal value available in a 32 bit value
-		number = 0;
-	}
-	BufferNumber(number, 8, bufferID);
-	char* buffers = Game::GetBufferPointer(bufferID);
-	u32 i = 39;
-	while (i != 0)
-	{
-		if (buffers[i] != END)
-		{
-			break;
-		}
-		i--;
-	}
-	if (i)
-	{
-		u32 j;
-		for (j = 0; j < positionOfDecimalPoint; j++)
-		{
-			buffers[i - j + 1] = buffers[i - j];
-		}
-		buffers[i - j] = '.';
-	}
-}
-
-void TextFunctions::BufferUnsignedLongNumber(u32 number, u8 bufferID)
-{
-	if (number > 99999999)
-	{
-		// Since the decimalisation code only has 32 bits to return to
-		// the maximum value for this is as above
-		// Therefore, to prevent errors, the value is clamped between
-		// 0 and the maximum decimal value available in a 32 bit value
-		number = 0;
-	}
-	BufferNumber(number, 8, bufferID);
-}
-
-void TextFunctions::BufferUnsignedLongNumberNoLeading(u32 number, u8 bufferID)
-{
-	if (number > 99999999)
-	{
-		// Since the decimalisation code only has 32 bits to return to
-		// the maximum value for this is as above
-		// Therefore, to prevent errors, the value is clamped between
-		// 0 and the maximum decimal value available in a 32 bit value
-		number = 0;
-	}
-	u32 chars = Maths::ToDecimal(number);
-	u32 i;
-	for (i = 0; i < 8; i++)
-	{
-		if (((chars & (0xF << ((8 - i) << 2))) >> ((8 - i) << 2)) != 0)
-		{
-			break;
-		}
-	}
-	BufferNumber(number, 9 - i, bufferID);
-}
-
-void TextFunctions::BufferUnsignedShortNumber(u16 number, u8 bufferID)
-{
-	if (number > 0xFFFF)
-	{
-		// Shouldn't ever happen in practice
-		// But better to catch the error nonetheless
-		number = 0;
-	}
-	BufferNumber((u32)number, 4, bufferID);
-}
-
-void TextFunctions::BufferSignedLongNumber(s32 number, u8 bufferID)
-{
-	if (number > 99999999 || number < -99999999)
-	{
-		// Since the decimalisation code only has 32 bits to return to
-		// the maximum value for this is as above
-		// Therefore, to prevent errors, the value is clamped between
-		// 0 and the maximum decimal value available in a 32 bit value
-		number = 0;
-	}
-	if (number >= 0)
-	{
-		BufferNumber((u32)number, 8, bufferID);
+		String s = string.SubString(positionOfDecimalPoint);
+		string = string.SubString(0, positionOfDecimalPoint);
+		string += '.';
+		string += s;
+		string.Prepend('-');
+		BufferString(string, bufferID, 0);
 	}
 	else
 	{
-		BufferNegativeNumber(number, 9, bufferID);
-	}
-}
-
-void TextFunctions::BufferSignedShortNumber(s16 number, u8 bufferID)
-{
-	if (number >= 0)
-	{
-		BufferNumber((u32)number, 5, bufferID);
-	}
-	else
-	{
-		BufferNegativeNumber((s32)number, 6, bufferID);
+		BufferFractionalNumber((u32)number, length, bufferID, positionOfDecimalPoint);
 	}
 }
 
@@ -620,9 +651,7 @@ void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunct
 		}
 		else
 		{
-			char* newString = new char[100 * sizeof(char)];
-			StringCopyWithBufferChecks(newString, string, 0, 0);
-			new TextDrawer(newString, x, y, 2 - spd, endFunction);
+			new TextDrawer(string, x, y, 2 - spd, endFunction);
 		}
 	}
 }
@@ -632,12 +661,12 @@ void TextFunctions::DrawStringOverTime(const String &string, u8 x, u8 y, void (*
 	DrawStringOverTime(string.GetUnderlyingArray(), x, y, endFunction);
 }
 
-void TextFunctions::InitialiseTextEngineInner(u32 colourWord, const TFont* font, u8 paletteSet)
+void TextFunctions::InitialiseTextEngineInner(u32 colourWord, const TFont* font)
 {
 	tte_init_chr4c(
 			0,
-			BG_CBB(15) | BG_SBB(10),
-			0xF000,
+			BG_CBB(14) | BG_SBB(10),
+			0xF001,
 			colourWord,
 			15,
 			font,
@@ -656,9 +685,85 @@ void TextFunctions::SetFontByID(u32 id)
 
 void TextFunctions::InitialiseTextEngine(u32 textSetID)
 {
-	InitialiseTextEngineInner(bytes2word(15, 3, 0, 0), fonts[textSetID], 0xE);
+	InitialiseTextEngineInner(bytes2word(15, 3, 0, 0), fonts[textSetID]);
 	playerNameLoc = (char*)&Game::GetPlayer().name;
 	rival1NameLoc = (char*)&Game::GetPlayer().primaryRivalName;
 	rival2NameLoc = (char*)&Game::GetPlayer().secondaryRivalName;
 	rival3NameLoc = (char*)&Game::GetPlayer().tertiaryRivalName;
+}
+
+void TextFunctions::LoadPaletteAndTiles(bool isBattle)
+{
+	memcpy32((void*)((u32)pal_bg_mem + 0x1C0), &primaryTextPalette, 8);
+	memcpy32((void*)((u32)pal_bg_mem + 0x1E0), &primaryOutlinePalette, 8);
+	memset32((void*)0x0600C800, 0x0, 0x8);
+	if (isBattle)
+	{
+		memcpy32((void*)0x0600C820, &battleTextOutline[Game::GetConstOptions().boxOutline], 0x90);
+		memcpy32((void*)0x0600CA80, &battlePauseOutline[Game::GetConstOptions().boxOutline], 0x48);
+	}
+	else
+	{
+		memcpy32((void*)0x0600C820, &textOutline[Game::GetConstOptions().boxOutline], 0x90);
+		memcpy32((void*)0x0600CA80, &pauseOutline[Game::GetConstOptions().boxOutline], 0x48);
+	}
+}
+
+void TextFunctions::ClearTextTileArea()
+{
+	memset32((void*)0x06008000, 0x0, 8);
+	memset32((void*)0x06008020, 0x11111111, 0x11F8);
+}
+
+void TextFunctions::RevertMapToStandard(u32 layer)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer));
+}
+
+void TextFunctions::DrawTextAreaToMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (xTileStart + xTileWidth > 30)
+	{
+		xTileWidth = 30 - xTileStart;
+	}
+	if (yTileStart + yTileHeight > 20)
+	{
+		yTileHeight = 20 - yTileStart;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		for (u32 i = 0; i < yTileHeight; i++)
+		{
+			for (u32 j = 0; j < xTileWidth; j++)
+			{
+				layerLocation[((yTileStart + i) * 0x20) + xTileStart + j] = 0xE001 + i + 20 * j;
+			}
+		}
+	}
+}
+
+void TextFunctions::ClearTextAreaFromMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer));
+	if (xTileStart + xTileWidth > 30)
+	{
+		xTileWidth = 30 - xTileStart;
+	}
+	if (yTileStart + yTileHeight > 20)
+	{
+		yTileHeight = 20 - yTileStart;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		for (u32 i = 0; i < yTileHeight; i++)
+		{
+			for (u32 j = 0; j < xTileWidth; j++)
+			{
+				layerLocation[((yTileStart + i) * 0x20) + xTileStart + j] = 0;
+			}
+		}
+	}
 }

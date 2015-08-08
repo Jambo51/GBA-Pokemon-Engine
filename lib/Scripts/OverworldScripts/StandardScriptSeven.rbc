@@ -29,7 +29,7 @@ setvar LASTRESULT 0x0
 return
 
 #org @standard7string1
-#text Obtained the [buffer2]!
+#text Obtained the [buffer1]!
 
 #org @standard7string2
-#text The [buffer2] was transferred\nto the PC.
+#text The [buffer1] was transferred\nto the PC.

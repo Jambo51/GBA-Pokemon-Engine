@@ -22,7 +22,6 @@
 #include "Items.h"
 #include "TextDrawer.h"
 #include "SpecialFunctions.h"
-#include "PokemonBaseData.h"
 #include "RTC.h"
 #include "liboverworldscripts.h"
 #include "GlobalScriptingFunctions.h"
@@ -30,6 +29,7 @@
 #include "TextInputHandler.h"
 #include "DoNothingInputEventHandler.h"
 #include "ScriptWaitKeyPressEventHandler.h"
+#include "Moves.h"
 
 u32 NoOperation(ScriptRunner* runner) // nop
 {
@@ -1202,7 +1202,7 @@ u32 PrepareMessage(ScriptRunner* runner)
 		value = runner->GetBank(value);
 	}
 	runner->SetWaitFrames(1);
-	InputHandler::SetEventHandler(new TextInputHandler(new TextDrawer((char*)value, 0, 0, Game::GetConstOptions().textSpeed, (VoidFunctionPointerU32)&NotifyMessageEnd, (u32)runner)));
+	InputHandler::SetEventHandler(new TextInputHandler(new TextDrawer((char*)value, 0, 0, 2 - Game::GetConstOptions().textSpeed, (VoidFunctionPointerU32)&NotifyMessageEnd, (u32)runner)));
 	runner->Text(true);
 	runner->IncrementScriptPointer(5);
 	return NotEnded;
@@ -1298,7 +1298,8 @@ u32 SetPokemonPP(ScriptRunner* runner)
 			maxPP = ppBonuses.move1PPBonus;
 			break;
 	}
-	maxPP = Maths::UnsignedFractionalMultiplication(moveData[p.Decrypt(Move1 + *(script + 2))].basePP, maxPP * 20 + 100);
+	const MoveData &moveData = *Moves::GetMoveDataByIndex(p.Decrypt(Move1 + *(script + 2)));
+	maxPP = Maths::UnsignedFractionalMultiplication(moveData.basePP, maxPP * 20 + 100);
 	if (flagID <= maxPP)
 	{
 		p.Encrypt(Move1PP + *(script + 2), flagID);
@@ -1484,7 +1485,7 @@ u32 BufferNumber(ScriptRunner* runner)
 	Variables::SetVar(LASTRESULT, buffer < NUMBUFFERS);
 	if (buffer < NUMBUFFERS)
 	{
-		TextFunctions::BufferUnsignedShortNumber(attackID, buffer);
+		TextFunctions::BufferNumber(attackID, 5, buffer);
 	}
 	runner->IncrementScriptPointer(4);
 	return NotEnded;
@@ -1896,5 +1897,59 @@ u32 GetTimeOfDay(ScriptRunner* runner)
 {
 	Variables::SetVar(LASTRESULT, RTC::GetTime().timeOfDay);
 	runner->IncrementScriptPointer(1);
+	return NotEnded;
+}
+
+u32 BufferNegativeNumber(ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
+	if (Variables::ValidateVarID(attackID) || Variables::IsTemporaryVar(attackID))
+	{
+		attackID = Variables::GetVar(attackID);
+	}
+	u8 buffer = *(script + 1);
+	Variables::SetVar(LASTRESULT, buffer < NUMBUFFERS);
+	if (buffer < NUMBUFFERS)
+	{
+		TextFunctions::BufferNegativeNumber(attackID, 5, buffer);
+	}
+	runner->IncrementScriptPointer(4);
+	return NotEnded;
+}
+
+u32 BufferDecimal(ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	u32 attackID = UnalignedNumberHandler::LoadUnalignedNumber(script, 2, 4);
+	if (Variables::ValidateVarID(attackID) || Variables::IsTemporaryVar(attackID))
+	{
+		attackID = Variables::GetVar(attackID);
+	}
+	u8 buffer = *(script + 1);
+	Variables::SetVar(LASTRESULT, buffer < NUMBUFFERS);
+	if (buffer < NUMBUFFERS)
+	{
+		TextFunctions::BufferFractionalNumber(attackID, 5, buffer, *(script + 6));
+	}
+	runner->IncrementScriptPointer(7);
+	return NotEnded;
+}
+
+u32 BufferSignedDecimal(ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	u32 attackID = UnalignedNumberHandler::LoadUnalignedNumber(script, 2, 4);
+	if (Variables::ValidateVarID(attackID) || Variables::IsTemporaryVar(attackID))
+	{
+		attackID = Variables::GetVar(attackID);
+	}
+	u8 buffer = *(script + 1);
+	Variables::SetVar(LASTRESULT, buffer < NUMBUFFERS);
+	if (buffer < NUMBUFFERS)
+	{
+		TextFunctions::BufferSignedFractionalNumber(attackID, 5, buffer, *(script + 6));
+	}
+	runner->IncrementScriptPointer(7);
 	return NotEnded;
 }

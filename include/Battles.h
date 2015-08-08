@@ -190,10 +190,18 @@ typedef struct BattleVarietyBitsStruct {
 	u8 unused:5;
 } BattleVarietyBitsStruct;
 
+typedef struct EVSpreadStruct {
+
+} EVSpreadStruct;
+
 typedef struct TrainerPokemonData {
 	u16 species;
 	u16 level;
-	u16 EVSpread;
+	union
+	{
+		u16 EVSpread;
+		EVSpreadStruct EVSpreadData;
+	};
 	u16 heldItem;
 } TrainerPokemonData;
 

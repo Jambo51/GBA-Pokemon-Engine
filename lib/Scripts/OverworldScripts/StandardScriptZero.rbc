@@ -16,8 +16,8 @@ switch 0x8007 2 @standard0switchtable
 return
 
 #org @standard0switchtable
-#pointer @standard0part3
 #pointer @standard0part4
+#pointer @standard0part3
 
 '---------------
 #org @standard0part2
@@ -96,7 +96,7 @@ return
 ' Strings
 '---------
 #org @standard0string1
-#text Obtained the [buffer2]!
+#text Obtained the [buffer1]!
 
 #org @standard0string2
-#text [player] put away the [buffer2]\nin the [buffer3] POCKET.
+#text [player] put away the [buffer1]\nin the [buffer2] POCKET.

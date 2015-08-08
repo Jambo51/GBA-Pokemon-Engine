@@ -60,6 +60,17 @@ Overworld::Overworld()
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
 	Overworld::PlaceNPCs(newColours);
 	Game::FadeToPalette(newColours, true, HalfSecond, true, false);
+	BackgroundFunctions::CreateWindow(0, Vector2D(0, 0), Vector2D(0xFF, 0xFF));
+	BackgroundFunctions::CreateWindow(1, Vector2D(0xFF, 0xFF), Vector2D(0xFF, 0xFF));
+	for (int j = 0; j < 2; j++)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			BackgroundFunctions::EnableWindowEffect(j, i);
+		}
+	}
+	BackgroundFunctions::EnableWindowEffect(2, 0);
+	BackgroundFunctions::EnableWindowEffect(3, 0);
 	exitContext = 0;
 }
 

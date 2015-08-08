@@ -101,6 +101,10 @@ private:
 	static u16 nationalDexNumberCaught;
 	static u32 callbackData;
 	static VoidFunctionPointerU32 callbackFunction;
+	static u8 layer0ID;
+	static u8 layer1ID;
+	static u8 layer2ID;
+	static u8 layer3ID;
 	Game();
 	~Game();
 	static u32 CountPokemon(Pokemon* location, u32 length);
@@ -177,6 +181,85 @@ public:
 	static void ClearParty();
 	static Pokemon* GetDayCarePokemon(u32 indexID) { if (indexID < 3) { return &dayCarePokemon[indexID]; } return NULL; }
 	static u16 GetDayCareStatus() { return dayCareStatus; }
+	static void SetLayer(u32 layerID, u32 layerPos)
+	{
+		if (layerPos < 32)
+		{
+			switch (layerID)
+			{
+				case 0:
+					layer0ID = layerPos;
+					break;
+				case 1:
+					layer1ID = layerPos;
+					break;
+				case 2:
+					layer2ID = layerPos;
+					break;
+				case 3:
+					layer3ID = layerPos;
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	static u16* GetLayerPointer(u32 layerID)
+	{
+		u16* pointer = NULL;
+		switch (layerID)
+		{
+			case 0:
+				pointer = (u16*)(0x06000000 + (0x800 * layer0ID));
+				break;
+			case 1:
+				pointer = (u16*)(0x06000000 + (0x800 * layer1ID));
+				break;
+			case 2:
+				pointer = (u16*)(0x06000000 + (0x800 * layer2ID));
+				break;
+			case 3:
+				pointer = (u16*)(0x06000000 + (0x800 * layer3ID));
+				break;
+			default:
+				break;
+		}
+		return pointer;
+	}
+	static u32 GetLayer(u32 layerID)
+	{
+		u32 pointer = U32Max;
+		switch (layerID)
+		{
+			case 0:
+				pointer = layer0ID;
+				break;
+			case 1:
+				pointer = layer1ID;
+				break;
+			case 2:
+				pointer = layer2ID;
+				break;
+			case 3:
+				pointer = layer3ID;
+				break;
+			default:
+				break;
+		}
+		return pointer;
+	}
+	static void SetPlayerName(char* name)
+	{
+		for (int i = 0; i < 7; i++)
+		{
+			char c = name[i];
+			player.name[i] = c;
+			if (c == '\0')
+			{
+				break;
+			}
+		}
+	}
 };
 
 #endif /* GAME_H_ */

@@ -9,7 +9,7 @@
 #include "Maths.h"
 #include "SoundEngine.h"
 #include "Game.h"
-#include "PokemonBaseData.h"
+#include "Moves.h"
 
 DoubleTrainerBattle::DoubleTrainerBattle(const BattleTypeStruct &bts, u16 trainerID1, const char* afterText1, u16 trainerID2, const char* afterText2) : TrainerBattle(bts, trainerID1, afterText1)
 {
@@ -61,8 +61,9 @@ void DoubleTrainerBattle::Update()
 						for (j = 0; j < 4; j++)
 						{
 							u16 moveID = data[0].pokemonDataMoves[currentStatus].moves[j];
+							const MoveData &moveData = *Moves::GetMoveDataByIndex(moveID);
 							thePokemon->Encrypt(Move1 + j, moveID);
-							thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
+							thePokemon->Encrypt(Move1PP + j, moveData.basePP);
 						}
 						thePokemon->Encrypt(HeldItem, data[0].pokemonDataMoves[currentStatus].mainData.heldItem);
 					}
@@ -77,8 +78,9 @@ void DoubleTrainerBattle::Update()
 					for (j = 0; j < 4; j++)
 					{
 						u16 moveID = data[0].pokemonDataMoves[currentStatus].moves[j];
+						const MoveData &moveData = *Moves::GetMoveDataByIndex(moveID);
 						thePokemon->Encrypt(Move1 + j, moveID);
-						thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
+						thePokemon->Encrypt(Move1PP + j, moveData.basePP);
 					}
 				}
 				enemyPokemon[currentStatus] = *thePokemon;
@@ -103,8 +105,9 @@ void DoubleTrainerBattle::Update()
 						for (j = 0; j < 4; j++)
 						{
 							u16 moveID = data[0].pokemonDataMoves[currentStatus - 6].moves[j];
+							const MoveData &moveData = *Moves::GetMoveDataByIndex(moveID);
 							thePokemon->Encrypt(Move1 + j, moveID);
-							thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
+							thePokemon->Encrypt(Move1PP + j, moveData.basePP);
 						}
 						thePokemon->Encrypt(HeldItem, data[0].pokemonDataMoves[currentStatus - 6].mainData.heldItem);
 					}
@@ -119,8 +122,9 @@ void DoubleTrainerBattle::Update()
 					for (j = 0; j < 4; j++)
 					{
 						u16 moveID = data[0].pokemonDataMoves[currentStatus - 6].moves[j];
+						const MoveData &moveData = *Moves::GetMoveDataByIndex(moveID);
 						thePokemon->Encrypt(Move1 + j, moveID);
-						thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
+						thePokemon->Encrypt(Move1PP + j, moveData.basePP);
 					}
 				}
 				enemyPokemon[currentStatus] = *thePokemon;

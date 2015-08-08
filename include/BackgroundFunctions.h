@@ -8,6 +8,8 @@
 #ifndef BACKGROUNDFUNCTIONS_H_
 #define BACKGROUNDFUNCTIONS_H_
 
+#include "Rectangle.h"
+
 class BackgroundFunctions
 {
 private:
@@ -16,6 +18,14 @@ private:
 public:
 	static void SetBackgroundsToDefault();
 	static void ClearBackground(u32 blockID);
+	static void SetLayer(u32 layerID, u32 layerPos, bool isText = false);
+	static void CreateWindow(u32 windowID, const Rectangle &dimensions);
+	static void CreateWindow(u32 windowID, const Vector2D &topLeft, const Vector2D &bottomRight);
+	static void EnableWindowEffect(u32 windowID, u32 effectID);
+	static void DisableWindowEffect(u32 windowID, u32 effectID);
+	static void EraseWindow(u32 windowID);
+	static void SetWindowPosition(u32 windowID, const Rectangle &newPosition);
+	static void SetWindowPosition(u32 windowID, const Vector2D &newUpperLeft, const Vector2D &newLowerRight);
 };
 
 

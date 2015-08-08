@@ -9,6 +9,7 @@
 #define ITEMS_H_
 
 #include "GlobalDefinitions.h"
+#include "String.h"
 
 typedef struct Item {
 	char name[14];
@@ -40,7 +41,7 @@ public:
 	static u32 GetItemStrength(u16 itemID);
 	static u32 GetItemIndexNumber(u16 itemID);
 	static char* GetItemName(u16 itemID);
-	static char* GetPluralisedItemName(u16 itemID);
+	static String GetPluralisedItemName(u16 itemID);
 };
 
 #endif /* ITEMS_H_ */

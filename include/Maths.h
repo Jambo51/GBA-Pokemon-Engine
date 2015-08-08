@@ -30,5 +30,6 @@ public:
 	static u32 Factorial(u32 value);
 	static void SeedRNG(u32 seed);
 	static void ReseedRNG();
+	static u32 Power(u32 value, u32 powerValue = 0);
 };
 #endif

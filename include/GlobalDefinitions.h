@@ -21,9 +21,11 @@
 #define NumberOfPokemon 722
 #define NumberOfTrainers 5
 #define NumberOfFlags 0x2000
-#define NumberOfMoves 618
+#define NumberOfMoves 617
 #define NumberOfOverworlds 24
 #define NumberOfItems 500
+#define NumberOfNatures 25
+#define NumberOfAbilities 188
 #define PlayerNameLength 7
 #define MaxPlayerCash 9999999
 #define MaxHappinessAllowed 0xD0

@@ -22,6 +22,8 @@ public:
 	~Rectangle();
 	bool IsTileWithin(const Vector2D &position);
 	bool IsTileWithin(s16 x, s16 y);
+	const Vector2D & GetUpperLeft() const { return upperLeftCorner; }
+	const Vector2D & GetLowerRight() const { return lowerRightCorner; }
 };
 
 #endif /* RECTANGLE_H_ */

@@ -8,6 +8,8 @@
 class Pokedex : public GameScreen
 {
 private:
+	static PokedexData pokedexData[];
+	static u16 pokedexFormeLookup[];
 	static char* emptyName;
 	static u16 regionalValues[];
 	static u16* dexModeConversionTable[];
@@ -19,5 +21,13 @@ public:
 	static u16 ConvertNationalIDToRegionalID(u32 index, u32 mode);
 	static bool IsPokemonInRegional(u32 pokemonIndex);
 	u32 ConstructPokedexEntries(u32 mode, u32 startPoint);
+	static PokedexData* GetPokedexDataByIndex(u32 index)
+	{
+		if (index < NumberOfPokemon)
+		{
+			return (PokedexData*)&pokedexData[index];
+		}
+		return (PokedexData*)&pokedexData[0];
+	}
 };
 #endif

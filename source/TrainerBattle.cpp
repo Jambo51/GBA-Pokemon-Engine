@@ -9,8 +9,8 @@
 #include "SoundEngine.h"
 #include "Game.h"
 #include "Maths.h"
-#include "PokemonBaseData.h"
 #include "BattleTransitionScriptRunner.h"
+#include "Moves.h"
 
 const TrainerPokemonData weezing1 = {
 		Weezing, 40, 0, 0
@@ -100,8 +100,9 @@ void TrainerBattle::Update()
 						for (j = 0; j < 4; j++)
 						{
 							u16 moveID = data[0].pokemonDataMoves[currentStatus].moves[j];
+							const MoveData &moveData = *Moves::GetMoveDataByIndex(moveID);
 							thePokemon->Encrypt(Move1 + j, moveID);
-							thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
+							thePokemon->Encrypt(Move1PP + j, moveData.basePP);
 						}
 						thePokemon->Encrypt(HeldItem, data[0].pokemonDataMoves[currentStatus].mainData.heldItem);
 					}
@@ -116,8 +117,9 @@ void TrainerBattle::Update()
 					for (j = 0; j < 4; j++)
 					{
 						u16 moveID = data[0].pokemonDataMoves[currentStatus].moves[j];
+						const MoveData &moveData = *Moves::GetMoveDataByIndex(moveID);
 						thePokemon->Encrypt(Move1 + j, moveID);
-						thePokemon->Encrypt(Move1PP + j, moveData[moveID].basePP);
+						thePokemon->Encrypt(Move1PP + j, moveData.basePP);
 					}
 				}
 				enemyPokemon[currentStatus] = *thePokemon;

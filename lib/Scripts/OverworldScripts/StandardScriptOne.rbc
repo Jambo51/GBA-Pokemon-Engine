@@ -128,19 +128,19 @@ return
 ' Strings
 '---------
 #org @standard1string1
-#text [player] put away the [buffer2]\nin the [buffer3] POCKET.
+#text [player] put away the [buffer1]\nin the [buffer2] POCKET.
 
 #org @standard1string2
-#text Obtained the [buffer2]!
+#text Obtained the [buffer1]!
 
 #org @standard1string3
 #text Too bad!\nThe BAG is full[.]
 
 #org @standard1string4
-#text [player] found one [buffer1]\n[buffer2]!
+#text [player] found one [buffer0]\n[buffer1]!
 
 #org @standard1string5
-#text [player] found one [buffer2]!
+#text [player] found one [buffer1]!
 
 #org @standard1string6
-#text [player] put away the [buffer2]\nin the BAG.
+#text [player] put away the [buffer1]\nin the BAG.

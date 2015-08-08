@@ -1,9 +1,8 @@
-#include stdpoke.rbh
-#include std.rbh
-
 #dynamic 0x800000
+
+#include std.rbh
 
 #org @start
 giveitem 0x0 0x1 MSG_OBTAIN
-giveitem 0x0 0x1 MSG_FIND
+giveitem 0x0 0x2 MSG_FIND
 end

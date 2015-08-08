@@ -6,7 +6,6 @@
  */
 
 #include "Game.h"
-#include "PokemonBaseData.h"
 #include "Maths.h"
 #include "ScriptRunner.h"
 #include "Pokemon.h"
@@ -18,6 +17,7 @@
 #include "TextFunctions.h"
 #include "TrainerBattle.h"
 #include "SoundEngine.h"
+#include "Moves.h"
 
 u16 Special0HealParty(ScriptRunner* runner)
 {
@@ -50,7 +50,8 @@ u16 Special0HealParty(ScriptRunner* runner)
 						maxPP = ppBonuses.move1PPBonus;
 						break;
 				}
-				p.Encrypt(Move1PP + i, Maths::UnsignedFractionalMultiplication(moveData[move].basePP, maxPP * 20 + 100));
+				const MoveData &moveData = *Moves::GetMoveDataByIndex(move);
+				p.Encrypt(Move1PP + i, Maths::UnsignedFractionalMultiplication(moveData.basePP, maxPP * 20 + 100));
 			}
 		}
 	}
@@ -98,7 +99,7 @@ u16 Special38PlayTrainerMusic(ScriptRunner* runner)
 u16 SpecialB5BufferDaycarePokemonNames(ScriptRunner* runner)
 {
 	TextFunctions::BufferPokemonNameFromPointer(Game::GetDayCarePokemon(0), 0);
-	TextFunctions::BufferPokemonNameFromPointer(Game::GetDayCarePokemon(1), 0);
+	TextFunctions::BufferPokemonNameFromPointer(Game::GetDayCarePokemon(1), 1);
 	return 0;
 }
 
@@ -109,7 +110,7 @@ u16 SpecialB6GetDayCareStatus(ScriptRunner* runner)
 
 void WhiteOutCallback(u32 data)
 {
-	const HealingPlace & hp = Game::GetHealingPlace();
+	const HealingPlace &hp = Game::GetHealingPlace();
 	Variables::SetVar(LASTTALKED, hp.spriteID);
 	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(hp.mapLocation.mapBank, hp.mapLocation.map));
 	GameScreen* ow = new Overworld();

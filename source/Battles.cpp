@@ -7,7 +7,6 @@
 #include "Game.h"
 #include "BattleStrings.h"
 #include "PokeStats.h"
-#include "PokemonBaseData.h"
 #include "Variables.h"
 #include "Flags.h"
 #include "Items.h"
@@ -16,6 +15,8 @@
 #include "GameModeManager.h"
 #include "InputHandler.h"
 #include "DoNothingInputEventHandler.h"
+#include "Moves.h"
+#include "Pokedex.h"
 
 #define GEN2MOONBALL FALSE
 
@@ -296,8 +297,8 @@ u32 BattleScreen::HeavyBallPokeball()
 {
 	const BattleData &battleData = instance->GetBattleData();
 	u32 retValue = 100;
-	PokedexData* data = (PokedexData*)&pokedexData[battleData.pokemonStats[battleData.battleBanks[Target]].species];
-	u16 weight = data[0].weight;
+	const PokedexData &data = *Pokedex::GetPokedexDataByIndex(battleData.pokemonStats[battleData.battleBanks[Target]].species);
+	u16 weight = data.weight;
 	if (weight < 2048)
 	{
 		retValue -= 20;
@@ -512,7 +513,7 @@ void BattleScreen::MoveSelectionRender()
 			u16 moveID = data[0].moves[(i * 2) + j];
 			if (moveID)
 			{
-				TextFunctions::DrawString((char*)&moveNames[moveID], j * 80 + 16, i * 0x10);
+				TextFunctions::DrawString(Moves::GetMoveNameByIndex(moveID), j * 80 + 16, i * 0x10);
 			}
 			else
 			{
@@ -648,8 +649,9 @@ u32 BattleScreen::PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 		else
 		{
 			u16 move = pkmn1[0].moves[battleData.battleBanks[MoveSelection1 + index1]];
-			s8 priority = moveData[move].priority;
-			if ((moveData[move].category == Category_Status && pkmn1[0].ability == Prankster) || (moveData[move].type == Type_Flying && pkmn1[0].ability == Gale_Wings))
+			const MoveData &moveData = *Moves::GetMoveDataByIndex(move);
+			s8 priority = moveData.priority;
+			if ((moveData.category == Category_Status && pkmn1[0].ability == Prankster) || (moveData.type == Type_Flying && pkmn1[0].ability == Gale_Wings))
 			{
 				priority++;
 			}
@@ -663,8 +665,9 @@ u32 BattleScreen::PrioritiseBetweenTwoPokemon(u32 index1, u32 index2)
 		else
 		{
 			u16 move = pkmn2[0].moves[battleData.battleBanks[MoveSelection1 + index2]];
-			s8 priority = moveData[move].priority;
-			if ((moveData[move].category == Category_Status && pkmn2[0].ability == Prankster) || (moveData[move].type == Type_Flying && pkmn2[0].ability == Gale_Wings))
+			const MoveData &moveData = *Moves::GetMoveDataByIndex(move);
+			s8 priority = moveData.priority;
+			if ((moveData.category == Category_Status && pkmn2[0].ability == Prankster) || (moveData.type == Type_Flying && pkmn2[0].ability == Gale_Wings))
 			{
 				priority++;
 			}

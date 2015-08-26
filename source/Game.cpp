@@ -32,6 +32,7 @@ EWRAM_LOCATION ALIGN(4) NPCData Game::overworldData[NumberOfOverworlds];
 EWRAM_LOCATION ALIGN(4) u16* Game::currentPalette = NULL;
 EWRAM_LOCATION ALIGN(4) u16* Game::targetPalette = NULL;
 EWRAM_LOCATION ALIGN(4) u32 Game::numFrames = 0;
+EWRAM_LOCATION ALIGN(4) u32 Game::originalFrames = 0;
 EWRAM_LOCATION ALIGN(4) u32 Game::alphaSteps = 0;
 EWRAM_LOCATION ALIGN(4) u32 Game::currentAlpha = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::eggCycle = EggCycleLength;
@@ -46,6 +47,8 @@ EWRAM_LOCATION ALIGN(2) u16 Game::nationalDexNumberCaught = 0;
 EWRAM_LOCATION ALIGN(1) char Game::buffers[NUMBUFFERS][BUFFERLENGTH];
 EWRAM_LOCATION ALIGN(1) bool Game::doFade = false;
 EWRAM_LOCATION ALIGN(1) bool Game::doFade2 = false;
+EWRAM_LOCATION ALIGN(1) bool Game::fadeStyle = false;
+EWRAM_LOCATION ALIGN(1) bool Game::fadeBack = false;
 EWRAM_LOCATION ALIGN(1) bool Game::doCallback = false;
 EWRAM_LOCATION ALIGN(1) bool Game::doExitCallback = false;
 EWRAM_LOCATION ALIGN(1) bool Game::paletteWriteDetected = false;
@@ -312,9 +315,34 @@ void Game::Update()
 	{
 		if (numFrames != 0)
 		{
-			currentAlpha += alphaSteps;
-			DoFade();
-			numFrames--;
+			if (fadeStyle)
+			{
+				if (fadeBack)
+				{
+					currentAlpha -= alphaSteps;
+					DoFade();
+					numFrames--;
+					fadeBack = false;
+					fadeStyle = false;
+				}
+				else
+				{
+					currentAlpha += alphaSteps;
+					DoFade();
+					numFrames--;
+					if (numFrames == 0)
+					{
+						fadeBack = true;
+						numFrames = originalFrames;
+					}
+				}
+			}
+			else
+			{
+				currentAlpha += alphaSteps;
+				DoFade();
+				numFrames--;
+			}
 		}
 		else
 		{
@@ -599,6 +627,7 @@ void Game::FadeToGreyScale(FadeIDs FrameCount, bool callback, bool exitCallback)
 {
 	if (!doFade)
 	{
+		fadeStyle = false;
 		currentPalette = GetCurrentPalette();
 		targetPalette = GetGreyScale(currentPalette);
 		doFade = true;
@@ -634,6 +663,7 @@ void Game::FadeToPalette(const u16 *newPalette, bool fade256Colours, FadeIDs Fra
 {
 	if (!doFade)
 	{
+		fadeStyle = false;
 		if (FrameCount < MaxFadeIDs)
 		{
 			currentPalette = GetCurrentPalette();
@@ -646,6 +676,37 @@ void Game::FadeToPalette(const u16 *newPalette, bool fade256Colours, FadeIDs Fra
 			doExitCallback = exitCallback;
 			paletteWriteDetected = true;
 			fade256 = fade256Colours;
+		}
+	}
+	else
+	{
+		if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
+		{
+			memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
+			delete[] targetPalette;
+			targetPalette = NULL;
+		}
+	}
+}
+
+void Game::PaletteFlash(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount)
+{
+	if (!doFade)
+	{
+		fadeStyle = true;
+		if (FrameCount < MaxFadeIDs)
+		{
+			currentPalette = GetCurrentPalette();
+			doFade = true;
+			numFrames = Maths::UnsignedFractionalMultiplication(framesInFades[FrameCount], blendAmount);
+			alphaSteps = alphaStepsInFades[FrameCount];
+			currentAlpha = 0;
+			targetPalette = (u16*)newPalette;
+			doCallback = callback;
+			doExitCallback = exitCallback;
+			paletteWriteDetected = true;
+			fade256 = fade256Colours;
+			originalFrames = numFrames;
 		}
 	}
 	else

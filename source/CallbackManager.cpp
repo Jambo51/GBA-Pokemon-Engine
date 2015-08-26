@@ -37,11 +37,11 @@ void CallbackManager::Update()
 {
 	for (int i = 0; i < callbacks.Size(); i++)
 	{
-		((Callback*)callbacks.At(i))->Update();
+		((Callback*)callbacks[i])->Update();
 	}
 	for (int i = 0; i < callbacksToRemove.Size(); i++)
 	{
-		callbacks.Remove(callbacksToRemove.At(i));
+		callbacks.Remove(callbacksToRemove[i]);
 	}
 	callbacksToRemove.Clear();
 }

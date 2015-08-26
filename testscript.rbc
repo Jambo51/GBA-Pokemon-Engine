@@ -3,6 +3,19 @@
 #include std.rbh
 
 #org @start
-giveitem 0x0 0x1 MSG_OBTAIN
-giveitem 0x0 0x2 MSG_FIND
+trainerbattle 0x1 0x3 0x0 @text @aftertext @afterscript
+message @defeated 0x4
 end
+
+#org @afterscript
+message @defeated 0x4
+end
+
+#org @text
+= Hi!
+
+#org @aftertext
+= Team Rocket!
+
+#org @defeated
+= Ya beat me!

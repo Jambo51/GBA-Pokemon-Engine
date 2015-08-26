@@ -11,6 +11,7 @@
 #include "Maths.h"
 #include "BattleTransitionScriptRunner.h"
 #include "Moves.h"
+#include "libbattletranscripts.h"
 
 const TrainerPokemonData weezing1 = {
 		Weezing, 40, 0, 0
@@ -41,8 +42,8 @@ RODATA_LOCATION ALIGN(4) TrainerData TrainerBattle::trainerBattleDataTable[] = {
 		{ 1, 0, 0, Class_Rival, { 0, 0, 0, 0 }, { 'G', 'a', 'r', 'y', '\0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, (TrainerPokemonData*)&pidgeot1 }
 };
 RODATA_LOCATION ALIGN(4) IndexTable TrainerBattle::transitionScripts[NumTrainerBattleTransitions] = {
-		//{ Class_Evil_Team, (void*)&Evil_Team_Transition },
-		//{ Class_Evil_Team_Duo, (void*)&Evil_Team_Transition }
+		{ Class_Evil_Team, (void*)&TestBattleTransitionScript },
+		{ Class_Evil_Team_Duo, (void*)&TestBattleTransitionScript }
 };
 
 TrainerBattle::TrainerBattle(const BattleTypeStruct &bts, u32 trainerIDAndInformation, const char* afterText, const u8* afterScript) : BattleScreen(bts)

@@ -183,3 +183,26 @@ void BackgroundFunctions::SetWindowPosition(u32 windowID, const Vector2D &newUpp
 		REG_WIN1B = newLowerRight.GetY();
 	}
 }
+
+void BackgroundFunctions::AlterWindowPosition(u32 windowID, const Rectangle &newPosition)
+{
+	AlterWindowPosition(windowID, newPosition.GetUpperLeft(), newPosition.GetLowerRight());
+}
+
+void BackgroundFunctions::AlterWindowPosition(u32 windowID, const Vector2D &newUpperLeft, const Vector2D &newLowerRight)
+{
+	if (windowID == 0)
+	{
+		REG_WIN0L += newUpperLeft.GetX();
+		REG_WIN0T += newUpperLeft.GetY();
+		REG_WIN0R += newLowerRight.GetX();
+		REG_WIN0B += newLowerRight.GetY();
+	}
+	else if (windowID == 1)
+	{
+		REG_WIN1L += newUpperLeft.GetX();
+		REG_WIN1T += newUpperLeft.GetY();
+		REG_WIN1R += newLowerRight.GetX();
+		REG_WIN1B += newLowerRight.GetY();
+	}
+}

@@ -26,6 +26,8 @@ public:
 	static void EraseWindow(u32 windowID);
 	static void SetWindowPosition(u32 windowID, const Rectangle &newPosition);
 	static void SetWindowPosition(u32 windowID, const Vector2D &newUpperLeft, const Vector2D &newLowerRight);
+	static void AlterWindowPosition(u32 windowID, const Rectangle &delta);
+	static void AlterWindowPosition(u32 windowID, const Vector2D &upperLeftDelta, const Vector2D &lowerRightDelta);
 };
 
 

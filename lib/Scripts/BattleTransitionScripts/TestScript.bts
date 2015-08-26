@@ -1,0 +1,6 @@
+#globalorg @TestBattleTransitionScript
+whitepaletteflash
+waitpalette
+whitepaletteflash
+waitpalette
+end

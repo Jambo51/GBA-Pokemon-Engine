@@ -70,6 +70,8 @@ private:
 	static NPCData overworldData[];
 	static bool doFade;
 	static bool doFade2;
+	static bool fadeStyle;
+	static bool fadeBack;
 	static bool doCallback;
 	static bool doExitCallback;
 	static bool paletteWriteDetected;
@@ -82,6 +84,7 @@ private:
 	static u16* currentPalette;
 	static u16* targetPalette;
 	static u32 numFrames;
+	static u32 originalFrames;
 	static u32 alphaSteps;
 	static u32 currentAlpha;
 	static u16 blackPalette[];
@@ -136,6 +139,9 @@ public:
 	static void FadeToGreyScale(FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
 	static void FadeToBlack(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&blackPalette, fade256Colours, FrameCount, callback, exitCallback); }
 	static void FadeToWhite(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&whitePalette, fade256Colours, FrameCount, callback, exitCallback); }
+	static void PaletteFlash(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount);
+	static void BlackPaletteFlash(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true, u32 blendAmount = 50) { PaletteFlash((const u16*)&blackPalette, fade256Colours, FrameCount, callback, exitCallback, blendAmount); }
+	static void WhitePaletteFlash(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true, u32 blendAmount = 50) { PaletteFlash((const u16*)&whitePalette, fade256Colours, FrameCount, callback, exitCallback, blendAmount); }
 	static u16* GetGreyScale(const u16* original);
 	static void Save();
 	static void Load();

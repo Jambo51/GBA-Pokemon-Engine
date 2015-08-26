@@ -9,8 +9,34 @@
 #include "Battles.h"
 #include "Game.h"
 #include "Maths.h"
+#include "BattleTransitionScriptCommands.h"
+#include "OverworldScriptCommands.h"
 
-RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner BattleTransitionScriptRunner::battleTransitionCommands[0xFF];
+RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner BattleTransitionScriptRunner::battleTransitionCommands[0xFF] = {
+		// Reuse of overworld scripting code to minimise code duplication
+		(U32FunctionPointerScriptRunner)&NoOperation,
+		(U32FunctionPointerScriptRunner)&NoOperation,
+		(U32FunctionPointerScriptRunner)&EndOverworldScript,
+		(U32FunctionPointerScriptRunner)&ReturnOverworldScript,
+		(U32FunctionPointerScriptRunner)&CallOverworldScript,
+		(U32FunctionPointerScriptRunner)&GotoOverworldScript,
+		// New commands start here
+		(U32FunctionPointerScriptRunner)&CreateWindow,
+		(U32FunctionPointerScriptRunner)&DeleteWindow,
+		(U32FunctionPointerScriptRunner)&SetWindowPosition,
+		(U32FunctionPointerScriptRunner)&SetWindowLayerEnabled,
+		(U32FunctionPointerScriptRunner)&SetWindowLayerDisabled,
+		(U32FunctionPointerScriptRunner)&FlashPaletteToWhiteFiftyPercent,
+		(U32FunctionPointerScriptRunner)&FlashPaletteToBlackFiftyPercent,
+		(U32FunctionPointerScriptRunner)&WaitPaletteFlash,
+		(U32FunctionPointerScriptRunner)&CallStandardWindowEffect,
+		(U32FunctionPointerScriptRunner)&SetBasicWindowAnimation,
+		(U32FunctionPointerScriptRunner)&WaitAllWindowAnimations,
+		(U32FunctionPointerScriptRunner)&LoadTiles,
+		(U32FunctionPointerScriptRunner)&LoadTilemap,
+		(U32FunctionPointerScriptRunner)&LoadCompressedTiles,
+		(U32FunctionPointerScriptRunner)&LoadCompressedTilemap
+};
 RODATA_LOCATION ALIGN(4) u8* BattleTransitionScriptRunner::errorScript = NULL;
 RODATA_LOCATION ALIGN(4) u8* BattleTransitionScriptRunner::negativeScripts[NumNegativeRatios] = {
 

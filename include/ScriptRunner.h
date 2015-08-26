@@ -54,6 +54,7 @@ public:
 	void TextWait(bool value) { textWait = value; }
 	bool EventHandlerSet() const { return eventHandlerSet; }
 	void EventHandlerSet(bool value) { eventHandlerSet = value; }
+	const void* GetBankPointer(u32 bankID) const { return &scriptBanks[bankID]; }
 };
 
 #endif /* SCRIPTRUNNER_H_ */

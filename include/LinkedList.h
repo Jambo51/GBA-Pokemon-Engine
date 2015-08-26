@@ -45,5 +45,10 @@ public:
 	void* At(int index);
 	void Clear();
 	void PushAt(void* item, int index);
+
+	void* operator[](int index)
+	{
+		return At(index);
+	}
 };
 #endif /* UNORDEREDMAP_H_ */

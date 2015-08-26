@@ -45,7 +45,7 @@ else
 SPRITELIB	:= DS
 endif
 
-LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts -loverworldscripts
+LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts -loverworldscripts -lbattletranscripts
 
 BUILD		:= build
 SRCDIRS		:= source source/Data source/Data/TitleScreen source/Data/Tilesets

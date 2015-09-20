@@ -15,15 +15,16 @@
 
 M4_Mixer:
 	stmfd	sp!, {r4-r11,lr}
-	
-	ldr		r3, =M4DriverArea+4
+	mov		r4, r1
+	mov		r3, r0
+	mov		r12, r0
+	mov		r11, r2
 	ldmia	r3!, {r0-r2}
 	mov		r1, r1, lsr #0x10
 	bic		r2, r2, #0xFF00
 	bic		r2, r2, #0xFF000000
 	sub		r2, r2, #0x010000
 	add		r2, r2, #0x01
-	ldr		r4, =M4MixArea
 
 /*	r0: 1/Freq
 	r1: Batch Size
@@ -33,17 +34,17 @@ M4_Mixer:
 
 .LChannelLoop:
 	ldr		r5, [r3], #0x30
-	tst		r5, #M4_Active|M4_NoteOn
+	tst		r5, #0x1 | 0x20
 	beq		.LChannelLoopEnd
 	stmnefd	sp!, {r0-r4}
 
 .LChannelNoteOn:
-	tst		r5, #M4_NoteOn
+	tst		r5, #0x20
 	beq		.LStartChannel
 	
-	ldr		r6, =0xFFFF0000 | M4_FX | M4_NoteOff
+	ldr		r6, =0xFFFF0000 | 128 | 64
 	and		r5, r5, r6
-	orr		r5, r5, #M4_Active
+	orr		r5, r5, #0x1
 	
 	ldr		r6, [r3, #0x24-0x30]
 	add		r6, r6, #0x10
@@ -67,21 +68,21 @@ M4_Mixer:
 	
 	bic		r5, r5, #0xFF00
 	add		r5, r5, r8, lsl #0x08
-	orr		r5, r5, #M4_Attack
+	orr		r5, r5, #0x2
 	strh	r5, [r3, #-0x30]
 	b		.LStartChannel
 
 1:
 	tst		r7, #0xFF00
 	orrne	r5, r5, #0xFF00
-	orrne	r5, r5, #M4_Decay
+	orrne	r5, r5, #0x4
 	strneh	r5, [r3, #-0x30]
 	bne		.LStartChannel
 	
 	bic		r5, r5, #0xFF00
 	and		r7, r7, #0xFF0000
 	orr		r5, r5, r7, lsr #0x08
-	orr		r5, r5, #M4_Sustain
+	orr		r5, r5, #0x8
 	strh	r5, [r3, #-0x30]
 
 .LStartChannel:
@@ -202,17 +203,17 @@ M4_Mixer:
 	mov		r3, #0xFF
 
 .LChannelNoteOff:
-	tst		r1, #M4_NoteOff
+	tst		r1, #0x40
 	beq		.LChannelAttack
 	ands	r4, r2, #0xFF000000
 	streqb	r4, [r0]
 	beq		.LChannelKill
-	bic		r1, r1, #M4_Attack|M4_Decay|M4_Sustain|M4_Release|M4_NoteOn|M4_NoteOff
-	orr		r1, r1, #M4_Release
+	bic		r1, r1, #0x2|0x4|0x8|0x10|0x20|0x40
+	orr		r1, r1, #0x10
 	b		.LChannelRelease
 
 .LChannelAttack:
-	tst		r1, #M4_Attack
+	tst		r1, #0x2
 	beq		.LChannelDecay
 	
 	and		r4, r3, r2
@@ -223,14 +224,14 @@ M4_Mixer:
 	
 	bic		r1, r1, #0xFF0000
 	orr		r1, r1, #0xFF00
-	bic		r1, r1, #M4_Attack
+	bic		r1, r1, #0x2
 	tst		r2, #0xFF00
-	orreq	r1, r1, #M4_Sustain
+	orreq	r1, r1, #0x8
 	beq		.LChannelSustain
-	orr		r1, r1, #M4_Decay
+	orr		r1, r1, #0x4
 
 .LChannelDecay:
-	tst		r1, #M4_Decay
+	tst		r1, #0x4
 	beq		.LChannelSustain
 	
 	and		r4, r3, r2, lsr #0x08
@@ -241,11 +242,11 @@ M4_Mixer:
 	strleh	r1, [r0]
 	ble		.LChannelKill
 	
-	bic		r1, r1, #M4_Decay
-	orr		r1, r1, #M4_Sustain
+	bic		r1, r1, #0x4
+	orr		r1, r1, #0x8
 
 .LChannelSustain:
-	tst		r1, #M4_Sustain
+	tst		r1, #0x8
 	beq		.LChannelRelease
 	
 	ands	r4, r3, r2, lsr #0x10
@@ -256,7 +257,7 @@ M4_Mixer:
 	b		.LChannelKill
 
 .LChannelRelease:
-	tst		r1, #M4_Release
+	tst		r1, #0x10
 	beq		.LChannelKill
 	
 	and		r4, r3, r2, lsr #0x18
@@ -287,18 +288,18 @@ M4_Mixer:
 */
 
 .LMixdown:
-	ldr		lr, =M4DriverArea
-	add		r3, lr, #0x10+(48*M4_MaxChn)
+	mov		lr, r11
+	add		r3, lr, #0x10+(48*0x10)
 	ldrb	r9, [lr, #0x0F] @ DMACount
 	
 	subs	r9, r9, #0x01
-	addmi	r9, r9, #M4_DMACount
-	rsb		r9, r9, #M4_DMACount-1
+	addmi	r9, r9, #0x2
+	rsb		r9, r9, #0x2-1
 	mla		r0, r9, r1, r3
 	
 	ldrb	ip, [lr, #0x0D] @ Reverb
 	add		ip, ip, ip, lsl #0x01
-	mov		lr, #M4_DMACount*M4_BuffLen
+	mov		lr, #0x2*(((4389*18157>>18)+3)&~3)
 	mov		r10, #0x7F
 
 .macro DoRvb0
@@ -342,7 +343,7 @@ M4_Mixer:
 .endm
 
 1:
-	MixdownSample
+	@MixdownSample
 	
 	subs	r1, r1, #0x01
 	bne		1b

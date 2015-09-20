@@ -26,6 +26,9 @@ TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunctio
 	this->inkColour = inkColour;
 	TextFunctions::SetTextColourFromInkColour(inkColour);
 	TextFunctions::ClearTextTileArea();
+	TextFunctions::DrawTextBoxTop(0, 0, 14, 30);
+	TextFunctions::DrawTextBoxBottom(0, 0, 19, 30);
+	TextFunctions::DrawTextBoxSides(0, 0, 15, 4, 30);
 	this->Initialise();
 }
 

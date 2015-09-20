@@ -38,7 +38,7 @@ int main()
 	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
 	if (Game::GetSoundEngineID() == M4AEngineID)
 	{
-		//SoundEngine::Initialise(new M4AEngine());
+		SoundEngine::Initialise(new M4AEngine());
 	}
 	else
 	{

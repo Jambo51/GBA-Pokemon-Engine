@@ -30,7 +30,6 @@ void CallbackManager::AddCallback(Callback* callback)
 void CallbackManager::RemoveCallback(Callback* callback)
 {
 	callbacksToRemove.PushBack((void*)callback);
-	delete callback;
 }
 
 void CallbackManager::Update()
@@ -41,7 +40,12 @@ void CallbackManager::Update()
 	}
 	for (int i = 0; i < callbacksToRemove.Size(); i++)
 	{
-		callbacks.Remove(callbacksToRemove[i]);
+		Callback* cb = (Callback*)callbacksToRemove[i];
+		callbacks.Remove(cb);
+		delete cb;
 	}
-	callbacksToRemove.Clear();
+	if (callbacksToRemove.Size())
+	{
+		callbacksToRemove.Clear();
+	}
 }

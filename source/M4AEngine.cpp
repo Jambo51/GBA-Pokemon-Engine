@@ -9,6 +9,7 @@
 #include "M4SongTable.h"
 #include "SoundEngine.h"
 #include "EngineM4.h"
+#include "Game.h"
 
 RODATA_LOCATION ALIGN(2) u16 M4AEngine::Sqrt[] = {
 	0x0000,0x0B5B,0x1010,0x13AC,0x16B7,0x1965,0x1BD2,0x1E0D,
@@ -29,14 +30,88 @@ RODATA_LOCATION ALIGN(2) u16 M4AEngine::Sqrt[] = {
 	0x7C6C,0x7CF0,0x7D74,0x7DF7,0x7E7A,0x7EFC,0x7F7E,0x8000,
 };
 
+IWRAM_LOCATION ALIGN(4) u32 M4AEngine::M4_MixArea[M4_BuffLen];
+
 void M4AEngine::Interrupt()
 {
-	//M4_Intr();
+	if (M4_Status == M4DriverArea.Status)
+	{
+		u32 value = M4DriverArea.DMACnt - 1;
+		if (!value)
+		{
+			*((u16*)0x040000C6) = 0;
+			*((u32*)0x040000C4) = 0xB6000000;
+#if M4_UseDMA2
+			*((u16*)0x040000D2) = 0;
+			*((u32*)0x040000D0) = 0xB6000000;
+#endif
+		}
+		M4DriverArea.DMACnt = value;
+	}
+}
+
+void M4AEngine::SwitchWavePattern(u8 patternID) const
+{
+
+}
+
+void ResumeSongPlaybackAndDisableFanfare()
+{
+
+}
+
+void M4AEngine::SetSongOnEndFunction(VoidFunctionPointerVoid function)
+{
+
+}
+
+void M4AEngine::SetSFXOnEndFunction(VoidFunctionPointerVoid function)
+{
+
 }
 
 void M4AEngine::Initialise()
 {
-	//M4_Init();
+#if STORE_IN_BRAM
+	M4DriverArea.Status = 0x03007FF0;
+#endif
+	*((u16*)0x04000084) = 0x80;
+#if M4_UseDMA2
+	*((u32*)0x04000080) = 0xA90EFF77;
+#else
+	*((u32*)0x04000080) = 0x0B0EFF77;
+#endif
+	vu16 val = (*((vu16*)0x04000088) << 0x12) >> 0x1A;
+	val += 0x40;
+	*((u8*)0x04000089) = val;
+	*((vu32*)0x040000C4) = 0;
+#if M4_UseDMA2
+	*((vu32*)0x040000D0) = 0;
+#endif
+	*((u32*)0x040000BC) = (u32)&M4DriverArea.Buffer;
+#if M4_UseDMA2
+	*((u32*)0x040000C8) = (u32)&M4DriverArea.Buffer[M4_BuffLen * M4_DMACount];
+#endif
+	*((u32*)0x040000C0) = 0x040000A0;
+#if M4_UseDMA2
+	*((u32*)0x040000CC) = 0x040000A4;
+#endif
+#if WAIT_FOR_VSYNC
+	while ((*(u8*)0x04000006) << 0x1F)
+	{}
+#endif
+	*((vu8*)0x04000102) = 0;
+	*((u32*)0x04000100) = 0x00800000 + (65536 - (16781312 / M4_Freq));
+	M4DriverArea.Status = M4_Status;
+	M4DriverArea.Divider = 0x800800 / M4_Freq;
+	M4DriverArea.Freq = M4_Freq;
+	M4DriverArea.BuffLen = M4_BuffLen;
+	M4DriverArea.Vol = 127;
+	M4DriverArea.MaxChn = M4_MaxChn;
+	memset32((void*)&M4DriverArea.Chan[0], 0, (sizeof(M4Channel) >> 2) * M4_MaxChn);
+	memset32((void*)&M4DriverArea.Buffer[0], 0, (M4_BuffLen * M4_DMACount * (M4_UseDMA2+1) >> 4) >> 2);
+	memset32((void*)&M4CGBArea, 0, (sizeof(M4CGBChan) >> 2) * 4);
+	memset32((void*)&M4Players, 0, (sizeof(M4Player) >> 2) * M4_MaxPly);
 }
 
 M4Channel* M4AEngine::FetchChannel()
@@ -600,6 +675,21 @@ void M4AEngine::M4_TrackUpdate(M4Track *Track, M4Player *Play)
 	}
 }
 
+void M4AEngine::StartSong(u16 songID, bool startWithZeroVolume)
+{
+	SoundEngine::PlaySong(songID, startWithZeroVolume);
+}
+
+void M4AEngine::StartFanfare(u16 fanfareID)
+{
+	SoundEngine::PlayFanfare(fanfareID);
+}
+
+void M4AEngine::StartSFX(u16 sfxID)
+{
+	SoundEngine::PlaySFX(sfxID);
+}
+
 void M4AEngine::FadeSong()
 {
 	if (fadeStruct.isActive)
@@ -767,7 +857,7 @@ void M4AEngine::M4_Update(M4Player *Play)
 /*****************************/
 u16* locations[] = { (u16*)0x04000062, (u16*)0x04000068, (u16*)0x04000070, (u16*)0x04000078 };
 
-void M4AEngine::M4_Player(void)
+void M4AEngine::M4_Player(u8* eightBitAddress)
 {
 	M4Player *Player = M4Players;
 
@@ -834,8 +924,6 @@ void M4AEngine::M4_Player(void)
 		M4Track   *Trck;
 		M4Player  *Play;
 		M4CGBChan *Chan = M4CGBArea;
-
-		u8* eightBitAddress = (u8*)0x02000500;
 
 		for(;SGx<4;Chan++,SGx++)
 		{
@@ -913,7 +1001,7 @@ void M4AEngine::M4_Player(void)
 				}
 			}
 
-			u16* sixteenBitAddress = (u16*)0x02000050;
+			u16* sixteenBitAddress = (u16*)eightBitAddress;
 
 			if(Chan->Status & M4_Active) {
 				Play = &M4Players[Chan->Play0];
@@ -945,7 +1033,7 @@ void M4AEngine::M4_Player(void)
 					if(Chan->LVol != Volu) {
 						Chan->LVol = Volu;
 						eightBitAddress[2] = Chan->Duty<<6;
-						//eightBitAddress[3] = Volu<<4 | Chan->Decay;
+						eightBitAddress[3] = Volu<<4 | Chan->Decay;
 						eightBitAddress[5] = (Freq>>8) + 0x80;
 					}
 
@@ -968,7 +1056,7 @@ void M4AEngine::M4_Player(void)
 					if(Chan->LVol != Volu) {
 						Chan->LVol = Volu;
 						eightBitAddress[8] = Chan->Duty<<6;
-						//eightBitAddress[9] = Volu<<4 | Chan->Decay;
+						eightBitAddress[9] = Volu<<4 | Chan->Decay;
 						eightBitAddress[0xD] = (Freq>>8) + 0x80;
 					}
 
@@ -1145,9 +1233,19 @@ void M4AEngine::M4_PlayerStopAll(void) {
 	} while(--i >= 0);
 }
 
-void M4_Mixer()
+void M4AEngine::ResumeSong()
 {
 
+}
+
+bool M4AEngine::FanfarePlaying()
+{
+	return false;
+}
+
+bool M4AEngine::SFXPlaying()
+{
+	return false;
 }
 
 void M4AEngine::M4_Main()
@@ -1156,8 +1254,8 @@ void M4AEngine::M4_Main()
 	{
 		M4DriverArea.Status &= ~(0xFF);
 		memset32((void*)&M4MixArea, 0, M4_BuffLen >> 2);
-		M4_Player();
-		M4_Mixer();
+		M4_Player((u8*)MusicEngine::GetBufferAddress());
+		M4_Mixer((void*)&M4DriverArea.Divider, (void*)&M4_MixArea, (void*)&M4DriverArea);
 		M4DriverArea.MaxChn = 0;
 		M4DriverArea.Status |= (M4_Status & 0xFF);
 	}
@@ -1174,6 +1272,10 @@ void M4AEngine::Update()
 			{
 				M4_PlayByIdx(temp - 1);
 				SoundEngine::SetStatus(2);
+			}
+			else
+			{
+				M4_StopSong(0);
 			}
 			M4_Main();
 			break;
@@ -1226,5 +1328,5 @@ void M4AEngine::Update()
 		default:
 			break;
 	}
-	SoundEngine::Update();
+	MusicEngine::Update();
 }

@@ -767,3 +767,155 @@ void TextFunctions::ClearTextAreaFromMap(u32 layer, u32 xTileStart, u32 yTileSta
 		}
 	}
 }
+
+void TextFunctions::DrawTextBoxTop(u32 layer, u32 xTileStart, u32 yTileStart, u32 width)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (xTileStart + width > 30)
+	{
+		width = 30 - xTileStart;
+	}
+	if (yTileStart > 20)
+	{
+		yTileStart = 0;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		layerLocation[(yTileStart * 0x20) + xTileStart] = 0xF241;
+		layerLocation[(yTileStart * 0x20) + xTileStart + 1] = 0xF242;
+		layerLocation[(yTileStart * 0x20) + xTileStart + width - 1] = 0xF246;
+		layerLocation[(yTileStart * 0x20) + xTileStart + width - 2] = 0xF245;
+		width -= 2;
+		for (u32 j = 2; j < width; j++)
+		{
+			layerLocation[(yTileStart * 0x20) + xTileStart + j] = 0xF243;
+		}
+	}
+}
+
+void TextFunctions::DrawMenuBoxTop(u32 layer, u32 xTileStart, u32 yTileStart, u32 width)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (xTileStart + width > 30)
+	{
+		width = 30 - xTileStart;
+	}
+	if (yTileStart > 20)
+	{
+		yTileStart = 0;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		layerLocation[(yTileStart * 0x20) + xTileStart] = 0xF254;
+		layerLocation[(yTileStart * 0x20) + xTileStart + width - 1] = 0xF256;
+		width--;
+		for (u32 j = 1; j < width; j++)
+		{
+			layerLocation[(yTileStart * 0x20) + xTileStart + j] = 0xF255;
+		}
+	}
+}
+
+void TextFunctions::DrawTextBoxBottom(u32 layer, u32 xTileStart, u32 yTileStart, u32 width)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (xTileStart + width > 30)
+	{
+		width = 30 - xTileStart;
+	}
+	if (yTileStart > 20)
+	{
+		yTileStart = 0;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		layerLocation[(yTileStart * 0x20) + xTileStart] = 0xF24D;
+		layerLocation[(yTileStart * 0x20) + xTileStart + 1] = 0xF24E;
+		layerLocation[(yTileStart * 0x20) + xTileStart + width - 1] = 0xF252;
+		layerLocation[(yTileStart * 0x20) + xTileStart + width - 2] = 0xF251;
+		width -= 2;
+		for (u32 j = 2; j < width; j++)
+		{
+			layerLocation[(yTileStart * 0x20) + xTileStart + j] = 0xF24F;
+		}
+	}
+}
+
+void TextFunctions::DrawMenuBoxBottom(u32 layer, u32 xTileStart, u32 yTileStart, u32 width)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (xTileStart + width > 30)
+	{
+		width = 30 - xTileStart;
+	}
+	if (yTileStart > 20)
+	{
+		yTileStart = 0;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		layerLocation[(yTileStart * 0x20) + xTileStart] = 0xF25A;
+		layerLocation[(yTileStart * 0x20) + xTileStart + width - 1] = 0xF25C;
+		width--;
+		for (u32 j = 1; j < width; j++)
+		{
+			layerLocation[(yTileStart * 0x20) + xTileStart + j] = 0xF25B;
+		}
+	}
+}
+
+void TextFunctions::DrawTextBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (yTileStart + height > 20)
+	{
+		height = 20 - yTileStart;
+	}
+	if (xTileStart > 30)
+	{
+		xTileStart = 0;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		for (u32 j = 0; j < height; j++)
+		{
+			layerLocation[((yTileStart + j) * 0x20) + xTileStart] = 0xF247;
+			layerLocation[((yTileStart + j) * 0x20) + xTileStart + 1] = 0xF248;
+			layerLocation[((yTileStart + j) * 0x20) + xTileStart + width - 2] = 0xF24B;
+			layerLocation[((yTileStart + j) * 0x20) + xTileStart + width - 1] = 0xF24C;
+		}
+	}
+}
+
+void TextFunctions::DrawMenuBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width)
+{
+	BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+	if (yTileStart + height > 20)
+	{
+		height = 20 - yTileStart;
+	}
+	if (xTileStart > 30)
+	{
+		xTileStart = 0;
+	}
+	u16* layerLocation = Game::GetLayerPointer(layer);
+	if (layerLocation)
+	{
+		for (u32 j = 0; j < height; j++)
+		{
+			layerLocation[((yTileStart + j) * 0x20) + xTileStart] = 0xF257;
+			layerLocation[((yTileStart + j) * 0x20) + xTileStart + width - 1] = 0xF259;
+		}
+	}
+}
+
+void TextFunctions::ClearTile(u32 x, u32 y)
+{
+	void* location = (void*)(0x06008020 + (0x280 * x) + (0x40 * y));
+	memset32(location, 0x11111111, 0x10);
+}

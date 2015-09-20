@@ -63,7 +63,7 @@ TrainerBattle::TrainerBattle(const BattleTypeStruct &bts, u32 trainerIDAndInform
 			script = (u8*)transitionScripts[i].pointerToData;
 		}
 	}
-	new BattleTransitionScriptRunner(script, this);
+	//new BattleTransitionScriptRunner(script, this);
 	SoundEngine::PlaySong(CalculateBattleTrack(), 0);
 }
 

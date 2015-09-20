@@ -80,7 +80,7 @@ void LinkedList::Remove(void* item)
 		ListNode* currNode = frontNode;
 		do
 		{
-			if (currNode->GetItem() == item)
+			if ((u32)currNode->GetItem() == (u32)item)
 			{
 				break;
 			}
@@ -101,11 +101,7 @@ void LinkedList::Remove(void* item)
 
 ListNode* LinkedList::NodeAt(int index)
 {
-	if (index == 0)
-	{
-		return frontNode;
-	}
-	else if (index == numItems - 1)
+	if (index == numItems - 1)
 	{
 		return backNode;
 	}

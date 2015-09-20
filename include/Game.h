@@ -95,6 +95,7 @@ private:
 	static u16 eggCycle;
 	static u8 happinessCycle;
 	static u8 poisonCycle;
+	static u8 menuPosition;
 	static u16 repelCounter;
 	static u16 repelStrength;
 	static Vector2D cameraPos;
@@ -187,6 +188,8 @@ public:
 	static void ClearParty();
 	static Pokemon* GetDayCarePokemon(u32 indexID) { if (indexID < 3) { return &dayCarePokemon[indexID]; } return NULL; }
 	static u16 GetDayCareStatus() { return dayCareStatus; }
+	static u32 GetMenuPosition() { return menuPosition; }
+	static void SetMenuPosition(u32 newMenuPosition) { if (newMenuPosition < 0x100) { menuPosition = newMenuPosition; } }
 	static void SetLayer(u32 layerID, u32 layerPos)
 	{
 		if (layerPos < 32)

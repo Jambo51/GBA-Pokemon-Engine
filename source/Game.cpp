@@ -38,6 +38,7 @@ EWRAM_LOCATION ALIGN(4) u32 Game::currentAlpha = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::eggCycle = EggCycleLength;
 EWRAM_LOCATION ALIGN(1) u8 Game::happinessCycle = HappinessCycleLength;
 EWRAM_LOCATION ALIGN(1) u8 Game::poisonCycle = PoisonCycleLength;
+EWRAM_LOCATION ALIGN(1) u8 Game::menuPosition = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::repelCounter = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::repelStrength = 0;
 EWRAM_LOCATION ALIGN(2) u16 Game::regionalDexNumberSeen = 0;

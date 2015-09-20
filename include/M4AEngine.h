@@ -33,6 +33,7 @@ typedef struct M4FadeStruct
 class M4AEngine : public MusicEngine
 {
 	static u16 Sqrt[];
+	static u32 M4_MixArea[];
 	M4Driver M4DriverArea;
 	M4CGBChan M4CGBArea[4];
 	M4Player M4Players[M4_MaxPly];
@@ -47,7 +48,7 @@ class M4AEngine : public MusicEngine
 	void M4_Main();
 	void MidiUpdate(M4Player *Play);
 	void M4_Update(M4Player *Play);
-	void M4_Player(void);
+	void M4_Player(u8* eightBitAddress);
 	void M4_StopSong(u32 Player);
 	void M4_PlaySong(u32 Player, const SongData *Song);
 	void M4_PlayByName(SongData *Song);
@@ -94,9 +95,11 @@ public:
 	void Update();
 	void SetSongOnEndFunction(VoidFunctionPointerVoid function);
 	void SetSFXOnEndFunction(VoidFunctionPointerVoid function);
-	void ResumeSongPlaybackAndDisableFanfare();
 	void SwitchWavePattern(u8 patternID) const;
 	void Initialise();
+	void ResumeSong();
+	bool FanfarePlaying();
+	bool SFXPlaying();
 };
 
 #ifdef __cplusplus

@@ -10,6 +10,7 @@
 
 #define END '\0'
 #define NumLocalBuffers 4
+#define NumExtraOptions 3
 
 #include "GlobalDefinitions.h"
 #include "String.h"
@@ -17,8 +18,16 @@
 
 class Pokemon;
 
+typedef struct StringAndFlagID {
+	char* string;
+	u16 flagID;
+	u16 alignment;
+} StringAndFlagID;
+
 class TextFunctions
 {
+public:
+	static char* playerNameLoc;
 private:
 	static u32 primaryTextPalette[];
 	static u32 primaryOutlinePalette[];
@@ -26,7 +35,6 @@ private:
 	static u32 textOutline[][16];
 	static u32 battlePauseOutline[][8];
 	static u32 battleTextOutline[][16];
-	static char* playerNameLoc;
 	static char* rival1NameLoc;
 	static char* rival2NameLoc;
 	static char* rival3NameLoc;
@@ -84,6 +92,13 @@ public:
 	static void LoadPaletteAndTiles(bool isBattle = false);
 	static void RevertMapToStandard(u32 layer);
 	static void ClearTextAreaFromMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight);
+	static void DrawTextBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+	static void DrawMenuBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+	static void DrawTextBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+	static void DrawMenuBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+	static void DrawTextBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
+	static void DrawMenuBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
+	static void ClearTile(u32 x, u32 y);
 };
 
 #endif /* TEXTFUNCTIONS_H_ */

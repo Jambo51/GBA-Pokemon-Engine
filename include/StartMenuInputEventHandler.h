@@ -17,6 +17,7 @@
 class StartMenuInputEventHandler : public InputEventHandler
 {
 private:
+	static char nameString[];
 	static StringAndFunctionPointerStruct baseMenuOptions[];
 	static StringAndFunctionPointerWithFlagIDStruct additionalMenuOptions[NumAdditionalOptions];
 	VoidFunctionPointerVoid* menu;

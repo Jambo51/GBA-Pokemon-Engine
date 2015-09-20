@@ -11,11 +11,13 @@
 //#include "PauseMenuSwitchFunctions.h"
 #include "DoNothingInputEventHandler.h"
 #include "Flags.h"
+#include "TextFunctions.h"
+#include "Game.h"
 
-TEXT_LOCATION ALIGN(1) char playerNameOption[] = { 0xFB, 0x10, '\0' };
+TEXT_LOCATION ALIGN(1) char StartMenuInputEventHandler::nameString[] = { 0xFB, 0x10, '\0' };
 TEXT_LOCATION ALIGN(4) StringAndFunctionPointerStruct StartMenuInputEventHandler::baseMenuOptions[NumOptions] = {
 		{ "Bag", NULL },
-		{ (char*)&playerNameOption, NULL },
+		{ "Jambo51", NULL },
 		{ "Save", NULL },
 		{ "Options", NULL },
 		{ "Close", NULL }
@@ -28,7 +30,6 @@ TEXT_LOCATION ALIGN(4) StringAndFunctionPointerWithFlagIDStruct StartMenuInputEv
 
 StartMenuInputEventHandler::StartMenuInputEventHandler()
 {
-	// TODO Auto-generated constructor stub
 	numMenuItems = 0;
 	for (u32 i = 0; i < NumAdditionalOptions; i++)
 	{
@@ -37,28 +38,41 @@ StartMenuInputEventHandler::StartMenuInputEventHandler()
 			numMenuItems++;
 		}
 	}
+	TextFunctions::SetTextColourFromInkColour(3);
+	TextFunctions::ClearTextTileArea();
+	TextFunctions::LoadPaletteAndTiles();
 	numMenuItems += NumOptions;
+	menuPosition = Game::GetMenuPosition();
 	u32 currentMenuPos = 0;
 	menu = new VoidFunctionPointerVoid[numMenuItems];
 	for (u32 i = 0; i < NumAdditionalOptions; i++)
 	{
 		if (Flags::CheckFlag(additionalMenuOptions[i].flagID))
 		{
+			TextFunctions::DrawString(additionalMenuOptions[i].string, 8, currentMenuPos << 4);
 			menu[currentMenuPos] = additionalMenuOptions[i].function;
 			currentMenuPos++;
 		}
 	}
 	for (u32 i = 0; i < NumOptions; i++)
 	{
+		TextFunctions::DrawString(baseMenuOptions[i].string, 8, currentMenuPos << 4);
 		menu[currentMenuPos] = baseMenuOptions[i].function;
 		currentMenuPos++;
 	}
+	TextFunctions::DrawCharacter(ARROWCHAR, 0, menuPosition << 4);
+	TextFunctions::DrawTextAreaToMap(0, 21, 1, 8, numMenuItems << 1);
+	TextFunctions::DrawMenuBoxTop(0, 20, 0, 10);
+	TextFunctions::DrawMenuBoxBottom(0, 20, (numMenuItems << 1) + 1, 10);
+	TextFunctions::DrawMenuBoxSides(0, 20, 1, (numMenuItems << 1), 10);
 }
 
 StartMenuInputEventHandler::~StartMenuInputEventHandler()
 {
 	// TODO Auto-generated destructor stub
 	delete[] menu;
+	TextFunctions::ClearTextAreaFromMap(0, 20, 0, 10, (numMenuItems + 1) << 1);
+	TextFunctions::ClearTextTileArea();
 }
 
 void StartMenuInputEventHandler::OnPressA()
@@ -100,6 +114,7 @@ void StartMenuInputEventHandler::OnPressUp()
 	InputEventHandler::OnPressUp();
 	if (!keyHeld[Key_Up])
 	{
+		TextFunctions::ClearTile(0, menuPosition);
 		if (menuPosition > 0)
 		{
 			menuPosition--;
@@ -108,6 +123,8 @@ void StartMenuInputEventHandler::OnPressUp()
 		{
 			menuPosition = numMenuItems - 1;
 		}
+		TextFunctions::DrawCharacter(ARROWCHAR, 0, menuPosition << 4);
+		Game::SetMenuPosition(menuPosition);
 	}
 }
 
@@ -116,6 +133,7 @@ void StartMenuInputEventHandler::OnPressDown()
 	InputEventHandler::OnPressDown();
 	if (!keyHeld[Key_Down])
 	{
+		TextFunctions::ClearTile(0, menuPosition);
 		if (menuPosition < numMenuItems - 1)
 		{
 			menuPosition++;
@@ -124,5 +142,7 @@ void StartMenuInputEventHandler::OnPressDown()
 		{
 			menuPosition = 0;
 		}
+		TextFunctions::DrawCharacter(ARROWCHAR, 0, menuPosition << 4);
+		Game::SetMenuPosition(menuPosition);
 	}
 }

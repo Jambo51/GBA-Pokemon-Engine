@@ -254,9 +254,7 @@ typedef struct _STT {
 	u16 r1;
 } STT;
 
-void M4_Mixer();
-void M4_Init();
-void M4_Intr();
+void M4_Mixer(void* location1, void* location2, void* location3);
 
 /*****************************/
 #ifdef __cplusplus

@@ -7,15 +7,20 @@
 
 #include "LoadGameScreen.h"
 #include "TitleScreen.h"
-#include "Mapping.h"
+#include "PrimaryOverworld.h"
 #include "SoundEngine.h"
 #include "OptionsScreen.h"
-#include "GameModeManager.h"
+#include "SceneManager.h"
 #include "Game.h"
 #include "InputHandler.h"
 #include "LoadGameScreenInputEventHandler.h"
 #include "BackgroundFunctions.h"
 #include "TextFunctions.h"
+
+using namespace Core;
+using namespace Input;
+using namespace Scenes;
+using namespace Scenes::Overworld;
 
 LoadGameScreen::LoadGameScreen(u32 enterContext)
 {
@@ -42,7 +47,7 @@ void LoadGameScreen::OnEnterCallback()
 		SoundEngine::PlaySong(Song_ContinueMenuTheme, 0);
 		exitContext = 0;
 	}
-	InputHandler::SetEventHandler(new LoadGameScreenInputEventHandler());
+	InputManager::SetEventHandler(new LoadGameScreenInputEventHandler());
 }
 
 void LoadGameScreen::OnExitCallback()
@@ -51,19 +56,19 @@ void LoadGameScreen::OnExitCallback()
 	{
 		case 3:
 			// Press B to return to Title Screen
-			GameModeManager::SetScreen(new TitleScreen());
+			SceneManager::SetScene(new TitleScreen());
 			break;
 		case 0:
 			// Load Game
-			GameModeManager::SetScreen(new Overworld());
+			SceneManager::SetScene(new PrimaryOverworld());
 			break;
 		case 1:
 			// New Game
-			GameModeManager::SetScreen(new Overworld());
+			SceneManager::SetScene(new PrimaryOverworld());
 			break;
 		case 2:
 			// Options Menu
-			GameModeManager::SetScreen(new OptionsScreen(0));
+			SceneManager::SetScene(new OptionsScreen(0));
 			break;
 		default:
 			break;

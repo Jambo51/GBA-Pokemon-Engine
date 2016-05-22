@@ -11,78 +11,52 @@
 
 String::String(const char* string)
 {
-	// TODO Auto-generated constructor stub
-	stringSize = CountStringLength(string);
-	arraySize = stringSize * 2;
-	underlyingString = new char[arraySize];
-	for (int i = 0; i < stringSize; i++)
-	{
-		underlyingString[i] = string[i];
-	}
+	underlyingString = Collections::Lists::ArrayList(CountStringLength(string), string);
 }
 
 String::String(const String &string)
 {
-	stringSize = CountStringLength(string.GetUnderlyingArray());
-	arraySize = stringSize * 2;
-	underlyingString = new char[arraySize];
-	char* arr = string.GetUnderlyingArray();
-	for (int i = 0; i < stringSize; i++)
-	{
-		underlyingString[i] = arr[i];
-	}
+	char* array = string.GetUnderlyingArray();
+	underlyingString = Collections::Lists::ArrayList(CountStringLength(array), array);
 }
 
 String::String(u32 initialLength)
 {
-	stringSize = 0;
-	arraySize = initialLength;
-	underlyingString = new char[initialLength];
+	underlyingString = Collections::Lists::ArrayList(initialLength);
 	for (u32 i = 0; i < initialLength; i++)
 	{
-		underlyingString[i] = '\0';
+		underlyingString.Replace(i, '/0');
 	}
+}
+
+String::String(Collections::Lists::ArrayList<char> premadeList)
+{
+	underlyingString = premadeList;
 }
 
 String::~String()
 {
 	// TODO Auto-generated destructor stub
-	if (underlyingString)
-	{
-		delete[] underlyingString;
-	}
 }
 
 bool String::EndsWith(const char c) const
 {
-	return underlyingString[stringSize] == c;
+	return underlyingString.Last() == c;
 }
 
 String String::SubString(s32 startIndex, u32 length) const
 {
-	String newString = this->underlyingString;
-	if (startIndex < 0)
+	char* array = underlyingString.GetPointer();
+	if (underlyingString.Size() >= startIndex + length)
 	{
-		char* array = newString.GetUnderlyingArray();
-		TextFunctions::StringCopy(array, underlyingString, stringSize + startIndex);
-		newString.SetLength(stringSize + startIndex);
+		array = (char*)(((u32)array) + startIndex);
+		Collections::Lists::ArrayList<char> newString = Collections::Lists::ArrayList<char>(length, array);
+		return String(newString);
 	}
 	else
 	{
-		if (length)
-		{
-			char* array = newString.GetUnderlyingArray();
-			TextFunctions::StringCopy(array, (char*)((u32)underlyingString + startIndex), length);
-			newString.SetLength(length);
-		}
-		else
-		{
-			char* array = newString.GetUnderlyingArray();
-			TextFunctions::StringCopy(array, (char*)((u32)underlyingString + startIndex), 0);
-			newString.SetLength(stringSize - startIndex);
-		}
+		return String();
 	}
-	return newString;
 }
 
 bool String::EndsWith(const char* c) const
@@ -92,7 +66,7 @@ bool String::EndsWith(const char* c) const
 	{
 		index++;
 	}
-	u32 startPos = stringSize - index;
+	u32 startPos = underlyingString.Size() - index;
 	while (index > 0)
 	{
 		if (underlyingString[startPos + index] != c[index])
@@ -139,8 +113,8 @@ bool String::StartsWith(const String &rhs) const
 
 String String::ToUpper() const
 {
-	String s = underlyingString;
-	for (int i = 0; i < s.stringSize; i++)
+	String s = underlyingString.GetPointer();
+	for (int i = 0; i < s.Size(); i++)
 	{
 		if (s[i] >= 'a' && s[i] <= 'z')
 		{
@@ -152,8 +126,8 @@ String String::ToUpper() const
 
 String String::ToLower() const
 {
-	String s = underlyingString;
-	for (int i = 0; i < s.stringSize; i++)
+	String s = underlyingString.GetPointer();
+	for (int i = 0; i < s.Size(); i++)
 	{
 		if (s[i] >= 'A' && s[i] <= 'Z')
 		{
@@ -272,134 +246,28 @@ bool String::StartsWithVowel() const
 
 void String::Append(const char c)
 {
-	if (stringSize + 1 <= arraySize)
-	{
-		underlyingString[stringSize] = c;
-		stringSize++;
-		underlyingString[stringSize] = '\0';
-	}
-	else
-	{
-		char* original = underlyingString;
-		arraySize *= 2;
-		underlyingString = new char[arraySize];
-		for (int i = 0; i < stringSize; i++)
-		{
-			underlyingString[i] = original[i];
-		}
-		underlyingString[stringSize] = c;
-		stringSize++;
-		underlyingString[stringSize] = '\0';
-		delete[] original;
-	}
+	underlyingString.PushBack(c);
 }
 
 void String::Append(const char* c)
 {
-	int count = CountStringLength(c);
-	if (stringSize + count <= arraySize)
+	if (c)
 	{
-		for (int i = 0; i < count; i++)
+		int index = 0;
+		do
 		{
-			underlyingString[stringSize] = c[i];
-			stringSize++;
-		}
-		underlyingString[stringSize] = '\0';
-	}
-	else if (stringSize + count <= arraySize * 2)
-	{
-		char* original = underlyingString;
-		arraySize *= 2;
-		underlyingString = new char[arraySize];
-		for (int i = 0; i < stringSize; i++)
-		{
-			underlyingString[i] = original[i];
-		}
-		for (int i = 0; i < count; i++)
-		{
-			underlyingString[stringSize] = c[i];
-			stringSize++;
-		}
-		underlyingString[stringSize] = '\0';
-		delete[] original;
-	}
-	else
-	{
-		char* original = underlyingString;
-		arraySize = count * 2;
-		underlyingString = new char[arraySize];
-		for (int i = 0; i < stringSize; i++)
-		{
-			underlyingString[i] = original[i];
-		}
-		for (int i = 0; i < count; i++)
-		{
-			underlyingString[stringSize] = c[i];
-			stringSize++;
-		}
-		underlyingString[stringSize] = '\0';
-		delete[] original;
+			underlyingString.PushBack(c[index]);
+			index++;
+		} while (c[index] != '/0');
 	}
 }
 
 void String::Prepend(const char c)
 {
-	if (stringSize + 1 <= arraySize)
-	{
-		TextFunctions::StringCopy((char*)((u32)underlyingString + 1), underlyingString, stringSize);
-		underlyingString[0] = c;
-		stringSize++;
-		underlyingString[stringSize] = '\0';
-	}
-	else
-	{
-		char* original = underlyingString;
-		arraySize *= 2;
-		underlyingString = new char[arraySize];
-		TextFunctions::StringCopy((char*)((u32)underlyingString + 1), original, stringSize);
-		underlyingString[0] = c;
-		stringSize++;
-		underlyingString[stringSize] = '\0';
-		delete[] original;
-	}
+	underlyingString.PushFront(c);
 }
 
 void String::Prepend(const char* c)
 {
-	int count = CountStringLength(c);
-	if (stringSize + count <= arraySize)
-	{
-		TextFunctions::StringCopy((char*)((u32)underlyingString + count), underlyingString, stringSize);
-		char c = underlyingString[count];
-		TextFunctions::StringCopy(underlyingString, (char*)c, stringSize);
-		underlyingString[count] = c;
-		underlyingString[stringSize] = '\0';
-	}
-	else if (stringSize + count <= arraySize * 2)
-	{
-
-		char* original = underlyingString;
-		arraySize *= 2;
-		underlyingString = new char[arraySize];
-		TextFunctions::StringCopy((char*)((u32)underlyingString + count), original, stringSize);
-		char c = underlyingString[count];
-		TextFunctions::StringCopy(underlyingString, (char*)c, stringSize);
-		underlyingString[count] = c;
-		stringSize++;
-		underlyingString[stringSize] = '\0';
-		delete[] original;
-	}
-	else
-	{
-		char* original = underlyingString;
-		arraySize = count * 2;
-		underlyingString = new char[arraySize];
-		TextFunctions::StringCopy((char*)((u32)underlyingString + count), original, stringSize);
-		char c = underlyingString[count];
-		TextFunctions::StringCopy(underlyingString, (char*)c, stringSize);
-		underlyingString[count] = c;
-		stringSize++;
-		underlyingString[stringSize] = '\0';
-		delete[] original;
-	}
+	underlyingString.PushFrontMany(c, CountStringLength(c));
 }

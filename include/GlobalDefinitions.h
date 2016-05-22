@@ -378,27 +378,6 @@ typedef struct PCStorage {
 	BagItem berryItemsData[NumPCBerryTypes];
 } PCStorage;
 
-typedef struct GBPTrack {
-	u32 trackType:2;
-	u32 secondaryTracks:1;
-	u32 unused:29;
-	u8* songData;
-} GBPTrack;
-
-typedef struct GBPTrackHeader {
-	u8 trackType:2;
-	u8 secondaryTracks:1;
-	u8 tone1Included:1;
-	u8 tone2Included:1;
-	u8 waveIncluded:1;
-	u8 noiseIncluded:1;
-	u8 alignment:1;
-	u8 numberOfTracks;
-	u16 unused;
-	u8* songData;
-	GBPTrack theTracks[];
-} GBPTrackHeader;
-
 typedef struct MoveFlagsStruct {
 	u8 makesContact:1;
 	u8 punching:1;

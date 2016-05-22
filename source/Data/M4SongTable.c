@@ -5,8 +5,8 @@
  *      Author: Jamie
  */
 
-#include "EngineM4.h"
-#include "M4ASongs.h"
+#include "Audio/M4A/EngineM4.h"
+#include "Audio/M4A/M4ASongs.h"
 #include "GlobalDefinitions.h"
 
 const RODATA_LOCATION STT song_table[0x92] = {
@@ -50,7 +50,7 @@ const RODATA_LOCATION STT song_table[0x92] = {
 		{ (SongData*)0x0, 0, 0 },
 		{ (SongData*)0x0, 0, 0 },
 		{ (SongData*)0x0, 0, 0 },
-		{ (SongData*)0x0, 0, 0 },
+		{ (SongData*)&song347, 0, 0 },
 		{ (SongData*)0x0, 0, 0 },
 		{ (SongData*)0x0, 0, 0 },
 		{ (SongData*)0x0, 0, 0 },

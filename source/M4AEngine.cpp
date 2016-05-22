@@ -1250,15 +1250,17 @@ bool M4AEngine::SFXPlaying()
 
 void M4AEngine::M4_Main()
 {
-	if (M4DriverArea.Status == M4_Status)
+	for (int i = 0; i < 4; i++)
 	{
-		M4DriverArea.Status &= ~(0xFF);
-		memset32((void*)&M4MixArea, 0, M4_BuffLen >> 2);
-		M4_Player((u8*)MusicEngine::GetBufferAddress());
-		M4_Mixer((void*)&M4DriverArea.Divider, (void*)&M4_MixArea, (void*)&M4DriverArea);
-		M4DriverArea.MaxChn = 0;
-		M4DriverArea.Status |= (M4_Status & 0xFF);
+		if (players[i].IsActive())
+		{
+			if (!players[i].Update())
+			{
+				players[i].Kill();
+			}
+		}
 	}
+	M4_Mixer()
 }
 
 void M4AEngine::Update()

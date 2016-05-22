@@ -8,13 +8,16 @@
 #ifndef SOURCE_DONOTHINGINPUTEVENTHANDLER_H_
 #define SOURCE_DONOTHINGINPUTEVENTHANDLER_H_
 
-#include "InputEventHandler.h"
+#include "InputHandler.h"
 
-class DoNothingInputEventHandler : public InputEventHandler
+namespace Input
 {
-public:
-	DoNothingInputEventHandler();
-	~DoNothingInputEventHandler();
-};
+	class DoNothingInputEventHandler : public InputHandler
+	{
+	public:
+		DoNothingInputEventHandler();
+		~DoNothingInputEventHandler();
+	};
+}
 
 #endif /* SOURCE_DONOTHINGINPUTEVENTHANDLER_H_ */

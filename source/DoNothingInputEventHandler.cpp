@@ -7,14 +7,16 @@
 
 #include "DoNothingInputEventHandler.h"
 
-DoNothingInputEventHandler::DoNothingInputEventHandler()
+namespace Input
 {
-	// TODO Auto-generated constructor stub
+	DoNothingInputEventHandler::DoNothingInputEventHandler()
+	{
+		// TODO Auto-generated constructor stub
 
+	}
+
+	DoNothingInputEventHandler::~DoNothingInputEventHandler()
+	{
+		// TODO Auto-generated destructor stub
+	}
 }
-
-DoNothingInputEventHandler::~DoNothingInputEventHandler()
-{
-	// TODO Auto-generated destructor stub
-}
-

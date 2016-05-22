@@ -115,7 +115,7 @@ u16 Pokedex::ConvertNationalIDToRegionalID(u32 index, u32 mode)
 	{
 		if (index >= dexLengths[mode])
 		{
-			return U32Max;
+			return U16Max;
 		}
 		return dexModeConversionTable[mode][index];
 	}

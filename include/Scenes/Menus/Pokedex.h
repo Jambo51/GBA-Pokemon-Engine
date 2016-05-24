@@ -1,7 +1,7 @@
 #ifndef POKEDEX_H
 #define POKEDEX_H
 
-#include "Scene.h"
+#include "Scenes/Scene.h"
 
 #define REGIONAL_DEX_LENGTH 152
 

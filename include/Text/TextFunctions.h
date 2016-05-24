@@ -15,8 +15,7 @@
 #include "GlobalDefinitions.h"
 #include "String.h"
 #include "TextDrawer.h"
-
-class Pokemon;
+#include "Core/Pokemon/Pokemon.h"
 
 typedef struct StringAndFlagID {
 	char* string;
@@ -66,7 +65,7 @@ public:
 	static void BufferNatureName(u32 natureID, u8 bufferID);
 	static void SetFontByID(u32 id);
 	static void BufferPokemonSpecies(u16 species, u8 bufferID);
-	static void BufferPokemonNameFromPointer(Pokemon* thePokemon, u8 bufferID);
+	static void BufferPokemonNameFromPointer(Core::Pokemon::Pokemon* thePokemon, u8 bufferID);
 	static void BufferPokemonName(u8 pokemonIndex, u8 bufferID);
 	static void BufferMapHeaderName(u32 mapHeaderNameID, u8 bufferID);
 	static void BufferNumber(u32 number, u32 length, u8 bufferID, u32 leadingZeroes = 0);

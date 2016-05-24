@@ -8,7 +8,7 @@
 #ifndef SCRIPTRUNNER_H_
 #define SCRIPTRUNNER_H_
 
-#include "Task.h"
+#include "../Task.h"
 
 namespace Tasks
 {

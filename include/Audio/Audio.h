@@ -2,6 +2,8 @@
 #define AUDIO_H_
 
 #include "GlobalDefinitions.h"
-#include "libaudio.h"
+#include "../LibraryHeaders/libaudio.h"
+#include "GameBoySounds/GBSEngine.h"
+#include "M4A/EngineM4.h"
 
 #endif

@@ -14,7 +14,7 @@
 //
 //======================================================================
 
-#include "MappingDefinitions.h"
+#include "Scenes/Overworld/MappingDefinitions.h"
 
 const unsigned short Tileset1Tiles[1128] __attribute__((aligned(4)))=
 {

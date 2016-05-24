@@ -1,108 +1,111 @@
-#include "EntityManager.h"
-#include "Entity.h"
+#include "Entities/EntityManager.h"
+#include "Entities/Entity.h"
 
-EWRAM_LOCATION ALIGN(4) LinkedList EntityManager::_entities = LinkedList();
-
-EntityManager::EntityManager(void)
+namespace Entities
 {
-}
+	EWRAM_LOCATION ALIGN(4) Collections::Lists::LinkedList<Entity*> EntityManager::_entities = Collections::Lists::LinkedList<Entity*>();
 
-
-EntityManager::~EntityManager(void)
-{
-}
-
-bool EntityManager::Initialise()
-{
-	for (int i = 0; i < _entities.Size(); i++)
+	EntityManager::EntityManager(void)
 	{
-		((Entity*)_entities.At(i))->Initialise();
 	}
-	return true;
-}
 
-bool EntityManager::LoadContent()
-{
-	for (int i = 0; i < _entities.Size(); i++)
+
+	EntityManager::~EntityManager(void)
 	{
-		((Entity*)_entities.At(i))->LoadContent();
 	}
-	return true;
-}
 
-void EntityManager::UnloadContent()
-{
-	for (int i = 0; i < _entities.Size(); i++)
+	bool EntityManager::Initialise()
 	{
-		((Entity*)_entities.At(i))->UnloadContent();
-	}
-}
-
-void EntityManager::Render()
-{
-	if (_entities.Size() > 0)
-	{
-		int* order = new int[_entities.Size()];
 		for (int i = 0; i < _entities.Size(); i++)
 		{
-			order[i] = i;
+			_entities[i]->Initialise();
 		}
+		return true;
+	}
+
+	bool EntityManager::LoadContent()
+	{
 		for (int i = 0; i < _entities.Size(); i++)
 		{
-			u32 urgency = ((Entity*)_entities.At(i))->EvaluatePositionScore();
-			for (int j = i + 1; j < _entities.Size(); j++)
+			_entities[i]->LoadContent();
+		}
+		return true;
+	}
+
+	void EntityManager::UnloadContent()
+	{
+		for (int i = 0; i < _entities.Size(); i++)
+		{
+			_entities[i]->UnloadContent();
+		}
+	}
+
+	void EntityManager::Render()
+	{
+		if (_entities.Size() > 0)
+		{
+			int* order = new int[_entities.Size()];
+			for (int i = 0; i < _entities.Size(); i++)
 			{
-				if (((Entity*)_entities.At(j))->EvaluatePositionScore() > urgency)
+				order[i] = i;
+			}
+			for (int i = 0; i < _entities.Size(); i++)
+			{
+				u32 urgency = _entities[i]->EvaluatePositionScore();
+				for (int j = i + 1; j < _entities.Size(); j++)
 				{
-					int temp = order[i];
-					order[i] = order[j];
-					order[j] = temp;
+					if (_entities[j]->EvaluatePositionScore() > urgency)
+					{
+						int temp = order[i];
+						order[i] = order[j];
+						order[j] = temp;
+					}
 				}
 			}
+			for (int i = 0; i < _entities.Size(); i++)
+			{
+				OAMObject* obj = _entities[order[i]]->GetObject();
+				if (obj)
+				{
+					obj->Update(i);
+				}
+			}
+			delete[] order;
 		}
+	}
+
+	void EntityManager::Clear()
+	{
 		for (int i = 0; i < _entities.Size(); i++)
 		{
-			OAMObject* obj = ((Entity*)_entities.At(order[i]))->GetObject();
-			if (obj)
-			{
-				obj->Update(i);
-			}
+			delete _entities[i];
 		}
-		delete[] order;
 	}
-}
 
-void EntityManager::Clear()
-{
-	for (int i = 0; i < _entities.Size(); i++)
+	bool EntityManager::Update()
 	{
-		delete (Entity*)_entities.At(i);
+		for (int i = 0; i < _entities.Size(); i++)
+		{
+			_entities[i]->Update();
+		}
+		return true;
 	}
-}
 
-bool EntityManager::Update()
-{
-	for (int i = 0; i < _entities.Size(); i++)
+	void EntityManager::TimeTick(u32 time)
 	{
-		((Entity*)_entities.At(i))->Update();
+		for (int i = 0; i < _entities.Size(); i++)
+		{
+			_entities[i]->TimeTick(time);
+		}
 	}
-	return true;
-}
 
-void EntityManager::TimeTick(u32 time)
-{
-	for (int i = 0; i < _entities.Size(); i++)
+	void EntityManager::RegisterEntity(Entity* entity)
 	{
-		((Entity*)_entities.At(i))->TimeTick(time);
+		_entities.PushBack(entity);
 	}
-}
 
-void EntityManager::RegisterEntity(Entity* entity)
-{
-	_entities.PushBack(entity);
-}
-
-void EntityManager::RemoveEntity(Entity* entity)
-{
-	_entities.Remove(entity);
+	void EntityManager::RemoveEntity(Entity* entity)
+	{
+		_entities.Remove(entity);
+	}
 }

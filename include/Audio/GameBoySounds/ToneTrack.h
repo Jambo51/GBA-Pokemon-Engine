@@ -10,6 +10,9 @@
 
 #include "Track.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 namespace Audio
 {
 	namespace GameBoySounds
@@ -55,5 +58,8 @@ namespace Audio
 		};
 	}
 }
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TONETRACK_H_ */

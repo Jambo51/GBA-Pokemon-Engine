@@ -9,6 +9,8 @@
 #define UNORDEREDMAP_H_
 
 #include "GlobalDefinitions.h"
+#include "Collections/Lists/List.h"
+
 namespace Collections
 {
 	namespace Lists

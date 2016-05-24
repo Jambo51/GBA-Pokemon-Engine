@@ -10,14 +10,20 @@
 
 #include "TrainerBattle.h"
 
-class DoubleTrainerBattle : public TrainerBattle
+namespace Scenes
 {
-protected:
-	Pokemon enemyBank2[6];
-public:
-	DoubleTrainerBattle(const BattleTypeStruct &bts, u16 trainerID1, const char* afterText1, u16 trainerID2, const char* afterText2);
-	~DoubleTrainerBattle();
-	void Update();
-};
+	namespace Battles
+	{
+		class DoubleTrainerBattle : public TrainerBattle
+		{
+		protected:
+			Core::Pokemon::Pokemon enemyBank2[6];
+		public:
+			DoubleTrainerBattle(const BattleTypeStruct &bts, u16 trainerID1, const char* afterText1, u16 trainerID2, const char* afterText2);
+			~DoubleTrainerBattle();
+			void Update();
+		};
+	}
+}
 
 #endif /* DOUBLETRAINERBATTLE_H_ */

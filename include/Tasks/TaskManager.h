@@ -17,8 +17,8 @@ namespace Tasks
 	class TaskManager
 	{
 	private:
-		static LinkedList tasks;
-		static LinkedList tasksToRemove;
+		static Collections::Lists::ArrayList<Task> tasks;
+		static Collections::Lists::LinkedList<Task> tasksToRemove;
 		TaskManager();
 		~TaskManager();
 	public:

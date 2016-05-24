@@ -1,5 +1,5 @@
 #include "GlobalDefinitions.h"
-#include "MappingDefinitions.h"
+#include "Scenes/Overworld/MappingDefinitions.h"
 #include "Maths.h"
 #include "libsprites.h"
 #include "Pokemon.h"

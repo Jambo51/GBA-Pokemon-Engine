@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LinkedList.h"
+#include "Collections/Lists/LinkedList.h"
 
 namespace Entities
 {
@@ -9,7 +9,7 @@ namespace Entities
 	class EntityManager
 	{
 	private:
-		static Collections::Lists::LinkedList<Entity> _entities;
+		static Collections::Lists::LinkedList<Entity*> _entities;
 		EntityManager(void);
 		~EntityManager(void);
 	public:

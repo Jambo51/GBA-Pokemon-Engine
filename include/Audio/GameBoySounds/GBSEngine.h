@@ -1,34 +1,33 @@
 #pragma once
 
 #include "GBSChannel.h"
-#include "MusicEngine.h"
+#include "../MusicEngine.h"
+
+typedef struct GBSTrack {
+	u32 trackType:2;
+	u32 secondaryTracks:1;
+	u32 unused:29;
+	u8* songData;
+} GBSTrack;
+
+typedef struct GBSTrackHeader {
+	u8 trackType:2;
+	u8 secondaryTracks:1;
+	u8 tone1Included:1;
+	u8 tone2Included:1;
+	u8 waveIncluded:1;
+	u8 noiseIncluded:1;
+	u8 alignment:1;
+	u8 numberOfTracks;
+	u16 unused;
+	u8* songData;
+	GBSTrack theTracks[];
+} GBSTrackHeader;
 
 namespace Audio
 {
 	namespace GameBoySounds
 	{
-
-		typedef struct GBSTrack {
-			u32 trackType:2;
-			u32 secondaryTracks:1;
-			u32 unused:29;
-			u8* songData;
-		} GBSTrack;
-
-		typedef struct GBSTrackHeader {
-			u8 trackType:2;
-			u8 secondaryTracks:1;
-			u8 tone1Included:1;
-			u8 tone2Included:1;
-			u8 waveIncluded:1;
-			u8 noiseIncluded:1;
-			u8 alignment:1;
-			u8 numberOfTracks;
-			u16 unused;
-			u8* songData;
-			GBSTrack theTracks[];
-		} GBSTrackHeader;
-
 		class GBSEngine : public MusicEngine
 		{
 		protected:

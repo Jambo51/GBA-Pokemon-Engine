@@ -5,22 +5,27 @@
  *      Author: Jamie
  */
 
-#include "BattleAnimationScriptRunner.h"
+#include "Tasks/ScriptRunners/BattleAnimationScriptRunner.h"
 
-RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner BattleAnimationScriptRunner::battleAnimationCommands[0xFF];
-RODATA_LOCATION ALIGN(4) u8* BattleAnimationScriptRunner::errorScript = NULL;
-
-BattleAnimationScriptRunner::BattleAnimationScriptRunner(u8* script) : ScriptRunner(script, (U32FunctionPointerScriptRunner*)&battleAnimationCommands)
+namespace Tasks
 {
-	if (!script)
+	namespace ScriptRunners
 	{
-		scriptPointer = errorScript;
+		RODATA_LOCATION ALIGN(4) U32FunctionPointerScriptRunner BattleAnimationScriptRunner::battleAnimationCommands[0xFF];
+		RODATA_LOCATION ALIGN(4) u8* BattleAnimationScriptRunner::errorScript = NULL;
+
+		BattleAnimationScriptRunner::BattleAnimationScriptRunner(u8* script) : ScriptRunner(script, (U32FunctionPointerScriptRunner*)&battleAnimationCommands)
+		{
+			if (!script)
+			{
+				scriptPointer = errorScript;
+			}
+			// TODO Auto-generated constructor stub
+		}
+
+		BattleAnimationScriptRunner::~BattleAnimationScriptRunner()
+		{
+			// TODO Auto-generated destructor stub
+		}
 	}
-	// TODO Auto-generated constructor stub
 }
-
-BattleAnimationScriptRunner::~BattleAnimationScriptRunner()
-{
-	// TODO Auto-generated destructor stub
-}
-

@@ -9,7 +9,7 @@
 #define OAMOBJECT_H_
 
 #include "GlobalDefinitions.h"
-#include "Vector2D.h"
+#include "Core/Vector2D.h"
 
 namespace Entities
 {

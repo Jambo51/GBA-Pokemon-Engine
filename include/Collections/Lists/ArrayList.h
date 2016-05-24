@@ -5,10 +5,10 @@
  *      Author: CoolerMaster
  */
 
-#ifndef INCLUDE_COLLECTIONS_LIST_ARRAYLIST_H_
-#define INCLUDE_COLLECTIONS_LIST_ARRAYLIST_H_
+#ifndef INCLUDE_COLLECTIONS_LISTS_ARRAYLIST_H_
+#define INCLUDE_COLLECTIONS_LISTS_ARRAYLIST_H_
 
-#include "List.h"
+#include "../Lists/List.h"
 
 namespace Collections
 {
@@ -35,7 +35,7 @@ namespace Collections
 				void Replace(int index, T item);
 				T* GetPointer() const { return arrayPointer; }
 
-				T operator[](int index)
+				T operator[](int index) const
 				{
 					return At(index);
 				}
@@ -44,4 +44,4 @@ namespace Collections
 }
 
 
-#endif /* INCLUDE_COLLECTIONS_LIST_ARRAYLIST_H_ */
+#endif /* INCLUDE_COLLECTIONS_LISTS_ARRAYLIST_H_ */

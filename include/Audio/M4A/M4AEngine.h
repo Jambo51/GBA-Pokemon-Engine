@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 #include "MusicEngine.h"
-#include "EngineM4.h"
+#include "Audio/M4A/EngineM4.h"
 
 #define FADESPEED 4
 #define M4_MAXVOL 127

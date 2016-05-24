@@ -5,7 +5,7 @@
  *      Author: Jamie
  */
 
-#include "Collections/List/LinkedList.h"
+#include "../include/Collections/Lists/LinkedList.h"
 
 namespace Collections
 {

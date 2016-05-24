@@ -9,7 +9,7 @@
 #define STRING_H_
 
 #include "GlobalDefinitions.h"
-#include "ArrayList.h"
+#include "Collections/Lists/ArrayList.h"
 
 class String
 {

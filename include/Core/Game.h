@@ -9,8 +9,8 @@
 #define GAME_H_
 
 #include "GlobalDefinitions.h"
-#include "MappingDefinitions.h"
-#include "Pokemon.h"
+#include "Scenes/Overworld/MappingDefinitions.h"
+#include "Pokemon/Pokemon.h"
 #include "Vector2D.h"
 
 #define PartyLength 6
@@ -30,7 +30,7 @@ namespace Core
 
 	typedef struct PokemonStorageBoxes {
 		StorageBoxInfo info;
-		AbridgedPokemon boxData[NUMBOXES][POKEMONPERBOX];
+		Pokemon::AbridgedPokemon boxData[NUMBOXES][POKEMONPERBOX];
 	} PokemonStorageBoxes;
 
 	typedef struct NPCData {
@@ -57,9 +57,9 @@ namespace Core
 	class Game
 	{
 	private:
-		static Pokemon partyPokemon[];
-		static Pokemon temporaryHoldingPokemon;
-		static Pokemon dayCarePokemon[];
+		static Pokemon::Pokemon partyPokemon[];
+		static Pokemon::Pokemon temporaryHoldingPokemon;
+		static Pokemon::Pokemon dayCarePokemon[];
 		static u16 dayCareStatus;
 		static PokemonStorageBoxes storageBoxes;
 		static Bag bag;
@@ -113,8 +113,8 @@ namespace Core
 		static u8 layer3ID;
 		Game();
 		~Game();
-		static u32 CountPokemon(Pokemon* location, u32 length);
-		static u32 CountAbridgedPokemon(AbridgedPokemon* location, u32 length);
+		static u32 CountPokemon(Pokemon::Pokemon* location, u32 length);
+		static u32 CountAbridgedPokemon(Pokemon::AbridgedPokemon* location, u32 length);
 		static u32 GetFadeColour(u16 clra, u16 clrb);
 		static void DoFadeOnPalette(u32 paletteID, u16* target, u16* current);
 		static void DoFade();
@@ -131,7 +131,7 @@ namespace Core
 		static const MapHeader & GetCurrentMap() { return currentMap; }
 		static Options & GetOptions() { return options.options; }
 		static const Options & GetConstOptions() { return options.options; }
-		static bool AddNewPokemon(const Pokemon &p);
+		static bool AddNewPokemon(const Pokemon::Pokemon &p);
 		static u32 CountPartyPokemon();
 		static u32 CountBoxPokemon(u32 boxID);
 		static u32 CountAllBoxPokemon();
@@ -155,8 +155,8 @@ namespace Core
 		static bool MainGame() { return inMainGame; }
 		static void MainGame(bool newValue) { inMainGame = newValue; }
 		static char* GetBufferPointer(u32 bufferID) { if (bufferID < NUMBUFFERS) { return (char*)&buffers[bufferID]; } return NULL; }
-		static Pokemon* GetPartyPokemon(u32 indexID) { if (indexID < 6) { return &partyPokemon[indexID]; } return NULL; }
-		static Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
+		static Pokemon::Pokemon* GetPartyPokemon(u32 indexID) { if (indexID < 6) { return &partyPokemon[indexID]; } return NULL; }
+		static Pokemon::Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
 		static NPCData* GetNPCDataPointer() { return (NPCData*)&overworldData; }
 		static void OnTakeStep();
 		static void MoveCamera(const Vector2D &delta);
@@ -170,7 +170,7 @@ namespace Core
 		static void IncrementNationalSeen() { nationalDexNumberSeen++; }
 		static void IncrementNationalCaught() { nationalDexNumberCaught++; }
 		static void SetCustomFadeCallback(VoidFunctionPointerU32 function, u32 data) { callbackFunction = function; callbackData = data; }
-		static bool AddNewPokemonToParty(const Pokemon &p);
+		static bool AddNewPokemonToParty(const Pokemon::Pokemon &p);
 		static const HealingPlace & GetHealingPlace() { return currentHealingPlace; }
 		static void SetHealingPlace(const HealingPlace &newPlace) { currentHealingPlace = newPlace; }
 		static const Vector2D GetPlayerPos() { return Vector2D(overworldData[0].xLocation, overworldData[0].yLocation); }
@@ -188,7 +188,7 @@ namespace Core
 		static bool GivePlayerMumMoney(u32 cashAwarded);
 		static bool RemovePlayerMumMoney(u32 cashRemoved);
 		static void ClearParty();
-		static Pokemon* GetDayCarePokemon(u32 indexID) { if (indexID < 3) { return &dayCarePokemon[indexID]; } return NULL; }
+		static Pokemon::Pokemon* GetDayCarePokemon(u32 indexID) { if (indexID < 3) { return &dayCarePokemon[indexID]; } return NULL; }
 		static u16 GetDayCareStatus() { return dayCareStatus; }
 		static u32 GetMenuPosition() { return menuPosition; }
 		static void SetMenuPosition(u32 newMenuPosition) { if (newMenuPosition < 0x100) { menuPosition = newMenuPosition; } }

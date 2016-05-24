@@ -8,7 +8,7 @@
 #include "M4AEngine.h"
 #include "M4SongTable.h"
 #include "SoundEngine.h"
-#include "EngineM4.h"
+#include "Audio/M4A/EngineM4.h"
 #include "Game.h"
 
 RODATA_LOCATION ALIGN(2) u16 M4AEngine::Sqrt[] = {

@@ -21,12 +21,8 @@ Dark
 Fairy
 ???*/
 
-#include "Scene.h"
-
-namespace Entities
-{
-	class Pokemon;
-}
+#include "Scenes/Scene.h"
+#include "Core/Pokemon/Pokemon.h"
 
 namespace Scenes
 {
@@ -90,7 +86,7 @@ namespace Scenes
 		} BattleStatusStructTwo;
 
 		typedef struct PokemonBattleData {
-			Pokemon* mainPointer;
+			Core::Pokemon::Pokemon* mainPointer;
 			u32 personalityID;
 			u16 species;
 			u16 currentHP;
@@ -293,10 +289,10 @@ namespace Scenes
 			void PrioritisePokemon();
 			void UpdateCounters();
 		protected:
-			void CopyBattleDataFromPokemon(Pokemon* thePokemon, u32 dataIndex);
+			void CopyBattleDataFromPokemon(Core::Pokemon::Pokemon* thePokemon, u32 dataIndex);
 			u32 currentStatus;
 			BattleTypeStruct battleType;
-			Pokemon enemyPokemon[6];
+			Core::Pokemon::Pokemon enemyPokemon[6];
 			BattleData battleData;
 			Battle(const BattleTypeStruct &bts);
 			~Battle();
@@ -323,7 +319,7 @@ namespace Scenes
 			static u32 DoubleLikelihood(u32 initialValue);
 			static u32 HalfAgainLikelihood(u32 initialValue);
 			static u32 NoChangeLikelihood(u32 initialValue);
-			static u32 CaptureChecks(Pokemon* target, u16 itemID);
+			static u32 CaptureChecks(Core::Pokemon::Pokemon* target, u16 itemID);
 			void MoveSelectionRender();
 			void RecalculateEffectiveStat(PokemonBattleData &data, u32 statIndex);
 			void RecalculateAllEffectiveStats(PokemonBattleData &dataLocation);
@@ -331,7 +327,7 @@ namespace Scenes
 			BattleData & GetBattleData() { return battleData; }
 			const BattleData & GetBattleData() const { return battleData; }
 			const BattleTypeStruct & GetBattleTypeStruct() const { return battleType; }
-			Pokemon* GetEnemyBattlerByIndex(u32 index) const { return (Pokemon*)&enemyPokemon[index]; }
+			Core::Pokemon::Pokemon* GetEnemyBattlerByIndex(u32 index) const { return (Core::Pokemon::Pokemon*)&enemyPokemon[index]; }
 			virtual void OnExitCallback() { }
 			virtual void OnEnterCallback() { }
 			virtual void Update() = 0;

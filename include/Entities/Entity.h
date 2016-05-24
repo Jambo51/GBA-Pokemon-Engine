@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector2D.h"
+#include "Core/Vector2D.h"
 #include "OAMObject.h"
 
 namespace Entities

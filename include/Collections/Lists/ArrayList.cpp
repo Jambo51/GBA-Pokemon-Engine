@@ -5,7 +5,7 @@
  *      Author: CoolerMaster
  */
 
-#include "ArrayList.h"
+#include "../Lists/ArrayList.h"
 
 namespace Collections
 {

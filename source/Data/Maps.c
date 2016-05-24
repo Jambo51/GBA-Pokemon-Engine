@@ -5,8 +5,8 @@
  *      Author: Jamie
  */
 
-#include "MappingDefinitions.h"
-#include "Tilesets.h"
+#include "Scenes/Overworld/MappingDefinitions.h"
+#include "Data/Tilesets/Tilesets.h"
 
 const u16 map3_0[] = { 0x041C, 0x041D, 0x041C, 0x041D, 0x041C, 0x041D, 0x041C, 0x041D,
 		0x041C, 0x041D, 0x041C, 0x041F, 0x32A6, 0x32A7, 0x041E, 0x041D,

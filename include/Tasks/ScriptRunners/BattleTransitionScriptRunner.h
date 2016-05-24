@@ -15,7 +15,10 @@
 
 namespace Scenes
 {
-	class Battle;
+	namespace Battles
+	{
+		class Battle;
+	}
 }
 
 namespace Tasks
@@ -31,7 +34,7 @@ namespace Tasks
 			static u8* positiveScripts[];
 			static u8** defaultBattleTransitionScripts[2];
 		public:
-			BattleTransitionScriptRunner(u8* script, Scenes::Battle* battle = NULL);
+			BattleTransitionScriptRunner(u8* script, Scenes::Battles::Battle* battle = NULL);
 			~BattleTransitionScriptRunner();
 		};
 	}

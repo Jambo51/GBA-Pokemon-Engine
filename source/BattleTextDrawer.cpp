@@ -5,26 +5,29 @@
  *      Author: Jamie
  */
 
-#include "BattleTextDrawer.h"
-#include "TextFunctions.h"
+#include "Text/BattleTextDrawer.h"
+#include "Text/TextFunctions.h"
 
-BattleTextDrawer::BattleTextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(u32), u32 functionData, u32 inkColour) : TextDrawer(newString, x, y, speed, endFunction, inkColour)
+namespace Text
 {
-	// TODO Auto-generated constructor stub
-
-}
-
-BattleTextDrawer::~BattleTextDrawer()
-{
-	// TODO Auto-generated destructor stub
-	if (string)
+	BattleTextDrawer::BattleTextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(u32), u32 functionData, u32 inkColour) : TextDrawer(newString, x, y, speed, endFunction, inkColour)
 	{
-		delete[] string;
-	}
-}
+		// TODO Auto-generated constructor stub
 
-void BattleTextDrawer::Initialise()
-{
-	TextFunctions::LoadPaletteAndTiles(true);
-	TextFunctions::DrawTextAreaToMap(0, 1, 15, 28, 4);
+	}
+
+	BattleTextDrawer::~BattleTextDrawer()
+	{
+		// TODO Auto-generated destructor stub
+		if (string)
+		{
+			delete[] string;
+		}
+	}
+
+	void BattleTextDrawer::Initialise()
+	{
+		TextFunctions::LoadPaletteAndTiles(true);
+		TextFunctions::DrawTextAreaToMap(0, 1, 15, 28, 4);
+	}
 }

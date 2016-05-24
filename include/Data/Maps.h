@@ -1,4 +1,4 @@
-#include "MappingDefinitions.h"
+#include "Scenes/Overworld/MappingDefinitions.h"
 
 #ifndef MAPS_H
 #define MAPS_H

@@ -5,8 +5,8 @@
  *      Author: CoolerMaster
  */
 
-#ifndef INCLUDE_COLLECTIONS_LIST_LIST_H_
-#define INCLUDE_COLLECTIONS_LIST_LIST_H_
+#ifndef INCLUDE_COLLECTIONS_LISTS_LIST_H_
+#define INCLUDE_COLLECTIONS_LISTS_LIST_H_
 
 namespace Collections
 {
@@ -43,4 +43,4 @@ namespace Collections
 }
 
 
-#endif /* INCLUDE_COLLECTIONS_LIST_LIST_H_ */
+#endif /* INCLUDE_COLLECTIONS_LISTS_LIST_H_ */

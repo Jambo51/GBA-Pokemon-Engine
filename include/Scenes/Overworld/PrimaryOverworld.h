@@ -4,7 +4,7 @@
 #include "GlobalDefinitions.h"
 #include "Scene.h"
 #include "Maths.h"
-#include "MappingDefinitions.h"
+#include "Scenes/Overworld/MappingDefinitions.h"
 #include "Vector2D.h"
 
 #define MaxBanks 5

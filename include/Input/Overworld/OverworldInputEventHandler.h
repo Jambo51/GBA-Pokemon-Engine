@@ -8,7 +8,7 @@
 #ifndef OVERWORLDINPUTEVENTHANDLER_H_
 #define OVERWORLDINPUTEVENTHANDLER_H_
 
-#include "InputEventHandler.h"
+#include "Input/InputHandler.h"
 
 typedef struct OverworldMovement
 {
@@ -34,24 +34,27 @@ typedef struct OverworldMovementStruct
 	};
 } OverworldMovementStruct;
 
-class OverworldInputEventHandler : public InputEventHandler
+namespace Input
 {
-private:
-	OverworldMovementStruct movementWord;
-public:
-	OverworldInputEventHandler();
-	~OverworldInputEventHandler();
-	void OnPressA();
-	void OnPressB();
-	void OnPressStart();
-	void OnPressSelect();
-	void OnPressL();
-	void OnPressR();
-	void OnPressUp();
-	void OnPressDown();
-	void OnPressLeft();
-	void OnPressRight();
-	void Update();
-};
+	class OverworldInputEventHandler : public InputHandler
+	{
+	private:
+		OverworldMovementStruct movementWord;
+	public:
+		OverworldInputEventHandler();
+		~OverworldInputEventHandler();
+		void OnPressA();
+		void OnPressB();
+		void OnPressStart();
+		void OnPressSelect();
+		void OnPressL();
+		void OnPressR();
+		void OnPressUp();
+		void OnPressDown();
+		void OnPressLeft();
+		void OnPressRight();
+		void Update();
+	};
+}
 
 #endif /* OVERWORLDINPUTEVENTHANDLER_H_ */

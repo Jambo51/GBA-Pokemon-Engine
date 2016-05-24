@@ -476,26 +476,26 @@ namespace Scenes
 				address[0x40 + i] = 0x202 + (i * 20);
 				address[0x60 + i] = 0x203 + (i * 20);
 			}
-			TextFunctions::DrawString((char*)&whatToDoString, 8, 0);
-			TextFunctions::DrawString((char*)&whatToDoString2, 8, 0x10);
-			TextFunctions::SetTextColour(15, 3, 1);
-			//TextFunctions::DrawCharacter(ARROWCHAR, (0x30 * (battleData.mainSelection[battleData.selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleData.mainSelection[battleData.selectorIndex >> 1] >> 1));
-			TextFunctions::DrawString("Battle", 0x78, 0);
-			TextFunctions::DrawString("Bag", 0xA8, 0);
-			TextFunctions::DrawString("Party", 0x78, 0x10);
+			Text::TextFunctions::DrawString((char*)&whatToDoString, 8, 0);
+			Text::TextFunctions::DrawString((char*)&whatToDoString2, 8, 0x10);
+			Text::TextFunctions::SetTextColour(15, 3, 1);
+			//Text::TextFunctions::DrawCharacter(ARROWCHAR, (0x30 * (battleData.mainSelection[battleData.selectorIndex >> 1] & 1)) + 0x70, 0x10 * (battleData.mainSelection[battleData.selectorIndex >> 1] >> 1));
+			Text::TextFunctions::DrawString("Battle", 0x78, 0);
+			Text::TextFunctions::DrawString("Bag", 0xA8, 0);
+			Text::TextFunctions::DrawString("Party", 0x78, 0x10);
 			if (battleType.info.isWildBattle || battleType.info.isLinkBattle)
 			{
-				TextFunctions::DrawString("Flee", 0xA8, 0x10);
+				Text::TextFunctions::DrawString("Flee", 0xA8, 0x10);
 			}
 			else
 			{
-				TextFunctions::DrawString("Call", 0xA8, 0x10);
+				Text::TextFunctions::DrawString("Call", 0xA8, 0x10);
 			}
 		}
 
 		void Battle::MoveSelectionRender()
 		{
-			TextFunctions::SetTextColour(15, 3, 1);
+			Text::TextFunctions::SetTextColour(15, 3, 1);
 			u16* address = (u16*)0x060073C2;
 			memset32((void*)0x0600C000, WHITETEXTBG, 0xF0C);
 			u32 i;
@@ -522,15 +522,15 @@ namespace Scenes
 					u16 moveID = data[0].moves[(i * 2) + j];
 					if (moveID)
 					{
-						TextFunctions::DrawString(Moves::GetMoveNameByIndex(moveID), j * 80 + 16, i * 0x10);
+						Text::TextFunctions::DrawString(Moves::GetMoveNameByIndex(moveID), j * 80 + 16, i * 0x10);
 					}
 					else
 					{
-						TextFunctions::DrawString("-", j * 80 + 16, i * 0x10);
+						Text::TextFunctions::DrawString("-", j * 80 + 16, i * 0x10);
 					}
 				}
 			}
-			//TextFunctions::DrawCharacter(ARROWCHAR, (80 * (battleData.internalSelection[battleData.selectorIndex >> 1] & 1)) + 8, 0x10 * (battleData.internalSelection[battleData.selectorIndex >> 1] >> 1));
+			//Text::TextFunctions::DrawCharacter(ARROWCHAR, (80 * (battleData.internalSelection[battleData.selectorIndex >> 1] & 1)) + 8, 0x10 * (battleData.internalSelection[battleData.selectorIndex >> 1] >> 1));
 		}
 
 		inline u32 InterpretStatus(u32 status)

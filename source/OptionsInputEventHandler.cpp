@@ -5,82 +5,88 @@
  *      Author: Jamie
  */
 
-#include "OptionsInputEventHandler.h"
-#include "Game.h"
-#include "GameModeManager.h"
-#include "OptionsScreen.h"
+#include "Input/Menus/OptionsInputEventHandler.h"
+#include "Core/Game.h"
+#include "Scenes/SceneManager.h"
+#include "Scenes/Menus/OptionsScreen.h"
 
-OptionsInputEventHandler::OptionsInputEventHandler()
+using namespace Core;
+using namespace Scenes;
+
+namespace Input
 {
-	// TODO Auto-generated constructor stub
-
-}
-
-OptionsInputEventHandler::~OptionsInputEventHandler()
-{
-	// TODO Auto-generated destructor stub
-}
-
-void OptionsInputEventHandler::OnPressB()
-{
-	InputEventHandler::OnPressB();
-	Game::FadeToBlack(true, HalfSecond, true, true);
-}
-
-void OptionsInputEventHandler::OnPressUp()
-{
-	InputEventHandler::OnPressUp();
-	if (!keyHeld[Key_Up])
+	OptionsInputEventHandler::OptionsInputEventHandler()
 	{
-		OptionsScreen* sc = (OptionsScreen*)GameModeManager::GetScreen();
-		sc->DecrementMenuPosition();
+		// TODO Auto-generated constructor stub
+
 	}
-}
 
-void OptionsInputEventHandler::OnPressDown()
-{
-	InputEventHandler::OnPressDown();
-	if (!keyHeld[Key_Down])
+	OptionsInputEventHandler::~OptionsInputEventHandler()
 	{
-		OptionsScreen* sc = (OptionsScreen*)GameModeManager::GetScreen();
-		sc->IncrementMenuPosition();
+		// TODO Auto-generated destructor stub
 	}
-}
 
-void OptionsInputEventHandler::OnPressRight()
-{
-	InputEventHandler::OnPressRight();
-	if (!keyHeld[Key_Right])
+	void OptionsInputEventHandler::OnPressB()
 	{
-		OptionsScreen* sc = (OptionsScreen*)GameModeManager::GetScreen();
-		sc->IncrementValueAt();
+		InputHandler::OnPressB();
+		Game::FadeToBlack(true, HalfSecond, true, true);
 	}
-}
 
-void OptionsInputEventHandler::OnPressA()
-{
-	InputEventHandler::OnPressA();
-	if (!keyHeld[Key_A])
+	void OptionsInputEventHandler::OnPressUp()
 	{
-		OptionsScreen* sc = (OptionsScreen*)GameModeManager::GetScreen();
-		if (sc->GetMenuPosition() == 6)
+		InputHandler::OnPressUp();
+		if (!keyHeld[Key_Up])
 		{
-			sc->Save();
-			Game::FadeToBlack(true, HalfSecond, true, true);
+			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			sc->DecrementMenuPosition();
 		}
-		else
+	}
+
+	void OptionsInputEventHandler::OnPressDown()
+	{
+		InputHandler::OnPressDown();
+		if (!keyHeld[Key_Down])
 		{
+			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			sc->IncrementMenuPosition();
+		}
+	}
+
+	void OptionsInputEventHandler::OnPressRight()
+	{
+		InputHandler::OnPressRight();
+		if (!keyHeld[Key_Right])
+		{
+			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
 			sc->IncrementValueAt();
 		}
 	}
-}
 
-void OptionsInputEventHandler::OnPressLeft()
-{
-	InputEventHandler::OnPressLeft();
-	if (!keyHeld[Key_Left])
+	void OptionsInputEventHandler::OnPressA()
 	{
-		OptionsScreen* sc = (OptionsScreen*)GameModeManager::GetScreen();
-		sc->DecrementValueAt();
+		InputHandler::OnPressA();
+		if (!keyHeld[Key_A])
+		{
+			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			if (sc->GetMenuPosition() == 6)
+			{
+				sc->Save();
+				Game::FadeToBlack(true, HalfSecond, true, true);
+			}
+			else
+			{
+				sc->IncrementValueAt();
+			}
+		}
+	}
+
+	void OptionsInputEventHandler::OnPressLeft()
+	{
+		InputHandler::OnPressLeft();
+		if (!keyHeld[Key_Left])
+		{
+			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			sc->DecrementValueAt();
+		}
 	}
 }

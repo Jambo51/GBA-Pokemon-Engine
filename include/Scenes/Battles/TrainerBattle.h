@@ -26,6 +26,8 @@ namespace Scenes
 			~TrainerBattle();
 			virtual void Update();
 			static u32 GetEncounterTrackID(u32 trainerID);
+			void OnExit();
+			void OnEnter();
 		};
 	}
 }

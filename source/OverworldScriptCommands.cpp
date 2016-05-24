@@ -6,38 +6,46 @@
  */
 
 #include "GlobalDefinitions.h"
-#include "ScriptRunner.h"
-#include "LoadUnalignedCode.h"
-#include "Variables.h"
-#include "Flags.h"
-#include "Game.h"
-#include "Mapping.h"
-#include "Pokemon.h"
-#include "SoundEngine.h"
-#include "GameModeManager.h"
-#include "TrainerBattle.h"
-#include "WildBattle.h"
-#include "Maths.h"
-#include "TextFunctions.h"
-#include "Items.h"
-#include "TextDrawer.h"
-#include "SpecialFunctions.h"
-#include "RTC.h"
-#include "liboverworldscripts.h"
-#include "GlobalScriptingFunctions.h"
-#include "InputHandler.h"
-#include "TextInputHandler.h"
-#include "DoNothingInputEventHandler.h"
-#include "ScriptWaitKeyPressEventHandler.h"
-#include "Moves.h"
+#include "Tasks/ScriptRunners/ScriptRunner.h"
+#include "Core/LoadUnalignedCode.h"
+#include "Core/Data/Variables.h"
+#include "Core/Data/Flags.h"
+#include "Core/Game.h"
+#include "Scenes/Overworld/PrimaryOverworld.h"
+#include "Core/Pokemon/Pokemon.h"
+#include "Audio/SoundEngine.h"
+#include "Scenes/SceneManager.h"
+#include "Scenes/Battles/TrainerBattle.h"
+#include "Scenes/Battles/WildBattle.h"
+#include "Core/Maths.h"
+#include "Text/TextFunctions.h"
+#include "Core/Data/Items.h"
+#include "Text/TextDrawer.h"
+#include "Tasks/ScriptRunners/SpecialFunctions.h"
+#include "Core/RTC.h"
+#include "LibraryHeaders/liboverworldscripts.h"
+#include "Tasks/ScriptRunners/GlobalScriptingFunctions.h"
+#include "Input/InputManager.h"
+#include "Input/Overworld/TextInputHandler.h"
+#include "Input/DoNothingInputEventHandler.h"
+#include "Input/Overworld/ScriptWaitKeyPressEventHandler.h"
+#include "Core/Data/Moves.h"
 
-u32 NoOperation(ScriptRunner* runner) // nop
+using namespace Text;
+using namespace Core;
+using namespace Core::Data;
+using namespace Audio;
+using namespace Scenes;
+using namespace Input;
+using namespace Scenes::Battles;
+
+u32 NoOperation(Tasks::ScriptRunners::ScriptRunner* runner) // nop
 {
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 ScriptSwitch(ScriptRunner* runner)
+u32 ScriptSwitch(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 maximum = UnalignedNumberHandler::LoadUShortNumber(script, 3);
@@ -59,18 +67,18 @@ u32 ScriptSwitch(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 EndOverworldScript(ScriptRunner* runner)
+u32 EndOverworldScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	return Ended;
 }
 
-u32 ReturnOverworldScript(ScriptRunner* runner)
+u32 ReturnOverworldScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	runner->Return();
 	return NotEnded;
 }
 
-u32 CallOverworldScript(ScriptRunner* runner)
+u32 CallOverworldScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	runner->IncrementScriptPointer(5);
@@ -78,13 +86,13 @@ u32 CallOverworldScript(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 GotoOverworldScript(ScriptRunner* runner)
+u32 GotoOverworldScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	runner->SetScriptPointer((u8*)UnalignedNumberHandler::LoadUnalignedNumber(runner->GetScriptPointer(), 1, 4));
 	return NotEnded;
 }
 
-u32 IfGoto(ScriptRunner* runner)
+u32 IfGoto(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u16 status = runner->GetStatus();
 	u8* script = runner->GetScriptPointer();
@@ -124,7 +132,7 @@ u32 IfGoto(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 IfCall(ScriptRunner* runner)
+u32 IfCall(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u16 status = runner->GetStatus();
 	u8* script = runner->GetScriptPointer();
@@ -181,7 +189,7 @@ TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptTen
 };
 
-u32 GotoStandardScript(ScriptRunner* runner)
+u32 GotoStandardScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -194,7 +202,7 @@ u32 GotoStandardScript(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CallStandardScript(ScriptRunner* runner)
+u32 CallStandardScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -208,7 +216,7 @@ u32 CallStandardScript(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 IfGotoStandard(ScriptRunner* runner)
+u32 IfGotoStandard(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u16 status = runner->GetStatus();
 	u8* script = runner->GetScriptPointer();
@@ -252,7 +260,7 @@ u32 IfGotoStandard(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 IfCallStandard(ScriptRunner* runner)
+u32 IfCallStandard(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u16 status = runner->GetStatus();
 	u8* script = runner->GetScriptPointer();
@@ -300,7 +308,7 @@ u32 IfCallStandard(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetBankValue(ScriptRunner* runner)
+u32 SetBankValue(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -309,7 +317,7 @@ u32 SetBankValue(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetByte2(ScriptRunner* runner)
+u32 SetByte2(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -318,7 +326,7 @@ u32 SetByte2(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 WriteByteToOffset(ScriptRunner* runner)
+u32 WriteByteToOffset(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -328,7 +336,7 @@ u32 WriteByteToOffset(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 LoadByteFromPointer(ScriptRunner* runner)
+u32 LoadByteFromPointer(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -337,7 +345,7 @@ u32 LoadByteFromPointer(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetFarByte(ScriptRunner* runner)
+u32 SetFarByte(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -347,7 +355,7 @@ u32 SetFarByte(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CopyScriptBank(ScriptRunner* runner)
+u32 CopyScriptBank(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -356,7 +364,7 @@ u32 CopyScriptBank(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CopyByte(ScriptRunner* runner)
+u32 CopyByte(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u8* source = (u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 5, 4);
@@ -366,7 +374,7 @@ u32 CopyByte(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetVar(ScriptRunner* runner)
+u32 SetVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -375,7 +383,7 @@ u32 SetVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 AddVar(ScriptRunner* runner)
+u32 AddVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -384,7 +392,7 @@ u32 AddVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 AddVarToVar(ScriptRunner* runner)
+u32 AddVarToVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -393,7 +401,7 @@ u32 AddVarToVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SubVar(ScriptRunner* runner)
+u32 SubVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -402,7 +410,7 @@ u32 SubVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SubVarFromVar(ScriptRunner* runner)
+u32 SubVarFromVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -411,7 +419,7 @@ u32 SubVarFromVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CopyVar(ScriptRunner* runner)
+u32 CopyVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -420,7 +428,7 @@ u32 CopyVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CopyVarIfValid(ScriptRunner* runner)
+u32 CopyVarIfValid(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 varID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -437,7 +445,7 @@ u32 CopyVarIfValid(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareBanks(ScriptRunner* runner)
+u32 CompareBanks(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -460,7 +468,7 @@ u32 CompareBanks(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareBankToByte(ScriptRunner* runner)
+u32 CompareBankToByte(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -483,7 +491,7 @@ u32 CompareBankToByte(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareBankToFarByte(ScriptRunner* runner)
+u32 CompareBankToFarByte(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -506,7 +514,7 @@ u32 CompareBankToFarByte(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareFarByteToBank(ScriptRunner* runner)
+u32 CompareFarByteToBank(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -529,7 +537,7 @@ u32 CompareFarByteToBank(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareFarByteToByte(ScriptRunner* runner)
+u32 CompareFarByteToByte(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -552,7 +560,7 @@ u32 CompareFarByteToByte(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareFarByteToFarByte(ScriptRunner* runner)
+u32 CompareFarByteToFarByte(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -575,7 +583,7 @@ u32 CompareFarByteToFarByte(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareVarToValue(ScriptRunner* runner)
+u32 CompareVarToValue(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -598,7 +606,7 @@ u32 CompareVarToValue(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CompareVarToVar(ScriptRunner* runner)
+u32 CompareVarToVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -621,7 +629,7 @@ u32 CompareVarToVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CallASM(ScriptRunner* runner)
+u32 CallASM(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	VoidFunctionPointerVoid function = (VoidFunctionPointerVoid)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -630,7 +638,7 @@ u32 CallASM(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CallASM2(ScriptRunner* runner)
+u32 CallASM2(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	U32FunctionPointerVoid function = (U32FunctionPointerVoid)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -642,7 +650,7 @@ u32 CallASM2(ScriptRunner* runner)
 	return WaitForFrames;
 }
 
-typedef u16 (*SpecialFunctionPointer)(ScriptRunner*);
+typedef u16 (*SpecialFunctionPointer)(Tasks::ScriptRunners::ScriptRunner*);
 
 TEXT_LOCATION ALIGN(4) SpecialFunctionPointer specials[] = {
 		(SpecialFunctionPointer)&Special0HealParty,
@@ -704,7 +712,7 @@ TEXT_LOCATION ALIGN(4) SpecialFunctionPointer specials[] = {
 		(SpecialFunctionPointer)&Special38PlayTrainerMusic
 };
 
-u32 Special(ScriptRunner* runner)
+u32 Special(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -714,7 +722,7 @@ u32 Special(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SpecialWithReturn(ScriptRunner* runner)
+u32 SpecialWithReturn(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	script++;
@@ -724,7 +732,7 @@ u32 SpecialWithReturn(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 WaitState(ScriptRunner* runner)
+u32 WaitState(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (runner->GetWaitFrames())
 	{
@@ -734,7 +742,7 @@ u32 WaitState(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PauseOWScript(ScriptRunner* runner)
+u32 PauseOWScript(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u16 frames = runner->GetWaitFrames();
 	if (frames)
@@ -755,7 +763,7 @@ u32 PauseOWScript(ScriptRunner* runner)
 	}
 }
 
-u32 SetFlag(ScriptRunner* runner)
+u32 SetFlag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -768,7 +776,7 @@ u32 SetFlag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 ClearFlag(ScriptRunner* runner)
+u32 ClearFlag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -781,7 +789,7 @@ u32 ClearFlag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckFlag(ScriptRunner* runner)
+u32 CheckFlag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -794,7 +802,7 @@ u32 CheckFlag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 ResetVars(ScriptRunner* runner)
+u32 ResetVars(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	Variables::SetVar(0x8000, 0);
 	Variables::SetVar(0x8001, 0);
@@ -803,14 +811,14 @@ u32 ResetVars(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PlaySound(ScriptRunner* runner)
+u32 PlaySound(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	SoundEngine::PlaySFX(UnalignedNumberHandler::LoadUShortNumber(runner->GetScriptPointer(), 1));
 	runner->IncrementScriptPointer(3);
 	return NotEnded;
 }
 
-u32 CheckSound(ScriptRunner* runner)
+u32 CheckSound(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (SoundEngine::SFXPlaying())
 	{
@@ -820,7 +828,7 @@ u32 CheckSound(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PlayFanfare(ScriptRunner* runner)
+u32 PlayFanfare(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(runner->GetScriptPointer(), 1);
 	if (Variables::ValidateVarID(flagID) || Variables::IsTemporaryVar(flagID))
@@ -832,7 +840,7 @@ u32 PlayFanfare(ScriptRunner* runner)
 	return WaitForFrames;
 }
 
-u32 CheckFanfare(ScriptRunner* runner)
+u32 CheckFanfare(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (SoundEngine::FanfarePlaying())
 	{
@@ -842,7 +850,7 @@ u32 CheckFanfare(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PlaySong(ScriptRunner* runner)
+u32 PlaySong(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	SoundEngine::PlaySong(UnalignedNumberHandler::LoadUShortNumber(script, 1), *(script + 3));
@@ -850,7 +858,7 @@ u32 PlaySong(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PlaySong2(ScriptRunner* runner)
+u32 PlaySong2(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	SoundEngine::PlaySong(UnalignedNumberHandler::LoadUShortNumber(script, 1), 0);
@@ -858,14 +866,14 @@ u32 PlaySong2(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 FadeDefault(ScriptRunner* runner)
+u32 FadeDefault(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 1);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 FadeSong(ScriptRunner* runner)
+u32 FadeSong(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	SoundEngine::PlaySong(UnalignedNumberHandler::LoadUShortNumber(script, 1), 1);
@@ -873,21 +881,21 @@ u32 FadeSong(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 FadeOut(ScriptRunner* runner)
+u32 FadeOut(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	SoundEngine::FadeSongToSilence();
 	runner->IncrementScriptPointer(2);
 	return NotEnded;
 }
 
-u32 FadeInOWScriptVersion(ScriptRunner* runner)
+u32 FadeInOWScriptVersion(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	SoundEngine::PlaySong(Game::GetCurrentMap().musicTrack, 2);
 	runner->IncrementScriptPointer(2);
 	return NotEnded;
 }
 
-u32 GetPlayerPos(ScriptRunner* runner)
+u32 GetPlayerPos(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -905,21 +913,21 @@ u32 GetPlayerPos(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CountPokemon(ScriptRunner* runner)
+u32 CountPokemon(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	Variables::SetVar(LASTRESULT, Game::CountPartyPokemon());
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 CountBoxPokemon(ScriptRunner* runner)
+u32 CountBoxPokemon(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	Variables::SetVar(LASTRESULT, Game::CountAllBoxPokemon());
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 AddItem(ScriptRunner* runner)
+u32 AddItem(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -937,7 +945,7 @@ u32 AddItem(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 RemoveItem(ScriptRunner* runner)
+u32 RemoveItem(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -955,7 +963,7 @@ u32 RemoveItem(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckItemRoom(ScriptRunner* runner)
+u32 CheckItemRoom(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -973,7 +981,7 @@ u32 CheckItemRoom(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckItem(ScriptRunner* runner)
+u32 CheckItem(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -991,7 +999,7 @@ u32 CheckItem(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckItemType(ScriptRunner* runner)
+u32 CheckItemType(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1004,7 +1012,7 @@ u32 CheckItemType(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 AddItemToPC(ScriptRunner* runner)
+u32 AddItemToPC(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1022,7 +1030,7 @@ u32 AddItemToPC(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckItemPC(ScriptRunner* runner)
+u32 CheckItemPC(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1040,7 +1048,7 @@ u32 CheckItemPC(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetupTrainerBattle(ScriptRunner* runner)
+u32 SetupTrainerBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 trainerID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1118,30 +1126,30 @@ u32 SetupTrainerBattle(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 DoTrainerBattle(ScriptRunner* runner)
+u32 DoTrainerBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	BattleTypeStruct bts = BattleTypeStruct();
 	bts.basicInfo = 0;
 	bts.info.isTrainerBattle = 1;
-	GameModeManager::SetScreen(new TrainerBattle(bts, runner->GetBank(0), (const char*)runner->GetBank(2), (const u8*)runner->GetBank(3)));
+	SceneManager::SetScene(new TrainerBattle(bts, runner->GetBank(0), (const char*)runner->GetBank(2), (const u8*)runner->GetBank(3)));
 	runner->SetWaitFrames(1);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 DoDoubleTrainerBattle(ScriptRunner* runner)
+u32 DoDoubleTrainerBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	BattleTypeStruct bts = BattleTypeStruct();
 	bts.basicInfo = 0;
 	bts.info.isTrainerBattle = 1;
 	bts.info.isDoubleBattle = 1;
-	//GameModeManager::SetScreen(new DoubleTrainerBattle(bts, runner->GetBank(0), (const char*)runner->GetBank(2), (const u8*)runner->GetBank(3)));
+	//SceneManager::SetScene(new DoubleTrainerBattle(bts, runner->GetBank(0), (const char*)runner->GetBank(2), (const u8*)runner->GetBank(3)));
 	runner->SetWaitFrames(1);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 SetTrainerflag(ScriptRunner* runner)
+u32 SetTrainerflag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1154,7 +1162,7 @@ u32 SetTrainerflag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 ClearTrainerflag(ScriptRunner* runner)
+u32 ClearTrainerflag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1167,7 +1175,7 @@ u32 ClearTrainerflag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckTrainerflag(ScriptRunner* runner)
+u32 CheckTrainerflag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1180,7 +1188,7 @@ u32 CheckTrainerflag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 WaitMessage(ScriptRunner* runner)
+u32 WaitMessage(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (runner->Text())
 	{
@@ -1193,7 +1201,7 @@ u32 WaitMessage(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PrepareMessage(ScriptRunner* runner)
+u32 PrepareMessage(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 value = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1202,13 +1210,13 @@ u32 PrepareMessage(ScriptRunner* runner)
 		value = runner->GetBank(value);
 	}
 	runner->SetWaitFrames(1);
-	InputHandler::SetEventHandler(new TextInputHandler(new TextDrawer((char*)value, 0, 0, 2 - Game::GetConstOptions().textSpeed, (VoidFunctionPointerU32)&NotifyMessageEnd, (u32)runner)));
+	InputManager::SetEventHandler(new TextInputHandler(new TextDrawer((char*)value, 0, 0, 2 - Game::GetConstOptions().textSpeed, (VoidFunctionPointerU32)&NotifyMessageEnd, (u32)runner)));
 	runner->Text(true);
 	runner->IncrementScriptPointer(5);
 	return NotEnded;
 }
 
-u32 CloseMessageOnKeyPress(ScriptRunner* runner)
+u32 CloseMessageOnKeyPress(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (runner->Text() || (runner->TextWait() && !runner->KeyPressReceived()))
 	{
@@ -1218,15 +1226,15 @@ u32 CloseMessageOnKeyPress(ScriptRunner* runner)
 	runner->TextWait(false);
 	runner->KeyPressReceived(false);
 	runner->IncrementScriptPointer(1);
-	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
+	InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	return NotEnded;
 }
 
-u32 WaitKeyPress(ScriptRunner* runner)
+u32 WaitKeyPress(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (!runner->EventHandlerSet())
 	{
-		InputHandler::SetEventHandler(new ScriptWaitKeyPressEventHandler(runner));
+		InputManager::SetEventHandler(new ScriptWaitKeyPressEventHandler(runner));
 	}
 	if (!runner->KeyPressReceived())
 	{
@@ -1234,12 +1242,12 @@ u32 WaitKeyPress(ScriptRunner* runner)
 	}
 	runner->KeyPressReceived(false);
 	runner->IncrementScriptPointer(1);
-	InputHandler::SetEventHandler(new DoNothingInputEventHandler());
+	InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	runner->EventHandlerSet(false);
 	return NotEnded;
 }
 
-u32 GivePokemon(ScriptRunner* runner)
+u32 GivePokemon(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1251,12 +1259,12 @@ u32 GivePokemon(ScriptRunner* runner)
 	{
 		flagID = 1;
 	}
-	Pokemon::GivePokemonToPlayer(flagID, *(script + 3), UnalignedNumberHandler::LoadUShortNumber(script, 4), *(script + 6));
+	Pokemon::Pokemon::GivePokemonToPlayer(flagID, *(script + 3), UnalignedNumberHandler::LoadUShortNumber(script, 4), *(script + 6));
 	runner->IncrementScriptPointer(15);
 	return NotEnded;
 }
 
-u32 GiveEgg(ScriptRunner* runner)
+u32 GiveEgg(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1268,19 +1276,19 @@ u32 GiveEgg(ScriptRunner* runner)
 	{
 		flagID = 1;
 	}
-	Pokemon::GiveEggToPlayer(flagID);
+	Pokemon::Pokemon::GiveEggToPlayer(flagID);
 	runner->IncrementScriptPointer(3);
 	return NotEnded;
 }
 
-u32 SetPokemonPP(ScriptRunner* runner)
+u32 SetPokemonPP(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 3);
 	{
 		flagID = Variables::GetVar(flagID);
 	}
-	Pokemon &p = *Game::GetPartyPokemon(*(script + 1));
+	Pokemon::Pokemon &p = *Game::GetPartyPokemon(*(script + 1));
 	const PPBonusStruct &ppBonuses = p.GetPPBonuses();
 	u32 maxPP = 0;
 	switch (*(script + 2))
@@ -1308,7 +1316,7 @@ u32 SetPokemonPP(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckAttack(ScriptRunner* runner)
+u32 CheckAttack(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1321,7 +1329,7 @@ u32 CheckAttack(ScriptRunner* runner)
 	{
 		for (u32 i = 0; i < PartyLength; i++)
 		{
-			const Pokemon &p = *Game::GetPartyPokemon(i);
+			const Pokemon::Pokemon &p = *Game::GetPartyPokemon(i);
 			if (p.HasMove(attackID))
 			{
 				Variables::SetVar(LASTRESULT, i);
@@ -1338,7 +1346,7 @@ u32 CheckAttack(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferSpecies(ScriptRunner* runner)
+u32 BufferSpecies(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1360,7 +1368,7 @@ u32 BufferSpecies(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferFirstPokemon(ScriptRunner* runner)
+u32 BufferFirstPokemon(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u8 buffer = *(script + 1);
@@ -1373,7 +1381,7 @@ u32 BufferFirstPokemon(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferPartyPokemon(ScriptRunner* runner)
+u32 BufferPartyPokemon(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1395,7 +1403,7 @@ u32 BufferPartyPokemon(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferItem(ScriptRunner* runner)
+u32 BufferItem(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1417,7 +1425,7 @@ u32 BufferItem(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferPluralItem(ScriptRunner* runner)
+u32 BufferPluralItem(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1451,7 +1459,7 @@ u32 BufferPluralItem(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferMoveName(ScriptRunner* runner)
+u32 BufferMoveName(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1473,7 +1481,7 @@ u32 BufferMoveName(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferNumber(ScriptRunner* runner)
+u32 BufferNumber(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1491,7 +1499,7 @@ u32 BufferNumber(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferStandard(ScriptRunner* runner)
+u32 BufferStandard(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1509,7 +1517,7 @@ u32 BufferStandard(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferString(ScriptRunner* runner)
+u32 BufferString(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	char* attackID = (char*)UnalignedNumberHandler::LoadUnalignedNumber(script, 2, 4);
@@ -1523,7 +1531,7 @@ u32 BufferString(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 Random(ScriptRunner* runner)
+u32 Random(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1543,7 +1551,7 @@ u32 Random(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 GiveMoney(ScriptRunner* runner)
+u32 GiveMoney(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 flagID = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1559,7 +1567,7 @@ u32 GiveMoney(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PayMoney(ScriptRunner* runner)
+u32 PayMoney(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 flagID = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1575,7 +1583,7 @@ u32 PayMoney(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 GiveMoneyMum(ScriptRunner* runner)
+u32 GiveMoneyMum(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 flagID = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1591,7 +1599,7 @@ u32 GiveMoneyMum(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 PayMoneyMum(ScriptRunner* runner)
+u32 PayMoneyMum(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 flagID = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1607,7 +1615,7 @@ u32 PayMoneyMum(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 TransferMoney(ScriptRunner* runner)
+u32 TransferMoney(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 flagID = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1655,7 +1663,7 @@ u32 TransferMoney(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckMoney(ScriptRunner* runner)
+u32 CheckMoney(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 flagID = UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
@@ -1671,7 +1679,7 @@ u32 CheckMoney(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetHealingPlace(ScriptRunner* runner)
+u32 SetHealingPlace(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1679,19 +1687,19 @@ u32 SetHealingPlace(ScriptRunner* runner)
 	{
 		flagID = Variables::GetVar(flagID);
 	}
-	Game::SetHealingPlace(Overworld::GetHealingPlaceByID(flagID));
+	Game::SetHealingPlace(PrimaryOverworld::GetHealingPlaceByID(flagID));
 	runner->IncrementScriptPointer(3);
 	return NotEnded;
 }
 
-u32 CheckGender(ScriptRunner* runner)
+u32 CheckGender(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	Variables::SetVar(LASTRESULT, Game::GetPlayer().gender == Gender_Female);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 SetupWildBattle(ScriptRunner* runner)
+u32 SetupWildBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1704,7 +1712,7 @@ u32 SetupWildBattle(ScriptRunner* runner)
 	{
 		flagID2 = Variables::GetVar(flagID2);
 	}
-	Pokemon* p = new Pokemon(*(script + 3), flagID);
+	Pokemon::Pokemon* p = new Pokemon::Pokemon(*(script + 3), flagID);
 	p->Encrypt(HeldItem, flagID2);
 	runner->SetBank(0, (u32)p);
 	runner->SetBank(1, 0);
@@ -1712,7 +1720,7 @@ u32 SetupWildBattle(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetupDoubleWildBattle(ScriptRunner* runner)
+u32 SetupDoubleWildBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1725,7 +1733,7 @@ u32 SetupDoubleWildBattle(ScriptRunner* runner)
 	{
 		flagID2 = Variables::GetVar(flagID2);
 	}
-	Pokemon* p = new Pokemon(*(script + 3), flagID);
+	Pokemon::Pokemon* p = new Pokemon::Pokemon(*(script + 3), flagID);
 	p->Encrypt(HeldItem, flagID2);
 	runner->SetBank(0, (u32)p);
 	flagID = UnalignedNumberHandler::LoadUShortNumber(script, 6);
@@ -1738,17 +1746,17 @@ u32 SetupDoubleWildBattle(ScriptRunner* runner)
 	{
 		flagID2 = Variables::GetVar(flagID2);
 	}
-	p = new Pokemon(*(script + 8), flagID);
+	p = new Pokemon::Pokemon(*(script + 8), flagID);
 	p->Encrypt(HeldItem, flagID2);
 	runner->SetBank(1, (u32)p);
 	runner->IncrementScriptPointer(11);
 	return NotEnded;
 }
 
-u32 DoWildBattle(ScriptRunner* runner)
+u32 DoWildBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 {
-	Pokemon* p1 = (Pokemon*)runner->GetBank(0);
-	Pokemon* p2 = (Pokemon*)runner->GetBank(1);
+	Pokemon::Pokemon* p1 = (Pokemon::Pokemon*)runner->GetBank(0);
+	Pokemon::Pokemon* p2 = (Pokemon::Pokemon*)runner->GetBank(1);
 	BattleTypeStruct bts = BattleTypeStruct();
 	bts.basicInfo = 0;
 	bts.info.isWildBattle = 1;
@@ -1765,13 +1773,13 @@ u32 DoWildBattle(ScriptRunner* runner)
 		delete p2;
 	}
 	wb->SkipGeneration(true);
-	GameModeManager::SetScreen(wb);
+	SceneManager::SetScene(wb);
 	runner->IncrementScriptPointer(1);
 	runner->SetWaitFrames(1);
 	return NotEnded;
 }
 
-u32 SetObedience(ScriptRunner* runner)
+u32 SetObedience(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1784,7 +1792,7 @@ u32 SetObedience(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 CheckObedience(ScriptRunner* runner)
+u32 CheckObedience(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1797,7 +1805,7 @@ u32 CheckObedience(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetWorldMapflag(ScriptRunner* runner)
+u32 SetWorldMapflag(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1810,7 +1818,7 @@ u32 SetWorldMapflag(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 SetCatchLocation(ScriptRunner* runner)
+u32 SetCatchLocation(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1831,7 +1839,7 @@ u32 SetCatchLocation(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 MultiplyVar(ScriptRunner* runner)
+u32 MultiplyVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1843,7 +1851,7 @@ u32 MultiplyVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 MultiplyVarByVar(ScriptRunner* runner)
+u32 MultiplyVarByVar(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 flagID = UnalignedNumberHandler::LoadUShortNumber(script, 1);
@@ -1860,7 +1868,7 @@ u32 MultiplyVarByVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 DivideVar(ScriptRunner* runner)
+u32 DivideVar(Tasks::ScriptRunners::ScriptRunner* runner)
 // Note that overuse of this will badly hang the engine
 // Unless the denominator is a power of 2
 {
@@ -1874,7 +1882,7 @@ u32 DivideVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 DivideVarByVar(ScriptRunner* runner)
+u32 DivideVarByVar(Tasks::ScriptRunners::ScriptRunner* runner)
 // Note that overuse of this will badly hang the engine
 // Unless the denominator is a power of 2
 {
@@ -1893,14 +1901,14 @@ u32 DivideVarByVar(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 GetTimeOfDay(ScriptRunner* runner)
+u32 GetTimeOfDay(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	Variables::SetVar(LASTRESULT, RTC::GetTime().timeOfDay);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
 }
 
-u32 BufferNegativeNumber(ScriptRunner* runner)
+u32 BufferNegativeNumber(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u16 attackID = UnalignedNumberHandler::LoadUShortNumber(script, 2);
@@ -1918,7 +1926,7 @@ u32 BufferNegativeNumber(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferDecimal(ScriptRunner* runner)
+u32 BufferDecimal(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 attackID = UnalignedNumberHandler::LoadUnalignedNumber(script, 2, 4);
@@ -1936,7 +1944,7 @@ u32 BufferDecimal(ScriptRunner* runner)
 	return NotEnded;
 }
 
-u32 BufferSignedDecimal(ScriptRunner* runner)
+u32 BufferSignedDecimal(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
 	u32 attackID = UnalignedNumberHandler::LoadUnalignedNumber(script, 2, 4);

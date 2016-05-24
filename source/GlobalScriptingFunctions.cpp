@@ -6,11 +6,11 @@
  */
 
 #include "GlobalDefinitions.h"
-#include "ScriptRunner.h"
+#include "Tasks/ScriptRunners/ScriptRunner.h"
 
 void NotifyMessageEnd(u32 value)
 {
-	ScriptRunner* runner = (ScriptRunner*)value;
+	Tasks::ScriptRunners::ScriptRunner* runner = (Tasks::ScriptRunners::ScriptRunner*)value;
 	runner->Text(false);
 	runner->TextWait(true);
 }

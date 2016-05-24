@@ -8,19 +8,25 @@
 #ifndef TEXTINPUTHANDLER_H_
 #define TEXTINPUTHANDLER_H_
 
-#include "InputEventHandler.h"
+#include "Input/InputHandler.h"
 
-class TextDrawer;
-
-class TextInputHandler : public InputEventHandler
+namespace Text
 {
-private:
-	TextDrawer* drawer;
-public:
-	TextInputHandler(TextDrawer* drawer);
-	~TextInputHandler();
-	void OnPressA();
-	void OnPressB();
-};
+	class TextDrawer;
+}
+
+namespace Input
+{
+	class TextInputHandler : public InputHandler
+	{
+	private:
+		Text::TextDrawer* drawer;
+	public:
+		TextInputHandler(Text::TextDrawer* drawer);
+		~TextInputHandler();
+		void OnPressA();
+		void OnPressB();
+	};
+}
 
 #endif /* TEXTINPUTHANDLER_H_ */

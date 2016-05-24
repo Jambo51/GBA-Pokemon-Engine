@@ -11,6 +11,11 @@
 #include "GlobalDefinitions.h"
 #include "String.h"
 
+namespace Text
+{
+	class String;
+}
+
 namespace Core
 {
 	namespace Data
@@ -45,7 +50,7 @@ namespace Core
 			static u32 GetItemStrength(u16 itemID);
 			static u32 GetItemIndexNumber(u16 itemID);
 			static char* GetItemName(u16 itemID);
-			static String GetPluralisedItemName(u16 itemID);
+			static Text::String GetPluralisedItemName(u16 itemID);
 		};
 	}
 }

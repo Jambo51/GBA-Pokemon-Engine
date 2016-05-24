@@ -8,7 +8,7 @@
 #ifndef INCLUDE_LOADGAMESCREEN_H_
 #define INCLUDE_LOADGAMESCREEN_H_
 
-#include "Scene.h"
+#include "Scenes/Scene.h"
 
 namespace Scenes
 {

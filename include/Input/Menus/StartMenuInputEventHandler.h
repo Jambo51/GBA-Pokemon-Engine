@@ -8,29 +8,32 @@
 #ifndef STARTMENUINPUTEVENTHANDLER_H_
 #define STARTMENUINPUTEVENTHANDLER_H_
 
-#include "InputEventHandler.h"
+#include "Input/InputHandler.h"
 #include "GlobalDefinitions.h"
 
 #define NumOptions 5
 #define NumAdditionalOptions 3
 
-class StartMenuInputEventHandler : public InputEventHandler
+namespace Input
 {
-private:
-	static char nameString[];
-	static StringAndFunctionPointerStruct baseMenuOptions[];
-	static StringAndFunctionPointerWithFlagIDStruct additionalMenuOptions[NumAdditionalOptions];
-	VoidFunctionPointerVoid* menu;
-	u32 menuPosition;
-	u32 numMenuItems;
-public:
-	StartMenuInputEventHandler();
-	~StartMenuInputEventHandler();
-	void OnPressA();
-	void OnPressB();
-	void OnPressStart();
-	void OnPressUp();
-	void OnPressDown();
-};
+	class StartMenuInputEventHandler : public InputHandler
+	{
+	private:
+		static char nameString[];
+		static StringAndFunctionPointerStruct baseMenuOptions[];
+		static StringAndFunctionPointerWithFlagIDStruct additionalMenuOptions[NumAdditionalOptions];
+		VoidFunctionPointerVoid* menu;
+		u32 menuPosition;
+		u32 numMenuItems;
+	public:
+		StartMenuInputEventHandler();
+		~StartMenuInputEventHandler();
+		void OnPressA();
+		void OnPressB();
+		void OnPressStart();
+		void OnPressUp();
+		void OnPressDown();
+	};
+}
 
 #endif /* STARTMENUINPUTEVENTHANDLER_H_ */

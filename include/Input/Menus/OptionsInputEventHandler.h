@@ -8,19 +8,22 @@
 #ifndef OPTIONSINPUTEVENTHANDLER_H_
 #define OPTIONSINPUTEVENTHANDLER_H_
 
-#include "InputEventHandler.h"
+#include "Input/InputHandler.h"
 
-class OptionsInputEventHandler : public InputEventHandler
+namespace Input
 {
-public:
-	OptionsInputEventHandler();
-	~OptionsInputEventHandler();
-	void OnPressA();
-	void OnPressB();
-	void OnPressUp();
-	void OnPressDown();
-	void OnPressRight();
-	void OnPressLeft();
-};
+	class OptionsInputEventHandler : public InputHandler
+	{
+	public:
+		OptionsInputEventHandler();
+		~OptionsInputEventHandler();
+		void OnPressA();
+		void OnPressB();
+		void OnPressUp();
+		void OnPressDown();
+		void OnPressRight();
+		void OnPressLeft();
+	};
+}
 
 #endif /* OPTIONSINPUTEVENTHANDLER_H_ */

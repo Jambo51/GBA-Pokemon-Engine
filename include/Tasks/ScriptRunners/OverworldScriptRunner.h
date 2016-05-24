@@ -8,16 +8,22 @@
 #ifndef OVERWORLDSCRIPTRUNNER_H_
 #define OVERWORLDSCRIPTRUNNER_H_
 
-#include "ScriptRunner.h"
+#include "Tasks/ScriptRunners/ScriptRunner.h"
 
-class OverworldScriptRunner : public ScriptRunner
+namespace Tasks
 {
-private:
-	static U32FunctionPointerScriptRunner overworldCommands[0xFF];
-	static u8* errorScript;
-public:
-	OverworldScriptRunner(u8* script);
-	~OverworldScriptRunner();
-};
+	namespace ScriptRunners
+	{
+		class OverworldScriptRunner : public ScriptRunner
+		{
+		private:
+			static U32FunctionPointerScriptRunner overworldCommands[0xFF];
+			static u8* errorScript;
+		public:
+			OverworldScriptRunner(u8* script);
+			~OverworldScriptRunner();
+		};
+	}
+}
 
 #endif /* OVERWORLDSCRIPTRUNNER_H_ */

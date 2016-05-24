@@ -17,6 +17,7 @@
 using namespace Core;
 using namespace Core::Pokemon;
 using namespace Core::Data;
+using namespace Text;
 
 namespace Core
 {

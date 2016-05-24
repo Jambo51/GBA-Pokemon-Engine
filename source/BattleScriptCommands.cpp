@@ -85,7 +85,7 @@ const ALIGN(1) u8 criticalHitLikelihoods[] = {
 
 void SetTilesForTextRender(ScriptRunner* runner)
 {
-	TextFunctions::SetTextColour(1, 6, 15);
+	Text::TextFunctions::SetTextColour(1, 6, 15);
 	u16* address = (u16*)0x060073C2;
 	memset32((void*)0x0600C000, BATTLEBGCOLOUR, 0xF0C);
 	u32 i;
@@ -685,7 +685,7 @@ u32 PokemonUsedMessage(ScriptRunner* runner)
 	}
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-	TextFunctions::DrawStringOverTime((char*)&pokemonUsedString, 0, 0, &StopBattleScriptTextWait);
+	Text::TextFunctions::DrawStringOverTime((char*)&pokemonUsedString, 0, 0, &StopBattleScriptTextWait);
 	return WaitForFrames;
 }
 
@@ -2808,7 +2808,7 @@ u32 PrintCriticalHitMessage(ScriptRunner* runner)
 	{
 		SetTilesForTextRender(runner);
 		battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-		TextFunctions::DrawStringOverTime(critMessage, 0, 0, &StopBattleScriptTextWait);
+		Text::TextFunctions::DrawStringOverTime(critMessage, 0, 0, &StopBattleScriptTextWait);
 	}
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -2824,19 +2824,19 @@ u32 PrintEffectivenessMessage(ScriptRunner* runner)
 		case NoEffect:
 			SetTilesForTextRender(runner);
 			battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-			TextFunctions::DrawStringOverTime(noEffectMessage, 0, 0, &StopBattleScriptTextWait);
+			Text::TextFunctions::DrawStringOverTime(noEffectMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 		case Ineffective:
 			SetTilesForTextRender(runner);
 			battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-			TextFunctions::DrawStringOverTime((char*)&notEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
+			Text::TextFunctions::DrawStringOverTime((char*)&notEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 		case NormalDamage:
 			break;
 		case SuperEffective:
 			SetTilesForTextRender(runner);
 			battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-			TextFunctions::DrawStringOverTime(superEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
+			Text::TextFunctions::DrawStringOverTime(superEffectiveMessage, 0, 0, &StopBattleScriptTextWait);
 			break;
 	}
 	battleScriptPointer++;
@@ -2850,7 +2850,7 @@ u32 PrintMessageByPointer(ScriptRunner* runner)
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-	TextFunctions::DrawStringOverTime((char*)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, &StopBattleScriptTextWait);
+	Text::TextFunctions::DrawStringOverTime((char*)UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 4), 0, 0, &StopBattleScriptTextWait);
 	battleScriptPointer += 5;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2862,7 +2862,7 @@ u32 PrintMessageByID(ScriptRunner* runner)
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-	TextFunctions::DrawStringOverTime(textTable[UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, &StopBattleScriptTextWait);
+	Text::TextFunctions::DrawStringOverTime(textTable[UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 1, 2)], 0, 0, &StopBattleScriptTextWait);
 	battleScriptPointer += 3;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2921,7 +2921,7 @@ u32 PrintFaintMessage(ScriptRunner* runner)
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-	TextFunctions::DrawStringOverTime((char*)&pokemonFaintedString, 0, 0, 0);
+	Text::TextFunctions::DrawStringOverTime((char*)&pokemonFaintedString, 0, 0, 0);
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2938,7 +2938,7 @@ u32 PrintExperienceMessage(ScriptRunner* runner)
 	{
 		string = (char*)&experienceGainStringOne;
 	}
-	TextFunctions::DrawStringOverTime(string, 0, 0, 0);
+	Text::TextFunctions::DrawStringOverTime(string, 0, 0, 0);
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2970,7 +2970,7 @@ u32 PrintTrainerVictoryMessage(ScriptRunner* runner)
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-	TextFunctions::DrawStringOverTime((char*)&trainerVictoryMessage, 0, 0, 0);
+	Text::TextFunctions::DrawStringOverTime((char*)&trainerVictoryMessage, 0, 0, 0);
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
 	return NotEnded;
@@ -2985,7 +2985,7 @@ u32 PrintTrainerAfterMessage(ScriptRunner* runner)
 	{
 		SetTilesForTextRender(runner);
 		battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-		TextFunctions::DrawStringOverTime(theString, 0, 0, 0);
+		Text::TextFunctions::DrawStringOverTime(theString, 0, 0, 0);
 	}
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -3056,7 +3056,7 @@ u32 PrintTrainerCashGainMessage(ScriptRunner* runner)
 	{
 		SetTilesForTextRender(runner);
 		battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-		TextFunctions::DrawStringOverTime((char*)&trainerCashGainString, 0, 0, 0);
+		Text::TextFunctions::DrawStringOverTime((char*)&trainerCashGainString, 0, 0, 0);
 	}
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -3093,7 +3093,7 @@ u32 PrintMumCashGainMessage(ScriptRunner* runner)
 			{
 				SetTilesForTextRender(runner);
 				battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-				TextFunctions::DrawStringOverTime((char*)&mumCashGainString, 0, 0, 0);
+				Text::TextFunctions::DrawStringOverTime((char*)&mumCashGainString, 0, 0, 0);
 			}
 		}
 	}
@@ -3134,7 +3134,7 @@ u32 PrintPayDayCashGainMessage(ScriptRunner* runner)
 	{
 		SetTilesForTextRender(runner);
 		battleDataPointer.flags.battleScriptTextWaitFlag = 1;
-		TextFunctions::DrawStringOverTime((char*)&pickupCashGainString, 0, 0, 0);
+		Text::TextFunctions::DrawStringOverTime((char*)&pickupCashGainString, 0, 0, 0);
 	}
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -3314,20 +3314,20 @@ u32 PrintCallEffectMessage(ScriptRunner* runner)
 	PokemonBattleData* data = (PokemonBattleData*)&battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User]];
 	if (data[0].primaryStatusBits.sleepTurns)
 	{
-		TextFunctions::DrawStringOverTime((char*)&wokenByCall, 0, 0, &StopBattleScriptTextWait);
+		Text::TextFunctions::DrawStringOverTime((char*)&wokenByCall, 0, 0, &StopBattleScriptTextWait);
 		data[0].primaryStatusBits.sleepTurns = 0;
 		// Graphical update
 	}
 	else if (data[0].primaryStatusBits.hyper || data[0].secondaryStatusBits.confusion)
 	{
-		TextFunctions::DrawStringOverTime((char*)&callString, 0, 0, &StopBattleScriptTextWait);
+		Text::TextFunctions::DrawStringOverTime((char*)&callString, 0, 0, &StopBattleScriptTextWait);
 		data[0].primaryStatusBits.hyper = 0;
 		data[0].secondaryStatusBits.confusion = 0;
 		// Graphical update for hyper
 	}
 	else
 	{
-		TextFunctions::DrawStringOverTime((char*)&callNoEffect, 0, 0, &StopBattleScriptTextWait);
+		Text::TextFunctions::DrawStringOverTime((char*)&callNoEffect, 0, 0, &StopBattleScriptTextWait);
 	}
 	battleScriptPointer++;
 	runner->SetScriptPointer(battleScriptPointer);
@@ -3343,28 +3343,28 @@ u32 PrintFleeEffectMessage(ScriptRunner* runner)
 	switch (runner->GetBank(0))
 	{
 		case Flee_Result_Cannot_Flee:
-			TextFunctions::DrawStringOverTime((char*)&noFlee, 0, 0, &StopBattleScriptTextWait);
+			Text::TextFunctions::DrawStringOverTime((char*)&noFlee, 0, 0, &StopBattleScriptTextWait);
 			battleScriptPointer = (u8*)&Script_Unable_To_Flee;
 			runner->SetScriptPointer(battleScriptPointer);
 			break;
 		case Flee_Result_Failed_Trapped_Ability:
-			TextFunctions::DrawStringOverTime((char*)&abilityTrap, 0, 0, &StopBattleScriptTextWait);
+			Text::TextFunctions::DrawStringOverTime((char*)&abilityTrap, 0, 0, &StopBattleScriptTextWait);
 			battleScriptPointer = (u8*)&Script_Unable_To_Flee;
 			runner->SetScriptPointer(battleScriptPointer);
 			break;
 		case Flee_Result_Failed_Trapped_Move:
-			TextFunctions::DrawStringOverTime((char*)&moveTrap, 0, 0, &StopBattleScriptTextWait);
+			Text::TextFunctions::DrawStringOverTime((char*)&moveTrap, 0, 0, &StopBattleScriptTextWait);
 			battleScriptPointer = (u8*)&Script_Unable_To_Flee;
 			runner->SetScriptPointer(battleScriptPointer);
 			break;
 		case Flee_Result_Run_Away:
-			TextFunctions::DrawStringOverTime((char*)&abilityFlee, 0, 0, 0);
+			Text::TextFunctions::DrawStringOverTime((char*)&abilityFlee, 0, 0, 0);
 			//HandleKeyPresses = &CheckForTextContinuePressBattle;
 			battleScriptPointer++;
 			runner->SetScriptPointer(battleScriptPointer);
 			break;
 		case Flee_Result_Succeeded:
-			TextFunctions::DrawStringOverTime((char*)&fled, 0, 0, 0);
+			Text::TextFunctions::DrawStringOverTime((char*)&fled, 0, 0, 0);
 			//HandleKeyPresses = &CheckForTextContinuePressBattle;
 			battleScriptPointer++;
 			runner->SetScriptPointer(battleScriptPointer);

@@ -5,126 +5,132 @@
  *      Author: Jamie
  */
 
-#include "OAMObject.h"
+#include "Entities/OAMObject.h"
 #include "GlobalDefinitions.h"
-#include "Allocator.h"
-#include "Game.h"
+#include "Allocation/Allocator.h"
+#include "Core/Game.h"
 
-RODATA_LOCATION u8 OAMObject::sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
+using namespace Allocation;
+using namespace Core;
 
-u32 OAMObject::CalculateObjectSize(u32 shape, u32 size)
+namespace Entities
 {
-	return (u32)sizes[shape][size];
-}
+	RODATA_LOCATION u8 OAMObject::sizes[3][4] = { { 1, 4, 16, 64 }, { 2, 4, 8, 32 }, { 2, 4, 8, 32 } };
 
-OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority, bool compressed, u16* colourAddress)
-{
-	memset32((void*)this, 0, sizeof(OAMObject) >> 2);
-	if (shape <= Shape_Vertical && size <= Square_64x64)
+	u32 OAMObject::CalculateObjectSize(u32 shape, u32 size)
 	{
-		if (paletteMode < 2)
+		return (u32)sizes[shape][size];
+	}
+
+	OAMObject::OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority, bool compressed, u16* colourAddress)
+	{
+		memset32((void*)this, 0, sizeof(OAMObject) >> 2);
+		if (shape <= Shape_Vertical && size <= Square_64x64)
 		{
-			this->objShape = shape;
-			this->objSize = size;
-			this->mode = paletteMode;
-			u32 totalSize = CalculateObjectSize(shape, size);
-			this->priority = priority;
-			void* loc = Allocator::AllocateObjectTilesFromNumTiles(totalSize);
-			if (loc)
+			if (paletteMode < 2)
 			{
-				if (compressed)
+				this->objShape = shape;
+				this->objSize = size;
+				this->mode = paletteMode;
+				u32 totalSize = CalculateObjectSize(shape, size);
+				this->priority = priority;
+				void* loc = Allocator::AllocateObjectTilesFromNumTiles(totalSize);
+				if (loc)
 				{
-					LZ77UnCompVram(image, loc);
+					if (compressed)
+					{
+						LZ77UnCompVram(image, loc);
+					}
+					else
+					{
+						memcpy32(loc, image, totalSize << 3);
+					}
 				}
-				else
+				this->isActive = 1;
+				this->tileLocation = ((u32)loc - 0x06010000) >> 5;
+				paletteID = Allocator::AllocatePaletteSlot(paletteID);
+				if (paletteID < 16)
 				{
-					memcpy32(loc, image, totalSize << 3);
+					if (colourAddress)
+					{
+						memcpy32((void*)((u32)colourAddress + 0x200 + paletteID * 0x20), palette, 8);
+					}
+					else
+					{
+						memcpy32((void*)(MEM_PAL_OBJ + paletteID * 0x20), palette, 8);
+					}
 				}
+				this->paletteSlot = paletteID;
 			}
-			this->isActive = 1;
-			this->tileLocation = ((u32)loc - 0x06010000) >> 5;
-			paletteID = Allocator::AllocatePaletteSlot(paletteID);
-			if (paletteID < 16)
-			{
-				if (colourAddress)
-				{
-					memcpy32((void*)((u32)colourAddress + 0x200 + paletteID * 0x20), palette, 8);
-				}
-				else
-				{
-					memcpy32((void*)(MEM_PAL_OBJ + paletteID * 0x20), palette, 8);
-				}
-			}
-			this->paletteSlot = paletteID;
 		}
 	}
-}
 
-OAMObject::~OAMObject()
-{
-	Allocator::FreePalette(this->paletteSlot);
-	Allocator::FreeObjectTilesFromTileID(this->tileLocation);
-}
-
-void OAMObject::Update(u32 position)
-{
-	if (updater)
+	OAMObject::~OAMObject()
 	{
-		updater->Update(this);
+		Allocator::FreePalette(this->paletteSlot);
+		Allocator::FreeObjectTilesFromTileID(this->tileLocation);
 	}
-	u16* oam = (u16*)0x07000000;
-	if (isActive)
+
+	void OAMObject::Update(u32 position)
 	{
 		if (updater)
 		{
 			updater->Update(this);
 		}
-		oam[(position * 4)] = yLocation | (disableDoubleFlag << 9) | (rotationFlag << 8) | (mode << 10) | (mosaic << 12) | (colourMode << 13) | (objShape << 14);
-		oam[(position * 4) + 1] = xLocation | ((rotationFlag) ? (rotScaleParam << 9) : (hFlip << 12) | (vFlip << 13)) | (objSize << 14);
-		oam[(position * 4) + 2] = tileLocation | (priority << 10)| (paletteSlot << 12);
+		u16* oam = (u16*)0x07000000;
+		if (isActive)
+		{
+			if (updater)
+			{
+				updater->Update(this);
+			}
+			oam[(position * 4)] = yLocation | (disableDoubleFlag << 9) | (rotationFlag << 8) | (mode << 10) | (mosaic << 12) | (colourMode << 13) | (objShape << 14);
+			oam[(position * 4) + 1] = xLocation | ((rotationFlag) ? (rotScaleParam << 9) : (hFlip << 12) | (vFlip << 13)) | (objSize << 14);
+			oam[(position * 4) + 2] = tileLocation | (priority << 10)| (paletteSlot << 12);
+		}
 	}
-}
 
-void OAMObject::UpdatePalette(void* newPalette, u16* locationToWriteTo)
-{
-	if (locationToWriteTo)
+	void OAMObject::UpdatePalette(void* newPalette, u16* locationToWriteTo)
 	{
-		memcpy32((void*)(locationToWriteTo + 0x100 + (paletteSlot * 0x20)), newPalette, 8);
+		if (locationToWriteTo)
+		{
+			memcpy32((void*)(locationToWriteTo + 0x100 + (paletteSlot * 0x20)), newPalette, 8);
+		}
+		else
+		{
+			memcpy32((void*)(MEM_PAL_OBJ + paletteSlot * 0x20), newPalette, 8);
+		}
 	}
-	else
-	{
-		memcpy32((void*)(MEM_PAL_OBJ + paletteSlot * 0x20), newPalette, 8);
-	}
-}
 
-void OAMObject::UpdateImage(void* image, bool compressed)
-{
-	void* loc = (void*)((tileLocation << 5) + 0x06010000);
-	if (compressed)
+	void OAMObject::UpdateImage(void* image, bool compressed)
 	{
-		LZ77UnCompVram(image, loc);
+		void* loc = (void*)((tileLocation << 5) + 0x06010000);
+		if (compressed)
+		{
+			LZ77UnCompVram(image, loc);
+		}
+		else
+		{
+			u32 totalSize = CalculateObjectSize(objShape, objSize);
+			memcpy32(loc, image, totalSize << 3);
+		}
 	}
-	else
-	{
-		u32 totalSize = CalculateObjectSize(objShape, objSize);
-		memcpy32(loc, image, totalSize << 3);
-	}
-}
 
-Vector2D OAMObject::CalculateRelativePosition(const Vector2D& pos)
-{
-	NPCData* data = Game::GetNPCDataPointer();
-	u16 xPosition = 112;
-	s16 xOffset = pos.GetX() - data[0].xLocation;
-	if (xOffset != 0)
+	Vector2D OAMObject::CalculateRelativePosition(const Vector2D& pos)
 	{
-		xPosition += xOffset * 0x10;
+		NPCData* data = Game::GetNPCDataPointer();
+		u16 xPosition = 112;
+		s16 xOffset = pos.GetX() - data[0].xLocation;
+		if (xOffset != 0)
+		{
+			xPosition += xOffset * 0x10;
+		}
+		u16 yPosition = 56;
+		s16 yOffset = pos.GetY() - data[0].yLocation;
+		if (yOffset != 0)
+		{
+			yPosition += yOffset * 0x10;
+		}
+		return Vector2D(xPosition, yPosition);
 	}
-	u16 yPosition = 56;
-	s16 yOffset = pos.GetY() - data[0].yLocation;
-	if (yOffset != 0)
-	{
-		yPosition += yOffset * 0x10;
-	}
-	return Vector2D(xPosition, yPosition);
 }

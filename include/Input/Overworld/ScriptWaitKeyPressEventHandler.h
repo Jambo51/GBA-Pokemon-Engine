@@ -8,19 +8,28 @@
 #ifndef SCRIPTWAITKEYPRESSEVENTHANDLER_H_
 #define SCRIPTWAITKEYPRESSEVENTHANDLER_H_
 
-#include "InputEventHandler.h"
+#include "Input/InputHandler.h"
 
-class ScriptRunner;
-
-class ScriptWaitKeyPressEventHandler : public InputEventHandler
+namespace Tasks
 {
-private:
-	ScriptRunner* runner;
-public:
-	ScriptWaitKeyPressEventHandler(ScriptRunner* runner);
-	~ScriptWaitKeyPressEventHandler();
-	void OnPressA();
-	void OnPressB();
-};
+	namespace ScriptRunners
+	{
+		class ScriptRunner;
+	}
+}
+
+namespace Input
+{
+	class ScriptWaitKeyPressEventHandler : public InputHandler
+	{
+	private:
+		Tasks::ScriptRunners::ScriptRunner* runner;
+	public:
+		ScriptWaitKeyPressEventHandler(Tasks::ScriptRunners::ScriptRunner* runner);
+		~ScriptWaitKeyPressEventHandler();
+		void OnPressA();
+		void OnPressB();
+	};
+}
 
 #endif /* SCRIPTWAITKEYPRESSEVENTHANDLER_H_ */

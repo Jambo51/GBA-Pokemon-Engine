@@ -2,7 +2,6 @@
 #include "FlashFunctions.h"
 #include "GlobalDefinitions.h"
 #include "GBSEngine.h"
-#include "M4AEngine.h"
 #include "SoundEngine.h"
 #include "EntityManager.h"
 #include "TaskManager.h"
@@ -29,6 +28,7 @@ using namespace Scenes;
 using namespace Allocation;
 using namespace Scenes::Overworld;
 using namespace Tasks;
+using namespace Text;
 
 #define LATIN 0
 #define CYRILLIC 1
@@ -47,7 +47,7 @@ int main()
 	InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	if (Game::GetSoundEngineID() == M4AEngineID)
 	{
-		SoundEngine::Initialise(new M4AEngine());
+		//SoundEngine::Initialise(new M4AEngine());
 	}
 	else
 	{

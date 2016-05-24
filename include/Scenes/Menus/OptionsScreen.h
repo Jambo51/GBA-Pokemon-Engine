@@ -8,7 +8,7 @@
 #ifndef SOURCE_OPTIONSSCREEN_H_
 #define SOURCE_OPTIONSSCREEN_H_
 
-#include "Scene.h"
+#include "Scenes/Scene.h"
 
 namespace Scenes
 {

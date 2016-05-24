@@ -56,12 +56,12 @@ namespace Collections
 		{
 			if (backNode)
 			{
-				ListNode* node = new ListNode(backNode, item, __null);
+				ListNode<T>* node = new ListNode<T>(backNode, item, __null);
 				backNode = node;
 			}
 			else
 			{
-				frontNode = new ListNode(__null, item, __null);
+				frontNode = new ListNode<T>(__null, item, __null);
 				backNode = frontNode;
 			}
 			numItems++;
@@ -72,12 +72,12 @@ namespace Collections
 		{
 			if (frontNode)
 			{
-				ListNode* node = new ListNode(__null, item, frontNode);
+				ListNode<T>* node = new ListNode<T>(__null, item, frontNode);
 				frontNode = node;
 			}
 			else
 			{
-				frontNode = new ListNode(__null, item, __null);
+				frontNode = new ListNode<T>(__null, item, __null);
 				backNode = frontNode;
 			}
 			numItems++;
@@ -178,7 +178,7 @@ namespace Collections
 			{
 				do
 				{
-					ListNode* node = frontNode;
+					ListNode<T>* node = frontNode;
 					frontNode = frontNode->GetNext();
 					delete node;
 				} while (frontNode);
@@ -199,7 +199,7 @@ namespace Collections
 			if (currNode)
 			{
 				ListNode<T>* currNode2 = currNode->GetPrevious();
-				ListNode<T>* newNode = new ListNode(currNode2, item, currNode);
+				ListNode<T>* newNode = new ListNode<T>(currNode2, item, currNode);
 				if (currNode2)
 				{
 					currNode2->SetNext(newNode);

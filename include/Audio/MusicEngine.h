@@ -1,9 +1,7 @@
 #pragma once
 
 #include "GlobalDefinitions.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 namespace Audio
 {
 	class MusicEngine
@@ -30,7 +28,4 @@ namespace Audio
 		u16* GetBufferAddress() const { return (u16*)&buffer; }
 	};
 }
-#ifdef __cplusplus
-}
-#endif
 

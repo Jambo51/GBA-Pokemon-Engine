@@ -18,6 +18,11 @@
 #define HappinessCycleLength 32
 #define PoisonCycleLength 4
 
+namespace Entities
+{
+	class NonPlayerCharacter;
+}
+
 namespace Core
 {
 	enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
@@ -26,15 +31,13 @@ namespace Core
 
 	enum LogicalFacingDirections { Facing_Down_Logical, Facing_Up_Logical, Facing_Left_Logical, Facing_Right_Logical };
 
-	class NonPlayerCharacter;
-
 	typedef struct PokemonStorageBoxes {
 		StorageBoxInfo info;
 		Pokemon::AbridgedPokemon boxData[NUMBOXES][POKEMONPERBOX];
 	} PokemonStorageBoxes;
 
 	typedef struct NPCData {
-		NonPlayerCharacter* dataPointer;
+		Entities::NonPlayerCharacter* dataPointer;
 		u16 xLocation;
 		u16 yLocation;
 		u16 prevXLocation;
@@ -136,8 +139,8 @@ namespace Core
 		static u32 CountBoxPokemon(u32 boxID);
 		static u32 CountAllBoxPokemon();
 		static void StartTimer(int timerNum, int timerSetting = 0, u16 cascadeValue = 0);
-		static bool AddNPC(NonPlayerCharacter* npc);
-		static void OverwriteNPC(NonPlayerCharacter* npc, u32 position);
+		static bool AddNPC(Entities::NonPlayerCharacter* npc);
+		static void OverwriteNPC(Entities::NonPlayerCharacter* npc, u32 position);
 		static void FadeToPalette(const u16* newPalette, bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
 		static void FadeToGreyScale(FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
 		static void FadeToBlack(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&blackPalette, fade256Colours, FrameCount, callback, exitCallback); }

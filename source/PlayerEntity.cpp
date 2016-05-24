@@ -5,36 +5,39 @@
  *      Author: Jamie
  */
 
-#include "PlayerEntity.h"
+#include "Entities/PlayerEntity.h"
 #include "GlobalDefinitions.h"
 
-PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender, u16* colourAddress) : NonPlayerCharacter(location, backgroundLevel, (gender) ? 30 : 0, 0xFF, colourAddress)
+namespace Entities
 {
-	// TODO Auto-generated constructor stub
-	_object->SetPosition(Vector2D(112, 56));
-}
+	PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender, u16* colourAddress) : NonPlayerCharacter(location, backgroundLevel, (gender) ? 30 : 0, 0xFF, colourAddress)
+	{
+		// TODO Auto-generated constructor stub
+		_object->SetPosition(Vector2D(112, 56));
+	}
 
-PlayerEntity::~PlayerEntity()
-{
-	// TODO Auto-generated destructor stub
-}
+	PlayerEntity::~PlayerEntity()
+	{
+		// TODO Auto-generated destructor stub
+	}
 
-bool PlayerEntity::Initialise()
-{
+	bool PlayerEntity::Initialise()
+	{
 
-}
+	}
 
-bool PlayerEntity::LoadContent()
-{
+	bool PlayerEntity::LoadContent()
+	{
 
-}
+	}
 
-bool PlayerEntity::Update()
-{
-	return NonPlayerCharacter::Update();
-}
+	bool PlayerEntity::Update()
+	{
+		return NonPlayerCharacter::Update();
+	}
 
-void PlayerEntity::UnloadContent()
-{
+	void PlayerEntity::UnloadContent()
+	{
 
+	}
 }

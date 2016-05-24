@@ -8,7 +8,7 @@
 #ifndef LOADGAMESCREENINPUTEVENTHANDLER_H_
 #define LOADGAMESCREENINPUTEVENTHANDLER_H_
 
-#include "InputHandler.h"
+#include "Input/InputHandler.h"
 
 namespace Input
 {

@@ -5,72 +5,79 @@
  *      Author: Jamie
  */
 
-#include "LoadGameScreenInputEventHandler.h"
-#include "Game.h"
-#include "GameModeManager.h"
-#include "LoadGameScreen.h"
-#include "SoundEngine.h"
+#include "Input/Menus/LoadGameScreenInputEventHandler.h"
+#include "Core/Game.h"
+#include "Scenes/SceneManager.h"
+#include "Scenes/Menus/LoadGameScreen.h"
+#include "Audio/SoundEngine.h"
 
-LoadGameScreenInputEventHandler::LoadGameScreenInputEventHandler()
+using namespace Audio;
+using namespace Core;
+using namespace Scenes;
+
+namespace Input
 {
-	// TODO Auto-generated constructor stub
-
-}
-
-LoadGameScreenInputEventHandler::~LoadGameScreenInputEventHandler()
-{
-	// TODO Auto-generated destructor stub
-}
-
-void LoadGameScreenInputEventHandler::OnPressA()
-{
-	InputEventHandler::OnPressA();
-	Game::FadeToBlack(true, HalfSecond, true, true);
-	LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
-	if (sc->SetExitContext())
+	LoadGameScreenInputEventHandler::LoadGameScreenInputEventHandler()
 	{
-		SoundEngine::FadeSongToSilence();
+		// TODO Auto-generated constructor stub
+
 	}
-}
 
-void LoadGameScreenInputEventHandler::OnPressB()
-{
-	InputEventHandler::OnPressB();
-	Game::FadeToBlack(true, HalfSecond, true, true);
-	LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
-	if (sc->SetExitContext(1))
+	LoadGameScreenInputEventHandler::~LoadGameScreenInputEventHandler()
 	{
-		SoundEngine::FadeSongToSilence();
+		// TODO Auto-generated destructor stub
 	}
-}
 
-void LoadGameScreenInputEventHandler::OnPressUp()
-{
-	InputEventHandler::OnPressUp();
-	if (!keyHeld[Key_Up])
+	void LoadGameScreenInputEventHandler::OnPressA()
 	{
-		LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
-		sc->DecrementMenuPosition();
+		InputHandler::OnPressA();
+		Game::FadeToBlack(true, HalfSecond, true, true);
+		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+		if (sc->SetExitContext())
+		{
+			SoundEngine::FadeSongToSilence();
+		}
 	}
-}
 
-void LoadGameScreenInputEventHandler::OnPressDown()
-{
-	InputEventHandler::OnPressDown();
-	if (!keyHeld[Key_Down])
+	void LoadGameScreenInputEventHandler::OnPressB()
 	{
-		LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
-		sc->IncrementMenuPosition();
+		InputHandler::OnPressB();
+		Game::FadeToBlack(true, HalfSecond, true, true);
+		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+		if (sc->SetExitContext(1))
+		{
+			SoundEngine::FadeSongToSilence();
+		}
 	}
-}
 
-void LoadGameScreenInputEventHandler::OnPressStart()
-{
-	InputEventHandler::OnPressStart();
-	Game::FadeToBlack(true, HalfSecond, true, true);
-	LoadGameScreen* sc = (LoadGameScreen*)GameModeManager::GetScreen();
-	if (sc->SetExitContext())
+	void LoadGameScreenInputEventHandler::OnPressUp()
 	{
-		SoundEngine::FadeSongToSilence();
+		InputHandler::OnPressUp();
+		if (!keyHeld[Key_Up])
+		{
+			LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+			sc->DecrementMenuPosition();
+		}
+	}
+
+	void LoadGameScreenInputEventHandler::OnPressDown()
+	{
+		InputHandler::OnPressDown();
+		if (!keyHeld[Key_Down])
+		{
+			LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+			sc->IncrementMenuPosition();
+		}
+	}
+
+	void LoadGameScreenInputEventHandler::OnPressStart()
+	{
+		InputHandler::OnPressStart();
+		Game::FadeToBlack(true, HalfSecond, true, true);
+		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+		if (sc->SetExitContext())
+		{
+			SoundEngine::FadeSongToSilence();
+		}
 	}
 }

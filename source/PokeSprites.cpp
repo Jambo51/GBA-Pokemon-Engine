@@ -3,9 +3,9 @@
  *  Created on: 17 Jul 2014
  *      Author: Jamie*/
 
-#include "PokeSprites.h"
+#include "Core/Pokemon/PokeSprites.h"
 #include "GlobalDefinitions.h"
-#include "libsprites.h"
+#include "LibraryHeaders/libsprites.h"
 
 const TEXT_LOCATION void* PointerToFrontSpriteSet000[] = { &PokemonSprite000_FrontSprite };
 const TEXT_LOCATION void* PointerToFrontSpriteSet001[] = { &PokemonSprite001_FrontSprite };

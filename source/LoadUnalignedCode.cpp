@@ -1,42 +1,45 @@
-#include "LoadUnalignedCode.h"
+#include "Core/LoadUnalignedCode.h"
 
-u32 UnalignedNumberHandler::LoadUnalignedNumber(u8* location, u32 modifier, u8 length)
+namespace Core
 {
-	u32 returnable = 0;
-	u8 i;
-	for (i = 0; i < length; i++)
+	u32 UnalignedNumberHandler::LoadUnalignedNumber(u8* location, u32 modifier, u8 length)
 	{
-		returnable |= (location[modifier + i] << (i << 3));
+		u32 returnable = 0;
+		u8 i;
+		for (i = 0; i < length; i++)
+		{
+			returnable |= (location[modifier + i] << (i << 3));
+		}
+		return returnable;
 	}
-	return returnable;
-}
 
-u32* UnalignedNumberHandler::LoadUIntPointer(u8* location, u32 modifier)
-{
-	if (((u32)location + modifier) & 3 == 0)
+	u32* UnalignedNumberHandler::LoadUIntPointer(u8* location, u32 modifier)
 	{
-		return *((u32**)((u32)(location) + modifier));
+		if (((u32)location + modifier) & 3 == 0)
+		{
+			return *((u32**)((u32)(location) + modifier));
+		}
+		else
+		{
+			return (u32*)LoadUnalignedNumber(location, modifier, 4);
+		}
 	}
-	else
-	{
-		return (u32*)LoadUnalignedNumber(location, modifier, 4);
-	}
-}
 
-u16 UnalignedNumberHandler::LoadUShortNumber(u8* location, u32 modifier)
-{
-	u8 alignment = ((u32)(location) + modifier) & 0xF;
-	if ((alignment & 1) == 0)
+	u16 UnalignedNumberHandler::LoadUShortNumber(u8* location, u32 modifier)
 	{
-		return ((u16*)((u32)(location) + modifier))[0];
+		u8 alignment = ((u32)(location) + modifier) & 0xF;
+		if ((alignment & 1) == 0)
+		{
+			return ((u16*)((u32)(location) + modifier))[0];
+		}
+		else
+		{
+			return (u16)LoadUnalignedNumber(location, modifier, 2);
+		}
 	}
-	else
-	{
-		return (u16)LoadUnalignedNumber(location, modifier, 2);
-	}
-}
 
-u8 UnalignedNumberHandler::SwapBits(u8 value)
-{
-	return ((value & 0xF0) >> 4) | ((value & 0xF) << 4);
+	u8 UnalignedNumberHandler::SwapBits(u8 value)
+	{
+		return ((value & 0xF0) >> 4) | ((value & 0xF) << 4);
+	}
 }

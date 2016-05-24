@@ -8,7 +8,7 @@
 #ifndef TITLESCREEN_H_
 #define TITLESCREEN_H_
 
-#include "Scene.h"
+#include "Scenes/Scene.h"
 #include "GlobalDefinitions.h"
 
 namespace Scenes

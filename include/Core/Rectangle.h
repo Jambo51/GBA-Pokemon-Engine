@@ -10,20 +10,23 @@
 
 #include "Vector2D.h"
 
-class Rectangle
+namespace Core
 {
-private:
-	Vector2D upperLeftCorner;
-	Vector2D lowerRightCorner;
-public:
-	Rectangle();
-	Rectangle(const Vector2D &upperLeftCorner, const Vector2D &lowerRightCorner);
-	Rectangle(s16 x1, s16 y1, s16 x2, s16 y2);
-	~Rectangle();
-	bool IsTileWithin(const Vector2D &position);
-	bool IsTileWithin(s16 x, s16 y);
-	const Vector2D & GetUpperLeft() const { return upperLeftCorner; }
-	const Vector2D & GetLowerRight() const { return lowerRightCorner; }
-};
+	class Rectangle
+	{
+	private:
+		Vector2D upperLeftCorner;
+		Vector2D lowerRightCorner;
+	public:
+		Rectangle();
+		Rectangle(const Vector2D &upperLeftCorner, const Vector2D &lowerRightCorner);
+		Rectangle(s16 x1, s16 y1, s16 x2, s16 y2);
+		~Rectangle();
+		bool IsTileWithin(const Vector2D &position);
+		bool IsTileWithin(s16 x, s16 y);
+		const Vector2D & GetUpperLeft() const { return upperLeftCorner; }
+		const Vector2D & GetLowerRight() const { return lowerRightCorner; }
+	};
+}
 
 #endif /* RECTANGLE_H_ */

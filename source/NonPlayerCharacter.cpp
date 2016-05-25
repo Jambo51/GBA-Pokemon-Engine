@@ -9,6 +9,8 @@
 #include "Data/OverworldSprites.h"
 #include "Core/RTC.h"
 
+using namespace Core;
+
 namespace Entities
 {
 	NonPlayerCharacter::NonPlayerCharacter(const Vector2D &location, u32 backgroundLevel, u32 spriteID, u32 objectID, u16* colourAddress) : Entity(location, backgroundLevel), spriteIndex(spriteID)
@@ -32,12 +34,12 @@ namespace Entities
 
 	bool NonPlayerCharacter::Initialise()
 	{
-
+		return true;
 	}
 
 	bool NonPlayerCharacter::LoadContent()
 	{
-
+		return true;
 	}
 
 	bool NonPlayerCharacter::Update()

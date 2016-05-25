@@ -10,6 +10,8 @@
 #include "Tasks/TaskManager.h"
 #include "Scenes/Overworld/PrimaryOverworld.h"
 
+using namespace Tasks;
+
 namespace Text
 {
 	TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(u32), u32 functionData, u32 inkColour) : Tasks::Task()

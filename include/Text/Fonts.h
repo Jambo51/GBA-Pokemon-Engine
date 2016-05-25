@@ -8,6 +8,6 @@
 #ifndef FONTS_H_
 #define FONTS_H_
 
-#include "libtiles.h"
+#include "../LibraryHeaders/libtiles.h"
 
 #endif /* FONTS_H_ */

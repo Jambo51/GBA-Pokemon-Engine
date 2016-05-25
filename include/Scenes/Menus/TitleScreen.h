@@ -13,17 +13,20 @@
 
 namespace Scenes
 {
-	class TitleScreen : public Scene
+	namespace Menus
 	{
-	private:
-		u32 counter:31;
-		u32 status:1;
-	public:
-		TitleScreen();
-		~TitleScreen();
-		void Update();
-		void OnExit();
-		void OnEnter();
-	};
+		class TitleScreen : public Scene
+		{
+		private:
+			u32 counter:31;
+			u32 status:1;
+		public:
+			TitleScreen();
+			~TitleScreen();
+			void Update();
+			void OnExit();
+			void OnEnter();
+		};
+	}
 }
 #endif /* TITLESCREEN_H_ */

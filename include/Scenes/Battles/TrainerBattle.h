@@ -21,13 +21,10 @@ namespace Scenes
 		protected:
 			static TrainerData trainerBattleDataTable[];
 			static IndexTable transitionScripts[NumTrainerBattleTransitions];
-		public:
 			TrainerBattle(const BattleTypeStruct &bts, u32 trainerIDAndInformation, const char* afterText, const u8* afterScript = NULL);
+		public:
 			~TrainerBattle();
-			virtual void Update();
 			static u32 GetEncounterTrackID(u32 trainerID);
-			void OnExit();
-			void OnEnter();
 		};
 	}
 }

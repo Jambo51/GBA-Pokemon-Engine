@@ -7,11 +7,12 @@
 
 #include "Input/Menus/OptionsInputEventHandler.h"
 #include "Core/Game.h"
-#include "Scenes/SceneManager.h"
-#include "Scenes/Menus/OptionsScreen.h"
+#include "Scenes.h"
 
 using namespace Core;
 using namespace Scenes;
+using namespace Scenes::Menus;
+using namespace Scenes::Overworld;
 
 namespace Input
 {

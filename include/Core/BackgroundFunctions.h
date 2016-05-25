@@ -9,6 +9,7 @@
 #define BACKGROUNDFUNCTIONS_H_
 
 #include "Rectangle.h"
+
 namespace Core
 {
 	class BackgroundFunctions

@@ -5,36 +5,42 @@
  *      Author: Jamie
  */
 
-#include "ScriptRunner.h"
-#include "CallbackManager.h"
+#include "Tasks/ScriptRunners/ScriptRunner.h"
+#include "Tasks/TaskManager.h"
 
-ScriptRunner::ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands)
+namespace Tasks
 {
-	waitFrames = 0;
-	scriptPointer = script;
-	commandSet = commands;
-	status = 0;
-	memset32((void*)&scriptBanks, 0, (sizeof(u32) * 5 + sizeof(u8*) * 10) >> 2);
-}
-
-ScriptRunner::~ScriptRunner()
-{
-
-}
-
-
-void ScriptRunner::Update()
-{
-	u32 scriptEnded = NotEnded;
-	while (scriptEnded != Ended)
+	namespace ScriptRunners
 	{
-		u32 commandID = *scriptPointer;
-		U32FunctionPointerScriptRunner Command = commandSet[commandID];
-		scriptEnded = Command(this);
-		if (scriptEnded == WaitForFrames)
+		ScriptRunner::ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands) : Tasks::Task()
 		{
-			return;
+			waitFrames = 0;
+			scriptPointer = script;
+			commandSet = commands;
+			status = 0;
+			memset32((void*)&scriptBanks, 0, (sizeof(u32) * 5 + sizeof(u8*) * 10) >> 2);
+		}
+
+		ScriptRunner::~ScriptRunner()
+		{
+
+		}
+
+
+		void ScriptRunner::Update()
+		{
+			u32 scriptEnded = NotEnded;
+			while (scriptEnded != Ended)
+			{
+				u32 commandID = *scriptPointer;
+				U32FunctionPointerScriptRunner Command = commandSet[commandID];
+				scriptEnded = Command(this);
+				if (scriptEnded == WaitForFrames)
+				{
+					return;
+				}
+			}
+			TaskManager::RemoveTask(this);
 		}
 	}
-	CallbackManager::RemoveCallback(this);
 }

@@ -19,7 +19,8 @@
 
 using namespace Core;
 using namespace Input;
-using namespace Scenes;
+using namespace Scenes::Overworld;
+using namespace Scenes::Menus;
 using namespace Audio;
 
 namespace Scenes

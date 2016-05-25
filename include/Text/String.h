@@ -51,7 +51,7 @@ namespace Text
 		}
 
 		bool EndsWith(const char c) const;
-		String SubString(s32 startIndex, u32 length = 0) const;
+		String SubString(u32 startIndex, u32 length = 0) const;
 		bool EndsWith(const char* c) const;
 		bool EndsWith(const String &rhs) const;
 		bool StartsWith(const char c) const;

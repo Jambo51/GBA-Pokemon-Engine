@@ -21,6 +21,7 @@ namespace Audio
 			void FadeSong();
 			void FadeSongOut();
 			void FadeSongIn();
+			GBSTrackHeader** songTable;
 			static void ResumeSongStatic();
 		public:
 			GBSEngine()
@@ -45,7 +46,7 @@ namespace Audio
 			void SetSFXOnEndFunction(VoidFunctionPointerVoid function);
 			void ResumeSong();
 			void SwitchWavePattern(u8 patternID) const;
-			void Initialise();
+			void Initialise(void* songTablePointer);
 			bool SFXPlaying();
 			bool FanfarePlaying();
 		};

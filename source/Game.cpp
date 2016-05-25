@@ -785,7 +785,6 @@ namespace Core
 
 	bool Game::AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt, Bag &bagLoc)
 	{
-		bool space = false;
 		u32 category = Items::GetItemCategory(itemID);
 		u32 slotID = U32Max;
 		switch (category)
@@ -882,7 +881,6 @@ namespace Core
 
 	bool Game::FindItemsInBagLocation(u16 itemID, u16 numberOfItems, const Bag &bagLoc)
 	{
-		bool space = false;
 		u32 category = Items::GetItemCategory(itemID);
 		u32 slotID = U32Max;
 		switch (category)
@@ -940,7 +938,6 @@ namespace Core
 
 	bool Game::RemoveItemsFromBagLocation(u16 itemID, u16 numberOfItems, bool doIt, Bag &bagLoc)
 	{
-		bool space = false;
 		u32 category = Items::GetItemCategory(itemID);
 		u32 slotID = U32Max;
 		switch (category)

@@ -5,26 +5,28 @@
  *      Author: Jamie
  */
 
-#include "Game.h"
-#include "Maths.h"
-#include "ScriptRunner.h"
-#include "Pokemon.h"
-#include "Flags.h"
-#include "Variables.h"
-#include "SoundEngine.h"
-#include "Mapping.h"
-#include "GameModeManager.h"
-#include "TextFunctions.h"
-#include "TrainerBattle.h"
-#include "SoundEngine.h"
-#include "Moves.h"
+#include "Core.h"
+#include "Tasks.h"
+#include "Audio.h"
+#include "Scenes.h"
+#include "Text.h"
+
+using namespace Core::Pokemon;
+using namespace Core::Data;
+using namespace Core;
+using namespace Tasks::ScriptRunners;
+using namespace Text;
+using namespace Audio;
+using namespace Scenes;
+using namespace Scenes::Overworld;
+using namespace Scenes::Battles;
 
 u16 Special0HealParty(ScriptRunner* runner)
 {
 	bool pokemonFound = false;
 	for (u32 i = 0; i < PartyLength; i++)
 	{
-		Pokemon &p = *Game::GetPartyPokemon(i);
+		Core::Pokemon::Pokemon &p = *Game::GetPartyPokemon(i);
 		if (p.Decrypt(PersonalityID))
 		{
 			pokemonFound = true;
@@ -112,9 +114,9 @@ void WhiteOutCallback(u32 data)
 {
 	const HealingPlace &hp = Game::GetHealingPlace();
 	Variables::SetVar(LASTTALKED, hp.spriteID);
-	Game::SetCurrentMap(Overworld::GetMapHeaderFromBankAndMapID(hp.mapLocation.mapBank, hp.mapLocation.map));
-	GameScreen* ow = new Overworld();
-	GameModeManager::SetScreen(ow);
+	Game::SetCurrentMap(PrimaryOverworld::GetMapHeaderFromBankAndMapID(hp.mapLocation.mapBank, hp.mapLocation.map));
+	Scene* ow = new PrimaryOverworld();
+	SceneManager::SetScene(ow);
 }
 
 u16 SpecialC8WhiteOut(ScriptRunner* runner)

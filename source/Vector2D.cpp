@@ -5,10 +5,13 @@
  *      Author: Jamie
  */
 
-#include "Vector2D.h"
+#include "Core/Vector2D.h"
 
-Vector2D::~Vector2D()
+namespace Core
 {
-	// TODO Auto-generated destructor stub
+	Vector2D::~Vector2D()
+	{
+		// TODO Auto-generated destructor stub
+	}
 }
 

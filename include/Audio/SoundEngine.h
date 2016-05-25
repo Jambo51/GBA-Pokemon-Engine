@@ -28,7 +28,7 @@ namespace Audio
 		static u16 sfxIDInt;
 	public:
 		static void Interrupt();
-		static void Initialise(MusicEngine* engine);
+		static void Initialise(MusicEngine* engine, void* songTablePointer);
 		static void Update();
 		static void PlaySong(u16 songID, u8 songStartMode);
 		static void PlayFanfare(u16 songID);

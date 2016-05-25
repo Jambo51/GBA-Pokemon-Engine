@@ -8,7 +8,7 @@
 #ifndef TITLESCREENINPUTEVENTHANDLER_H_
 #define TITLESCREENINPUTEVENTHANDLER_H_
 
-#include "InputHandler.h"
+#include "../InputHandler.h"
 
 namespace Input
 {

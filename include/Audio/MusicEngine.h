@@ -21,7 +21,7 @@ namespace Audio
 		virtual void Update();
 		virtual void SetSongOnEndFunction(VoidFunctionPointerVoid function) = 0;
 		virtual void SetSFXOnEndFunction(VoidFunctionPointerVoid function) = 0;
-		virtual void Initialise() = 0;
+		virtual void Initialise(void* songTablePointer) = 0;
 		virtual bool SFXPlaying() = 0;
 		virtual bool FanfarePlaying() = 0;
 		virtual void ResumeSong() = 0;

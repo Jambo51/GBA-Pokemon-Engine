@@ -123,7 +123,6 @@ namespace Scenes
 				(const u8*)&Script_Present
 		};
 		RODATA_LOCATION ALIGN(2) u16 Battle::statModifierRates[] = { 25, 28, 33, 40, 50, 66, 100, 150, 200, 250, 300, 350, 400 };
-		EWRAM_LOCATION ALIGN(4) Battle* Battle::instance = NULL;
 
 		Battle::Battle(const BattleTypeStruct &bts)
 		{
@@ -233,8 +232,6 @@ namespace Scenes
 		u32 Battle::LevelBallPokeball()
 		{
 			u32 retValue;
-			const BattleData &battleData = instance->GetBattleData();
-			const BattleTypeStruct &battleType = instance->GetBattleTypeStruct();
 			u32 level = battleData.pokemonStats[0].level;
 			if (battleType.info.isDoubleBattle)
 			{
@@ -262,7 +259,6 @@ namespace Scenes
 
 		u32 Battle::MoonBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			IndexTable* data = (IndexTable*)&evoData[battleData.pokemonStats[battleData.battleBanks[Target]].species];
 			EvolutionData* innerData = (EvolutionData*)data[0].pointerToData;
@@ -286,7 +282,6 @@ namespace Scenes
 
 		u32 Battle::LoveBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			u8 gender = battleData.pokemonStats[0].gender;
 			u16 species = battleData.pokemonStats[0].species;
@@ -304,7 +299,6 @@ namespace Scenes
 
 		u32 Battle::HeavyBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			const PokedexData &data = *Pokedex::GetPokedexDataByIndex(battleData.pokemonStats[battleData.battleBanks[Target]].species);
 			u16 weight = data.weight;
@@ -329,7 +323,6 @@ namespace Scenes
 
 		u32 Battle::FastBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			u8 forme = battleData.pokemonStats[battleData.battleBanks[Target]].forme;
 			InternalBaseData* data = (InternalBaseData*)pokemonBaseData[battleData.pokemonStats[battleData.battleBanks[Target]].species].baseDataInfo.pointerToData;
@@ -342,7 +335,6 @@ namespace Scenes
 
 		u32 Battle::RepeatBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			u16 species = battleData.pokemonStats[battleData.battleBanks[Target]].species;
 			if (Flags::GetSeenCaughtStatus(species, 2))
@@ -354,7 +346,6 @@ namespace Scenes
 
 		u32 Battle::TimerBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue;
 			u32 turns = battleData.battleTurnsCounter;
 			if (turns >= 10)
@@ -370,7 +361,6 @@ namespace Scenes
 
 		u32 Battle::NestBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			u32 opponentLevel = battleData.pokemonStats[battleData.battleBanks[Target]].level;
 			if (opponentLevel < 31)
@@ -382,7 +372,6 @@ namespace Scenes
 
 		u32 Battle::QuickBallPokeball()
 		{
-			const BattleData &battleData = instance->GetBattleData();
 			u32 retValue = 100;
 			if (battleData.battleTurnsCounter == 0)
 			{

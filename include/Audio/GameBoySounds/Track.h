@@ -124,7 +124,6 @@ namespace Audio
 			{
 				return ((value & 0xF0) >> 4) | ((value & 0xF) << 4);
 			}
-		private:
 			virtual void ExecuteModifications(u8 commandID, u16 tempo, GBSChannel &masterChannel) = 0;
 			virtual void ModulateTrack(GBSChannel &masterChannel) = 0;
 			virtual u16 GetModulationPitch(GBSChannel &masterChannel) = 0;

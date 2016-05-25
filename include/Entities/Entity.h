@@ -3,6 +3,8 @@
 #include "Core/Vector2D.h"
 #include "OAMObject.h"
 
+using namespace Core;
+
 namespace Entities
 {
 	class Entity

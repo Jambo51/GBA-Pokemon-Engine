@@ -19,7 +19,7 @@ namespace Collections
 		public:
 			virtual ~List<T>()
 			{
-				Clear();
+
 			}
 			virtual int Size() const = 0;
 			virtual void PushBack(T item) = 0;

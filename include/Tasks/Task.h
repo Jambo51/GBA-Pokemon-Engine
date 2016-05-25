@@ -9,15 +9,23 @@
 #define CALLBACK_H_
 
 #include "GlobalDefinitions.h"
+#include "TaskManager.h"
 
 namespace Tasks
 {
 	class Task
 	{
 	protected:
-		Task();
+		Task()
+		{
+			// TODO Auto-generated constructor stub
+			TaskManager::AddTask(this);
+		}
 	public:
-		virtual ~Task();
+		virtual ~Task()
+		{
+
+		}
 		virtual void Update() = 0;
 	};
 }

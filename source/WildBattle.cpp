@@ -5,58 +5,26 @@
  *      Author: Jamie
  */
 
-#include "WildBattle.h"
-#include "Game.h"
-#include "SoundEngine.h"
+#include "Scenes/Battles/WildBattle.h"
+#include "Core/Game.h"
+#include "Audio/SoundEngine.h"
 
-WildBattle::WildBattle(const BattleTypeStruct &bts) : BattleScreen(bts)
-{
-	// TODO Auto-generated constructor stub
-	SoundEngine::PlaySong(CalculateBattleTrack(), 0);
-}
+using namespace Core;
+using namespace Audio;
 
-WildBattle::~WildBattle()
+namespace Scenes
 {
-	// TODO Auto-generated destructor stub
-}
-
-void WildBattle::Update()
-{
-	if (currentStatus == 0)
+	namespace Battles
 	{
-		battleData.battleBanks[NumBattlers] = 2 << battleType.info.isDoubleBattle;
-		battleData.pokemonStats = new PokemonBattleData[battleData.battleBanks[NumBattlers]];
-	}
-	switch (currentStatus)
-	{
-		case 0:
-		case 1:
+		WildBattle::WildBattle(const BattleTypeStruct &bts) : Battle(bts)
 		{
-			if (currentStatus < battleData.battleBanks[NumBattlers] >> 1)
-			{
-				const WildData &data = *Game::GetCurrentMap().wildDataLocation;
-				Pokemon* thePokemon = Pokemon::GenerateWildPokemonFromData(data, battleType);
-				enemyPokemon[currentStatus] = *thePokemon;
-				delete thePokemon;
-			}
-			else
-			{
-				currentStatus = 1;
-			}
-			currentStatus++;
-			break;
+			// TODO Auto-generated constructor stub
+			SoundEngine::PlaySong(CalculateBattleTrack(), 0);
 		}
-		case 2:
-			CopyBattleDataFromPokemon(Game::GetPartyPokemon(0), 0);
-			CopyBattleDataFromPokemon(&enemyPokemon[0], 1);
-			if (battleType.info.isDoubleBattle)
-			{
-				CopyBattleDataFromPokemon(Game::GetPartyPokemon(1), 2);
-				CopyBattleDataFromPokemon(&enemyPokemon[1], 3);
-			}
-			currentStatus++;
-			break;
-		default:
-			break;
+
+		WildBattle::~WildBattle()
+		{
+			// TODO Auto-generated destructor stub
+		}
 	}
 }

@@ -723,10 +723,10 @@ namespace Core
 			bool IsFullyEvolved() const { return mainData.IsFullyEvolved(); }
 			u32 SumEVs() const { return mainData.SumEVs(); }
 			bool AllowEVAddition(u32 value, u32 index) const { return mainData.AllowEVAddition(value, index); }
-			static Pokemon* GenerateWildPokemonFromData(const WildData &initData, const BattleTypeStruct &battleType);
-			static Pokemon* GenerateEgg(Pokemon* mother, Pokemon* father);
+			static Core::Pokemon::Pokemon* GenerateWildPokemonFromData(const WildData &initData, const BattleTypeStruct &battleType);
+			static Core::Pokemon::Pokemon* GenerateEgg(Pokemon* mother, Pokemon* father);
 			static void GivePokemonToPlayer(u16 species, u8 level, u16 item, u32 formeIndex = 0);
-			static Pokemon* GenerateTrainerPokemon(u16 species, u8 level, char* trainerName, u32 id, u32 formeIndex = 0);
+			static Core::Pokemon::Pokemon* GenerateTrainerPokemon(u16 species, u8 level, char* trainerName, u32 id, u32 formeIndex = 0);
 			static u16 FindBabySpeciesInner(u16 sourceSpecies) { return AbridgedPokemon::FindBabySpeciesInner(sourceSpecies); }
 			static void GiveEggToPlayer(u16 species);
 			bool HasMove(u16 moveID) const { return mainData.HasMove(moveID); }

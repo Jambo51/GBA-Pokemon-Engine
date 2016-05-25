@@ -25,11 +25,6 @@ namespace Entities
 
 namespace Core
 {
-	enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
-
-	enum FadeIDs { EighthSecond, QuarterSecond, HalfSecond, Second, TwoSecond, MaxFadeIDs };
-
-	enum LogicalFacingDirections { Facing_Down_Logical, Facing_Up_Logical, Facing_Left_Logical, Facing_Right_Logical };
 
 	typedef struct PokemonStorageBoxes {
 		StorageBoxInfo info;
@@ -56,6 +51,12 @@ namespace Core
 		u8 pixelsMoved;
 		u8 dataSpriteID;
 	} NPCData;
+
+	enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
+
+	enum FadeIDs { EighthSecond, QuarterSecond, HalfSecond, Second, TwoSecond, MaxFadeIDs };
+
+	enum LogicalFacingDirections { Facing_Down_Logical, Facing_Up_Logical, Facing_Left_Logical, Facing_Right_Logical };
 
 	class Game
 	{

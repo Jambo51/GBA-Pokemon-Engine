@@ -1,23 +1,12 @@
 
-#include "FlashFunctions.h"
-#include "GlobalDefinitions.h"
-#include "GBSEngine.h"
-#include "SoundEngine.h"
-#include "EntityManager.h"
-#include "TaskManager.h"
-#include "IRQHandler.h"
-#include "InputHandler.h"
-#include "SceneManager.h"
-#include "Game.h"
-#include "BackgroundFunctions.h"
-#include "Pokemon.h"
-#include "Maths.h"
-#include "PrimaryOverworld.h"
-#include "RTC.h"
-#include "TitleScreen.h"
-#include "Allocator.h"
-#include "DoNothingInputEventHandler.h"
-#include "TextFunctions.h"
+#include "Core.h"
+#include "Input.h"
+#include "Audio.h"
+#include "Entities.h"
+#include "Allocation/Allocator.h"
+#include "Scenes.h"
+#include "Tasks.h"
+#include "Text.h"
 
 using namespace Core;
 using namespace Input;
@@ -27,6 +16,7 @@ using namespace Entities;
 using namespace Scenes;
 using namespace Allocation;
 using namespace Scenes::Overworld;
+using namespace Scenes::Menus;
 using namespace Tasks;
 using namespace Text;
 
@@ -51,7 +41,7 @@ int main()
 	}
 	else
 	{
-		SoundEngine::Initialise(new GBSEngine());
+		SoundEngine::Initialise(new GBSEngine(), &gbpSongs);
 	}
 	EntityManager::Initialise();
 	TextFunctions::InitialiseTextEngine(TEXTSET);

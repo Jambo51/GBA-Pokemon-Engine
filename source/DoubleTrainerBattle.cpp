@@ -23,7 +23,6 @@ namespace Scenes
 		DoubleTrainerBattle::DoubleTrainerBattle(const BattleTypeStruct &bts, u16 trainerID1, const char* afterText1, u16 trainerID2, const char* afterText2) : TrainerBattle(bts, trainerID1, afterText1)
 		{
 			// TODO Auto-generated constructor stub
-			delete battleData.trainerData;
 			memset32((void*)&enemyBank2, 0, (sizeof(Core::Pokemon::Pokemon) * 6) >> 2);
 			battleData.trainerData = new TrainerBattleData[2];
 			battleData.trainerData[0].pointerToData = (TrainerData*)&trainerBattleDataTable[trainerID1];
@@ -93,6 +92,7 @@ namespace Scenes
 							}
 						}
 						enemyPokemon[currentStatus] = *thePokemon;
+						delete thePokemon;
 					}
 					else
 					{
@@ -137,6 +137,7 @@ namespace Scenes
 							}
 						}
 						enemyPokemon[currentStatus] = *thePokemon;
+						delete thePokemon;
 					}
 					else
 					{
@@ -158,6 +159,16 @@ namespace Scenes
 				default:
 					break;
 			}
+		}
+
+		void DoubleTrainerBattle::OnEnter()
+		{
+
+		}
+
+		void DoubleTrainerBattle::OnExit()
+		{
+
 		}
 	}
 }

@@ -5,29 +5,34 @@
  *      Author: Jamie
  */
 
-#include "ScriptWaitKeyPressEventHandler.h"
-#include "ScriptRunner.h"
+#include "Input/Overworld/ScriptWaitKeyPressEventHandler.h"
+#include "Tasks/ScriptRunners/ScriptRunner.h"
 
-ScriptWaitKeyPressEventHandler::ScriptWaitKeyPressEventHandler(ScriptRunner* runner)
-{
-	// TODO Auto-generated constructor stub
-	this->runner = runner;
-	runner->EventHandlerSet(true);
-}
+using namespace Tasks::ScriptRunners;
 
-ScriptWaitKeyPressEventHandler::~ScriptWaitKeyPressEventHandler()
+namespace Input
 {
-	// TODO Auto-generated destructor stub
-}
+	ScriptWaitKeyPressEventHandler::ScriptWaitKeyPressEventHandler(ScriptRunner* runner)
+	{
+		// TODO Auto-generated constructor stub
+		this->runner = runner;
+		runner->EventHandlerSet(true);
+	}
 
-void ScriptWaitKeyPressEventHandler::OnPressA()
-{
-	InputEventHandler::OnPressA();
-	runner->KeyPressReceived(true);
-}
+	ScriptWaitKeyPressEventHandler::~ScriptWaitKeyPressEventHandler()
+	{
+		// TODO Auto-generated destructor stub
+	}
 
-void ScriptWaitKeyPressEventHandler::OnPressB()
-{
-	InputEventHandler::OnPressB();
-	runner->KeyPressReceived(true);
+	void ScriptWaitKeyPressEventHandler::OnPressA()
+	{
+		InputHandler::OnPressA();
+		runner->KeyPressReceived(true);
+	}
+
+	void ScriptWaitKeyPressEventHandler::OnPressB()
+	{
+		InputHandler::OnPressB();
+		runner->KeyPressReceived(true);
+	}
 }

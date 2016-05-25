@@ -17,6 +17,7 @@
 using namespace Core;
 using namespace Scenes;
 using namespace Core::Data;
+using namespace Scenes::Overworld;
 
 namespace Input
 {

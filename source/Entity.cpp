@@ -1,6 +1,8 @@
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
 
+using namespace Core;
+
 namespace Entities
 {
 	Entity::Entity(const Vector2D &location, u32 backgroundLevel, bool isAlive, bool isVisible)

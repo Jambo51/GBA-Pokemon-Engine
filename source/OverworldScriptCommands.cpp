@@ -6,30 +6,13 @@
  */
 
 #include "GlobalDefinitions.h"
-#include "Tasks/ScriptRunners/ScriptRunner.h"
-#include "Core/LoadUnalignedCode.h"
-#include "Core/Data/Variables.h"
-#include "Core/Data/Flags.h"
-#include "Core/Game.h"
-#include "Scenes/Overworld/PrimaryOverworld.h"
-#include "Core/Pokemon/Pokemon.h"
-#include "Audio/SoundEngine.h"
-#include "Scenes/SceneManager.h"
-#include "Scenes/Battles/TrainerBattle.h"
-#include "Scenes/Battles/WildBattle.h"
-#include "Core/Maths.h"
-#include "Text/TextFunctions.h"
-#include "Core/Data/Items.h"
-#include "Text/TextDrawer.h"
-#include "Tasks/ScriptRunners/SpecialFunctions.h"
-#include "Core/RTC.h"
+#include "Tasks.h"
+#include "Scenes.h"
+#include "Input.h"
+#include "Core.h"
+#include "Audio.h"
+#include "Text.h"
 #include "LibraryHeaders/liboverworldscripts.h"
-#include "Tasks/ScriptRunners/GlobalScriptingFunctions.h"
-#include "Input/InputManager.h"
-#include "Input/Overworld/TextInputHandler.h"
-#include "Input/DoNothingInputEventHandler.h"
-#include "Input/Overworld/ScriptWaitKeyPressEventHandler.h"
-#include "Core/Data/Moves.h"
 
 using namespace Text;
 using namespace Core;
@@ -38,6 +21,7 @@ using namespace Audio;
 using namespace Scenes;
 using namespace Input;
 using namespace Scenes::Battles;
+using namespace Scenes::Overworld;
 
 u32 NoOperation(Tasks::ScriptRunners::ScriptRunner* runner) // nop
 {
@@ -1131,7 +1115,7 @@ u32 DoTrainerBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 	BattleTypeStruct bts = BattleTypeStruct();
 	bts.basicInfo = 0;
 	bts.info.isTrainerBattle = 1;
-	SceneManager::SetScene(new TrainerBattle(bts, runner->GetBank(0), (const char*)runner->GetBank(2), (const u8*)runner->GetBank(3)));
+	SceneManager::SetScene(new SingleTrainerBattle(bts, runner->GetBank(0), (const char*)runner->GetBank(2), (const u8*)runner->GetBank(3)));
 	runner->SetWaitFrames(1);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
@@ -1760,16 +1744,21 @@ u32 DoWildBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 	BattleTypeStruct bts = BattleTypeStruct();
 	bts.basicInfo = 0;
 	bts.info.isWildBattle = 1;
+	WildBattle* wb = 0;
 	if (p2)
 	{
 		bts.info.isDoubleBattle = 1;
+		wb = new DoubleWildBattle(bts);
 	}
-	WildBattle* wb = new WildBattle(bts);
+	else
+	{
+		wb = new SingleWildBattle(bts);
+	}
 	wb->SetPokemonOne(*p1);
 	delete p1;
 	if (p2)
 	{
-		wb->SetPokemonTwo(*p2);
+		((DoubleWildBattle*)wb)->SetPokemonTwo(*p2);
 		delete p2;
 	}
 	wb->SkipGeneration(true);

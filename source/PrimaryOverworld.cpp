@@ -1,29 +1,13 @@
 #include "GlobalDefinitions.h"
-#include "Maps.h"
-#include "OverworldSprites.h"
-#include "Maths.h"
-#include "Flags.h"
-#include "Variables.h"
-#include "Game.h"
-#include "Maths.h"
-#include "RTC.h"
-#include "SoundEngine.h"
-#include "PrimaryOverworld.h"
-#include "BackgroundFunctions.h"
-#include "InputHandler.h"
-#include "DoNothingInputEventHandler.h"
-#include "PlayerEntity.h"
-#include "TextFunctions.h"
-#include "OAMObject.h"
-#include "FlashFunctions.h"
-#include "OverworldInputEventHandler.h"
-#include "OverworldScriptRunner.h"
-#include "Rectangle.h"
-#include "WildBattle.h"
-#include "TrainerBattle.h"
-#include "SceneManager.h"
-#include "OverworldScriptRunner.h"
-#include "Scenes/Battles/WildBattle.h"
+#include "Core.h"
+#include "Audio.h"
+#include "Scenes.h"
+#include "Data.h"
+#include "Input.h"
+#include "Entities.h"
+#include "Text.h"
+#include "Tasks.h"
+#include "Scenes/Overworld/PrimaryOverworld.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -34,6 +18,8 @@ using namespace Input;
 using namespace Entities;
 using namespace Audio;
 using namespace Core::Data;
+using namespace Tasks::ScriptRunners;
+using namespace Scenes::Battles;
 
 namespace Scenes
 {
@@ -94,7 +80,7 @@ namespace Scenes
 			NonPlayerCharacter* npc = new PlayerEntity(Vector2D(data[0].xLocation, data[0].yLocation), 2, false, newColours);
 			npc->ChangeFrame(data[0].frameID);
 			Game::OverwriteNPC(npc, 0);
-			for (u32 i = 1; i < NumberOfPrimaryOverworlds; i++)
+			for (u32 i = 1; i < NumberOfOverworlds; i++)
 			{
 				if (data[i].isActive)
 				{
@@ -706,7 +692,7 @@ namespace Scenes
 					BattleTypeStruct bts = BattleTypeStruct();
 					bts.basicInfo = 0;
 					bts.info.isWildBattle = 1;
-					SceneManager::SetScene(new WildBattle(bts));
+					SceneManager::SetScene(new SingleWildBattle(bts));
 				}
 			}
 		}
@@ -885,7 +871,7 @@ namespace Scenes
 					BattleTypeStruct bts = BattleTypeStruct();
 					bts.basicInfo = 0;
 					bts.info.isWildBattle = 1;
-					SceneManager::SetScene(new WildBattle(bts));
+					SceneManager::SetScene(new SingleWildBattle(bts));
 				}
 			}
 		}

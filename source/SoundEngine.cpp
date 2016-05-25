@@ -5,135 +5,136 @@
  *      Author: Jamie
  */
 
-#include "SoundEngine.h"
-#include "MusicEngine.h"
+#include "Audio/SoundEngine.h"
+#include "Audio/MusicEngine.h"
 
-#define NULL 0
-
-EWRAM_LOCATION ALIGN(4) MusicEngine* SoundEngine::me = NULL;
-EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songPlayingMode = DoNothing;
-EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songIDInt = 0;
-EWRAM_LOCATION ALIGN(2) u16 SoundEngine::fanfareIDInt = 0;
-EWRAM_LOCATION ALIGN(2) u16 SoundEngine::sfxIDInt = 0;
-
-SoundEngine::~SoundEngine()
+namespace Audio
 {
-	// TODO Auto-generated destructor stub
-}
+	EWRAM_LOCATION ALIGN(4) MusicEngine* SoundEngine::me = NULL;
+	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songPlayingMode = DoNothing;
+	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songIDInt = 0;
+	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::fanfareIDInt = 0;
+	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::sfxIDInt = 0;
 
-SoundEngine::SoundEngine()
-{
-	// TODO Auto-generated constructor stub
-}
-
-void SoundEngine::Initialise(MusicEngine* engine)
-{
-	if (me)
+	SoundEngine::~SoundEngine()
 	{
-		delete me;
+		// TODO Auto-generated destructor stub
 	}
-	me = engine;
-	me->Initialise();
-}
 
-void SoundEngine::Interrupt()
-{
-	if (me)
+	SoundEngine::SoundEngine()
 	{
-		me->Interrupt();
+		// TODO Auto-generated constructor stub
 	}
-}
 
-void SoundEngine::Update()
-{
-	if (me)
+	void SoundEngine::Initialise(MusicEngine* engine, void* songTablePointer)
 	{
-		me->Update();
-	}
-}
-
-void SoundEngine::PlaySong(u16 songID, u8 songStartMode)
-{
-	if (songID)
-	{
-		songIDInt = songID;
-		u8 valueToWrite = 1;
-		switch (songStartMode)
+		if (me)
 		{
-			case 0:
-				valueToWrite = InitialiseSong;
-				break;
-			case 1:
-				valueToWrite = FadeToSong;
-				break;
-			case 2:
-				valueToWrite = FadeIn;
-				break;
+			delete me;
 		}
-		songPlayingMode = valueToWrite;
+		me = engine;
+		me->Initialise(songTablePointer);
 	}
-}
 
-void SoundEngine::PlayFanfare(u16 songID)
-{
-	if (songID)
+	void SoundEngine::Interrupt()
 	{
-		fanfareIDInt = songID;
-		songPlayingMode = InitialiseFanfare;
+		if (me)
+		{
+			me->Interrupt();
+		}
 	}
-}
 
-void SoundEngine::PlaySFX(u16 songID)
-{
-	if (songID)
+	void SoundEngine::Update()
 	{
-		sfxIDInt = songID;
-		songPlayingMode = InitialiseSFX;
+		if (me)
+		{
+			me->Update();
+		}
 	}
-}
 
-void SoundEngine::FadeSongToSilence()
-{
-	songIDInt = 0;
-	songPlayingMode = FadeToSong;
-}
-
-void SoundEngine::StopSong()
-{
-	songIDInt = 0;
-	songPlayingMode = InitialiseSong;
-}
-
-void SoundEngine::SetOnSongEndFunction(VoidFunctionPointerVoid ptr)
-{
-	if (me)
+	void SoundEngine::PlaySong(u16 songID, u8 songStartMode)
 	{
-		me->SetSongOnEndFunction(ptr);
+		if (songID)
+		{
+			songIDInt = songID;
+			u8 valueToWrite = 1;
+			switch (songStartMode)
+			{
+				case 0:
+					valueToWrite = InitialiseSong;
+					break;
+				case 1:
+					valueToWrite = FadeToSong;
+					break;
+				case 2:
+					valueToWrite = FadeIn;
+					break;
+			}
+			songPlayingMode = valueToWrite;
+		}
 	}
-}
 
-bool SoundEngine::SFXPlaying()
-{
-	if (me)
+	void SoundEngine::PlayFanfare(u16 songID)
 	{
-		return me->SFXPlaying();
+		if (songID)
+		{
+			fanfareIDInt = songID;
+			songPlayingMode = InitialiseFanfare;
+		}
 	}
-	return false;
-}
 
-bool SoundEngine::FanfarePlaying()
-{
-	if (me)
+	void SoundEngine::PlaySFX(u16 songID)
 	{
-		return me->FanfarePlaying();
+		if (songID)
+		{
+			sfxIDInt = songID;
+			songPlayingMode = InitialiseSFX;
+		}
 	}
-	return false;
-}
 
-void SoundEngine::ResumeSong()
-{
-	if (me)
+	void SoundEngine::FadeSongToSilence()
 	{
-		me->ResumeSong();
+		songIDInt = 0;
+		songPlayingMode = FadeToSong;
+	}
+
+	void SoundEngine::StopSong()
+	{
+		songIDInt = 0;
+		songPlayingMode = InitialiseSong;
+	}
+
+	void SoundEngine::SetOnSongEndFunction(VoidFunctionPointerVoid ptr)
+	{
+		if (me)
+		{
+			me->SetSongOnEndFunction(ptr);
+		}
+	}
+
+	bool SoundEngine::SFXPlaying()
+	{
+		if (me)
+		{
+			return me->SFXPlaying();
+		}
+		return false;
+	}
+
+	bool SoundEngine::FanfarePlaying()
+	{
+		if (me)
+		{
+			return me->FanfarePlaying();
+		}
+		return false;
+	}
+
+	void SoundEngine::ResumeSong()
+	{
+		if (me)
+		{
+			me->ResumeSong();
+		}
 	}
 }

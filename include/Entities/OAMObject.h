@@ -11,6 +11,8 @@
 #include "GlobalDefinitions.h"
 #include "Core/Vector2D.h"
 
+using namespace Core;
+
 namespace Entities
 {
 	class OAMObject;

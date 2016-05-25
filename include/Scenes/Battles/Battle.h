@@ -271,7 +271,6 @@ namespace Scenes
 		class Battle : public Scene
 		{
 		private:
-			static Battle* instance;
 			static u8 numRegions;
 			static u16 criticalCaptureValues[][2];
 			static u32 battleTextPalette[];
@@ -302,24 +301,24 @@ namespace Scenes
 			static u32 TiltedInversionTypeChartCallback(u32 incomingValue);
 			static u32 DoubleTiltedTypeChartCallback(u32 incomingValue);
 			u16 CalculateBattleTrack();
-			static u32 NoSpecialEffectPokeball();
-			static u32 HalfAgainPokeball();
-			static u32 DoublePokeball();
-			static u32 AlwaysCatchPokeball();
-			static u32 LevelBallPokeball();
-			static u32 MoonBallPokeball();
-			static u32 LoveBallPokeball();
-			static u32 HeavyBallPokeball();
-			static u32 FastBallPokeball();
-			static u32 RepeatBallPokeball();
-			static u32 TimerBallPokeball();
-			static u32 NestBallPokeball();
-			static u32 QuickBallPokeball();
-			static u32 DuskBallPokeball();
-			static u32 DoubleLikelihood(u32 initialValue);
-			static u32 HalfAgainLikelihood(u32 initialValue);
-			static u32 NoChangeLikelihood(u32 initialValue);
-			static u32 CaptureChecks(Core::Pokemon::Pokemon* target, u16 itemID);
+			u32 NoSpecialEffectPokeball();
+			u32 HalfAgainPokeball();
+			u32 DoublePokeball();
+			u32 AlwaysCatchPokeball();
+			u32 LevelBallPokeball();
+			u32 MoonBallPokeball();
+			u32 LoveBallPokeball();
+			u32 HeavyBallPokeball();
+			u32 FastBallPokeball();
+			u32 RepeatBallPokeball();
+			u32 TimerBallPokeball();
+			u32 NestBallPokeball();
+			u32 QuickBallPokeball();
+			u32 DuskBallPokeball();
+			u32 DoubleLikelihood(u32 initialValue);
+			u32 HalfAgainLikelihood(u32 initialValue);
+			u32 NoChangeLikelihood(u32 initialValue);
+			u32 CaptureChecks(Core::Pokemon::Pokemon* target, u16 itemID);
 			void MoveSelectionRender();
 			void RecalculateEffectiveStat(PokemonBattleData &data, u32 statIndex);
 			void RecalculateAllEffectiveStats(PokemonBattleData &dataLocation);
@@ -328,9 +327,6 @@ namespace Scenes
 			const BattleData & GetBattleData() const { return battleData; }
 			const BattleTypeStruct & GetBattleTypeStruct() const { return battleType; }
 			Core::Pokemon::Pokemon* GetEnemyBattlerByIndex(u32 index) const { return (Core::Pokemon::Pokemon*)&enemyPokemon[index]; }
-			virtual void OnExitCallback() { }
-			virtual void OnEnterCallback() { }
-			virtual void Update() = 0;
 		};
 	}
 }

@@ -5,13 +5,13 @@
  *      Author: Jamie
  */
 
-#include "TaskManager.h"
-#include "Task.h"
+#include "Tasks/TaskManager.h"
+#include "Tasks/Task.h"
 
 namespace Tasks
 {
-	EWRAM_LOCATION ALIGN(4) LinkedList TaskManager::tasks = LinkedList();
-	EWRAM_LOCATION ALIGN(4) LinkedList TaskManager::tasksToRemove = LinkedList();
+	EWRAM_LOCATION ALIGN(4) Collections::Lists::ArrayList<Task*> TaskManager::tasks = Collections::Lists::ArrayList<Task*>();
+	EWRAM_LOCATION ALIGN(4) Collections::Lists::LinkedList<Task*> TaskManager::tasksToRemove = Collections::Lists::LinkedList<Task*>();
 
 	TaskManager::TaskManager()
 	{
@@ -24,21 +24,21 @@ namespace Tasks
 		// TODO Auto-generated destructor stub
 	}
 
-	void TaskManager::AddTask(Task* Task)
+	void TaskManager::AddTask(Task* task)
 	{
-		tasks.PushBack((void*)Task);
+		tasks.PushBack(task);
 	}
 
-	void TaskManager::RemoveTask(Task* Task)
+	void TaskManager::RemoveTask(Task* task)
 	{
-		tasksToRemove.PushBack((void*)Task);
+		tasksToRemove.PushBack(task);
 	}
 
 	void TaskManager::Update()
 	{
 		for (int i = 0; i < tasks.Size(); i++)
 		{
-			((Task*)tasks[i])->Update();
+			tasks[i]->Update();
 		}
 		for (int i = 0; i < tasksToRemove.Size(); i++)
 		{

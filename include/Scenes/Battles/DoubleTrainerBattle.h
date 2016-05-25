@@ -22,6 +22,8 @@ namespace Scenes
 			DoubleTrainerBattle(const BattleTypeStruct &bts, u16 trainerID1, const char* afterText1, u16 trainerID2, const char* afterText2);
 			~DoubleTrainerBattle();
 			void Update();
+			void OnEnter();
+			void OnExit();
 		};
 	}
 }

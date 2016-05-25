@@ -5,28 +5,33 @@
  *      Author: Jamie
  */
 
-#include "TextInputHandler.h"
-#include "TextDrawer.h"
+#include "Input/Overworld/TextInputHandler.h"
+#include "Text/TextDrawer.h"
 
-TextInputHandler::TextInputHandler(TextDrawer* drawer)
-{
-	// TODO Auto-generated constructor stub
-	this->drawer = drawer;
-}
+using namespace Text;
 
-TextInputHandler::~TextInputHandler()
+namespace Input
 {
-	// TODO Auto-generated destructor stub
-}
+	TextInputHandler::TextInputHandler(TextDrawer* drawer)
+	{
+		// TODO Auto-generated constructor stub
+		this->drawer = drawer;
+	}
 
-void TextInputHandler::OnPressA()
-{
-	InputEventHandler::OnPressA();
-	drawer->ADown(true);
-}
+	TextInputHandler::~TextInputHandler()
+	{
+		// TODO Auto-generated destructor stub
+	}
 
-void TextInputHandler::OnPressB()
-{
-	InputEventHandler::OnPressB();
-	drawer->BDown(true);
+	void TextInputHandler::OnPressA()
+	{
+		InputHandler::OnPressA();
+		drawer->ADown(true);
+	}
+
+	void TextInputHandler::OnPressB()
+	{
+		InputHandler::OnPressB();
+		drawer->BDown(true);
+	}
 }

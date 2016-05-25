@@ -32,7 +32,7 @@ namespace Audio
 			{ 0xFFFFFFFF, 0x0000FFFF, 0xFFFFFFFF, 0x0000FFFF }
 		};
 
-		void GBSEngine::Initialise()
+		void GBSEngine::Initialise(void* songTablePointer)
 		{
 			*((vu32*)0x04000084) = 0x80;
 			*((vu16*)0x04000088) = 0xC200;
@@ -40,6 +40,7 @@ namespace Audio
 			*((vu16*)0x04000070) = 0x80;
 			buffer[0x10] = 0xFF77;
 			buffer[0x11] = 0x2;
+			songTable = (GBSTrackHeader**)songTablePointer;
 			SwitchWavePattern(0);
 		}
 
@@ -110,7 +111,7 @@ namespace Audio
 			memset32(&buffer, 0, 8);
 			if (songID > 0)
 			{
-				channels[0]->StartTrack(gbpSongs[songID - 1]);
+				channels[0]->StartTrack(songTable[songID - 1]);
 				buffer[0x10] = 0xFF77;
 				SwitchWavePattern(0);
 				skipWaveChange = true;
@@ -153,7 +154,7 @@ namespace Audio
 		void GBSEngine::StartFanfare(u16 fanfareID)
 		{
 			channels[0]->Pause();
-			channels[1]->StartTrack(gbpSongs[fanfareID - 1]);
+			channels[1]->StartTrack(songTable[fanfareID - 1]);
 			channelsPlaying[1] = true;
 			channels[1]->SetOnTrackEndFunction((VoidFunctionPointerVoid)&ResumeSongStatic);
 		}

@@ -190,20 +190,8 @@ namespace Core
 				{
 					Flags::Load();
 					Variables::Load();
+					return;
 				}
-				else
-				{
-					Flags::Initialise();
-					Variables::Initialise();
-					Game::ValidSaveDetected(true);
-				}
-			}
-			else
-			{
-				Game::Initialise();
-				Flags::Initialise();
-				Variables::Initialise();
-				Game::ValidSaveDetected(true);
 			}
 		}
 		else
@@ -211,7 +199,7 @@ namespace Core
 			Game::Initialise();
 			Flags::Initialise();
 			Variables::Initialise();
-			Game::ValidSaveDetected(true);
+			Game::ValidSaveDetected(false);
 		}
 	}
 

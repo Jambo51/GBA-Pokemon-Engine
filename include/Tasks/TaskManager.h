@@ -8,7 +8,7 @@
 #ifndef CALLBACKMANAGER_H_
 #define CALLBACKMANAGER_H_
 
-#include "LinkedList.h"
+#include "Collections.h"
 
 namespace Tasks
 {
@@ -17,8 +17,8 @@ namespace Tasks
 	class TaskManager
 	{
 	private:
-		static Collections::Lists::ArrayList<Task> tasks;
-		static Collections::Lists::LinkedList<Task> tasksToRemove;
+		static Collections::Lists::ArrayList<Task*> tasks;
+		static Collections::Lists::LinkedList<Task*> tasksToRemove;
 		TaskManager();
 		~TaskManager();
 	public:

@@ -1,24 +1,25 @@
 /*
- * LoadGameScreen.h
+ * NewGameScreen.h
  *
  *  Created on: 26 May 2015
  *      Author: Jamie
  */
 
-#ifndef INCLUDE_LOADGAMESCREEN_H_
-#define INCLUDE_LOADGAMESCREEN_H_
+#ifndef INCLUDE_NewGameScreen_H_
+#define INCLUDE_NewGameScreen_H_
 
 #include "Scenes/Scene.h"
 
 namespace Scenes
 {
-	class LoadGameScreen : public Scene
+	class NewGameScreen : public Scene
 	{
 	private:
+		u32 exitContext;
 		u32 menuPosition;
 	public:
-		LoadGameScreen(u32 enterContext);
-		~LoadGameScreen();
+		NewGameScreen(u32 enterContext);
+		~NewGameScreen();
 		void Update();
 		void OnEnter();
 		void OnExit();
@@ -28,4 +29,4 @@ namespace Scenes
 	};
 }
 
-#endif /* INCLUDE_LOADGAMESCREEN_H_ */
+#endif /* INCLUDE_NewGameScreen_H_ */

@@ -9,6 +9,7 @@
 #include "Audio/GameBoySounds/GBSEngine.h"
 #include "Audio/SoundEngine.h"
 #include "Audio/GameBoySounds/MusicData.h"
+#include "Callbacks/ResumeSongCallback.h"
 
 namespace Audio
 {
@@ -107,7 +108,9 @@ namespace Audio
 
 		void GBSEngine::StartSong(u16 songID, bool startWithZeroVolume)
 		{
-			channels[0]->Clear();
+			Callbacks::Callback* callback = onEndSongCallback;
+			channels[0]->Clear(true);
+			onEndSongCallback = callback;
 			memset32(&buffer, 0, 8);
 			if (songID > 0)
 			{
@@ -146,17 +149,11 @@ namespace Audio
 			}
 		}
 
-		void GBSEngine::ResumeSongStatic()
-		{
-			SoundEngine::ResumeSong();
-		}
-
 		void GBSEngine::StartFanfare(u16 fanfareID)
 		{
 			channels[0]->Pause();
 			channels[1]->StartTrack(songTable[fanfareID - 1]);
 			channelsPlaying[1] = true;
-			channels[1]->SetOnTrackEndFunction((VoidFunctionPointerVoid)&ResumeSongStatic);
 		}
 
 		void GBSEngine::StartSFX(u16 sfxID)
@@ -169,16 +166,6 @@ namespace Audio
 			// Unnecessary for this engine, but since the M4A requires it
 			// This function needs to simply return
 			return;
-		}
-
-		void GBSEngine::SetSongOnEndFunction(VoidFunctionPointerVoid function)
-		{
-			channels[0]->SetOnTrackEndFunction(function);
-		}
-
-		void GBSEngine::SetSFXOnEndFunction(VoidFunctionPointerVoid function)
-		{
-			channels[2]->SetOnTrackEndFunction(function);
 		}
 
 		void GBSEngine::FadeSong()

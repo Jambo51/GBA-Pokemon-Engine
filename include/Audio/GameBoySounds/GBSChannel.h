@@ -37,6 +37,11 @@ typedef struct GBSTrackHeader {
 	GBSTrack theTracks[];
 } GBSTrackHeader;
 
+namespace Callbacks
+{
+	class Callback;
+}
+
 namespace Audio
 {
 	namespace GameBoySounds
@@ -46,25 +51,24 @@ namespace Audio
 		class GBSChannel
 		{
 		protected:
+			u32 channelID;
 			GBSEngine* address;
 			bool tracksIncluded[5];
 			u16 tempo;
 			ToneTrack* toneTracks[2];
 			WaveTrack* waveTrack;
 			NoiseTrack* noiseTrack;
-			VoidFunctionPointerVoid onEndFunction;
 		public:
-			GBSChannel();
-			GBSChannel(GBSEngine* hostEngine);
+			GBSChannel(GBSEngine* hostEngine, u32 channelID);
 			virtual ~GBSChannel();
 			bool Update();
-			void Clear();
-			void SetOnTrackEndFunction(VoidFunctionPointerVoid functionPtr);
+			void Clear(bool saveCallback = false);
 			void SetTempo(u16 newTempo) { tempo = newTempo; }
 			bool TrackIncluded(ValidTrack trackID) const { return tracksIncluded[trackID]; }
 			void TrackIncluded(ValidTrack trackID, bool newValue) { tracksIncluded[trackID] = newValue; }
 			u16* GetBufferAddress() const;
-			void ExecuteOnEndFunction() const { if (onEndFunction) { onEndFunction(); } }
+			Callbacks::Callback* GetAssociatedCallback() const;
+			void ExecuteOnEndFunction() const;
 			void StartTrack(GBSTrackHeader* header);
 			const NoiseTrack & GetNoise() const { return *noiseTrack; }
 			const WaveTrack & GetWave() const { return *waveTrack; }

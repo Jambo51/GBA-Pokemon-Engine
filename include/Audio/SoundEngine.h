@@ -12,6 +12,11 @@
 
 enum GBPSoundsCaseIDs { DoNothing, InitialiseSong, ContinueSong, FadeToSilence, FadeIn, FadeToSong, Pause, FadeInSecond, InitialiseFanfare, InitialiseSFX, MaxCase };
 
+namespace Callbacks
+{
+	class Callback;
+}
+
 namespace Audio
 {
 	class MusicEngine;
@@ -21,12 +26,14 @@ namespace Audio
 	private:
 		SoundEngine();
 		~SoundEngine();
+		static Callbacks::Callback* onEndFanfareCallback;
 		static MusicEngine* me;
 		static u16 songPlayingMode;
 		static u16 songIDInt;
 		static u16 fanfareIDInt;
 		static u16 sfxIDInt;
 	public:
+		static Callbacks::Callback* GetFanfareCallback() { return onEndFanfareCallback; }
 		static void Interrupt();
 		static void Initialise(MusicEngine* engine, void* songTablePointer);
 		static void Update();
@@ -40,7 +47,8 @@ namespace Audio
 		static u16 GetSFXID() { return sfxIDInt; }
 		static void FadeSongToSilence();
 		static void StopSong();
-		static void SetOnSongEndFunction(VoidFunctionPointerVoid ptr);
+		static void SetOnSongEndCallback(Callbacks::Callback* ptr);
+		static void SetOnSFXEndCallback(Callbacks::Callback* ptr);
 		static bool SFXPlaying();
 		static bool FanfarePlaying();
 		static void ResumeSong();

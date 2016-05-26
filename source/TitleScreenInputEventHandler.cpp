@@ -14,6 +14,7 @@
 
 using namespace Core;
 using namespace Audio;
+using namespace Scenes;
 
 namespace Input
 {
@@ -30,6 +31,7 @@ namespace Input
 
 	void TransitionToLoadGameScreen()
 	{
+		((Menus::TitleScreen*)SceneManager::GetScene())->SetExitContext(((Game::ValidSaveDetected()) ? LoadGame : NewGame));
 		Game::FadeToBlack(true, HalfSecond, true);
 		SoundEngine::FadeSongToSilence();
 		Maths::ReseedRNG();

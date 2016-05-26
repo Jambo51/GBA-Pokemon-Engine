@@ -8,13 +8,16 @@
 #include "Audio/GameBoySounds/GBSChannel.h"
 #include "GlobalDefinitions.h"
 #include "Audio/GameBoySounds/GBSEngine.h"
+#include "Callbacks/Callback.h"
+#include "Audio/SoundEngine.h"
 
 namespace Audio
 {
 	namespace GameBoySounds
 	{
-		GBSChannel::GBSChannel(GBSEngine* hostEngine)
+		GBSChannel::GBSChannel(GBSEngine* hostEngine, u32 channelID)
 		{
+			this->channelID = channelID;
 			// TODO Auto-generated constructor stub
 			for (int i = 0; i < 5; i++)
 			{
@@ -38,11 +41,6 @@ namespace Audio
 			}
 			delete waveTrack;
 			delete noiseTrack;
-		}
-
-		void GBSChannel::SetOnTrackEndFunction(VoidFunctionPointerVoid functionPtr)
-		{
-			onEndFunction = functionPtr;
 		}
 
 		bool GBSChannel::Update()
@@ -83,7 +81,34 @@ namespace Audio
 			return address->GetBufferAddress();
 		}
 
-		void GBSChannel::Clear()
+		Callbacks::Callback* GBSChannel::GetAssociatedCallback() const
+		{
+			Callbacks::Callback* callback = 0;
+			switch (channelID)
+			{
+				case 0:
+					callback = address->GetSongOnEndFunction();
+					break;
+				case 1:
+					callback = SoundEngine::GetFanfareCallback();
+					break;
+				case 2:
+					callback = address->GetSFXOnEndFunction();
+					break;
+			}
+			return callback;
+		}
+
+		void GBSChannel::ExecuteOnEndFunction() const
+		{
+			Callbacks::Callback* callback = GetAssociatedCallback();
+			if (callback)
+			{
+				callback->DoCallback();
+			}
+		}
+
+		void GBSChannel::Clear(bool saveCallback)
 		{
 			for (int i = 0; i < 2; i++)
 			{
@@ -95,7 +120,23 @@ namespace Audio
 			{
 				tracksIncluded[i] = false;
 			}
-			onEndFunction = NULL;
+			if (!saveCallback)
+			{
+				Callbacks::Callback* callback = 0;
+				switch (channelID)
+				{
+					case 0:
+						callback = address->GetSongOnEndFunction();
+						break;
+					case 2:
+						callback = address->GetSFXOnEndFunction();
+						break;
+				}
+				if (callback)
+				{
+					delete callback;
+				}
+			}
 		}
 
 		void GBSChannel::StartTrack(GBSTrackHeader* header)

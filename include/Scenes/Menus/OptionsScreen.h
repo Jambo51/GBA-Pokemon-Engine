@@ -17,7 +17,6 @@ namespace Scenes
 		class OptionsScreen : public Scene
 		{
 		private:
-			u32 exitContext;
 			u32 menuPosition;
 			u32 optionValues[6];
 		public:

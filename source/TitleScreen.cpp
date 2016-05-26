@@ -11,8 +11,10 @@
 #include "GlobalDefinitions.h"
 #include "Input/menus/TitleScreenInputEventHandler.h"
 #include "Scenes/Menus/LoadGameScreen.h"
+#include "Scenes/Menus/NewGameScreen.h"
 #include "Scenes/SceneManager.h"
 #include "Core/Game.h"
+#include "Callbacks/ResetToIntroCallback.h"
 extern "C"
 {
 #include <tonc.h>
@@ -31,6 +33,7 @@ using namespace Core;
 using namespace Scenes::Menus;
 using namespace Input;
 using namespace Audio;
+using namespace Callbacks;
 
 namespace Scenes
 {
@@ -106,12 +109,24 @@ namespace Scenes
 		void TitleScreen::OnEnter()
 		{
 			SoundEngine::PlaySong(Song_CrystalTitleScreen, 0);
+			SoundEngine::SetOnSongEndCallback(new ResetToIntroCallback());
 			InputManager::SetEventHandler(new TitleScreenInputEventHandler());
 		}
 
 		void TitleScreen::OnExit()
 		{
-			SceneManager::SetScene(new LoadGameScreen(1));
+			switch (exitContext)
+			{
+				case ResetToIntro:
+					SceneManager::SetScene(new TitleScreen());
+					break;
+				case LoadGame:
+					SceneManager::SetScene(new LoadGameScreen(1));
+					break;
+				case NewGame:
+					SceneManager::SetScene(new NewGameScreen(1));
+					break;
+			}
 		}
 	}
 }

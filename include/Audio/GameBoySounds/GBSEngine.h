@@ -28,7 +28,7 @@ namespace Audio
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					channels[i] = new GBSChannel(this);
+					channels[i] = new GBSChannel(this, (u32)i);
 					channelsPlaying[i] = false;
 					skipWaveChange = false;
 				}
@@ -42,8 +42,6 @@ namespace Audio
 			}
 			void Interrupt();
 			void Update();
-			void SetSongOnEndFunction(VoidFunctionPointerVoid function);
-			void SetSFXOnEndFunction(VoidFunctionPointerVoid function);
 			void ResumeSong();
 			void SwitchWavePattern(u8 patternID) const;
 			void Initialise(void* songTablePointer);

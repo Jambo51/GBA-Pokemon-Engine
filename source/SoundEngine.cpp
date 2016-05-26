@@ -7,6 +7,7 @@
 
 #include "Audio/SoundEngine.h"
 #include "Audio/MusicEngine.h"
+#include "Callbacks/ResumeSongCallback.h"
 
 namespace Audio
 {
@@ -15,6 +16,7 @@ namespace Audio
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songIDInt = 0;
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::fanfareIDInt = 0;
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::sfxIDInt = 0;
+	EWRAM_LOCATION ALIGN(4) Callbacks::Callback* SoundEngine::onEndFanfareCallback = NULL;
 
 	SoundEngine::~SoundEngine()
 	{
@@ -28,6 +30,10 @@ namespace Audio
 
 	void SoundEngine::Initialise(MusicEngine* engine, void* songTablePointer)
 	{
+		if (!onEndFanfareCallback)
+		{
+			onEndFanfareCallback = new Callbacks::ResumeSongCallback();
+		}
 		if (me)
 		{
 			delete me;
@@ -104,11 +110,19 @@ namespace Audio
 		songPlayingMode = InitialiseSong;
 	}
 
-	void SoundEngine::SetOnSongEndFunction(VoidFunctionPointerVoid ptr)
+	void SoundEngine::SetOnSongEndCallback(Callbacks::Callback* ptr)
 	{
 		if (me)
 		{
 			me->SetSongOnEndFunction(ptr);
+		}
+	}
+
+	void SoundEngine::SetOnSFXEndCallback(Callbacks::Callback* ptr)
+	{
+		if (me)
+		{
+			me->SetSFXOnEndFunction(ptr);
 		}
 	}
 

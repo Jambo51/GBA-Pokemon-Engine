@@ -2,6 +2,11 @@
 
 #include "GlobalDefinitions.h"
 
+namespace Callbacks
+{
+	class Callback;
+}
+
 namespace Audio
 {
 	class MusicEngine
@@ -9,6 +14,8 @@ namespace Audio
 	protected:
 		MusicEngine();
 		u16 buffer[17];
+		Callbacks::Callback* onEndSongCallback;
+		Callbacks::Callback* onEndSFXCallback;
 		virtual void StartSong(u16 songID, bool startWithZeroVolume = false) = 0;
 		virtual void StartFanfare(u16 fanfareID) = 0;
 		virtual void StartSFX(u16 sfxID) = 0;
@@ -19,8 +26,10 @@ namespace Audio
 		virtual ~MusicEngine();
 		virtual void Interrupt() = 0;
 		virtual void Update();
-		virtual void SetSongOnEndFunction(VoidFunctionPointerVoid function) = 0;
-		virtual void SetSFXOnEndFunction(VoidFunctionPointerVoid function) = 0;
+		void SetSongOnEndFunction(Callbacks::Callback* callback) { onEndSongCallback = callback; }
+		void SetSFXOnEndFunction(Callbacks::Callback* callback) { onEndSFXCallback = callback; }
+		Callbacks::Callback* GetSongOnEndFunction() { return onEndSongCallback; }
+		Callbacks::Callback* GetSFXOnEndFunction() { return onEndSFXCallback; }
 		virtual void Initialise(void* songTablePointer) = 0;
 		virtual bool SFXPlaying() = 0;
 		virtual bool FanfarePlaying() = 0;

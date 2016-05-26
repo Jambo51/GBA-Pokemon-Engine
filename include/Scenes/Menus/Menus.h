@@ -9,6 +9,7 @@
 #define INCLUDE_SCENES_MENUS_MENUS_H_
 
 #include "LoadGameScreen.h"
+#include "NewGameScreen.h"
 #include "OptionsScreen.h"
 #include "Pokedex.h"
 #include "TitleScreen.h"

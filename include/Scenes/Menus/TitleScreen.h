@@ -11,6 +11,8 @@
 #include "Scenes/Scene.h"
 #include "GlobalDefinitions.h"
 
+enum TitleScreenExitContexts { ResetToIntro, LoadGame, NewGame };
+
 namespace Scenes
 {
 	namespace Menus

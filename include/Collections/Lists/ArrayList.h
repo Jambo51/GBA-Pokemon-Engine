@@ -66,7 +66,6 @@ namespace Collections
 						{
 							arrayPointer[itemCount] = item;
 							itemCount++;
-							arrayPointer[itemCount] = '\0';
 						}
 						else
 						{

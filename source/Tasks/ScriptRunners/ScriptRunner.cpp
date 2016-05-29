@@ -7,6 +7,8 @@
 
 #include "Tasks/ScriptRunners/ScriptRunner.h"
 #include "Tasks/TaskManager.h"
+#include "Text.h"
+#include "Input.h"
 
 namespace Tasks
 {
@@ -23,13 +25,18 @@ namespace Tasks
 
 		ScriptRunner::~ScriptRunner()
 		{
-
+			Text::TextFunctions::ClearTextAreaFromMap(0, 0, 0, 30, 20);
+			Input::InputManager::SetEventHandler(new Input::OverworldInputEventHandler());
 		}
 
 
 		void ScriptRunner::Update()
 		{
 			u32 scriptEnded = NotEnded;
+			if (!scriptPointer)
+			{
+				scriptEnded = Ended;
+			}
 			while (scriptEnded != Ended)
 			{
 				u32 commandID = *scriptPointer;

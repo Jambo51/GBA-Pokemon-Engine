@@ -22,9 +22,10 @@ namespace Scenes
 		virtual void Update() = 0;
 		virtual void OnEnter() = 0;
 		virtual void OnExit() = 0;
-		void SetExitContext(u32 value)
+		virtual bool SetExitContext(u32 value)
 		{
 			exitContext = value;
+			return true;
 		}
 		u32 GetExitContext()
 		{

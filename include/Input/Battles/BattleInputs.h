@@ -1,7 +1,7 @@
 /*
  * BattleInputs.h
  *
- *  Created on: 24 May 2016
+ *  Created on: 29 May 2016
  *      Author: CoolerMaster
  */
 

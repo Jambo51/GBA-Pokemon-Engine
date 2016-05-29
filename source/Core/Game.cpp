@@ -740,6 +740,8 @@ namespace Core
 		{
 			Initialise();
 		}
+		overworldData[0].xLocation = 5;
+		overworldData[0].yLocation = 2;
 	}
 
 	void Game::SetPaletteToWhite()

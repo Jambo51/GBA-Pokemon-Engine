@@ -6,9 +6,7 @@
  */
 
 #include "GlobalDefinitions.h"
-#include "MemoryLocations.h"
-#include "ObjectFunctions.h"
-#include "LoadUnalignedCode.h"
+#include "Core/LoadUnalignedCode.h"
 
 /*u8 HideSprite()
 {

@@ -103,7 +103,7 @@ namespace Input
 								str.map = conn.map;
 								str.mapBank = conn.mapBank;
 								str.offset = conn.offset;
-								str.alignment = 2;
+								str.alignment = conn.alignment;
 								ow->AddConnection(str);
 							}
 						}

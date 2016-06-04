@@ -15,10 +15,6 @@
 #define BG_PRIORITY_ZERO 0
 #define MAIN_BG_SETTINGS (BG_CBB(0) | BG_4BPP | BG_REG_32x32 | BG_MOSAIC)
 #define TEXT_SETTINGS (BG_CBB(2) | BG_4BPP | BG_REG_32x32 | BG_MOSAIC)
-#define LAYER0DEFAULT 31
-#define LAYER1DEFAULT 29
-#define LAYER2DEFAULT 28
-#define LAYER3DEFAULT 30
 
 namespace Core
 {
@@ -35,6 +31,14 @@ namespace Core
 	{
 		void* loc = (void*)(0x06000000 + (0x800 * blockID));
 		memset32(loc, 0, 0x200);
+	}
+
+	void BackgroundFunctions::ClearAllBackgrounds()
+	{
+		for (u32 i = 0; i < 4; i++)
+		{
+			ClearBackground(Game::GetLayer(i));
+		}
 	}
 
 	void BackgroundFunctions::SetLayer(u32 layerID, u32 layerPos, bool isText)
@@ -206,6 +210,70 @@ namespace Core
 			REG_WIN1T += newUpperLeft.GetY();
 			REG_WIN1R += newLowerRight.GetX();
 			REG_WIN1B += newLowerRight.GetY();
+		}
+	}
+
+	void BackgroundFunctions::SetFirstTargetPixel(u32 layer, u32 window)
+	{
+		if (layer < 8 && window < 2)
+		{
+			REG_BLDCNT |= 1 << (layer + (8 * window));
+		}
+	}
+
+	void BackgroundFunctions::SetAllFirstTargetPixel(u32 window)
+	{
+		if (window < 2)
+		{
+			for (u32 i = 0; i < 8; i++)
+			{
+				REG_BLDCNT |= 1 << (i + (8 * window));
+			}
+		}
+	}
+
+	void BackgroundFunctions::ClearFirstTargetPixel(u32 layer, u32 window)
+	{
+		if (layer < 8 && window < 2)
+		{
+			REG_BLDCNT &= ~(1 << (layer + (8 * window)));
+		}
+	}
+
+	void BackgroundFunctions::ClearAllFirstTargetPixel(u32 window)
+	{
+		if (window < 2)
+		{
+			for (u32 i = 0; i < 8; i++)
+			{
+				REG_BLDCNT &= ~(1 << (i + (8 * window)));
+			}
+		}
+	}
+
+	void BackgroundFunctions::SetWindowBrightnessCoefficient(u32 coefficient)
+	{
+		if (coefficient < 16)
+		{
+			REG_BLDY = coefficient;
+		}
+	}
+
+	void BackgroundFunctions::SetEVAAlphaBlend(u32 value)
+	{
+		if (value < 17)
+		{
+			REG_BLDALPHA &= ~(0x1F);
+			REG_BLDALPHA |= value;
+		}
+	}
+
+	void BackgroundFunctions::SetEVBAlphaBlend(u32 value)
+	{
+		if (value < 17)
+		{
+			REG_BLDALPHA &= ~(0x1F00);
+			REG_BLDALPHA |= (value << 8);
 		}
 	}
 }

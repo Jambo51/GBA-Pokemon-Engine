@@ -292,4 +292,9 @@ namespace Core
 		}
 		return value * Power(value, powerValue - 1);
 	}
+
+	bool Maths::InRange(u32 bottomValue, u32 topValue, u32 value)
+	{
+		return bottomValue <= value && topValue >= value;
+	}
 }

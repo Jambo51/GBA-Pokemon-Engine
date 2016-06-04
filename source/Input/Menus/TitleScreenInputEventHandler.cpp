@@ -32,7 +32,7 @@ namespace Input
 	void TransitionToLoadGameScreen()
 	{
 		((Menus::TitleScreen*)SceneManager::GetScene())->SetExitContext(((Game::ValidSaveDetected()) ? LoadGame : NewGame));
-		Game::FadeToBlack(true, HalfSecond, true);
+		Palettes::FadeToWhite(true, HalfSecond, true);
 		SoundEngine::FadeSongToSilence();
 		Maths::ReseedRNG();
 		InputManager::SetEventHandler(new DoNothingInputEventHandler());

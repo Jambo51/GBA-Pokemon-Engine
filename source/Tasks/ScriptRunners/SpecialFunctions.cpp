@@ -10,6 +10,7 @@
 #include "Audio.h"
 #include "Scenes.h"
 #include "Text.h"
+#include "Callbacks/WhiteoutCallback.h"
 
 using namespace Core::Pokemon;
 using namespace Core::Data;
@@ -110,20 +111,11 @@ u16 SpecialB6GetDayCareStatus(ScriptRunner* runner)
 	return Game::GetDayCareStatus();
 }
 
-void WhiteOutCallback(u32 data)
-{
-	const HealingPlace &hp = Game::GetHealingPlace();
-	Variables::SetVar(LASTTALKED, hp.spriteID);
-	Game::SetCurrentMap(PrimaryOverworld::GetMapHeaderFromBankAndMapID(hp.mapLocation.mapBank, hp.mapLocation.map));
-	Scene* ow = new PrimaryOverworld();
-	SceneManager::SetScene(ow);
-}
-
 u16 SpecialC8WhiteOut(ScriptRunner* runner)
 {
 	SoundEngine::FadeSongToSilence();
-	Game::SetCustomFadeCallback((VoidFunctionPointerU32)&WhiteOutCallback, 0);
-	Game::FadeToBlack(true, HalfSecond, false, false);
+	Palettes::SetCustomFadeCallback(new Callbacks::WhiteoutCallback());
+	Palettes::FadeToBlack(true, HalfSecond, false, false);
 	Game::RemovePlayerMoney(Game::GetPlayer().balance >> 1);
 	return 0;
 }
@@ -131,8 +123,16 @@ u16 SpecialC8WhiteOut(ScriptRunner* runner)
 u16 SpecialD4EvaluatePokedex(ScriptRunner* runner)
 {
 	u32 mode = Variables::GetVar(0x8004);
-	Variables::SetVar(0x8005, Game::CountPokedexPokemon(mode, 0));
-	Variables::SetVar(0x8006, Game::CountPokedexPokemon(mode, 1));
+	if (mode)
+	{
+		Variables::SetVar(0x8005, Pokedex::GetNationalSeen());
+		Variables::SetVar(0x8006, Pokedex::GetNationalCaught());
+	}
+	else
+	{
+		Variables::SetVar(0x8005, Pokedex::GetRegionalSeen());
+		Variables::SetVar(0x8006, Pokedex::GetRegionalCaught());
+	}
 	return 0;
 }
 
@@ -149,5 +149,5 @@ u16 Special193IsNationalDexActive(ScriptRunner* runner)
 
 u16 Special1B0IsNationalDexComplete(ScriptRunner* runner)
 {
-	return (u16)Game::CountPokedexPokemon(National, 1) == NumberOfPokemon - 1;
+	return Pokedex::GetNationalCaught() == NumberOfPokemon - 1;
 }

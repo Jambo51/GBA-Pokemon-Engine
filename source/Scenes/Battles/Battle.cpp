@@ -300,7 +300,7 @@ namespace Scenes
 		u32 Battle::HeavyBallPokeball()
 		{
 			u32 retValue = 100;
-			const PokedexData &data = *Pokedex::GetPokedexDataByIndex(battleData.pokemonStats[battleData.battleBanks[Target]].species);
+			const PokedexData &data = Pokedex::GetPokedexDataByIndex(battleData.pokemonStats[battleData.battleBanks[Target]].species);
 			u16 weight = data.weight;
 			if (weight < 2048)
 			{
@@ -337,7 +337,7 @@ namespace Scenes
 		{
 			u32 retValue = 100;
 			u16 species = battleData.pokemonStats[battleData.battleBanks[Target]].species;
-			if (Flags::GetSeenCaughtStatus(species, 2))
+			if (Pokedex::HasSpeciesBeenCaught(species))
 			{
 				retValue = 300;
 			}
@@ -560,7 +560,7 @@ namespace Scenes
 				if (i != TripleShakeSuccess)
 				{
 					{
-						u32 numberOfPokemon = Game::CountPokedexPokemon(National, 1);
+						u32 numberOfPokemon = Pokedex::GetNationalCaught();
 						{
 							u32 j;
 							for (j = 0; j < 6; j++)

@@ -66,10 +66,8 @@ namespace Input
 			currentMenuPos++;
 		}
 		TextFunctions::DrawCharacter(ARROWCHAR, 0, menuPosition << 4);
-		TextFunctions::DrawTextAreaToMap(0, 21, 1, 8, numMenuItems << 1);
-		TextFunctions::DrawMenuBoxTop(0, 20, 0, 10);
-		TextFunctions::DrawMenuBoxBottom(0, 20, (numMenuItems << 1) + 1, 10);
-		TextFunctions::DrawMenuBoxSides(0, 20, 1, (numMenuItems << 1), 10);
+		TextFunctions::DrawTextAreaToMap(0, Core::Rectangle(21, 1, 8, numMenuItems << 1));
+		TextFunctions::DrawMenuBox(0, 20, 0, 10, (numMenuItems << 1) + 2);
 	}
 
 	StartMenuInputEventHandler::~StartMenuInputEventHandler()

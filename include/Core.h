@@ -14,6 +14,7 @@
 #include "Core/IRQHandler.h"
 #include "Core/LoadUnalignedCode.h"
 #include "Core/Maths.h"
+#include "Core/Palettes.h"
 #include "Core/RTC.h"
 #include "Core/Rectangle.h"
 #include "Core/save_functions.h"

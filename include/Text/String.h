@@ -13,10 +13,18 @@
 
 namespace Text
 {
+
+	enum NumberFormat { Decimal, Hexadecimal, Binary, Quaternary, Octal, Thornal };
+
 	class String
 	{
 	private:
 		Collections::Lists::ArrayList<char> underlyingString;
+		static char* hexadecimalPrepend;
+		static char* binaryPrepend;
+		static char* thornalPrepend;
+		static char* octalPrepend;
+		static char* quaternaryPrepend;
 		static int CountStringLength(const char* string)
 		{
 			int count = 0;
@@ -51,21 +59,22 @@ namespace Text
 		}
 
 		bool EndsWith(const char c) const;
-		String SubString(u32 startIndex, u32 length = 0) const;
+		String* SubString(u32 startIndex, u32 length = 0) const;
 		bool EndsWith(const char* c) const;
 		bool EndsWith(const String &rhs) const;
 		bool StartsWith(const char c) const;
 		bool StartsWith(const char* c) const;
 		bool StartsWith(const String &rhs) const;
-		String ToUpper() const;
-		String ToLower() const;
-		static String ToString(u32 value, const String &infoStr = "", bool isHex = false);
+		String* ToUpper() const;
+		String* ToLower() const;
+		static String* ToString(u32 value, u32 minCharacterCount = 0, NumberFormat format = Decimal);
 		static u32 ParseU32(const String &str);
 		static u32 ParseU32FromHex(const String &str);
 		u32 ToU32() const;
 		u32 ToU32FromHex() const;
 		void Append(const char c);
 		void Append(const char* c);
+		void Append(const String* str);
 		void Prepend(const char c);
 		void Prepend(const char* c);
 		bool StartsWithVowel() const;
@@ -158,13 +167,18 @@ namespace Text
 			return s;
 		}
 
-		char operator[](const int position) const
+		char CharAt(const int position) const
 		{
 			if (position < underlyingString.Size())
 			{
 				return underlyingString[position];
 			}
 			return '\0';
+		}
+
+		char operator[](const int position) const
+		{
+			return CharAt(position);
 		}
 	};
 }

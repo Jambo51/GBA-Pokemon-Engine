@@ -33,6 +33,7 @@ namespace Core
 		static void SeedRNG(u32 seed);
 		static void ReseedRNG();
 		static u32 Power(u32 value, u32 powerValue = 0);
+		static bool InRange(u32 bottomValue, u32 topValue, u32 value);
 	};
 }
 #endif

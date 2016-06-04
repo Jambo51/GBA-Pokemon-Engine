@@ -50,13 +50,15 @@ namespace Core
 			return (char*)&items[itemID].name;
 		}
 
-		Text::String Items::GetPluralisedItemName(u16 itemID)
+		Text::String* Items::GetPluralisedItemName(u16 itemID)
 		{
-			Text::String s = (char*)&items[itemID].name;
-			if (s.EndsWith('y'))
+			Text::String* s = new Text::String((char*)&items[itemID].name);
+			if (s->EndsWith('y'))
 			{
-				s = s.SubString(-1);
-				s += "ies";
+				Text::String* temp = s;
+				s = s->SubString(-1);
+				delete temp;
+				s->Append("ies");
 			}
 			else
 			{

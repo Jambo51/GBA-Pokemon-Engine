@@ -13,7 +13,7 @@
 #include "Scenes/Menus/LoadGameScreen.h"
 #include "Scenes/Menus/NewGameScreen.h"
 #include "Scenes/SceneManager.h"
-#include "Core/Game.h"
+#include "Core/Palettes.h"
 #include "Callbacks/ResetToIntroCallback.h"
 extern "C"
 {
@@ -63,7 +63,7 @@ namespace Scenes
 			dma3_cpy((void*)0x0600F000, BG1_Map_bin, BG1_Map_bin_size);
 			dma3_cpy((void*)0x0600E800, BG2_Map_bin, BG2_Map_bin_size);
 			dma3_cpy((void*)0x0600E000, BG3_Map_bin, BG3_Map_bin_size);
-			Game::FadeToPalette(location, true, HalfSecond, true, false);
+			Palettes::FadeToPalette(location, true, HalfSecond, true, false);
 		}
 
 		TitleScreen::~TitleScreen()
@@ -121,10 +121,12 @@ namespace Scenes
 					SceneManager::SetScene(new TitleScreen());
 					break;
 				case LoadGame:
-					SceneManager::SetScene(new LoadGameScreen(1));
+					SoundEngine::SetOnSongEndCallback(0);
+					SceneManager::SetScene(new LoadGameScreen());
 					break;
 				case NewGame:
-					SceneManager::SetScene(new NewGameScreen(1));
+					SoundEngine::SetOnSongEndCallback(0);
+					SceneManager::SetScene(new NewGameScreen());
 					break;
 			}
 		}

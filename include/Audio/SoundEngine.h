@@ -38,6 +38,7 @@ namespace Audio
 		static void Initialise(MusicEngine* engine, void* songTablePointer);
 		static void Update();
 		static void PlaySong(u16 songID, u8 songStartMode);
+		static void PlaySongIfNotStarted(u16 songID, u8 songStartMode);
 		static void PlayFanfare(u16 songID);
 		static void PlaySFX(u16 songID);
 		static u16 GetStatus() { return songPlayingMode; }

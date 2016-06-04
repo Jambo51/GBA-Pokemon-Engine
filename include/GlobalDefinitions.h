@@ -68,7 +68,7 @@
 // --- primary typedefs ---
 enum Times { Time_Day, Time_Morning, Time_Afternoon, Time_Night, Time_NumTimes };
 
-enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex, Flag_MumBank, Flag_Badge1, Flag_Badge2, Flag_Badge3, Flag_Badge4, Flag_Badge5, Flag_Badge6, Flag_Badge7, Flag_Badge8 };
+enum Flag { Flag_Null = 0, Flag_RunningShoes, Flag_RunningShoesOn, Flag_UsingGBP, Flag_Locked, Flag_KeyRaised, Flag_FadeOut, Flag_Pokegear = 0x800, Flag_Pokedex, Flag_PokemonMenu, Flag_NationalDex, Flag_MumBank, Flag_Badge1, Flag_Badge2, Flag_Badge3, Flag_Badge4, Flag_Badge5, Flag_Badge6, Flag_Badge7, Flag_Badge8, Flag_Badge9, Flag_Badge10, Flag_Badge11, Flag_Badge12, Flag_Badge13, Flag_Badge14, Flag_Badge15, Flag_Badge16 };
 
 enum Types { Type_Normal, Type_Fighting, Type_Flying, Type_Poison, Type_Ground, Type_Rock, Type_Bug, Type_Ghost, Type_Steel, Type_Fire, Type_Water, Type_Grass, Type_Electric, Type_Psychic, Type_Ice, Type_Dragon, Type_Dark, Type_Fairy, Type_None };
 
@@ -268,7 +268,8 @@ typedef struct Options
 	u16 textSpeed:2;
 	u16 useImperialUnits:1;
 	u16 typeValues:2;
-	u16 options:4;
+	u16 optionsSet:1;
+	u16 options:3;
 } Options;
 
 typedef struct OptionsStruct

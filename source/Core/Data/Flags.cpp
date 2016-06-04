@@ -29,6 +29,26 @@ namespace Core
 		#endif
 		EWRAM_LOCATION ALIGN(1) u8 Flags::mainFlagBank[FlagsToBytes(NumFlags)];
 		EWRAM_LOCATION ALIGN(1) u8 Flags::worldMapFlagBank[FlagsToBytes(0x100)];
+		TEXT_LOCATION ALIGN(2) u16 Flags::badgeFlagIDs[] =
+		{
+				Flag_Badge1,
+				Flag_Badge2,
+				Flag_Badge3,
+				Flag_Badge4,
+				Flag_Badge5,
+				Flag_Badge6,
+				Flag_Badge7,
+				Flag_Badge8,
+				Flag_Badge9,
+				Flag_Badge10,
+				Flag_Badge11,
+				Flag_Badge12,
+				Flag_Badge13,
+				Flag_Badge14,
+				Flag_Badge15,
+				Flag_Badge16,
+				0xFFFF
+		};
 
 		RODATA_LOCATION ALIGN(4) SaveLocationStruct Flags::saveData[] = {
 				{ (u8*)0x10000, (u8*)&Flags::mainFlagBank, FlagsToBytes(NumFlags) },
@@ -67,7 +87,7 @@ namespace Core
 			}
 		}
 
-		bool Flags::GetSeenCaughtStatus(u32 pokemonIndex, u32 modeIndex)
+		bool Flags::GetSeenCaughtStatus(u32 pokemonIndex, SeenCaughtStatusMode modeIndex)
 		{
 			u8* location;
 			if ((modeIndex & 2) == 0)
@@ -80,29 +100,31 @@ namespace Core
 			}
 			if ((modeIndex & 1) == 0)
 			{
-				return ((location[0] >> (pokemonIndex & 7)) & 1);
+				return ((location[0] >> (pokemonIndex & 7)) & 1) == 1;
 			}
+			bool retValue = false;
 			if (((location[0] >> (pokemonIndex & 7)) & 1) == 0)
 			{
+				retValue = true;
 				if ((modeIndex & 2) == 0)
 				{
-					Game::IncrementNationalSeen();
+					Pokedex::IncrementNationalSeen();
 					if (Pokedex::IsPokemonInRegional(pokemonIndex))
 					{
-						Game::IncrementRegionalSeen();
+						Pokedex::IncrementRegionalSeen();
 					}
 				}
 				else
 				{
-					Game::IncrementNationalCaught();
+					Pokedex::IncrementNationalCaught();
 					if (Pokedex::IsPokemonInRegional(pokemonIndex))
 					{
-						Game::IncrementRegionalCaught();
+						Pokedex::IncrementRegionalCaught();
 					}
 				}
 			}
 			location[0] = location[0] | (1 << (pokemonIndex & 7));
-			return 0;
+			return retValue;
 		}
 
 		bool Flags::GenericCheckFlag(u32 flagID, u8* flagLocation, u32 upperFlagLimit)
@@ -210,7 +232,6 @@ namespace Core
 			{
 				trainerflags[i] = 0;
 			}
-			EWRAM_LOCATION ALIGN(1) u8 Flags::trainerflags[BytesForTrainerflagsBase];
 		#else
 			for (int i = 0; i < BytesForTrainerflagsBase + 1; i++)
 			{
@@ -227,5 +248,23 @@ namespace Core
 			}
 		#endif
 		}
+
+		u32 Flags::CountAcquiredBadges()
+		{
+			u16 flagID = 0;
+			u32 counter = 0;
+			u32 retValue = 0;
+			do
+			{
+				flagID = badgeFlagIDs[counter];
+				if (CheckFlag(flagID))
+				{
+					retValue++;
+				}
+				counter++;
+			} while (flagID != 0xFFFF);
+			return retValue;
+		}
 	}
+
 }

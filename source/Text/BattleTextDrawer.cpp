@@ -10,7 +10,7 @@
 
 namespace Text
 {
-	BattleTextDrawer::BattleTextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(u32), u32 functionData, u32 inkColour) : TextDrawer(newString, x, y, speed, endFunction, inkColour)
+	BattleTextDrawer::BattleTextDrawer(char* newString, u8 x, u8 y, u32 speed, Callbacks::Callback* endFunction, u32 inkColour) : TextDrawer(newString, x, y, speed, endFunction, inkColour)
 	{
 		// TODO Auto-generated constructor stub
 
@@ -28,6 +28,6 @@ namespace Text
 	void BattleTextDrawer::Initialise()
 	{
 		TextFunctions::LoadPaletteAndTiles(true);
-		TextFunctions::DrawTextAreaToMap(0, 1, 15, 28, 4);
+		TextFunctions::DrawTextAreaToMap(0, Core::Rectangle(1, 15, 28, 4));
 	}
 }

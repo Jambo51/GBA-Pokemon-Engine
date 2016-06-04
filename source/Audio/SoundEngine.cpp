@@ -80,6 +80,28 @@ namespace Audio
 		}
 	}
 
+	void SoundEngine::PlaySongIfNotStarted(u16 songID, u8 songStartMode)
+	{
+		if (songID != songIDInt || (songID == songIDInt && songPlayingMode != ContinueSong))
+		{
+			songIDInt = songID;
+			u8 valueToWrite = 1;
+			switch (songStartMode)
+			{
+				case 0:
+					valueToWrite = InitialiseSong;
+					break;
+				case 1:
+					valueToWrite = FadeToSong;
+					break;
+				case 2:
+					valueToWrite = FadeIn;
+					break;
+			}
+			songPlayingMode = valueToWrite;
+		}
+	}
+
 	void SoundEngine::PlayFanfare(u16 songID)
 	{
 		if (songID)

@@ -87,7 +87,6 @@ namespace Scenes
 			void DecrementColumn() { if (column == 0) { column = 0xF; } else { column--; } }
 			void AddConnection(const ConnectionStruct &values) { if (!connect.isActive) { connect = values; } }
 			const WarpEvent & GetWarpEvent() const { return warpData; }
-			static void WarpTo(u32 callbackData);
 			void ResetColumn() { column = 0; }
 			void ResetRow() { row = 0; }
 			void SetEnterContext(u32 context) { exitContext = context; }

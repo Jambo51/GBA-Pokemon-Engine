@@ -1,12 +1,22 @@
 
-#include "Core.h"
-#include "Input.h"
-#include "Audio.h"
-#include "Entities.h"
+#include "Core/Palettes.h"
+#include "Core/Game.h"
+#include "Core/FlashFunctions.h"
+#include "Core/RTC.h"
+#include "Core/IRQHandler.h"
+#include "Core/BackgroundFunctions.h"
+#include "Input/DoNothingInputEventHandler.h"
+#include "Input/InputManager.h"
+#include "Audio/SoundEngine.h"
+#include "Audio/GameBoySounds/GBSEngine.h"
+#include "Audio/GameBoySounds/MusicData.h"
+#include "Entities/EntityManager.h"
 #include "Allocation/Allocator.h"
-#include "Scenes.h"
-#include "Tasks.h"
-#include "Text.h"
+#include "Scenes/SceneManager.h"
+#include "Scenes/Overworld/PrimaryOverworld.h"
+#include "Scenes/Menus/TitleScreen.h"
+#include "Tasks/TaskManager.h"
+#include "Text/TextFunctions.h"
 
 using namespace Core;
 using namespace Input;
@@ -30,7 +40,7 @@ using namespace Text;
 
 int main()
 {
-	Game::SetPaletteToWhite();
+	Palettes::SetPaletteToWhite();
 	Game::StartTimer(2);
 	Game::StartTimer(3, 1);
 	FlashFunctions::LoadGame();
@@ -58,6 +68,7 @@ int main()
 		VBlankIntrWait();
 		SoundEngine::Interrupt();
 		RTC::Update();
+		Palettes::Update();
 		InputManager::KeyPoll();
 		TaskManager::Update();
 		SoundEngine::Update();

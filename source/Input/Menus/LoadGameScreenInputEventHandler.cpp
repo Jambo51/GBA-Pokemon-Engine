@@ -6,7 +6,7 @@
  */
 
 #include "Input/Menus/LoadGameScreenInputEventHandler.h"
-#include "Core/Game.h"
+#include "Core/Palettes.h"
 #include "Scenes/SceneManager.h"
 #include "Scenes/Menus/LoadGameScreen.h"
 #include "Audio/SoundEngine.h"
@@ -31,7 +31,7 @@ namespace Input
 	void LoadGameScreenInputEventHandler::OnPressA()
 	{
 		InputHandler::OnPressA();
-		Game::FadeToBlack(true, HalfSecond, true, true);
+		Palettes::FadeToBlack(true, HalfSecond, true, true);
 		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
 		if (sc->SetExitContext())
 		{
@@ -42,7 +42,7 @@ namespace Input
 	void LoadGameScreenInputEventHandler::OnPressB()
 	{
 		InputHandler::OnPressB();
-		Game::FadeToBlack(true, HalfSecond, true, true);
+		Palettes::FadeToBlack(true, HalfSecond, true, true);
 		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
 		if (sc->SetExitContext(1))
 		{
@@ -73,7 +73,7 @@ namespace Input
 	void LoadGameScreenInputEventHandler::OnPressStart()
 	{
 		InputHandler::OnPressStart();
-		Game::FadeToBlack(true, HalfSecond, true, true);
+		Palettes::FadeToBlack(true, HalfSecond, true, true);
 		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
 		if (sc->SetExitContext())
 		{

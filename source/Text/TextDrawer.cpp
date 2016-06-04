@@ -14,7 +14,7 @@ using namespace Tasks;
 
 namespace Text
 {
-	TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, void (*endFunction)(u32), u32 functionData, u32 inkColour) : Tasks::Task()
+	TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, Callbacks::Callback* endFunction, u32 inkColour) : Tasks::Task()
 	{
 		// TODO Auto-generated constructor stub
 		string = newString;
@@ -25,21 +25,18 @@ namespace Text
 		textSpeed = speed;
 		stringPosition = 0;
 		bufferPos = 0;
-		EndFunction = endFunction;
-		this->functionData = functionData;
+		this->endFunction = endFunction;
 		this->inkColour = inkColour;
 		TextFunctions::SetTextColourFromInkColour(inkColour);
 		TextFunctions::ClearTextTileArea();
-		TextFunctions::DrawTextBoxTop(0, 0, 14, 30);
-		TextFunctions::DrawTextBoxBottom(0, 0, 19, 30);
-		TextFunctions::DrawTextBoxSides(0, 0, 15, 4, 30);
+		TextFunctions::DrawTextBox(0, 0, 14, 30, 6);
 		this->Initialise();
 	}
 
 	void TextDrawer::Initialise()
 	{
 		TextFunctions::LoadPaletteAndTiles();
-		TextFunctions::DrawTextAreaToMap(0, 2, 15, 26, 4);
+		TextFunctions::DrawTextAreaToMap(0, Core::Rectangle(2, 15, 26, 4));
 	}
 
 	TextDrawer::~TextDrawer()
@@ -140,9 +137,9 @@ namespace Text
 			}
 			else
 			{
-				if (EndFunction)
+				if (endFunction)
 				{
-					EndFunction(functionData);
+					endFunction->DoCallback();
 				}
 				TaskManager::RemoveTask(this);
 			}

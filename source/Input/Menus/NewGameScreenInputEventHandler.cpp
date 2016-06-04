@@ -6,7 +6,9 @@
  */
 
 #include "Input/Menus/NewGameScreenInputEventHandler.h"
-#include "Core/Game.h"
+#include "Input/DoNothingInputEventHandler.h"
+#include "Input/InputManager.h"
+#include "Core/Palettes.h"
 #include "Scenes/SceneManager.h"
 #include "Scenes/Menus/NewGameScreen.h"
 #include "Audio/SoundEngine.h"
@@ -31,23 +33,31 @@ namespace Input
 	void NewGameScreenInputEventHandler::OnPressA()
 	{
 		InputHandler::OnPressA();
-		Game::FadeToBlack(true, HalfSecond, true, true);
-		NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
-		if (sc->SetExitContext())
+		if (!keyHeld[Key_A])
 		{
-			SoundEngine::FadeSongToSilence();
+			Palettes::FadeToBlack(true, HalfSecond, true, true);
+			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			if (sc->SetExitContext())
+			{
+				SoundEngine::FadeSongToSilence();
+			}
 		}
+		InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	}
 
 	void NewGameScreenInputEventHandler::OnPressB()
 	{
 		InputHandler::OnPressB();
-		Game::FadeToBlack(true, HalfSecond, true, true);
-		NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
-		if (sc->SetExitContext(1))
+		if (!keyHeld[Key_B])
 		{
-			SoundEngine::FadeSongToSilence();
+			Palettes::FadeToBlack(true, HalfSecond, true, true);
+			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			if (sc->SetExitContext(1))
+			{
+				SoundEngine::FadeSongToSilence();
+			}
 		}
+		InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	}
 
 	void NewGameScreenInputEventHandler::OnPressUp()
@@ -73,11 +83,15 @@ namespace Input
 	void NewGameScreenInputEventHandler::OnPressStart()
 	{
 		InputHandler::OnPressStart();
-		Game::FadeToBlack(true, HalfSecond, true, true);
-		NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
-		if (sc->SetExitContext())
+		if (!keyHeld[Key_Start])
 		{
-			SoundEngine::FadeSongToSilence();
+			Palettes::FadeToBlack(true, HalfSecond, true, true);
+			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			if (sc->SetExitContext())
+			{
+				SoundEngine::FadeSongToSilence();
+			}
 		}
+		InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	}
 }

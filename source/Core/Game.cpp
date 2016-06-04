@@ -35,48 +35,25 @@ namespace Core
 	EWRAM_LOCATION ALIGN(4) MapHeader Game::currentMap;
 	EWRAM_LOCATION ALIGN(4) OptionsStruct Game::options;
 	EWRAM_LOCATION ALIGN(4) NPCData Game::overworldData[NumberOfOverworlds];
-	EWRAM_LOCATION ALIGN(4) u16* Game::currentPalette = NULL;
-	EWRAM_LOCATION ALIGN(4) u16* Game::targetPalette = NULL;
-	EWRAM_LOCATION ALIGN(4) u32 Game::numFrames = 0;
-	EWRAM_LOCATION ALIGN(4) u32 Game::originalFrames = 0;
-	EWRAM_LOCATION ALIGN(4) u32 Game::alphaSteps = 0;
-	EWRAM_LOCATION ALIGN(4) u32 Game::currentAlpha = 0;
 	EWRAM_LOCATION ALIGN(2) u16 Game::eggCycle = EggCycleLength;
 	EWRAM_LOCATION ALIGN(1) u8 Game::happinessCycle = HappinessCycleLength;
 	EWRAM_LOCATION ALIGN(1) u8 Game::poisonCycle = PoisonCycleLength;
 	EWRAM_LOCATION ALIGN(1) u8 Game::menuPosition = 0;
 	EWRAM_LOCATION ALIGN(2) u16 Game::repelCounter = 0;
 	EWRAM_LOCATION ALIGN(2) u16 Game::repelStrength = 0;
-	EWRAM_LOCATION ALIGN(2) u16 Game::regionalDexNumberSeen = 0;
-	EWRAM_LOCATION ALIGN(2) u16 Game::regionalDexNumberCaught = 0;
-	EWRAM_LOCATION ALIGN(2) u16 Game::nationalDexNumberSeen = 0;
-	EWRAM_LOCATION ALIGN(2) u16 Game::nationalDexNumberCaught = 0;
 	EWRAM_LOCATION ALIGN(1) char Game::buffers[NUMBUFFERS][BUFFERLENGTH];
-	EWRAM_LOCATION ALIGN(1) bool Game::doFade = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::doFade2 = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::fadeStyle = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::fadeBack = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::doCallback = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::doExitCallback = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::paletteWriteDetected = false;
 	EWRAM_LOCATION ALIGN(1) bool Game::inMainGame = false;
-	EWRAM_LOCATION ALIGN(1) bool Game::fade256 = false;
 	EWRAM_LOCATION ALIGN(1) bool Game::cameraUpdate = false;
 	EWRAM_LOCATION ALIGN(1) bool Game::layer0Included = false;
 	EWRAM_LOCATION ALIGN(1) u8 Game::validGameSave = 0;
 	EWRAM_LOCATION ALIGN(1) u8 Game::soundEngineID = GBPSoundsEngineID;
 	EWRAM_LOCATION ALIGN(4) Vector2D Game::cameraPos = Vector2D(0, 8);
-	EWRAM_LOCATION ALIGN(4) u32 Game::callbackData = 0;
-	EWRAM_LOCATION ALIGN(4) VoidFunctionPointerU32 Game::callbackFunction = NULL;
 	EWRAM_LOCATION ALIGN(4) HealingPlace Game::currentHealingPlace;
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer0ID;
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer1ID;
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer2ID;
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer3ID;
-	RODATA_LOCATION ALIGN(4) u32 Game::framesInFades[MaxFadeIDs] = { 8, 16, 32, 64, 128 };
-	RODATA_LOCATION ALIGN(4) u32 Game::alphaStepsInFades[MaxFadeIDs] = { 4, 2, 1, 0x800, 0x400 };
-	RODATA_LOCATION ALIGN(2) u16 Game::blackPalette[512] = { 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000 };
-	RODATA_LOCATION ALIGN(2) u16 Game::whitePalette[512] = { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF };
+	EWRAM_LOCATION ALIGN(4) Collections::Queues::LinkedQueue<Callbacks::Callback*> Game::actions = Collections::Queues::LinkedQueue<Callbacks::Callback*>();
 
 	#define SizeOfPokemonBoxStructure sizeof(PokemonStorageBoxes)
 	#define BaseBlocks (SizeOfPokemonBoxStructure / SaveBlockMaxLength)
@@ -106,15 +83,11 @@ namespace Core
 			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options)), (u8*)&Game::overworldData, sizeof(NPCData) * NumberOfOverworlds },
 			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds)), (u8*)&Game::validGameSave, 1 },
 			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8)), (u8*)&Game::soundEngineID, 1 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2), (u8*)&Game::regionalDexNumberSeen, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16)), (u8*)&Game::regionalDexNumberCaught, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 2), (u8*)&Game::nationalDexNumberSeen, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3), (u8*)&Game::nationalDexNumberCaught, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 4), (u8*)&Game::eggCycle, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 5), (u8*)&Game::repelCounter, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 6), (u8*)&Game::repelStrength, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 7), (u8*)&Game::happinessCycle, 1 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 7 + sizeof(u8)), (u8*)&Game::poisonCycle, 1 },
+			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2), (u8*)&Game::eggCycle, 2 },
+			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 1), (u8*)&Game::repelCounter, 2 },
+			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 2), (u8*)&Game::repelStrength, 2 },
+			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3), (u8*)&Game::happinessCycle, 1 },
+			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 4 + sizeof(u8)), (u8*)&Game::poisonCycle, 1 },
 			{ (u8*)(0x1000 * (BaseBlocks + 1)), (u8*)&Game::bag, sizeof(Bag) },
 			{ (u8*)0xFFFFFFFF, 0, 0 }
 	};
@@ -129,10 +102,14 @@ namespace Core
 
 	void Game::Initialise()
 	{
-		options.allOptions = 0;
-		options.options.stereoSound = 1;
-		options.options.textSpeed = 2;
-		options.options.useImperialUnits = 1;
+		if (!options.options.optionsSet)
+		{
+			options.allOptions = 0;
+			options.options.stereoSound = 1;
+			options.options.textSpeed = 2;
+			options.options.useImperialUnits = 1;
+		}
+		options.options.optionsSet = 0;
 		memset32(&currentHealingPlace, 0, sizeof(HealingPlace) >> 2);
 		memset32(&storageBoxes, 0, sizeof(PokemonStorageBoxes) >> 2);
 		memset32(&partyPokemon, 0, (sizeof(Core::Pokemon::Pokemon) * 6) >> 2);
@@ -145,10 +122,6 @@ namespace Core
 		poisonCycle = PoisonCycleLength;
 		repelCounter = 0;
 		repelStrength = 0;
-		regionalDexNumberCaught = 0;
-		regionalDexNumberSeen = 0;
-		nationalDexNumberCaught = 0;
-		nationalDexNumberSeen = 0;
 		cameraPos = Vector2D(0, 8);
 	}
 
@@ -311,87 +284,6 @@ namespace Core
 			{
 				*BG0HOFS = x;
 				*BG0VOFS = y;
-			}
-		}
-		if (doFade)
-		{
-			doFade = false;
-			doFade2 = true;
-		}
-		else if (doFade2)
-		{
-			if (numFrames != 0)
-			{
-				if (fadeStyle)
-				{
-					if (fadeBack)
-					{
-						currentAlpha -= alphaSteps;
-						DoFade();
-						numFrames--;
-						fadeBack = false;
-						fadeStyle = false;
-					}
-					else
-					{
-						currentAlpha += alphaSteps;
-						DoFade();
-						numFrames--;
-						if (numFrames == 0)
-						{
-							fadeBack = true;
-							numFrames = originalFrames;
-						}
-					}
-				}
-				else
-				{
-					currentAlpha += alphaSteps;
-					DoFade();
-					numFrames--;
-				}
-			}
-			else
-			{
-				doFade = false;
-				doFade2 = false;
-				memset32(currentPalette, 0, (sizeof(u16) * 512) >> 2);
-				delete[] currentPalette;
-				currentPalette = NULL;
-				if (targetPalette)
-				{
-					SetPalette(targetPalette);
-					if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
-					{
-						memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
-						delete[] targetPalette;
-					}
-				}
-				targetPalette = NULL;
-				if (callbackFunction)
-				{
-					callbackFunction(callbackData);
-					callbackData = 0;
-					callbackFunction = NULL;
-				}
-				if (doCallback)
-				{
-					if (doExitCallback)
-					{
-						SceneManager::RunExitCallback();
-					}
-					else
-					{
-						SceneManager::RunEnterCallback();
-					}
-				}
-				if (!paletteWriteDetected)
-				{
-					doCallback = false;
-					doExitCallback = false;
-					fade256 = false;
-				}
-				paletteWriteDetected = false;
 			}
 		}
 	}
@@ -575,158 +467,6 @@ namespace Core
 		}
 	}
 
-	u16* Game::GetCurrentPalette()
-	{
-		u16* temp = new u16[512];
-		memcpy32((void*)temp, (const void*)0x05000000, 0x100);
-		return temp;
-	}
-
-	void Game::SetPalette(u16 *Palette)
-	{
-		memcpy32((void*)0x05000000, (const void*)Palette, 0x100);
-	}
-
-	u32 Game::GetFadeColour(u16 clra, u16 clrb)
-	{
-		if (clra == clrb)
-		{
-			return clra;
-		}
-
-
-		const u32 rbmask= (RED_MASK|BLUE_MASK), gmask= GREEN_MASK;
-		const u32 rbhalf= 0x4010, ghalf= 0x0200;
-
-		// Red and blue
-		u32 parta = clra & rbmask;
-		u32 partb = clrb & rbmask;
-		u32 part = (partb-parta) * (32 - ((currentAlpha < 0x100) ? currentAlpha : currentAlpha >> 12)) + parta*32 + rbhalf;
-		u16 clr = (part >> 5) & rbmask;
-
-		// Green
-		parta = clra & gmask;
-		partb = clrb & gmask;
-		part = (partb-parta) * (32 - ((currentAlpha < 0x100) ? currentAlpha : currentAlpha >> 12)) + parta*32 + ghalf;
-		clr |= (part >> 5) & gmask;
-
-		return clr;
-	}
-
-	void Game::DoFadeOnPalette(u32 paletteID, u16* target, u16* current)
-	{
-		u16* dst = (u16*)(0x05000000 + 0x20 * paletteID);
-		for(u32 i = (fade256) ? 0 : 1; i < 16; i++)
-		{
-			dst[i] = GetFadeColour(target[i], current[i]);
-		}
-	}
-
-	void Game::DoFade()
-	{
-		for(u32 i = 0; i < 32; i++)
-		{
-			DoFadeOnPalette(i, (u16*)&targetPalette[(16 * i)], (u16*)&currentPalette[(16 * i)]);
-		}
-	}
-
-	void Game::FadeToGreyScale(FadeIDs FrameCount, bool callback, bool exitCallback)
-	{
-		if (!doFade)
-		{
-			fadeStyle = false;
-			currentPalette = GetCurrentPalette();
-			targetPalette = GetGreyScale(currentPalette);
-			doFade = true;
-			numFrames = FrameCount;
-			doCallback = callback;
-			doExitCallback = exitCallback;
-		}
-	}
-
-	u16* Game::GetGreyScale(const u16* original)
-	{
-		u16* dst = new u16[512];
-		u16* orig = dst;
-		u32 ii;
-		u32 clr, gray, rr, gg, bb;
-
-		for(ii=0; ii< 512; ii++)
-		{
-			clr = original[ii];
-
-			// Do RGB conversion in .8 fixed point
-			rr= ((clr    )&31)*0x4C;	// 29.7%
-			gg= ((clr>> 5)&31)*0x96;	// 58.6%
-			bb= ((clr>>10)&31)*0x1E;	// 11.7%
-			gray= (rr+gg+bb+0x80)>>8;
-
-			*dst++= RGB15(gray, gray, gray);
-		}
-		return orig;
-	}
-
-	void Game::FadeToPalette(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback)
-	{
-		if (!doFade)
-		{
-			fadeStyle = false;
-			if (FrameCount < MaxFadeIDs)
-			{
-				currentPalette = GetCurrentPalette();
-				doFade = true;
-				numFrames = framesInFades[FrameCount];
-				alphaSteps = alphaStepsInFades[FrameCount];
-				currentAlpha = 0;
-				targetPalette = (u16*)newPalette;
-				doCallback = callback;
-				doExitCallback = exitCallback;
-				paletteWriteDetected = true;
-				fade256 = fade256Colours;
-			}
-		}
-		else
-		{
-			if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
-			{
-				memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
-				delete[] targetPalette;
-				targetPalette = NULL;
-			}
-		}
-	}
-
-	void Game::PaletteFlash(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount)
-	{
-		if (!doFade)
-		{
-			fadeStyle = true;
-			if (FrameCount < MaxFadeIDs)
-			{
-				currentPalette = GetCurrentPalette();
-				doFade = true;
-				numFrames = Maths::UnsignedFractionalMultiplication(framesInFades[FrameCount], blendAmount);
-				alphaSteps = alphaStepsInFades[FrameCount];
-				currentAlpha = 0;
-				targetPalette = (u16*)newPalette;
-				doCallback = callback;
-				doExitCallback = exitCallback;
-				paletteWriteDetected = true;
-				fade256 = fade256Colours;
-				originalFrames = numFrames;
-			}
-		}
-		else
-		{
-			if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
-			{
-				memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
-				delete[] targetPalette;
-				targetPalette = NULL;
-			}
-		}
-	}
-
 	void Game::Save()
 	{
 		validGameSave = true;
@@ -740,13 +480,6 @@ namespace Core
 		{
 			Initialise();
 		}
-		overworldData[0].xLocation = 5;
-		overworldData[0].yLocation = 2;
-	}
-
-	void Game::SetPaletteToWhite()
-	{
-		SetPalette((u16*)&whitePalette);
 	}
 
 	void Game::MoveCamera(const Vector2D &delta)
@@ -757,32 +490,6 @@ namespace Core
 	void Game::SetCamera(const Vector2D &position)
 	{
 		cameraPos = position;
-	}
-
-	u16 Game::CountPokedexPokemon(u32 mode, u32 seenCaughtIndex)
-	{
-		if (mode)
-		{
-			if (seenCaughtIndex)
-			{
-				return nationalDexNumberCaught;
-			}
-			else
-			{
-				return nationalDexNumberSeen;
-			}
-		}
-		else
-		{
-			if (seenCaughtIndex)
-			{
-				return regionalDexNumberCaught;
-			}
-			else
-			{
-				return regionalDexNumberSeen;
-			}
-		}
 	}
 
 	bool Game::AddItemsToBagLocation(u16 itemID, u16 numberOfItems, bool doIt, Bag &bagLoc)

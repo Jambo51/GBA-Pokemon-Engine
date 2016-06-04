@@ -16,6 +16,7 @@
 #include "String.h"
 #include "TextDrawer.h"
 #include "Core/Pokemon/Pokemon.h"
+#include "Core/Rectangle.h"
 
 typedef struct StringAndFlagID {
 	char* string;
@@ -52,7 +53,12 @@ namespace Text
 		TextFunctions() { }
 		~TextFunctions() { }
 		static void InitialiseTextEngineInner(u32 colourWord, const TFont* font);
-		static void DrawStringOverTimeMain(u32 pointer);
+		static void DrawTextBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DrawMenuBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DrawTextBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DrawMenuBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DrawTextBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
+		static void DrawMenuBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
 	public:
 		static const TFont* GetFont();
 		static void SetFont(const TFont* font);
@@ -77,7 +83,7 @@ namespace Text
 		static s32 CharacterComparison(u8 charOne, u8 charTwo);
 		static void DrawCharacter(char c, u8 x, u8 y);
 		static void DrawString(char* string, u8 x, u8 y);
-		static void DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(u32));
+		static void DrawStringOverTime(char* string, u8 x, u8 y, Callbacks::Callback* endFunction);
 		static void DrawString(const String &string, u8 x, u8 y);
 		static void DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(u32));
 		static void InitialiseTextEngine(u32 textSetID);
@@ -89,17 +95,13 @@ namespace Text
 		static void BufferAbilityName(u32 abilityID, u8 bufferID);
 		static void BufferString(const String &string, u8 bufferID, u32 maxLength);
 		static void ClearTextTileArea();
-		static void DrawTextAreaToMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileWidth);
-		static void LoadPaletteAndTiles(bool isBattle = false);
+		static void DrawTextAreaToMap(u32 layer, const Core::Rectangle &rect, const Core::Vector2D &offset = Core::Vector2D());
+		static void LoadPaletteAndTiles(bool isBattle = false, u16* paletteOverride = 0);
 		static void RevertMapToStandard(u32 layer);
 		static void ClearTextAreaFromMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight);
-		static void DrawTextBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
-		static void DrawMenuBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
-		static void DrawTextBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
-		static void DrawMenuBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
-		static void DrawTextBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
-		static void DrawMenuBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
 		static void ClearTile(u32 x, u32 y);
+		static void DrawMenuBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void DrawTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
 	};
 }
 

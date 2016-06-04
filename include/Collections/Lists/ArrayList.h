@@ -26,20 +26,28 @@ namespace Collections
 					// TODO Auto-generated constructor stub
 					itemCount = 0;
 					arrayLength = 0;
+					arrayPointer = 0;
 				}
 
 				ArrayList<T>(int initialItemCount, const T* initialItems = 0)
 				{
 					// TODO Auto-generated constructor stub
-					itemCount = 0;
-					arrayLength = initialItemCount;
-					arrayPointer = new T[initialItemCount];
-					if (initialItems)
+					itemCount = initialItemCount;
+					arrayLength = initialItemCount << 2;
+					if (arrayLength)
 					{
-						for (int i = 0; i < initialItemCount; i++)
+						arrayPointer = new T[arrayLength];
+						if (initialItems)
 						{
-							arrayPointer[i] = initialItems[i];
+							for (int i = 0; i < initialItemCount; i++)
+							{
+								arrayPointer[i] = initialItems[i];
+							}
 						}
+					}
+					else
+					{
+						arrayPointer = 0;
 					}
 				}
 
@@ -54,6 +62,11 @@ namespace Collections
 				}
 
 				int Size() const
+				{
+					return itemCount - 1;
+				}
+
+				int RealSize() const
 				{
 					return itemCount;
 				}
@@ -101,6 +114,8 @@ namespace Collections
 								arrayPointer[i] = arrayPointer[i - 1];
 							}
 							arrayPointer[0] = item;
+							itemCount++;
+							return;
 						}
 						else
 						{
@@ -114,6 +129,7 @@ namespace Collections
 							arrayPointer[0] = item;
 							itemCount++;
 							delete[] original;
+							return;
 						}
 					}
 					else
@@ -246,6 +262,11 @@ namespace Collections
 
 				void Replace(int index, T item)
 				{
+					if (!arrayPointer)
+					{
+						PushBack(item);
+						return;
+					}
 					if (index < itemCount)
 					{
 						arrayPointer[index] = item;

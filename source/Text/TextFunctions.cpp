@@ -414,7 +414,9 @@ namespace Text
 
 	void TextFunctions::BufferPluralItemName(u16 itemIndex, u8 bufferID)
 	{
-		BufferString(Items::GetPluralisedItemName(itemIndex), bufferID, 17);
+		String* s = Items::GetPluralisedItemName(itemIndex);
+		BufferString(*s, bufferID, 17);
+		delete s;
 	}
 
 	void TextFunctions::BufferMoveName(u16 moveIndex, u8 bufferID)
@@ -570,11 +572,13 @@ namespace Text
 				}
 			}
 		}
-		String s = string.SubString(positionOfDecimalPoint);
-		string = string.SubString(0, positionOfDecimalPoint);
-		string += '.';
-		string += s;
+		String* s = string.SubString(positionOfDecimalPoint);
+		String* s2 = string.SubString(0, positionOfDecimalPoint);
+		s2 += '.';
+		*s2 += *s;
 		BufferString(string, bufferID, 0);
+		delete s;
+		delete s2;
 	}
 
 	void TextFunctions::BufferSignedFractionalNumber(s32 number, u32 length, u8 bufferID, u32 positionOfDecimalPoint)
@@ -599,12 +603,14 @@ namespace Text
 					}
 				}
 			}
-			String s = string.SubString(positionOfDecimalPoint);
-			string = string.SubString(0, positionOfDecimalPoint);
-			string += '.';
-			string += s;
-			string.Prepend('-');
+			String* s = string.SubString(positionOfDecimalPoint);
+			String* s2 = string.SubString(0, positionOfDecimalPoint);
+			s2 += '.';
+			*s2 += *s;
+			s2->Prepend('-');
 			BufferString(string, bufferID, 0);
+			delete s;
+			delete s2;
 		}
 		else
 		{
@@ -641,7 +647,7 @@ namespace Text
 		DrawString(string.GetUnderlyingArray(), x, y);
 	}
 
-	void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, void (*endFunction)(u32))
+	void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, Callbacks::Callback* endFunction)
 	{
 		if (string != 0)
 		{
@@ -693,10 +699,18 @@ namespace Text
 		rival3NameLoc = (char*)&Game::GetPlayer().tertiaryRivalName;
 	}
 
-	void TextFunctions::LoadPaletteAndTiles(bool isBattle)
+	void TextFunctions::LoadPaletteAndTiles(bool isBattle, u16* paletteOverride)
 	{
-		memcpy32((void*)((u32)pal_bg_mem + 0x1C0), &primaryTextPalette, 8);
-		memcpy32((void*)((u32)pal_bg_mem + 0x1E0), &primaryOutlinePalette, 8);
+		if (paletteOverride)
+		{
+			memcpy32((void*)((u32)paletteOverride + 0x1C0), &primaryTextPalette, 8);
+			memcpy32((void*)((u32)paletteOverride + 0x1E0), &primaryOutlinePalette, 8);
+		}
+		else
+		{
+			memcpy32((void*)((u32)pal_bg_mem + 0x1C0), &primaryTextPalette, 8);
+			memcpy32((void*)((u32)pal_bg_mem + 0x1E0), &primaryOutlinePalette, 8);
+		}
 		memset32((void*)0x0600C800, 0x0, 0x8);
 		if (isBattle)
 		{
@@ -721,9 +735,13 @@ namespace Text
 		BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer));
 	}
 
-	void TextFunctions::DrawTextAreaToMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight)
+	void TextFunctions::DrawTextAreaToMap(u32 layer, const Core::Rectangle &rect, const Core::Vector2D &offset)
 	{
 		BackgroundFunctions::SetLayer(layer, Game::GetLayer(layer), true);
+		u32 xTileStart = rect.GetUpperLeft().GetX();
+		u32 xTileWidth = rect.GetWidth();
+		u32 yTileStart = rect.GetUpperLeft().GetY();
+		u32 yTileHeight = rect.GetHeight();
 		if (xTileStart + xTileWidth > 30)
 		{
 			xTileWidth = 30 - xTileStart;
@@ -739,7 +757,7 @@ namespace Text
 			{
 				for (u32 j = 0; j < xTileWidth; j++)
 				{
-					layerLocation[((yTileStart + i) * 0x20) + xTileStart + j] = 0xE001 + i + 20 * j;
+					layerLocation[((yTileStart + i) * 0x20) + xTileStart + j] = 0xE001 + (i + offset.GetY()) + 20 * (j + offset.GetX());
 				}
 			}
 		}
@@ -919,5 +937,19 @@ namespace Text
 	{
 		void* location = (void*)(0x06008020 + (0x280 * x) + (0x40 * y));
 		memset32(location, 0x11111111, 0x10);
+	}
+
+	void TextFunctions::DrawMenuBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height)
+	{
+		DrawMenuBoxTop(layer, xStartTile, yStartTile, width);
+		DrawMenuBoxSides(layer, xStartTile, yStartTile + 1, height - 2, width);
+		DrawMenuBoxBottom(layer, xStartTile, yStartTile + height - 1, width);
+	}
+
+	void TextFunctions::DrawTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height)
+	{
+		DrawTextBoxTop(layer, xStartTile, yStartTile, width);
+		DrawTextBoxSides(layer, xStartTile, yStartTile + 1, height - 2, width);
+		DrawTextBoxBottom(layer, xStartTile, yStartTile + height - 1, width);
 	}
 }

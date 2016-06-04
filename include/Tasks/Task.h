@@ -5,10 +5,9 @@
  *      Author: Jamie
  */
 
-#ifndef CALLBACK_H_
-#define CALLBACK_H_
+#ifndef TASK_H_
+#define TASK_H_
 
-#include "GlobalDefinitions.h"
 #include "TaskManager.h"
 
 namespace Tasks
@@ -30,4 +29,4 @@ namespace Tasks
 	};
 }
 
-#endif /* CALLBACK_H_ */
+#endif /* TASK_H_ */

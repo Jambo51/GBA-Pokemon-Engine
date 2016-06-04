@@ -10,6 +10,8 @@
 #include "Tasks/ScriptRunners/ScriptRunner.h"
 #include "Core/LoadUnalignedCode.h"
 #include "Core/Game.h"
+#include "Core/Palettes.h"
+#include "Callbacks/ReleaseWaitingScriptRunnerCallback.h"
 
 // To minimise code duplication, this engine re-uses
 // the end, call, goto and return commands from the overworld
@@ -81,16 +83,10 @@ u32 SetWindowLayerDisabled(Tasks::ScriptRunners::ScriptRunner* runner)
 
 // Palette effect functions
 
-void ReleaseWaitingScriptRunnerFromPaletteWait(u32 data)
-{
-	Tasks::ScriptRunners::ScriptRunner* runner = (Tasks::ScriptRunners::ScriptRunner*)data;
-	runner->SetWaitFrames(runner->GetWaitFrames() & (~(0x10)));
-}
-
 u32 FlashPaletteToWhiteFiftyPercent(Tasks::ScriptRunners::ScriptRunner* runner)
 {
-	Game::WhitePaletteFlash(true, HalfSecond, false, false, 50);
-	Game::SetCustomFadeCallback((VoidFunctionPointerU32)&ReleaseWaitingScriptRunnerFromPaletteWait, (u32)runner);
+	Palettes::WhitePaletteFlash(true, HalfSecond, false, false, 50);
+	Palettes::SetCustomFadeCallback(new Callbacks::ReleaseWaitingScriptRunnerCallback(runner));
 	runner->SetWaitFrames(runner->GetWaitFrames() | 0x10);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;
@@ -98,8 +94,8 @@ u32 FlashPaletteToWhiteFiftyPercent(Tasks::ScriptRunners::ScriptRunner* runner)
 
 u32 FlashPaletteToBlackFiftyPercent(Tasks::ScriptRunners::ScriptRunner* runner)
 {
-	Game::BlackPaletteFlash(true, HalfSecond, false, false, 50);
-	Game::SetCustomFadeCallback((VoidFunctionPointerU32)&ReleaseWaitingScriptRunnerFromPaletteWait, (u32)runner);
+	Palettes::BlackPaletteFlash(true, HalfSecond, false, false, 50);
+	Palettes::SetCustomFadeCallback(new Callbacks::ReleaseWaitingScriptRunnerCallback(runner));
 	runner->SetWaitFrames(runner->GetWaitFrames() | 0x10);
 	runner->IncrementScriptPointer(1);
 	return NotEnded;

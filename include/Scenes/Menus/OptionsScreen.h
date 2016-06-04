@@ -18,15 +18,21 @@ namespace Scenes
 		{
 		private:
 			u32 menuPosition;
+			u32 previousMenuPosition;
 			u32 optionValues[6];
+			static char* textSpeedStrings[];
+			static char* battleAnimationStrings[];
+			static char* battleSwitchingStrings[];
+			static char* soundStrings[];
+			static char* unitsStrings[];
 		public:
-			OptionsScreen(u32 exitContext);
+			OptionsScreen(u32 exitContext, u32 previousMenuPosition);
 			~OptionsScreen();
 			void Update();
 			void OnExit();
 			void OnEnter();
-			void IncrementMenuPosition() { if (menuPosition < 6) { menuPosition++; } }
-			void DecrementMenuPosition()  { if (menuPosition > 0) { menuPosition--; } }
+			void IncrementMenuPosition();
+			void DecrementMenuPosition();
 			void Save();
 			void IncrementValueAt();
 			void DecrementValueAt();

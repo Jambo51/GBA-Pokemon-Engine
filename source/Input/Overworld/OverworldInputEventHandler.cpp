@@ -103,7 +103,7 @@ namespace Input
 								str.map = conn.map;
 								str.mapBank = conn.mapBank;
 								str.offset = conn.offset;
-								str.alignment = conn.alignment;
+								str.direction = conn.type;
 								ow->AddConnection(str);
 							}
 						}
@@ -195,7 +195,7 @@ namespace Input
 								str.map = conn.map;
 								str.mapBank = conn.mapBank;
 								str.offset = conn.offset;
-								str.alignment = 1;
+								str.direction = conn.type;
 								ow->AddConnection(str);
 							}
 						}
@@ -275,7 +275,7 @@ namespace Input
 								str.map = conn.map;
 								str.mapBank = conn.mapBank;
 								str.offset = conn.offset;
-								str.alignment = 3;
+								str.direction = conn.type;
 								ow->AddConnection(str);
 							}
 						}
@@ -341,7 +341,7 @@ namespace Input
 								str.map = conn.map;
 								str.mapBank = conn.mapBank;
 								str.offset = conn.offset;
-								str.alignment = 4;
+								str.direction = conn.type;
 								ow->AddConnection(str);
 							}
 						}

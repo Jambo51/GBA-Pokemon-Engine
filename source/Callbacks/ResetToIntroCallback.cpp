@@ -31,7 +31,7 @@ namespace Callbacks
 	void ResetToIntroCallback::DoCallback()
 	{
 		((Menus::TitleScreen*)SceneManager::GetScene())->SetExitContext(ResetToIntro);
-		Game::FadeToBlack(true, HalfSecond, true);
+		Palettes::FadeToBlack(true, HalfSecond, true);
 		SoundEngine::FadeSongToSilence();
 		InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	}

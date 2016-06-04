@@ -5,10 +5,10 @@
  *      Author: Jamie
  */
 
-#ifndef CALLBACKMANAGER_H_
-#define CALLBACKMANAGER_H_
+#ifndef TASKMANAGER_H_
+#define TASKMANAGER_H_
 
-#include "Collections.h"
+#include "Collections/Lists.h"
 
 namespace Tasks
 {
@@ -28,4 +28,4 @@ namespace Tasks
 	};
 }
 
-#endif /* CALLBACKMANAGER_H_ */
+#endif /* TASkMANAGER_H_ */

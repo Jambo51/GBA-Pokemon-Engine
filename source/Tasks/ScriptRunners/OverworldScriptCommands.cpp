@@ -13,6 +13,7 @@
 #include "Audio.h"
 #include "Text.h"
 #include "LibraryHeaders/liboverworldscripts.h"
+#include "Callbacks/NotifyTextEndCallback.h"
 
 using namespace Text;
 using namespace Core;
@@ -1194,7 +1195,7 @@ u32 PrepareMessage(Tasks::ScriptRunners::ScriptRunner* runner)
 		value = runner->GetBank(value);
 	}
 	runner->SetWaitFrames(1);
-	InputManager::SetEventHandler(new TextInputHandler(new TextDrawer((char*)value, 0, 0, 2 - Game::GetConstOptions().textSpeed, (VoidFunctionPointerU32)&NotifyMessageEnd, (u32)runner)));
+	InputManager::SetEventHandler(new TextInputHandler(new TextDrawer((char*)value, 0, 0, 2 - Game::GetConstOptions().textSpeed, new Callbacks::NotifyTextEndCallback(runner))));
 	runner->Text(true);
 	runner->IncrementScriptPointer(5);
 	return NotEnded;

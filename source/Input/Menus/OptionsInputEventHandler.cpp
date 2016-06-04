@@ -6,7 +6,9 @@
  */
 
 #include "Input/Menus/OptionsInputEventHandler.h"
-#include "Core/Game.h"
+#include "Input/DoNothingInputEventHandler.h"
+#include "Input/InputManager.h"
+#include "Core/Palettes.h"
 #include "Scenes.h"
 
 using namespace Core;
@@ -27,10 +29,19 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
+	void ReturnToPreviousScreen()
+	{
+		Palettes::FadeToBlack(true, HalfSecond, true, true);
+		InputManager::SetEventHandler(new DoNothingInputEventHandler());
+	}
+
 	void OptionsInputEventHandler::OnPressB()
 	{
 		InputHandler::OnPressB();
-		Game::FadeToBlack(true, HalfSecond, true, true);
+		if (!keyHeld[Key_B])
+		{
+			ReturnToPreviousScreen();
+		}
 	}
 
 	void OptionsInputEventHandler::OnPressUp()
@@ -72,7 +83,7 @@ namespace Input
 			if (sc->GetMenuPosition() == 6)
 			{
 				sc->Save();
-				Game::FadeToBlack(true, HalfSecond, true, true);
+				ReturnToPreviousScreen();
 			}
 			else
 			{

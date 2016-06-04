@@ -13,15 +13,24 @@ using namespace Core;
 
 namespace Text
 {
+
+	TEXT_LOCATION ALIGN(4) char* String::octalPrepend = "0o";
+	TEXT_LOCATION ALIGN(4) char* String::binaryPrepend = "0b";
+	TEXT_LOCATION ALIGN(4) char* String::hexadecimalPrepend = "0x";
+	TEXT_LOCATION ALIGN(4) char* String::thornalPrepend = "0t";
+	TEXT_LOCATION ALIGN(4) char* String::quaternaryPrepend = "0q";
+
 	String::String(const char* string)
 	{
 		underlyingString = Collections::Lists::ArrayList<char>(CountStringLength(string), string);
+		underlyingString.PushBack('\0');
 	}
 
 	String::String(const String &string)
 	{
 		char* array = string.GetUnderlyingArray();
 		underlyingString = Collections::Lists::ArrayList<char>(CountStringLength(array), array);
+		underlyingString.PushBack('\0');
 	}
 
 	String::String(u32 initialLength)
@@ -48,18 +57,18 @@ namespace Text
 		return underlyingString.Last() == c;
 	}
 
-	String String::SubString(u32 startIndex, u32 length) const
+	String* String::SubString(u32 startIndex, u32 length) const
 	{
 		char* array = underlyingString.GetPointer();
 		if (underlyingString.Size() >= startIndex + length)
 		{
 			array = (char*)(((u32)array) + startIndex);
 			Collections::Lists::ArrayList<char> newString = Collections::Lists::ArrayList<char>(length, array);
-			return String(newString);
+			return new String(newString);
 		}
 		else
 		{
-			return String("");
+			return new String((u32)0);
 		}
 	}
 
@@ -115,86 +124,198 @@ namespace Text
 		return EndsWith(rhs.GetUnderlyingArray());
 	}
 
-	String String::ToUpper() const
+	String* String::ToUpper() const
 	{
-		String s = underlyingString.GetPointer();
-		for (int i = 0; i < s.Size(); i++)
+		String* s = new String(underlyingString.GetPointer());
+		for (int i = 0; i < s->Size(); i++)
 		{
-			if (s[i] >= 'a' && s[i] <= 'z')
+			if (s->CharAt(i) >= 'a' && s->CharAt(i) <= 'z')
 			{
-				s.SetCharacterAt(i, s[i] - ('a' - 'A'));
+				s->SetCharacterAt(i, s->CharAt(i) - ('a' - 'A'));
 			}
 		}
 		return s;
 	}
 
-	String String::ToLower() const
+	String* String::ToLower() const
 	{
-		String s = underlyingString.GetPointer();
-		for (int i = 0; i < s.Size(); i++)
+		String* s = new String(underlyingString.GetPointer());
+		for (int i = 0; i < s->Size(); i++)
 		{
-			if (s[i] >= 'A' && s[i] <= 'Z')
+			if (s->CharAt(i) >= 'A' && s->CharAt(i) <= 'Z')
 			{
-				s.SetCharacterAt(i, s[i] + ('a' - 'A'));
+				s->SetCharacterAt(i, s->CharAt(i) + ('a' - 'A'));
 			}
 		}
 		return s;
 	}
 
-	String String::ToString(u32 value, const String &infoStr, bool isHex)
+	String* String::ToString(u32 value, u32 minCharacterCount, NumberFormat format)
 	{
-		if (isHex)
+		char* stringToPrepend = 0;
+		switch (format)
 		{
-			value = Maths::ToDecimal(value);
+			case Hexadecimal:
+				stringToPrepend = hexadecimalPrepend;
+				break;
+			case Binary:
+				stringToPrepend = binaryPrepend;
+				break;
+			case Octal:
+				stringToPrepend = octalPrepend;
+				break;
+			case Thornal:
+				stringToPrepend = thornalPrepend;
+				break;
+			case Quaternary:
+				stringToPrepend = quaternaryPrepend;
+				break;
 		}
-		u32 leadingZeroes = 0;
-		if (infoStr != "")
+		String* s = 0;
+		if (value == 0)
 		{
-			if (infoStr.StartsWith('D') || infoStr.StartsWith('X'))
-			{
-				leadingZeroes = String::ParseU32(infoStr.SubString(1));
-			}
-		}
-		if (leadingZeroes > BUFFERLENGTH)
-		{
-			leadingZeroes = BUFFERLENGTH;
-		}
-		u32 lastNeededPosition = 0;
-		for (u32 i = 0; i < 8; i++)
-		{
-			if (((value & (0xF << (4 * i))) >> (4 * i)) != 0)
-			{
-				lastNeededPosition = i;
-			}
-		}
-		if (lastNeededPosition > leadingZeroes)
-		{
-			leadingZeroes = lastNeededPosition;
-		}
-		String s = String(leadingZeroes + 1);
-		u32 strSize = s.Size();
-		if (!infoStr.StartsWith('X'))
-		{
-			for (u32 i = 0; i < lastNeededPosition; i++)
-			{
-				s.SetCharacterAt(strSize - i, '0' + ((value & (0xF << (4 * i))) >> (4 * i)));
-			}
+			s = new String((u32)0);
+			s->Append("0");
 		}
 		else
 		{
-			for (u32 i = 0; i < lastNeededPosition; i++)
+			switch (format)
 			{
-				u32 loopValue = ((value & (0xF << (4 * i))) >> (4 * i));
-				if (loopValue < 10)
-				{
-					s.SetCharacterAt(strSize - i, '0' + loopValue);
-				}
-				else
-				{
-					s.SetCharacterAt(strSize - i, 'A' + loopValue);
-				}
+				case Hexadecimal:
+					{
+						s = new String((u32)0);
+						s->Append('\0');
+						while (value)
+						{
+							u32 tempValue = (value & 0xF);
+							char temp = '0';
+							if (tempValue < 10)
+							{
+								temp += tempValue;
+							}
+							else
+							{
+								temp = 'A' + (tempValue - 10);
+							}
+							s->Prepend(temp);
+							value >>= 4;
+						}
+						while (s->Size() < minCharacterCount)
+						{
+							s->Prepend('0');
+						}
+						if (stringToPrepend)
+						{
+							s->Prepend(stringToPrepend);
+						}
+					}
+					break;
+				case Thornal:
+					{
+						s = new String((u32)0);
+						s->Append('\0');
+						while (value)
+						{
+							u32 tempValue = (value & 0x1F);
+							char temp = '0';
+							if (tempValue < 10)
+							{
+								temp += tempValue;
+							}
+							else
+							{
+								temp = 'A' + (tempValue - 10);
+							}
+							s->Prepend(temp);
+							value >>= 5;
+						}
+						while (s->Size() < minCharacterCount)
+						{
+							s->Prepend('0');
+						}
+						if (stringToPrepend)
+						{
+							s->Prepend(stringToPrepend);
+						}
+					}
+					break;
+				case Octal:
+					{
+						s = new String((u32)0);
+						s->Append('\0');
+						while (value)
+						{
+							char temp = '0' + (value & 0x7);
+							s->Prepend(temp);
+							value >>= 3;
+						}
+						while (s->Size() < minCharacterCount)
+						{
+							s->Prepend('0');
+						}
+						if (stringToPrepend)
+						{
+							s->Prepend(stringToPrepend);
+						}
+					}
+					break;
+				case Binary:
+					{
+						s = new String((u32)0);
+						s->Append('\0');
+						while (value)
+						{
+							char temp = '0' + (value & 0x1);
+							s->Prepend(temp);
+							value >>= 1;
+						}
+						while (s->Size() < minCharacterCount)
+						{
+							s->Prepend('0');
+						}
+						if (stringToPrepend)
+						{
+							s->Prepend(stringToPrepend);
+						}
+					}
+					break;
+				case Quaternary:
+					{
+						s = new String((u32)0);
+						s->Append('\0');
+						while (value)
+						{
+							char temp = '0' + (value & 0x3);
+							s->Prepend(temp);
+							value >>= 2;
+						}
+						while (s->Size() < minCharacterCount)
+						{
+							s->Prepend('0');
+						}
+						if (stringToPrepend)
+						{
+							s->Prepend(stringToPrepend);
+						}
+					}
+					break;
+				case Decimal:
+					{
+						s = new String((u32)0);
+						s->Append('\0');
+						while (value)
+						{
+							char temp = '0' + Maths::UnsignedModulus(value, 10);
+							s->Prepend(temp);
+							value = Maths::UnsignedDivide(value, 10);
+						}
+						while (s->Size() < minCharacterCount)
+						{
+							s->Prepend('0');
+						}
+					}
+					break;
 			}
-			s -= "0x";
 		}
 		return s;
 	}
@@ -213,12 +334,12 @@ namespace Text
 
 	u32 String::ParseU32FromHex(const String &str)
 	{
-		String s = str.ToUpper();
+		String* s = str.ToUpper();
 		u32 value = 0;
 		u32 counter = 0;
-		for (s32 i = s.Size() - 1; i >= 0; i--)
+		for (s32 i = s->Size() - 1; i >= 0; i--)
 		{
-			char c = s[i];
+			char c = s->CharAt(i);
 			if (c >= '0' && c <= '9')
 			{
 				value += (c - '0') * Maths::Power(16, counter);
@@ -229,6 +350,7 @@ namespace Text
 			}
 			counter++;
 		}
+		delete s;
 		return value;
 	}
 
@@ -244,26 +366,39 @@ namespace Text
 
 	bool String::StartsWithVowel() const
 	{
-		String s = ToUpper();
-		return s.StartsWith('A') || s.StartsWith('E') || s.StartsWith('I') || s.StartsWith('O') || s.StartsWith('U') || s.StartsWith('Y');
+		String* s = ToUpper();
+		bool result = s->StartsWith('A') || s->StartsWith('E') || s->StartsWith('I') || s->StartsWith('O') || s->StartsWith('U') || s->StartsWith('Y');
+		delete s;
+		return result;
 	}
 
 	void String::Append(const char c)
 	{
-		underlyingString.PushBack(c);
+		if (c != '\0')
+		{
+			underlyingString.Replace(underlyingString.Size(), c);
+		}
+		underlyingString.PushBack('\0');
 	}
 
 	void String::Append(const char* c)
 	{
 		if (c)
 		{
-			int index = 0;
-			do
+			underlyingString.Replace(underlyingString.Size(), c[0]);
+			int index = 1;
+			while (c[index] != '\0')
 			{
 				underlyingString.PushBack(c[index]);
 				index++;
-			} while (c[index] != '/0');
+			}
+			underlyingString.PushBack('\0');
 		}
+	}
+
+	void String::Append(const String* str)
+	{
+		Append(str->GetUnderlyingArray());
 	}
 
 	void String::Prepend(const char c)

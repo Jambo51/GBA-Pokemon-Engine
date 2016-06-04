@@ -18,6 +18,10 @@ using namespace Core::Data;
 
 namespace Scenes
 {
+	EWRAM_LOCATION ALIGN(2) u16 Pokedex::regionalSeenCount = 0;
+	EWRAM_LOCATION ALIGN(2) u16 Pokedex::seenCount = 0;
+	EWRAM_LOCATION ALIGN(2) u16 Pokedex::regionalCaughtCount = 0;
+	EWRAM_LOCATION ALIGN(2) u16 Pokedex::caughtCount = 0;
 	RODATA_LOCATION ALIGN(4) PokedexData Pokedex::pokedexData[NumberOfPokemon] = {
 			{ { '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '\0' }, 0, 0, (char*)0, 0, 0, 0, 0, 0, 0 }
 	};
@@ -145,7 +149,7 @@ namespace Scenes
 		while (startPoint <= endPoint)
 		{
 			u16 convertedIndex = ConvertNationalIDToRegionalID(startPoint, mode);
-			u16 temp = (u16)(Flags::GetSeenCaughtStatus(convertedIndex, 0)) | ((Flags::GetSeenCaughtStatus(convertedIndex, 2)) << 1);
+			u16 temp = (u16)(Flags::GetSeenCaughtStatus(convertedIndex, CheckSeen)) | ((Flags::GetSeenCaughtStatus(convertedIndex, CheckCaught)) << 1);
 			char* textPointer = emptyName;
 			if (temp)
 			{
@@ -158,5 +162,10 @@ namespace Scenes
 			startPoint++;
 		}
 		return highestIndex;
+	}
+
+	bool Pokedex::HasSpeciesBeenCaught(u16 species)
+	{
+		return Flags::GetSeenCaughtStatus(species, CheckCaught);
 	}
 }

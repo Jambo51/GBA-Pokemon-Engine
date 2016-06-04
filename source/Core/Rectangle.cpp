@@ -23,11 +23,11 @@ namespace Core
 		this->lowerRightCorner = lowerRightCorner;
 	}
 
-	Rectangle::Rectangle(s16 x1, s16 y1, s16 x2, s16 y2)
+	Rectangle::Rectangle(s16 x1, s16 y1, s16 width, s16 height)
 	{
 		// TODO Auto-generated constructor stub
 		this->upperLeftCorner = Vector2D(x1, y1);
-		this->lowerRightCorner = Vector2D(x2, y2);
+		this->lowerRightCorner = Vector2D(x1 + width, y1 + height);
 	}
 
 	Rectangle::~Rectangle()

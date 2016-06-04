@@ -13,6 +13,7 @@
 #include "Scenes/Battles/Battles.h"
 #include "Scenes/Overworld/Overworlds.h"
 #include "Scenes/Menus/Menus.h"
+#include "Scenes/Misc/MiscScenes.h"
 
 
 #endif /* INCLUDE_SCENES_H_ */

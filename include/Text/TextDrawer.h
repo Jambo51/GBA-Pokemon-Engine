@@ -9,8 +9,7 @@
 #define TEXTDRAWER_H_
 
 #include "Tasks/Task.h"
-
-typedef void(*EndFunctionType)(u32);
+#include "Callbacks/Callback.h"
 
 namespace Text
 {
@@ -20,8 +19,7 @@ namespace Text
 		char* string;
 		u32 stringPosition;
 		u32 bufferPos;
-		EndFunctionType EndFunction;
-		u32 functionData;
+		Callbacks::Callback* endFunction;
 		u32 inkColour;
 		u8 currentX;
 		u8 currentY;
@@ -33,7 +31,7 @@ namespace Text
 		void HandleCharacter(char c, const TFont* font);
 		virtual void Initialise();
 	public:
-		TextDrawer(char* newString, u8 x, u8 y, u32 speed, EndFunctionType endFunction = (EndFunctionType)0, u32 functionData = 0, u32 inkColour = 3);
+		TextDrawer(char* newString, u8 x, u8 y, u32 speed, Callbacks::Callback* endFunction = (Callbacks::Callback*)0, u32 inkColour = 3);
 		virtual ~TextDrawer();
 		void Update();
 		void ADown(bool value) { aDown = value; }

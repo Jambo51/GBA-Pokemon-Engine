@@ -17,13 +17,13 @@ namespace Scenes
 	private:
 		u32 menuPosition;
 	public:
-		LoadGameScreen(u32 enterContext);
+		LoadGameScreen(u32 previousMenuPosition = 0);
 		~LoadGameScreen();
 		void Update();
 		void OnEnter();
 		void OnExit();
-		void IncrementMenuPosition() { if (menuPosition < 2) { menuPosition++; } }
-		void DecrementMenuPosition() { if (menuPosition > 0) { menuPosition--; } }
+		void IncrementMenuPosition();
+		void DecrementMenuPosition();
 		bool SetExitContext(u32 contextGetType = 0);
 	};
 }

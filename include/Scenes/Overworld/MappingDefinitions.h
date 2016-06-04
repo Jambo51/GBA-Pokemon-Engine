@@ -129,7 +129,7 @@ typedef struct ConnectionStruct {
 	u8 isActive;
 	u8 mapBank;
 	u8 map;
-	u8 alignment;
+	u8 direction;
 	s32 offset;
 } ConnectionStruct;
 
@@ -150,6 +150,8 @@ typedef struct NPCEvent {
 typedef struct SignpostEvent {
 	s16 xPos;
 	s16 yPos;
+	s16 width;
+	s16 height;
 	u16 talkingLevel;
 	u16 talkingMode;
 	u8* scriptPointer;
@@ -158,6 +160,8 @@ typedef struct SignpostEvent {
 typedef struct WarpEvent {
 	s16 xPos;
 	s16 yPos;
+	s16 width;
+	s16 height;
 	u8 warpID;
 	u8 mapBank;
 	u8 map;
@@ -167,6 +171,8 @@ typedef struct WarpEvent {
 typedef struct TileScriptEvent {
 	s16 xPos;
 	s16 yPos;
+	s16 width;
+	s16 height;
 	u16 varID;
 	u16 varValue;
 	u8* scriptPointer;

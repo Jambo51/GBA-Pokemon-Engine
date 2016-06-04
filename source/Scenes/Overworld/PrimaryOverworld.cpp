@@ -8,6 +8,7 @@
 #include "Text.h"
 #include "Tasks.h"
 #include "Scenes/Overworld/PrimaryOverworld.h"
+#include "Callbacks/WarpToNewMapCallback.h"
 
 #define tilemapMiddle ((u32*)0x0600E000)
 #define tilemapTop ((u32*)0x0600E800)
@@ -42,6 +43,7 @@ namespace Scenes
 
 		PrimaryOverworld::PrimaryOverworld()
 		{
+			BackgroundFunctions::ClearAllBackgrounds();
 			Game::SetCamera(Vector2D(0, 8));
 			Game::SetCameraMode(true, false);
 			row = 0;
@@ -54,7 +56,7 @@ namespace Scenes
 			DrawMap(Game::GetPlayerPos(), newColours);
 			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 			PrimaryOverworld::PlaceNPCs(newColours);
-			Game::FadeToPalette(newColours, true, HalfSecond, true, false);
+			Palettes::FadeToPalette(newColours, true, HalfSecond, true, false);
 			BackgroundFunctions::CreateWindow(0, Vector2D(0, 0), Vector2D(0xFF, 0xFF));
 			BackgroundFunctions::CreateWindow(1, Vector2D(0xFF, 0xFF), Vector2D(0xFF, 0xFF));
 			for (int j = 0; j < 2; j++)
@@ -89,38 +91,6 @@ namespace Scenes
 					Game::OverwriteNPC(npc, i);
 				}
 			}
-		}
-
-		void PrimaryOverworld::WarpTo(u32 callbackData)
-		{
-			PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
-			const WarpEvent &warpData = ow->GetWarpEvent();
-			NPCData* data = Game::GetNPCDataPointer();
-			const MapHeader &header = GetMapHeaderFromBankAndMapID(warpData.mapBank, warpData.map);
-			bool success = false;
-			if (header.eventsLocation)
-			{
-				if (header.eventsLocation->warpEvents && header.eventsLocation->numWarps > warpData.warpID)
-				{
-					data[0].xLocation = header.eventsLocation->warpEvents[warpData.warpID].xPos;
-					data[0].yLocation = header.eventsLocation->warpEvents[warpData.warpID].yPos;
-					success = true;
-				}
-			}
-			if (!success)
-			{
-				data[0].xLocation = 0;
-				data[0].yLocation = 0;
-			}
-			Game::SetCurrentMap(header);
-			Game::SetCamera(Vector2D(0, 8));
-			ow->ResetColumn();
-			ow->ResetRow();
-			u16* newColours = new u16[512];
-			memset32((void*)newColours, 0, (sizeof(u16) * 512) >> 3);
-			ow->DrawMap(Game::GetPlayerPos(), newColours);
-			data[0].dataPointer->GetPalette(newColours, header.mapType == Indoors);
-			Game::FadeToPalette(newColours, true, QuarterSecond, false, false);
 		}
 
 		const MapHeader & PrimaryOverworld::GetMapHeaderFromBankAndMapID(u8 bank, u8 map)
@@ -706,14 +676,14 @@ namespace Scenes
 
 			if (warpOnCompleteMove)
 			{
-				Game::FadeToBlack(true, QuarterSecond, false, false);
+				Palettes::FadeToBlack(true, HalfSecond, false, false);
 				const MapHeader &header = GetMapHeaderFromBankAndMapID(warpData.mapBank, warpData.map);
 				if (SoundEngine::GetSongID() != header.musicTrack)
 				{
 					SoundEngine::PlaySong(header.musicTrack, 1);
 				}
 				warpOnCompleteMove = false;
-				Game::SetCustomFadeCallback((VoidFunctionPointerU32)WarpTo, 0);
+				Palettes::SetCustomFadeCallback(new Callbacks::WarpToNewMapCallback());
 				return;
 			}
 
@@ -744,24 +714,30 @@ namespace Scenes
 				{
 					SoundEngine::PlaySong(newHeader.musicTrack, 1);
 				}
-				switch (connect.alignment)
+				switch (connect.direction)
 				{
 					case 1:
 						data[0].xLocation -= connect.offset;
 						data[0].yLocation = 0;
 						break;
 					case 2:
+					{
 						data[0].xLocation -= connect.offset;
-						data[0].yLocation = newHeader.footerLocation->height - 1;
+						vu32 height = newHeader.footerLocation->height - 1;
+						data[0].yLocation = (u16)height;
 						break;
+					}
 					case 3:
 						data[0].xLocation = 0;
 						data[0].yLocation -= connect.offset;
 						break;
 					case 4:
-						data[0].xLocation = newHeader.footerLocation->width - 1;
+					{
+						vu32 width = newHeader.footerLocation->width - 1;
+						data[0].xLocation = (u16)width;
 						data[0].yLocation -= connect.offset;
 						break;
+					}
 					default:
 						break;
 				}
@@ -804,19 +780,20 @@ namespace Scenes
 
 				for (int i = 0; i < events.numTileScripts; i++)
 				{
-					if (tileScripts[i].xPos == data[0].xLocation && tileScripts[i].yPos == data[0].yLocation)
+					u16 xStart = tileScripts[i].xPos;
+					u16 yStart = tileScripts[i].yPos;
+					if (Maths::InRange(xStart, xStart + tileScripts[i].width - 1, data[0].xLocation)
+						&& Maths::InRange(yStart, yStart + tileScripts[i].height - 1, data[0].yLocation)
+						&& Variables::GetVar(tileScripts[i].varID) == tileScripts[i].varValue)
 					{
-						if (Variables::GetVar(tileScripts[i].varID) == tileScripts[i].varValue)
-						{
-							Variables::SetVar(LASTTALKED, U16Max);
-							new OverworldScriptRunner(tileScripts[i].scriptPointer);
-							break;
-						}
+						Variables::SetVar(LASTTALKED, U16Max);
+						new OverworldScriptRunner(tileScripts[i].scriptPointer);
+						break;
 					}
 				}
 			}
 
-			// Check Trainer Battles Second
+			// Check Trainer Battles Third
 
 			if (false)
 			{

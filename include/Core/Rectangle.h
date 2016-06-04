@@ -26,6 +26,8 @@ namespace Core
 		bool IsTileWithin(s16 x, s16 y);
 		const Vector2D & GetUpperLeft() const { return upperLeftCorner; }
 		const Vector2D & GetLowerRight() const { return lowerRightCorner; }
+		u32 GetWidth() const { return lowerRightCorner.GetX() - upperLeftCorner.GetX(); }
+		u32 GetHeight() const { return lowerRightCorner.GetY() - upperLeftCorner.GetY(); }
 	};
 }
 

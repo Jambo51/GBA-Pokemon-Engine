@@ -245,11 +245,11 @@ const WildPokemonData wildDataInner = { { 20, 20, 20, 20 }, { (WildPokemonEntry*
 const WildData mapWildData = { { (WildPokemonData*)&wildDataInner, 0, 0, 0, 0 } };
 
 const NPCEvent npcEvents3_0[] = { { 1, 23, 1, 4, 3, 10, 0, 0, 0, 0, 0 }, { 2, 27, 6, 2, 0xD, 17, 0, 0, 0, 0, 0 }, { 2, 71, 1, 1, 10, 8, 0, 0, 0, 0x2C, 0 } };
-const SignpostEvent signpostEvents3_0[] = { { 16, 16, 0, 0, 0 }, { 4, 7, 0, 0, 0 }, { 13, 7, 0, 0, 0 }, { 9, 11, 0, 0, 0 }, { 5, 14, 0, 0, 0 } };
-const WarpEvent warpEvents3_0[] = { { 6, 7, 0, 4, 0, 0 }, { 15, 7, 0, 4, 2, 0 }, { 16, 13, 0, 4, 3, 0 } };
-const TileScriptEvent tileScriptEvents3_0[] = { { 12, 1, 0x4050, 0, (u8*)0x00000000 }, { 13, 1, 0x4050, 0, (u8*)0x00000000 } };
+const SignpostEvent signpostEvents3_0[] = { { 16, 16, 1, 1, 0, 0, 0 }, { 4, 7, 1, 1, 0, 0, 0 }, { 13, 7, 1, 1, 0, 0, 0 }, { 9, 11, 1, 1, 0, 0, 0 }, { 5, 14, 1, 1, 0, 0, 0 } };
+const WarpEvent warpEvents3_0[] = { { 6, 7, 1, 1, 0, 4, 0, 0 }, { 15, 7, 1, 1, 0, 4, 2, 0 }, { 16, 13, 1, 1, 0, 4, 3, 0 } };
+const TileScriptEvent tileScriptEvents3_0[] = { { 12, 1, 2, 1, 0x4050, 0, (u8*)0x00000000 } };
 
-const EventsHeader eventsHeader3_0 = { 3, 5, 3, 2, (NPCEvent*)&npcEvents3_0, (SignpostEvent*)&signpostEvents3_0, (WarpEvent*)&warpEvents3_0, (TileScriptEvent*)&tileScriptEvents3_0 };
+const EventsHeader eventsHeader3_0 = { 3, 5, 3, 1, (NPCEvent*)&npcEvents3_0, (SignpostEvent*)&signpostEvents3_0, (WarpEvent*)&warpEvents3_0, (TileScriptEvent*)&tileScriptEvents3_0 };
 
 const MapFooter mapFooter3_0 = { 24, 20, &map3_0BorderData, &map3_0, (Tileset*)&tileset0, (Tileset*)&tileset1, 2, 2 };
 const MapHeader mapHeader3_0 = { (MapFooter*)&mapFooter3_0, (EventsHeader*)&eventsHeader3_0, 0, &connections3_0, Song_GSCPalletTown, { 3, 0 }, 0, Village, 0, 0, 0, 0, 0, 0, (WildData*)0 };
@@ -257,7 +257,7 @@ const MapHeader mapHeader3_0 = { (MapFooter*)&mapFooter3_0, (EventsHeader*)&even
 const MapFooter mapFooter3_19 = { 24, 40, &map3_0BorderData, &map3_19, &tileset0, &tileset1, 2, 2 };
 const MapHeader mapHeader3_19 = { &mapFooter3_19, 0, 0, &connections3_19, Song_GSCRoute1, { 3, 1 }, 1, Route, 0, 0, 0, 0, 0, 0, (WildData*)&mapWildData };
 
-const WarpEvent warpEvents4_0[] = { { 4, 8, 0, 3, 0, 0 } };
+const WarpEvent warpEvents4_0[] = { { 4, 8, 1, 1, 0, 3, 0, 0 } };
 
 const EventsHeader eventsHeader4_0 = { 0, 0, 1, 0, 0, 0, (WarpEvent*)&warpEvents4_0, 0 };
 

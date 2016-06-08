@@ -14,6 +14,7 @@
 #include "Input/Battles/BattleInputs.h"
 #include "Input/Menus/MenuInputs.h"
 #include "Input/Overworld/OverworldInputs.h"
+#include "Input/Misc/MiscInputs.h"
 
 
 

@@ -48,7 +48,7 @@ endif
 LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts -loverworldscripts -lbattletranscripts
 
 BUILD		:= build
-SRCDIRS		:= source source/Allocation source/Tasks source/Tasks/ScriptRunners source/Callbacks source/Text source/Core source/Core/Data source/Core/Pokemon source/Audio source/Audio/GameBoySounds source/Audio/M4A source/Entities source/Scenes source/Scenes/Battles source/Scenes/Menus source/Scenes/Misc source/Scenes/Overworld source/Input source/Input/Battles source/Input/Menus source/Input/Overworld source/Data source/Data/TitleScreen source/Data/Tilesets
+SRCDIRS		:= source source/Allocation source/Tasks source/Tasks/ScriptRunners source/Callbacks source/Text source/Core source/Core/Data source/Core/Pokemon source/Audio source/Audio/GameBoySounds source/Audio/M4A source/Entities source/Scenes source/Scenes/Battles source/Scenes/Menus source/Scenes/Misc source/Scenes/Overworld source/Input source/Input/Battles source/Input/Menus source/Input/Misc source/Input/Overworld source/Data source/Data/TitleScreen source/Data/Tilesets
 DATADIRS	:= 
 INCDIRS		:= include
 LIBDIRS		:= $(TONCCODE)/tonclib $(CURDIR)

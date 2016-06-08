@@ -6,6 +6,7 @@
  */
 
 #include "Input/InputManager.h"
+#include "Core/Game.h"
 #include "GlobalDefinitions.h"
 
 namespace Input
@@ -91,6 +92,9 @@ namespace Input
 
 	void InputManager::SetEventHandler(InputHandler* newHandler)
 	{
-		newInputHandler = newHandler;
+		if (Core::Game::IsValidPointer(newHandler))
+		{
+			newInputHandler = newHandler;
+		}
 	}
 }

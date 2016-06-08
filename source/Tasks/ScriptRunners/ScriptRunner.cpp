@@ -20,13 +20,25 @@ namespace Tasks
 			scriptPointer = script;
 			commandSet = commands;
 			status = 0;
+			forceTextboxOpen = false;
 			memset32((void*)&scriptBanks, 0, (sizeof(u32) * 5 + sizeof(u8*) * 10) >> 2);
 		}
 
 		ScriptRunner::~ScriptRunner()
 		{
-			Text::TextFunctions::ClearTextAreaFromMap(0, 0, 0, 30, 20);
-			Input::InputManager::SetEventHandler(new Input::OverworldInputEventHandler());
+			if (!forceTextboxOpen)
+			{
+				Text::TextFunctions::ClearTextAreaFromMap(0, 0, 0, 30, 20);
+			}
+			else
+			{
+				Text::TextFunctions::ClearTextTileArea();
+			}
+			Input::InputManager::SetEventHandler(new Input::DoNothingInputEventHandler());
+			if (oldPalette)
+			{
+				delete[] oldPalette;
+			}
 		}
 
 

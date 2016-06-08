@@ -1,0 +1,6 @@
+#globalorg @StandardScriptThirteen
+dontdestroytextboxonend 0x1
+preparemsg 0x0
+waitmsg
+waitkeypress
+return

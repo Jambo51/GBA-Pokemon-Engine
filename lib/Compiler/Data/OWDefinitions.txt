@@ -213,7 +213,7 @@
 #define setcatchlocation,SetCaptureLocation,2,1
 #define braille2,NoOperation,4
 #define bufferitems,BufferItemPluralName,1,2,2
-#define cmdd5,NoOperation
+#define dontdestroytextboxonend,SetKeepTextboxOpen,1
 #define buffertrainerclass,1,2
 #define buffertrainername,1,2
 #define buffercontesttype,1,2

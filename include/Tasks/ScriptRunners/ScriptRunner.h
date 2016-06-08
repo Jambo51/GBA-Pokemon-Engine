@@ -27,11 +27,13 @@ namespace Tasks
 			u32 callStackPosition;
 			u8* callStack[10];
 			u8* scriptPointer;
+			u16* oldPalette;
 			U32FunctionPointerScriptRunner* commandSet;
 			bool text;
 			bool keyPressReceived;
 			bool textWait;
 			bool eventHandlerSet;
+			bool forceTextboxOpen;
 			ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands);
 		public:
 			virtual ~ScriptRunner();
@@ -59,6 +61,21 @@ namespace Tasks
 			bool EventHandlerSet() const { return eventHandlerSet; }
 			void EventHandlerSet(bool value) { eventHandlerSet = value; }
 			const void* GetBankPointer(u32 bankID) const { return &scriptBanks[bankID]; }
+			void SetOldPalette()
+			{
+				if (oldPalette)
+				{
+					delete[] oldPalette;
+				}
+				oldPalette = new u16[256];
+				memcpy32(oldPalette, (void*)0x05000000, 512 >> 2);
+			}
+			u16* GetOldPalette()
+			{
+				return oldPalette;
+			}
+			void SetForceTextBoxOpen(bool value) { forceTextboxOpen = value; }
+			bool ForceTextBoxOpen() { return forceTextboxOpen; }
 		};
 	}
 }

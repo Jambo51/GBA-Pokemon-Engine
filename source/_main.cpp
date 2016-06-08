@@ -62,7 +62,6 @@ int main()
 	SceneManager::SetScene(new TitleScreen());
 	Allocator::Initialise((void*)0x06010000, 0x8000);
 	Game::SetCurrentMap(PrimaryOverworld::GetMapHeaderFromBankAndMapID(Game::GetCurrentMap().mapLocation.mapBank, Game::GetCurrentMap().mapLocation.map));
-	Game::SetPlayerName("Jambo51");
 	while (true)
 	{
 		VBlankIntrWait();

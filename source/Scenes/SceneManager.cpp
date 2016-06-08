@@ -8,6 +8,7 @@
 #include "GlobalDefinitions.h"
 #include "Scenes/SceneManager.h"
 #include "Scenes/Scene.h"
+#include "Core/Game.h"
 
 namespace Scenes
 {
@@ -27,7 +28,7 @@ namespace Scenes
 
 	void SceneManager::SetScene(Scene* newscene)
 	{
-		if (newscene)
+		if (Core::Game::IsValidPointer(newscene))
 		{
 			newScene = newscene;
 		}

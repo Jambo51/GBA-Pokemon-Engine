@@ -12,6 +12,7 @@
 #include "Core.h"
 #include "Audio.h"
 #include "Text.h"
+#include "Callbacks.h"
 #include "LibraryHeaders/liboverworldscripts.h"
 #include "Callbacks/NotifyTextEndCallback.h"
 
@@ -23,6 +24,7 @@ using namespace Scenes;
 using namespace Input;
 using namespace Scenes::Battles;
 using namespace Scenes::Overworld;
+using namespace Callbacks;
 
 u32 NoOperation(Tasks::ScriptRunners::ScriptRunner* runner) // nop
 {
@@ -158,7 +160,7 @@ u32 IfCall(Tasks::ScriptRunners::ScriptRunner* runner)
 	return NotEnded;
 }
 
-#define NumStdScripts 11
+#define NumStdScripts 14
 
 TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptZero,
@@ -171,7 +173,10 @@ TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptSeven,
 		(u8*)StandardScriptEight,
 		(u8*)StandardScriptNine,
-		(u8*)StandardScriptTen
+		(u8*)StandardScriptTen,
+		(u8*)StandardScriptEleven,
+		(u8*)StandardScriptTwelve,
+		(u8*)StandardScriptThirteen
 };
 
 u32 GotoStandardScript(Tasks::ScriptRunners::ScriptRunner* runner)
@@ -1232,6 +1237,76 @@ u32 WaitKeyPress(Tasks::ScriptRunners::ScriptRunner* runner)
 	return NotEnded;
 }
 
+u32 YesNoBox(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	if (!runner->EventHandlerSet())
+	{
+		InputManager::SetEventHandler(new YesNoBoxInputEventHandler(runner));
+		TextFunctions::DrawMenuBox(0, *(script + 1), *(script + 2), 8, 6);
+		TextFunctions::DrawString("Yes", 8, 0x20);
+		TextFunctions::DrawString("No", 8, 0x30);
+		TextFunctions::DrawCharacter(ARROWCHAR, 0, 0x20);
+		TextFunctions::DrawTextAreaToMap(0, Core::Rectangle(*(script + 1) + 1, *(script + 2) + 1, 6, 4), Core::Vector2D(0, 4));
+		return WaitForFrames;
+	}
+	if (!runner->KeyPressReceived())
+	{
+		return WaitForFrames;
+	}
+	TextFunctions::DeleteMenuBox(0, *(script + 1), *(script + 2), 8, 6);
+	TextFunctions::UnfillMenuBox(0, *(script + 1), *(script + 2), 8, 6);
+	runner->KeyPressReceived(false);
+	runner->IncrementScriptPointer(3);
+	InputManager::SetEventHandler(new DoNothingInputEventHandler());
+	runner->EventHandlerSet(false);
+	return NotEnded;
+}
+
+u32 ShowBox(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	TextFunctions::LoadPaletteAndTiles();
+	TextFunctions::DrawMenuBox(0, *(script + 1), *(script + 2), *(script + 3), *(script + 4));
+	TextFunctions::FillMenuBox(0, *(script + 1), *(script + 2), *(script + 3), *(script + 4));
+	runner->IncrementScriptPointer(5);
+	return NotEnded;
+}
+
+u32 HideBox(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	TextFunctions::DeleteMenuBox(0, *(script + 1), *(script + 2), *(script + 3), *(script + 4));
+	TextFunctions::UnfillMenuBox(0, *(script + 1), *(script + 2), *(script + 3), *(script + 4));
+	runner->IncrementScriptPointer(5);
+	return NotEnded;
+}
+
+u32 ShowPokemonSprite(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	TextFunctions::LoadPaletteAndTiles();
+	((Tasks::ScriptRunners::OverworldScriptRunner*)runner)->PokePic(true, *(script + 3), *(script + 4));
+	TextFunctions::DrawMenuBox(0, *(script + 3), *(script + 4), 10, 10);
+	TextFunctions::FillMenuBox(0, *(script + 3), *(script + 4), 10, 10);
+	runner->IncrementScriptPointer(5);
+	return NotEnded;
+}
+
+u32 HidePokemonSprite(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	if (((Tasks::ScriptRunners::OverworldScriptRunner*)runner)->PokePic())
+	{
+		u8 xStart = ((Tasks::ScriptRunners::OverworldScriptRunner*)runner)->PokePicXPos();
+		u8 yStart = ((Tasks::ScriptRunners::OverworldScriptRunner*)runner)->PokePicYPos();
+		TextFunctions::DeleteMenuBox(0, xStart, yStart, 10, 10);
+		TextFunctions::UnfillMenuBox(0, xStart, yStart, 10, 10);
+		((Tasks::ScriptRunners::OverworldScriptRunner*)runner)->PokePic(false);
+	}
+	runner->IncrementScriptPointer(1);
+	return NotEnded;
+}
+
 u32 GivePokemon(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
@@ -1664,6 +1739,65 @@ u32 CheckMoney(Tasks::ScriptRunners::ScriptRunner* runner)
 	return NotEnded;
 }
 
+u32 FadeScreen(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	u32 index = *(script + 1);
+	switch (index)
+	{
+		case 0:
+			runner->SetOldPalette();
+			Palettes::FadeToBlack(true, HalfSecond, false, false);
+			break;
+		case 1:
+			runner->SetOldPalette();
+			Palettes::FadeToWhite(true, HalfSecond, false, false);
+			break;
+		case 2:
+			Palettes::FadeToPalette(runner->GetOldPalette(), true, HalfSecond, false, false);
+			break;
+	}
+	Palettes::SetCustomFadeCallback(new ReleaseWaitingScriptRunnerCallback(runner));
+	runner->IncrementScriptPointer(2);
+	runner->SetWaitFrames(1);
+	return NotEnded;
+}
+
+u32 FadeScreenDelay(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	if (runner->GetWaitFrames())
+	{
+		if (!runner->DecrementWaitFrames())
+		{
+			return WaitForFrames;
+		}
+	}
+	else
+	{
+		runner->SetWaitFrames(*(script + 2));
+		return WaitForFrames;
+	}
+	switch (*(script + 1))
+	{
+		case 0:
+			runner->SetOldPalette();
+			Palettes::FadeToBlack(true, HalfSecond, false, false);
+			break;
+		case 1:
+			runner->SetOldPalette();
+			Palettes::FadeToWhite(true, HalfSecond, false, false);
+			break;
+		case 2:
+			Palettes::FadeToPalette(runner->GetOldPalette(), true, HalfSecond, false, false);
+			break;
+	}
+	Palettes::SetCustomFadeCallback(new ReleaseWaitingScriptRunnerCallback(runner));
+	runner->IncrementScriptPointer(2);
+	runner->SetWaitFrames(1);
+	return NotEnded;
+}
+
 u32 SetHealingPlace(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
@@ -1826,6 +1960,13 @@ u32 SetCatchLocation(Tasks::ScriptRunners::ScriptRunner* runner)
 		Variables::SetVar(LASTRESULT, false);
 	}
 	runner->IncrementScriptPointer(4);
+	return NotEnded;
+}
+
+u32 SetKeepTextBoxOpen(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	((Tasks::ScriptRunners::OverworldScriptRunner*)runner)->SetForceTextBoxOpen(*(runner->GetScriptPointer() + 1) == 1);
+	runner->IncrementScriptPointer(2);
 	return NotEnded;
 }
 

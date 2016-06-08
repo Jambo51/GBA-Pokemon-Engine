@@ -124,20 +124,20 @@ namespace Tasks
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&WaitKeyPress,
+				(U32FunctionPointerScriptRunner)&YesNoBox,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
+				(U32FunctionPointerScriptRunner)&ShowBox,
+				(U32FunctionPointerScriptRunner)&HideBox,
+				(U32FunctionPointerScriptRunner)&HideBox,
+				(U32FunctionPointerScriptRunner)&ShowPokemonSprite,
+				(U32FunctionPointerScriptRunner)&HidePokemonSprite,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&GivePokemon,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
+				(U32FunctionPointerScriptRunner)&GiveEgg,
+				(U32FunctionPointerScriptRunner)&SetPokemonPP,
 				(U32FunctionPointerScriptRunner)&CheckAttack,
 				(U32FunctionPointerScriptRunner)&BufferSpecies,
 				(U32FunctionPointerScriptRunner)&BufferFirstPokemon,
@@ -165,8 +165,8 @@ namespace Tasks
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
-				(U32FunctionPointerScriptRunner)&NoOperation,
+				(U32FunctionPointerScriptRunner)&FadeScreen,
+				(U32FunctionPointerScriptRunner)&FadeScreenDelay,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
@@ -227,7 +227,7 @@ namespace Tasks
 				(U32FunctionPointerScriptRunner)&SetCatchLocation,
 				(U32FunctionPointerScriptRunner)&NoOperation,
 				(U32FunctionPointerScriptRunner)&BufferPluralItem,
-				(U32FunctionPointerScriptRunner)&NoOperation,
+				(U32FunctionPointerScriptRunner)&SetKeepTextBoxOpen,
 				(U32FunctionPointerScriptRunner)&MultiplyVar,
 				(U32FunctionPointerScriptRunner)&DivideVar,
 				(U32FunctionPointerScriptRunner)&AddVarToVar,
@@ -246,6 +246,7 @@ namespace Tasks
 
 		OverworldScriptRunner::OverworldScriptRunner(u8* script) : ScriptRunner(script, (U32FunctionPointerScriptRunner*)&overworldCommands)
 		{
+			pokePic = false;
 			if (!script)
 			{
 				scriptPointer = errorScript;

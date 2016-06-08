@@ -177,7 +177,8 @@
 .equ	SetWorldMapFlag,208	
 .equ	WarpTeleport2,	209
 .equ	SetCaptureLocation,210	
-.equ	BufferItemPluralName,212	
+.equ	BufferItemPluralName,212
+.equ	SetKeepTextboxOpen,	213	
 .equ	MultiplyVar,	214
 .equ	DivideVar,	215
 .equ	AddVarToVar,	216

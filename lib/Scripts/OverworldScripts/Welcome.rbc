@@ -1,0 +1,86 @@
+#include "std"
+
+#globalorg @WelcomePartOne
+message @WelcomeMessage MSG_KEEPOPENANDDONTDESTROY
+setvar 0x801F 0x1
+end
+
+#globalorg @WelcomePartTwo
+message @WelcomeMessageOne MSG_KEEPOPENANDDONTDESTROY
+setvar 0x801F 0x3
+end
+
+#globalorg @WelcomePartThree
+message @WelcomeMessageTwo MSG_KEEPOPENANDDONTDESTROY
+setvar 0x801F 0x5
+end
+
+#globalorg @WelcomePartFour
+message @WelcomeMessageThree MSG_KEEPOPEN
+setvar 0x801F 0x7
+end
+
+#globalorg @WelcomePartFive
+message @WelcomeMessageFour MSG_KEEPOPENANDFADEBLACK
+setvar 0x801F 0xB
+end
+
+#globalorg @WelcomePartSix
+message @WelcomeMessageFive MSG_YESNO
+if B_YES goto @WelcomePartSixTwo
+fadescreen 0x0
+waitstate
+setvar 0x801F 0xB
+end
+
+#org @WelcomePartSixTwo
+message @WelcomeMessageSix MSG_KEEPOPENANDDONTDESTROY
+#org @WelcomeMultichoice
+multichoice 0x1 0x1 0x0 0x0
+message @WelcomeMessageSixTwo MSG_YESNO
+if B_YES goto @WelcomePartSixThree
+message @WelcomeMessageSixThree MSG_KEEPOPENANDDONTDESTROY
+goto @WelcomeMultichoice
+
+#org @WelcomePartSixThree
+message @WelcomeMessageSixFour MSG_KEEPOPEN
+setvar 0x801F 0xD
+end
+
+#globalorg WelcomePartSeven
+message @WelcomeMessageSeven MSG_KEEPOPEN
+setvar 0x801F 0xF
+end
+
+#org @WelcomeMessage
+#text Hello, there!\nGlad to meet you!\pWelcome to the world of Pokémon!\pMy name is Oak.\pPeople affectionately refer to me\nas the Pokémon Professor.\pThis world[.]
+
+#org @WelcomeMessageOne
+#text [.]is inhabited far and wide by\ncreatues called Pokémon.\pFor some people, Pokémon are pets.\nOthers use them for battling.\pAs for myself[.]\pI study Pokémon as a profession.
+
+#org @WelcomeMessageTwo
+#text But first, tell me a little about\nyourself.
+
+#org @WelcomeMessageThree
+#text Now tell me. Are you a boy?\nOr are you a girl?
+
+#org @WelcomeMessageFour
+#text Let's begin with your name.\nWhat is it?
+
+#org @WelcomeMessageFive
+#text Right[.]\nSo your name is [player]?
+
+#org @WelcomeMessageSix
+#text This is my grandson.\pHe's been your rival since you\nboth were babies.\p[.]Erm, what was his name now?
+
+#org @WelcomeMessageSixTwo
+#text [.]Er, was it [rival]?
+
+#org @WelcomeMessageSeven
+#text [player]!\pYour very own Pokémon legend is\nabout to unfold!\pA world of dreams and adventures\nwith Pokémon awaits! Let's go!
+
+#org @WelcomeMessageSixThree
+#text Your rival's name, what was it now?
+
+#org @WelcomeMessageSixFour
+#text That's right! I remember now!\nHis name is [rival]!

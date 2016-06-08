@@ -26,7 +26,7 @@ namespace Callbacks
 	{
 		if (runner)
 		{
-			runner->SetWaitFrames(runner->GetWaitFrames() & (~(0x10)));
+			runner->SetWaitFrames(0);
 		}
 	}
 }

@@ -11,7 +11,7 @@
 #include "OverworldInputEventHandler.h"
 #include "ScriptWaitKeyPressEventHandler.h"
 #include "TextInputHandler.h"
-
+#include "YesNoBoxInputEventHandler.h"
 
 
 #endif /* INCLUDE_INPUT_OVERWORLD_OVERWORLDINPUTS_H_ */

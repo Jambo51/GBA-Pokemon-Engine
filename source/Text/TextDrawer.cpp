@@ -8,6 +8,7 @@
 #include "Text/TextDrawer.h"
 #include "Text/TextFunctions.h"
 #include "Tasks/TaskManager.h"
+#include "Core/Game.h"
 #include "Scenes/Overworld/PrimaryOverworld.h"
 
 using namespace Tasks;
@@ -29,7 +30,7 @@ namespace Text
 		this->inkColour = inkColour;
 		TextFunctions::SetTextColourFromInkColour(inkColour);
 		TextFunctions::ClearTextTileArea();
-		TextFunctions::DrawTextBox(0, 0, 14, 30, 6);
+		TextFunctions::DrawTextBox(0, 0, 14, 31, 6);
 		this->Initialise();
 	}
 
@@ -42,7 +43,7 @@ namespace Text
 	TextDrawer::~TextDrawer()
 	{
 		// TODO Auto-generated destructor stub
-		if (string)
+		if (Core::Game::IsValidPointer(string))
 		{
 			delete[] string;
 		}
@@ -121,14 +122,12 @@ namespace Text
 		}
 		currentY = newCurrentY;
 		framesToWait = textSpeed;
-		aDown = false;
-		bDown = false;
 	}
 
 	void TextDrawer::Update()
 	{
 		const TFont* font = TextFunctions::GetFont();
-		if (framesToWait == 0)
+		if (framesToWait == 0 || aDown)
 		{
 			char c = string[stringPosition];
 			if (c != '\0')
@@ -140,6 +139,7 @@ namespace Text
 				if (endFunction)
 				{
 					endFunction->DoCallback();
+					delete endFunction;
 				}
 				TaskManager::RemoveTask(this);
 			}
@@ -147,8 +147,8 @@ namespace Text
 		else
 		{
 			framesToWait--;
-			aDown = false;
-			bDown = false;
 		}
+		aDown = false;
+		bDown = false;
 	}
 }

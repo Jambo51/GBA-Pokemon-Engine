@@ -15,14 +15,15 @@
 #define MSG_YESNO 0x5
 #define MSG_NORMAL 0x6
 #define MSG_POKENAV 0xA
+#define MSG_KEEPOPENANDFADEBLACK 0xB
+#define MSG_KEEPOPENANDFADEWHITE 0xC
+#define MSG_KEEPOPENANDDONTDESTROY 0xD
 
 #define MOVE_PLAYER 0xFF
 #define MOVE_CAMERA 0x7F
 
 #define B_FALSE 0x0
 #define B_TRUE 0x1
-#define B_NO 0x0
-#define B_YES 0x1
 #define B_BOY 0x0
 #define B_GIRL 0x1
 
@@ -36,6 +37,10 @@
 #define B_>= 0x4
 #define B_!= 0x5
 #define B_<> 0x5
+#define B_YES 0x0
+#define B_Yes 0x0
+#define B_NO 0x1
+#define B_No 0x1
 
 #define SP_HEALPKMN 0x0
 #define SP_CHOOSEPKMN 0x9C

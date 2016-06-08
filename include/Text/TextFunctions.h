@@ -59,6 +59,12 @@ namespace Text
 		static void DrawMenuBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
 		static void DrawTextBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
 		static void DrawMenuBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
+		static void DeleteTextBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DeleteMenuBoxTop(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DeleteTextBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DeleteMenuBoxBottom(u32 layer, u32 xStartTile, u32 yStartTile, u32 width);
+		static void DeleteTextBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
+		static void DeleteMenuBoxSides(u32 layer, u32 xTileStart, u32 yTileStart, u32 height, u32 width);
 	public:
 		static const TFont* GetFont();
 		static void SetFont(const TFont* font);
@@ -101,7 +107,13 @@ namespace Text
 		static void ClearTextAreaFromMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight);
 		static void ClearTile(u32 x, u32 y);
 		static void DrawMenuBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void FillMenuBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void UnfillMenuBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void DeleteMenuBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
 		static void DrawTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void FillTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void UnfillTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static void DeleteTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
 	};
 }
 

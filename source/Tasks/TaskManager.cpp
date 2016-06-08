@@ -42,9 +42,9 @@ namespace Tasks
 		}
 		for (int i = 0; i < tasksToRemove.Size(); i++)
 		{
-			Task* cb = tasksToRemove[i];
-			tasks.Remove(cb);
-			delete cb;
+			Task* t = tasksToRemove[i];
+			tasks.Remove(t);
+			delete t;
 		}
 		if (tasksToRemove.Size())
 		{

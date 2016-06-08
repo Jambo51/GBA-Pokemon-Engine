@@ -1,0 +1,7 @@
+#globalorg @StandardScriptEleven
+preparemsg 0x0
+waitmsg
+waitkeypress
+fadescreen 0x0
+waitstate
+return

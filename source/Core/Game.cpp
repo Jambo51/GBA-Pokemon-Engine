@@ -1,4 +1,5 @@
 /*
+
  * Game.cpp
  *
  *  Created on: 14 May 2015
@@ -100,6 +101,11 @@ namespace Core
 	{
 	}
 
+	void Game::ClearPlayer()
+	{
+		memset32(&player, 0, sizeof(Player) >> 2);
+	}
+
 	void Game::Initialise()
 	{
 		if (!options.options.optionsSet)
@@ -114,7 +120,6 @@ namespace Core
 		memset32(&storageBoxes, 0, sizeof(PokemonStorageBoxes) >> 2);
 		memset32(&partyPokemon, 0, (sizeof(Core::Pokemon::Pokemon) * 6) >> 2);
 		memset32(&bag, 0, sizeof(Bag) >> 2);
-		memset32(&player, 0, sizeof(Player) >> 2);
 		memset32(&overworldData, 0, (sizeof(NPCData) * NumberOfOverworlds) >> 2);
 		soundEngineID = GBPSoundsEngineID;
 		eggCycle = EggCycleLength;
@@ -791,6 +796,19 @@ namespace Core
 		}
 		player.balance += cashAwarded;
 		return true;
+	}
+
+	void Game::SetPlayerName(char* name)
+	{
+		for (int i = 0; i < 7; i++)
+		{
+			char c = name[i];
+			player.name[i] = c;
+			if (c == '\0')
+			{
+				break;
+			}
+		}
 	}
 
 	bool Game::RemovePlayerMoney(u32 cashRemoved)

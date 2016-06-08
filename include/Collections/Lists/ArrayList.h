@@ -61,12 +61,12 @@ namespace Collections
 					}
 				}
 
-				int Size() const
+				int StringSize() const
 				{
 					return itemCount - 1;
 				}
 
-				int RealSize() const
+				int Size() const
 				{
 					return itemCount;
 				}

@@ -60,7 +60,7 @@ namespace Text
 	String* String::SubString(u32 startIndex, u32 length) const
 	{
 		char* array = underlyingString.GetPointer();
-		if (underlyingString.Size() >= startIndex + length)
+		if (underlyingString.StringSize() >= startIndex + length)
 		{
 			array = (char*)(((u32)array) + startIndex);
 			Collections::Lists::ArrayList<char> newString = Collections::Lists::ArrayList<char>(length, array);
@@ -79,7 +79,7 @@ namespace Text
 		{
 			index++;
 		}
-		u32 startPos = underlyingString.Size() - index;
+		u32 startPos = underlyingString.StringSize() - index;
 		while (index > 0)
 		{
 			if (underlyingString[startPos + index] != c[index])
@@ -376,7 +376,7 @@ namespace Text
 	{
 		if (c != '\0')
 		{
-			underlyingString.Replace(underlyingString.Size(), c);
+			underlyingString.Replace(underlyingString.StringSize(), c);
 		}
 		underlyingString.PushBack('\0');
 	}
@@ -385,7 +385,7 @@ namespace Text
 	{
 		if (c)
 		{
-			underlyingString.Replace(underlyingString.Size(), c[0]);
+			underlyingString.Replace(underlyingString.StringSize(), c[0]);
 			int index = 1;
 			while (c[index] != '\0')
 			{

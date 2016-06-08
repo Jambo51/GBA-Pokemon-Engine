@@ -218,18 +218,12 @@ namespace Core
 			}
 			return pointer;
 		}
-		static void SetPlayerName(char* name)
+		static void SetPlayerName(char* name);
+		static bool IsValidPointer(void* pointer)
 		{
-			for (int i = 0; i < 7; i++)
-			{
-				char c = name[i];
-				player.name[i] = c;
-				if (c == '\0')
-				{
-					break;
-				}
-			}
+			return (u32)pointer >= 0x02000000 && (u32)pointer < 0x02040000;
 		}
+		static void ClearPlayer();
 	};
 }
 

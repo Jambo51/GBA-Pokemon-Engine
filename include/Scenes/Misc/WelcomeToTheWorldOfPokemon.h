@@ -19,7 +19,7 @@ namespace Scenes
 			private:
 				u32 currentInnerScene;
 			public:
-				WelcomeToTheWorldOfPokemon();
+				WelcomeToTheWorldOfPokemon(u32 varStartValue = 0);
 				~WelcomeToTheWorldOfPokemon();
 				void Update();
 				void OnEnter();

@@ -27,9 +27,9 @@ namespace Callbacks
 
 	void WarpToNewMapCallback::DoCallback()
 	{
-		PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+		SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 		const WarpEvent &warpData = ow->GetWarpEvent();
-		NPCData* data = Game::GetNPCDataPointer();
+		NPCData* data = Game::GetNPCData();
 		const MapHeader &header = PrimaryOverworld::GetMapHeaderFromBankAndMapID(warpData.mapBank, warpData.map);
 		bool success = false;
 		if (header.eventsLocation)

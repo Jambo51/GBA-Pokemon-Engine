@@ -17,12 +17,12 @@ namespace Input
 	public:
 		OptionsInputEventHandler();
 		~OptionsInputEventHandler();
-		void OnPressA();
-		void OnPressB();
-		void OnPressUp();
-		void OnPressDown();
-		void OnPressRight();
-		void OnPressLeft();
+		bool OnPressA();
+		bool OnPressB();
+		bool OnPressUp();
+		bool OnPressDown();
+		bool OnPressRight();
+		bool OnPressLeft();
 	};
 }
 

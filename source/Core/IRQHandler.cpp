@@ -6,7 +6,6 @@
  */
 
 #include "Core/IRQHandler.h"
-#include "GlobalDefinitions.h"
 
 namespace Core
 {
@@ -26,8 +25,8 @@ namespace Core
 		irq_init((VoidFunctionPointerVoid)NULL);
 	}
 
-	void IRQHandler::PrimeIRQ(enum eIrqIndex irqID)
+	void IRQHandler::PrimeIRQ(enum eIrqIndex irqID, VoidFunctionPointerVoid interruptFunction)
 	{
-		irq_add(II_VBLANK, (VoidFunctionPointerVoid)NULL);
+		irq_add(II_VBLANK, interruptFunction);
 	}
 }

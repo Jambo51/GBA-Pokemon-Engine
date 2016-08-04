@@ -1,9 +1,8 @@
 #include "Entities/EntityManager.h"
-#include "Entities/Entity.h"
 
 namespace Entities
 {
-	EWRAM_LOCATION ALIGN(4) Collections::Lists::LinkedList<Entity*> EntityManager::_entities = Collections::Lists::LinkedList<Entity*>();
+	EWRAM_LOCATION ALIGN(4) Collections::Lists::ArrayList<SmartPointer<Entity> > EntityManager::_entities = Collections::Lists::ArrayList<SmartPointer<Entity> >();
 
 	EntityManager::EntityManager(void)
 	{
@@ -64,7 +63,7 @@ namespace Entities
 			}
 			for (int i = 0; i < _entities.Size(); i++)
 			{
-				OAMObject* obj = _entities[order[i]]->GetObject();
+				SmartPointer<OAMObject> obj = _entities[order[i]]->GetObject();
 				if (obj)
 				{
 					obj->Update(i);
@@ -76,10 +75,7 @@ namespace Entities
 
 	void EntityManager::Clear()
 	{
-		for (int i = 0; i < _entities.Size(); i++)
-		{
-			delete _entities[i];
-		}
+		_entities.Clear();
 	}
 
 	bool EntityManager::Update()
@@ -99,12 +95,12 @@ namespace Entities
 		}
 	}
 
-	void EntityManager::RegisterEntity(Entity* entity)
+	void EntityManager::RegisterEntity(SmartPointer<Entity> entity)
 	{
 		_entities.PushBack(entity);
 	}
 
-	void EntityManager::RemoveEntity(Entity* entity)
+	void EntityManager::RemoveEntity(SmartPointer<Entity> entity)
 	{
 		_entities.Remove(entity);
 	}

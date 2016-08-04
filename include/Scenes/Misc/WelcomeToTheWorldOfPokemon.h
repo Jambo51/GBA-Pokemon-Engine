@@ -17,6 +17,7 @@ namespace Scenes
 		class WelcomeToTheWorldOfPokemon : public Scene
 		{
 			private:
+				static char* defaultRivalNames[];
 				u32 currentInnerScene;
 			public:
 				WelcomeToTheWorldOfPokemon(u32 varStartValue = 0);

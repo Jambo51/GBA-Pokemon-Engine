@@ -10,6 +10,8 @@
 #include "Scenes/SceneManager.h"
 #include "Scenes/Menus/LoadGameScreen.h"
 #include "Audio/SoundEngine.h"
+#include "Input/InputManager.h"
+#include "Input/DoNothingInputEventHandler.h"
 
 using namespace Audio;
 using namespace Core;
@@ -28,56 +30,68 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
-	void LoadGameScreenInputEventHandler::OnPressA()
+	bool LoadGameScreenInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		Palettes::FadeToBlack(true, HalfSecond, true, true);
-		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
-		if (sc->SetExitContext())
+		if (!InputHandler::OnPressA())
 		{
-			SoundEngine::FadeSongToSilence();
+			Palettes::FadeToBlack(true, HalfSecond, true, true);
+			SmartPointer<LoadGameScreen> sc = SmartPointerFunctions::Cast<Scene, LoadGameScreen>(SceneManager::GetScene());
+			if (sc->SetExitContext())
+			{
+				SoundEngine::FadeSongToSilence();
+			}
+			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 		}
+		return false;
 	}
 
-	void LoadGameScreenInputEventHandler::OnPressB()
+	bool LoadGameScreenInputEventHandler::OnPressB()
 	{
-		InputHandler::OnPressB();
-		Palettes::FadeToBlack(true, HalfSecond, true, true);
-		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
-		if (sc->SetExitContext(1))
+		if (!InputHandler::OnPressB())
 		{
-			SoundEngine::FadeSongToSilence();
+			Palettes::FadeToBlack(true, HalfSecond, true, true);
+			SmartPointer<LoadGameScreen> sc = SmartPointerFunctions::Cast<Scene, LoadGameScreen>(SceneManager::GetScene());
+			if (sc->SetExitContext(1))
+			{
+				SoundEngine::FadeSongToSilence();
+			}
+			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 		}
+		return false;
 	}
 
-	void LoadGameScreenInputEventHandler::OnPressUp()
+	bool LoadGameScreenInputEventHandler::OnPressUp()
 	{
-		InputHandler::OnPressUp();
-		if (!keyHeld[Key_Up])
+		if (!InputHandler::OnPressUp())
 		{
-			LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+			SmartPointer<LoadGameScreen> sc = SmartPointerFunctions::Cast<Scene, LoadGameScreen>(SceneManager::GetScene());
 			sc->DecrementMenuPosition();
 		}
+		return false;
 	}
 
-	void LoadGameScreenInputEventHandler::OnPressDown()
+	bool LoadGameScreenInputEventHandler::OnPressDown()
 	{
-		InputHandler::OnPressDown();
-		if (!keyHeld[Key_Down])
+		if (!InputHandler::OnPressDown())
 		{
-			LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
+			SmartPointer<LoadGameScreen> sc = SmartPointerFunctions::Cast<Scene, LoadGameScreen>(SceneManager::GetScene());
 			sc->IncrementMenuPosition();
 		}
+		return false;
 	}
 
-	void LoadGameScreenInputEventHandler::OnPressStart()
+	bool LoadGameScreenInputEventHandler::OnPressStart()
 	{
-		InputHandler::OnPressStart();
-		Palettes::FadeToBlack(true, HalfSecond, true, true);
-		LoadGameScreen* sc = (LoadGameScreen*)SceneManager::GetScene();
-		if (sc->SetExitContext())
+		if (!InputHandler::OnPressStart())
 		{
-			SoundEngine::FadeSongToSilence();
+			Palettes::FadeToBlack(true, HalfSecond, true, true);
+			SmartPointer<LoadGameScreen> sc = SmartPointerFunctions::Cast<Scene, LoadGameScreen>(SceneManager::GetScene());
+			if (sc->SetExitContext())
+			{
+				SoundEngine::FadeSongToSilence();
+			}
+			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 		}
+		return false;
 	}
 }

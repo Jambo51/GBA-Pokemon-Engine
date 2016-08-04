@@ -118,7 +118,7 @@ namespace Entities
 
 	Vector2D OAMObject::CalculateRelativePosition(const Vector2D& pos)
 	{
-		NPCData* data = Game::GetNPCDataPointer();
+		NPCData* data = Game::GetNPCData();
 		u16 xPosition = 112;
 		s16 xOffset = pos.GetX() - data[0].xLocation;
 		if (xOffset != 0)

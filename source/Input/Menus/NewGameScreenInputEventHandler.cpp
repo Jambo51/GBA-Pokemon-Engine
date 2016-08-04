@@ -1,5 +1,5 @@
 /*
- * LoadGameScreenInputEventHandler.cpp
+ * NewGameScreenInputEventHandler.cpp
  *
  *  Created on: 28 May 2015
  *      Author: Jamie
@@ -30,68 +30,68 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
-	void NewGameScreenInputEventHandler::OnPressA()
+	bool NewGameScreenInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		if (!keyHeld[Key_A])
+		if (!InputHandler::OnPressA())
 		{
 			Palettes::FadeToBlack(true, HalfSecond, true, true);
-			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			SmartPointer<NewGameScreen> sc = SmartPointerFunctions::Cast<Scene, NewGameScreen>(SceneManager::GetScene());
 			if (sc->SetExitContext())
 			{
 				SoundEngine::FadeSongToSilence();
 			}
+			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 		}
-		InputManager::SetEventHandler(new DoNothingInputEventHandler());
+		return false;
 	}
 
-	void NewGameScreenInputEventHandler::OnPressB()
+	bool NewGameScreenInputEventHandler::OnPressB()
 	{
-		InputHandler::OnPressB();
-		if (!keyHeld[Key_B])
+		if (!InputHandler::OnPressB())
 		{
 			Palettes::FadeToBlack(true, HalfSecond, true, true);
-			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			SmartPointer<NewGameScreen> sc = SmartPointerFunctions::Cast<Scene, NewGameScreen>(SceneManager::GetScene());
 			if (sc->SetExitContext(1))
 			{
 				SoundEngine::FadeSongToSilence();
 			}
+			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 		}
-		InputManager::SetEventHandler(new DoNothingInputEventHandler());
+		return false;
 	}
 
-	void NewGameScreenInputEventHandler::OnPressUp()
+	bool NewGameScreenInputEventHandler::OnPressUp()
 	{
-		InputHandler::OnPressUp();
-		if (!keyHeld[Key_Up])
+		if (!InputHandler::OnPressUp())
 		{
-			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			SmartPointer<NewGameScreen> sc = SmartPointerFunctions::Cast<Scene, NewGameScreen>(SceneManager::GetScene());
 			sc->DecrementMenuPosition();
 		}
+		return false;
 	}
 
-	void NewGameScreenInputEventHandler::OnPressDown()
+	bool NewGameScreenInputEventHandler::OnPressDown()
 	{
-		InputHandler::OnPressDown();
-		if (!keyHeld[Key_Down])
+		if (!InputHandler::OnPressDown())
 		{
-			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			SmartPointer<NewGameScreen> sc = SmartPointerFunctions::Cast<Scene, NewGameScreen>(SceneManager::GetScene());
 			sc->IncrementMenuPosition();
 		}
+		return false;
 	}
 
-	void NewGameScreenInputEventHandler::OnPressStart()
+	bool NewGameScreenInputEventHandler::OnPressStart()
 	{
-		InputHandler::OnPressStart();
-		if (!keyHeld[Key_Start])
+		if (!InputHandler::OnPressStart())
 		{
 			Palettes::FadeToBlack(true, HalfSecond, true, true);
-			NewGameScreen* sc = (NewGameScreen*)SceneManager::GetScene();
+			SmartPointer<NewGameScreen> sc = SmartPointerFunctions::Cast<Scene, NewGameScreen>(SceneManager::GetScene());
 			if (sc->SetExitContext())
 			{
 				SoundEngine::FadeSongToSilence();
 			}
+			InputManager::SetEventHandler(new DoNothingInputEventHandler());
 		}
-		InputManager::SetEventHandler(new DoNothingInputEventHandler());
+		return false;
 	}
 }

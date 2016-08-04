@@ -9,6 +9,7 @@
 #define SCRIPTRUNNER_H_
 
 #include "../Task.h"
+#include "GlobalDefinitions.h"
 
 namespace Tasks
 {
@@ -17,6 +18,11 @@ namespace Tasks
 		class ScriptRunner;
 
 		typedef u32 (*U32FunctionPointerScriptRunner)(ScriptRunner*);
+
+		typedef struct MultichoiceDefinitionStruct {
+			u32 size;
+			char** pointerToList;
+		} MultichoiceDefinitionStruct;
 
 		class ScriptRunner : public Task
 		{
@@ -37,7 +43,7 @@ namespace Tasks
 			ScriptRunner(u8* script, U32FunctionPointerScriptRunner* commands);
 		public:
 			virtual ~ScriptRunner();
-			void Update();
+			bool Update();
 			// So the pointer can easily be cast to other formats
 			u16* GetStatusPointer() const { return (u16*)&status; }
 			u8* GetScriptPointer() const { return scriptPointer; }

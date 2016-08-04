@@ -19,10 +19,10 @@ namespace Input
 		public:
 			SelectGenderInputHandler();
 			~SelectGenderInputHandler();
-			void OnPressLeft();
-			void OnPressRight();
-			void OnPressA();
-			void OnPressStart();
+			bool OnPressLeft();
+			bool OnPressRight();
+			bool OnPressA();
+			bool OnPressStart();
 	};
 }
 

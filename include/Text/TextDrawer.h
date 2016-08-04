@@ -10,16 +10,17 @@
 
 #include "Tasks/Task.h"
 #include "Callbacks/Callback.h"
+#include "SmartPointer.h"
 
 namespace Text
 {
 	class TextDrawer : public Tasks::Task
 	{
 	protected:
-		char* string;
+		SmartArrayPointer<char> string;
 		u32 stringPosition;
 		u32 bufferPos;
-		Callbacks::Callback* endFunction;
+		SmartPointer<Callbacks::Callback> endFunction;
 		u32 inkColour;
 		u8 currentX;
 		u8 currentY;
@@ -27,15 +28,34 @@ namespace Text
 		u8 framesToWait;
 		u8 textSpeed;
 		bool aDown;
+		bool aHeld;
 		bool bDown;
+		bool bHeld;
 		void HandleCharacter(char c, const TFont* font);
 		virtual void Initialise();
 	public:
-		TextDrawer(char* newString, u8 x, u8 y, u32 speed, Callbacks::Callback* endFunction = (Callbacks::Callback*)0, u32 inkColour = 3);
+		TextDrawer(SmartArrayPointer<char> newString, u8 x, u8 y, u32 speed, SmartPointer<Callbacks::Callback> endFunction = (Callbacks::Callback*)0, u32 inkColour = 3);
 		virtual ~TextDrawer();
-		void Update();
-		void ADown(bool value) { aDown = value; }
-		void BDown(bool value) { bDown = value; }
-	};
+		bool Update();
+		void SetADown(bool down)
+		{
+			aDown = down;
+		}
+
+		void SetAHeld(bool held)
+		{
+			aHeld = held;
+		}
+
+		void SetBDown(bool down)
+		{
+			bDown = down;
+		}
+
+		void SetBHeld(bool held)
+		{
+			bHeld = held;
+		}
+};
 }
 #endif /* TEXTDRAWER_H_ */

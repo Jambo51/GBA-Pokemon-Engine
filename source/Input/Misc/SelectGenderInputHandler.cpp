@@ -33,28 +33,27 @@ namespace Input
 		Data::Variables::SetVar(0x801F, 9);
 	}
 
-	void SelectGenderInputHandler::OnPressA()
+	bool SelectGenderInputHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		if (!keyHeld[Key_A])
+		if (!InputHandler::OnPressA())
 		{
 			SelectGender(currentGender);
 		}
+		return false;
 	}
 
-	void SelectGenderInputHandler::OnPressStart()
+	bool SelectGenderInputHandler::OnPressStart()
 	{
-		InputHandler::OnPressStart();
-		if (!keyHeld[Key_Start])
+		if (!InputHandler::OnPressStart())
 		{
 			SelectGender(currentGender);
 		}
+		return false;
 	}
 
-	void SelectGenderInputHandler::OnPressLeft()
+	bool SelectGenderInputHandler::OnPressLeft()
 	{
-		InputHandler::OnPressLeft();
-		if (!keyHeld[Key_Left])
+		if (!InputHandler::OnPressLeft())
 		{
 			if (currentGender > 0)
 			{
@@ -62,12 +61,12 @@ namespace Input
 				RedrawWindow(currentGender);
 			}
 		}
+		return false;
 	}
 
-	void SelectGenderInputHandler::OnPressRight()
+	bool SelectGenderInputHandler::OnPressRight()
 	{
-		InputHandler::OnPressRight();
-		if (!keyHeld[Key_Right])
+		if (!InputHandler::OnPressRight())
 		{
 			if (currentGender < 1)
 			{
@@ -75,5 +74,6 @@ namespace Input
 				RedrawWindow(currentGender);
 			}
 		}
+		return false;
 	}
 }

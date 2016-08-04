@@ -3,7 +3,15 @@
 #ifndef FLAGS_H
 #define FLAGS_H
 
+#include "Tasks/Memory/MemoryTask.h"
+
 #define NumFlags 0x2000
+#define NumberofSeenCaughts ((NumberOfPokemon >> 3) << 3)
+#define NumberofTrainerBytes ((NumberOfTrainers >> 3) << 3)
+#define BytesForFlagsBase (NumberOfPokemon >> 3)
+#define BytesForTrainerflagsBase (NumberOfTrainers >> 3)
+#define FlagsToBytes(n) (n >> 3)
+
 namespace Core
 {
 	namespace Data
@@ -13,6 +21,7 @@ namespace Core
 
 		class Flags
 		{
+			friend class Tasks::Memory::MemoryTask;
 		private:
 			static u8 seenFlags[];
 			static u8 caughtFlags[];
@@ -20,7 +29,6 @@ namespace Core
 			static u8 mainFlagBank[];
 			static u8 worldMapFlagBank[];
 			static u16 badgeFlagIDs[];
-			static SaveLocationStruct saveData[];
 		public:
 			static u8* FlagDecryption(u32 flagID, u8* ramLocation, u32 upperFlagLimit);
 			static bool GetSeenCaughtStatus(u32 pokemonIndex, SeenCaughtStatusMode modeIndex);
@@ -36,8 +44,6 @@ namespace Core
 			static void ClearFlag(u32 flagID);
 			static void ClearTrainerflag(u32 flagID);
 			static void ClearWorldMapFlag(u32 flagID);
-			static void Save();
-			static void Load();
 			static void Initialise();
 			static u32 CountAcquiredBadges();
 		};

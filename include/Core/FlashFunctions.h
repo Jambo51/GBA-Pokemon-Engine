@@ -12,6 +12,14 @@
 
 #include "GlobalDefinitions.h"
 
+namespace Tasks
+{
+	namespace ScriptRunners
+	{
+		class ScriptRunner;
+	}
+}
+
 namespace Core
 {
 	class FlashFunctions
@@ -49,7 +57,7 @@ namespace Core
 		static bool ValidateSave();
 		static void CalculateChecksums();
 	public:
-		static void SaveGame();
+		static void SaveGame(Tasks::ScriptRunners::ScriptRunner* runner);
 		static void LoadGame();
 		static void WriteToFlash(SaveLocationStruct* structData);
 		static void ReadFromFlash(SaveLocationStruct* structData);

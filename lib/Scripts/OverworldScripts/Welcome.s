@@ -1,5 +1,6 @@
 .include "OverworldScriptCommandIDs.s"
 .global WelcomePartSeven
+.global ConfirmRivalName
 .global WelcomePartSix
 .global WelcomePartFive
 .global WelcomePartFour
@@ -68,9 +69,12 @@ WelcomePartSix:
 	.byte 0x00
 	.word WelcomeMessageFive
 	.byte CallStd
-	.byte 0x05
+	.byte 0x0E
+	.byte CompareVarToValue
+	.short 0x800D
+	.short 0x0000
 	.byte IfGoto
-	.byte 0x00
+	.byte 0x01
 	.word WelcomePartSixTwo
 	.byte FadeScreen
 	.byte 0x00
@@ -93,13 +97,28 @@ WelcomeMultichoice:
 	.byte 0x01
 	.byte 0x00
 	.byte 0x00
+	.byte CompareVarToValue
+	.short 0x800D
+	.short 0x0000
+	.byte IfGoto
+	.byte 0x01
+	.word NameFromScene
+	.byte SetVar
+	.short 0x801F
+	.short 0x000E
+	.byte End
+
+ConfirmRivalName:
 	.byte SetBank
 	.byte 0x00
 	.word WelcomeMessageSixTwo
 	.byte CallStd
 	.byte 0x05
+	.byte CompareVarToValue
+	.short 0x800D
+	.short 0x0000
 	.byte IfGoto
-	.byte 0x00
+	.byte 0x01
 	.word WelcomePartSixThree
 	.byte SetBank
 	.byte 0x00
@@ -109,15 +128,26 @@ WelcomeMultichoice:
 	.byte Goto
 	.word WelcomeMultichoice
 
+NameFromScene:
+	.byte SetBank
+	.byte 0x00
+	.word PreSceneChat
+	.byte CallStd
+	.byte 0x0B
+	.byte SetVar
+	.short 0x801F
+	.short 0x000D
+	.byte End
+
 WelcomePartSixThree:
 	.byte SetBank
 	.byte 0x00
 	.word WelcomeMessageSixFour
 	.byte CallStd
-	.byte 0x04
+	.byte 0x0D
 	.byte SetVar
 	.short 0x801F
-	.short 0x000D
+	.short 0x0012
 	.byte End
 
 WelcomePartSeven:
@@ -128,7 +158,7 @@ WelcomePartSeven:
 	.byte 0x04
 	.byte SetVar
 	.short 0x801F
-	.short 0x000F
+	.short 0x0014
 	.byte End
 
 WelcomeMessage:
@@ -324,6 +354,7 @@ WelcomeMessageOne:
 	.byte 0x61
 	.byte 0x74
 	.byte 0x75
+	.byte 0x72
 	.byte 0x65
 	.byte 0x73
 	.byte 0x20
@@ -954,5 +985,40 @@ WelcomeMessageSixFour:
 	.byte 0xFB
 	.byte 0x11
 	.byte 0x21
+	.byte 0x00
+
+
+PreSceneChat:
+	.byte 0x41
+	.byte 0x6C
+	.byte 0x72
+	.byte 0x69
+	.byte 0x67
+	.byte 0x68
+	.byte 0x74
+	.byte 0x2C
+	.byte 0x20
+	.byte 0x77
+	.byte 0x68
+	.byte 0x61
+	.byte 0x74
+	.byte 0x20
+	.byte 0x69
+	.byte 0x73
+	.byte 0x20
+	.byte 0x68
+	.byte 0x69
+	.byte 0x73
+	.byte 0x20
+	.byte 0x6E
+	.byte 0x61
+	.byte 0x6D
+	.byte 0x65
+	.byte 0x20
+	.byte 0x74
+	.byte 0x68
+	.byte 0x65
+	.byte 0x6E
+	.byte 0x3F
 	.byte 0x00
 

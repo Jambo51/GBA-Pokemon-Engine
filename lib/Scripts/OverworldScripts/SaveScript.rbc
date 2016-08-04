@@ -1,0 +1,51 @@
+#include "std"
+
+#globalorg @SaveScript
+msgbox @StandardSaveMessage MSG_YESNO
+compare LASTRESULT B_YES
+if B_== goto @SaveGame
+end
+
+#org @SaveGame
+special2 LASTRESULT 0x1
+switch LASTRESULT 3 @SaveSwitchTable
+special 0x3
+end
+
+#org @SaveSwitchTable
+#pointer @SaveGameActual
+#pointer @ExistingSave
+#pointer @ExistingAltSave
+
+#org @SaveGameActual
+special 0x2
+msgbox @SavingMessage MSG_WAITSTATE
+msgbox @SavedMessage MSG_KEEPOPEN
+end
+
+#org @ExistingSave
+msgbox @StandardSavedGameMessage MSG_YESNO
+compare LASTRESULT B_YES
+if B_== goto @SaveGameActual
+return
+
+#org @ExistingAltSave
+msgbox @AlternateSaveDetectedMessage MSG_YESNO
+compare LASTRESULT B_YES
+if B_== goto @SaveGameActual
+return
+
+#org @StandardSaveMessage
+#text Would you like to save the game?
+
+#org @StandardSavedGameMessage
+#text There is already a saved file.\nIs it okay to overwrite it?
+
+#org @AlternateSaveDetectedMessage
+#text WARNING!\pThere is a different game file\nthat is already saved.\pIf you save now, the other file's\nadventure, including items and\lPokémon, will be entirely lost.\pAre you sure you want to save now\nand overwrite the other save file?
+
+#org @SavingMessage
+#text SAVING[.]\nDO NOT TURN OFF THE POWER!
+
+#org @SavedMessage
+#text [player] saved the game.

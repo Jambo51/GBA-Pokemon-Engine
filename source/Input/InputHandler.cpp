@@ -20,87 +20,90 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
-	void InputHandler::OnPressA()
+	bool InputHandler::OnPressA()
 	{
 		keyDown[Key_A] = true;
+		return previousKeyDown[Key_A];
 	}
 
-	void InputHandler::OnPressB()
+	bool InputHandler::OnPressB()
 	{
 		keyDown[Key_B] = true;
+		return previousKeyDown[Key_B];
 	}
 
-	void InputHandler::OnPressLeft()
+	bool InputHandler::OnPressLeft()
 	{
 		keyDown[Key_Left] = true;
+		return previousKeyDown[Key_Left];
 	}
 
-	void InputHandler::OnPressRight()
+	bool InputHandler::OnPressRight()
 	{
 		keyDown[Key_Right] = true;
+		return previousKeyDown[Key_Right];
 	}
 
-	void InputHandler::OnPressUp()
+	bool InputHandler::OnPressUp()
 	{
 		keyDown[Key_Up] = true;
+		return previousKeyDown[Key_Up];
 	}
 
-	void InputHandler::OnPressDown()
+	bool InputHandler::OnPressDown()
 	{
 		keyDown[Key_Down] = true;
+		return previousKeyDown[Key_Down];
 	}
 
-	void InputHandler::OnPressStart()
+	bool InputHandler::OnPressStart()
 	{
 		keyDown[Key_Start] = true;
+		return previousKeyDown[Key_Start];
 	}
 
-	void InputHandler::OnPressSelect()
+	bool InputHandler::OnPressSelect()
 	{
 		keyDown[Key_Select] = true;
+		return previousKeyDown[Key_Select];
 	}
 
-	void InputHandler::OnPressL()
+	bool InputHandler::OnPressL()
 	{
 		keyDown[Key_LeftBumper] = true;
+		return previousKeyDown[Key_LeftBumper];
 	}
 
-	void InputHandler::OnPressR()
+	bool InputHandler::OnPressR()
 	{
 		keyDown[Key_RightBumper] = true;
+		return previousKeyDown[Key_RightBumper];
+	}
+
+	bool InputHandler::IsKeyHeld(Keys keyID)
+	{
+		return keyDown[keyID] && previousKeyDown[keyID];
+	}
+
+	bool InputHandler::IsKeyDown(Keys keyID)
+	{
+		return keyDown[keyID];
+	}
+
+	bool InputHandler::IsKeyDownAndNotHeld(Keys keyID)
+	{
+		return keyDown[keyID] && !previousKeyDown[keyID];
 	}
 
 	void InputHandler::Update()
 	{
-		for (int i = 0; i < 10; i++)
-		{
-			if (!keyDown[i])
-			{
-				keyPressTimers[i] = 0;
-				keyHeld[i] = false;
-			}
-			else
-			{
-				keyPressTimers[i]++;
-				if (keyPressTimers[i] > 0)
-				{
-					keyHeld[i] = true;
-				}
-			}
-			keyDown[i] = false;
-		}
+		memcpy16(PreviousKeyDownAddress(), KeyDownAddress(), 5);
+		memset16(KeyDownAddress(), 0, 5);
 	}
 
 	void InputHandler::CopyInput(const InputHandler &other)
 	{
-		bool* first = other.KeyDownAddress();
-		bool* second = other.KeyHeldAddress();
-		u8* third = other.KeyPressTimersAddress();
-		for (int i = 0; i < 10; i++)
-		{
-			keyPressTimers[i] = third[i];
-			keyDown[i] = first[i];
-			keyHeld[i] = second[i];
-		}
+		memcpy16(PreviousKeyDownAddress(), other.PreviousKeyDownAddress(), 5);
+		memcpy16(KeyDownAddress(), other.KeyDownAddress(), 5);
 	}
 }

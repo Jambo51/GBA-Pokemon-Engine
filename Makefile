@@ -36,7 +36,10 @@ export PATH	:=	$(DEVKITARM)/bin:$(PATH)
 # General note: use `.' for the current dir, don't leave the lists empty.
 
 export PROJ	?= $(notdir $(CURDIR))
-TITLE		:= POKEMON_EMPTGAME
+# TITLE should be 12 characters in length, though it can be shorter
+TITLE		:= POKEMON_EMPT
+# CODE must be 4 characters in length
+CODE		:= GAME
 GFXLIBS		:=
 
 ifeq ($(strip $(bSpriteSet)), 1)
@@ -48,7 +51,7 @@ endif
 LIBS		:= -ltonc -laudio -ltiles -lsprites$(SPRITELIB) -lbattlescripts -lbattleanimscripts -loverworldscripts -lbattletranscripts
 
 BUILD		:= build
-SRCDIRS		:= source source/Allocation source/Tasks source/Tasks/ScriptRunners source/Callbacks source/Text source/Core source/Core/Data source/Core/Pokemon source/Audio source/Audio/GameBoySounds source/Audio/M4A source/Entities source/Scenes source/Scenes/Battles source/Scenes/Menus source/Scenes/Misc source/Scenes/Overworld source/Input source/Input/Battles source/Input/Menus source/Input/Misc source/Input/Overworld source/Data source/Data/TitleScreen source/Data/Tilesets
+SRCDIRS		:= source source/Allocation source/Tasks source/Tasks/ScriptRunners source/Tasks/Memory source/Callbacks source/Text source/Core source/Core/Data source/Core/Pokemon source/Audio source/Audio/GameBoySounds source/Audio/M4A source/Audio/M4A/Controllers source/Entities source/Scenes source/Scenes/Battles source/Scenes/Menus source/Scenes/Misc source/Scenes/Overworld source/Input source/Input/Battles source/Input/Menus source/Input/Misc source/Input/Overworld source/Data source/Data/TitleScreen source/Data/Tilesets
 DATADIRS	:= 
 INCDIRS		:= include
 LIBDIRS		:= $(TONCCODE)/tonclib $(CURDIR)
@@ -101,7 +104,8 @@ CFLAGS		+= -Wall
 CFLAGS		+= $(INCLUDE)
 CFLAGS		+=
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
+CXXFLAGS	:= $(CFLAGS) -fno-exceptions
+CXXFLAGS	+= -fno-rtti
 
 ASFLAGS		:= $(ARCH) $(INCLUDE)
 LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
@@ -113,7 +117,8 @@ CFLAGS		+= -Wall
 CFLAGS		+= $(INCLUDE)
 CFLAGS		+=
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
+CXXFLAGS	:= $(CFLAGS) -fno-exceptions
+CXXFLAGS	+= -fno-rtti
 
 ASFLAGS		:= $(ARCH) $(INCLUDE)
 LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
@@ -125,7 +130,8 @@ CFLAGS		+= -Wall
 CFLAGS		+= $(INCLUDE)
 CFLAGS		+= -ffast-math -fno-strict-aliasing
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
+CXXFLAGS	:= $(CFLAGS) -fno-exceptions
+CXXFLAGS	+= -fno-rtti
 
 ASFLAGS		:= $(ARCH) $(INCLUDE)
 LDFLAGS 	:= $(ARCH) -Wl,-Map,$(PROJ).map
@@ -161,11 +167,12 @@ endif
 ifeq ($(strip $(bDEBUG)), 2)
 	CFLAGS		+= -DNDEBUG
 	CXXFLAGS	+= -DNDEBUG
-	ASFLAGS		+= -DNDEBUG
+#	ASFLAGS		+= -DNDEBUG
 else ifeq ($(strip $(bDEBUG)), 1)
 	CFLAGS		+= -DDEBUG -g
 	CXXFLAGS	+= -DDEBUG -g
-	ASFLAGS		+= -DDEBUG -g
+	ASFLAGS		+=	-g
+#	ASFLAGS		+= -DDEBUG
 	LDFLAGS		+= -g
 else
 	CFLAGS		+= -DNDEBUG
@@ -227,8 +234,7 @@ $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	arm-none-eabi-nm -Sn $(OUTPUT).elf > $(BUILD)/$(TARGET).map
-	$(CURDIR)/GBAROMFixer.exe $(TARGET).gba $(TITLE)
-	gbafix $(TARGET).gba
+	gbafix $(TARGET).gba -p -c$(CODE) -m00
 all	: $(BUILD)
 
 clean:

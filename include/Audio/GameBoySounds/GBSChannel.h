@@ -11,6 +11,9 @@
 #include "ToneTrack.h"
 #include "WaveTrack.h"
 #include "NoiseTrack.h"
+#include "SmartPointer.h"
+#include "Callbacks/Callback.h"
+#include "SmartPointer.h"
 
 #define NUMWAVEPATTERNS 15
 
@@ -37,29 +40,21 @@ typedef struct GBSTrackHeader {
 	GBSTrack theTracks[];
 } GBSTrackHeader;
 
-namespace Callbacks
-{
-	class Callback;
-}
-
 namespace Audio
 {
 	namespace GameBoySounds
 	{
-		class GBSEngine;
-
 		class GBSChannel
 		{
 		protected:
 			u32 channelID;
-			GBSEngine* address;
 			bool tracksIncluded[5];
 			u16 tempo;
-			ToneTrack* toneTracks[2];
-			WaveTrack* waveTrack;
-			NoiseTrack* noiseTrack;
+			SmartPointer<ToneTrack> toneTracks[2];
+			SmartPointer<WaveTrack> waveTrack;
+			SmartPointer<NoiseTrack> noiseTrack;
 		public:
-			GBSChannel(GBSEngine* hostEngine, u32 channelID);
+			GBSChannel(u32 channelID);
 			virtual ~GBSChannel();
 			bool Update();
 			void Clear(bool saveCallback = false);
@@ -67,17 +62,17 @@ namespace Audio
 			bool TrackIncluded(ValidTrack trackID) const { return tracksIncluded[trackID]; }
 			void TrackIncluded(ValidTrack trackID, bool newValue) { tracksIncluded[trackID] = newValue; }
 			u16* GetBufferAddress() const;
-			Callbacks::Callback* GetAssociatedCallback() const;
+			SmartPointer<Callbacks::Callback> GetAssociatedCallback() const;
 			void ExecuteOnEndFunction() const;
 			void StartTrack(GBSTrackHeader* header);
-			const NoiseTrack & GetNoise() const { return *noiseTrack; }
-			const WaveTrack & GetWave() const { return *waveTrack; }
-			const ToneTrack & GetToneOne() const { return *toneTracks[0]; }
-			const ToneTrack & GetToneTwo() const { return *toneTracks[1]; }
+			SmartPointer<NoiseTrack> GetNoise() { return noiseTrack; }
+			SmartPointer<WaveTrack> GetWave() { return waveTrack; }
+			SmartPointer<ToneTrack> GetToneOne() { return toneTracks[0]; }
+			SmartPointer<ToneTrack> GetToneTwo() { return toneTracks[1]; }
 			void Pause() { tracksIncluded[4] = true; }
 			void Unpause() { tracksIncluded[4] = false; }
 			bool IsPaused() const { return tracksIncluded[5]; }
-			void SwitchWavePattern(u8 voiceID) const;
+			void SwitchWavePattern(u32 voiceID);
 			u16 GetTempo() const { return tempo; }
 			bool IsPlaying() const { for (int i = 0; i < 4; i++) { if (tracksIncluded[i]) { return true; } } return false; }
 		};

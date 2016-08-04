@@ -1,23 +1,28 @@
 .include "OverworldScriptCommandIDs.s"
+.global SelectMappedScript
 .global StandardErrorScriptNPC
 .global StandardErrorScriptSignpost
 .global StandardErrorScript
 
 
 StandardErrorScript:
+	.byte Lock
 	.byte SetBank
 	.byte 0x00
 	.word errormessage
 	.byte CallStd
 	.byte 0x04
+	.byte Release
 	.byte End
 
 StandardErrorScriptSignpost:
+	.byte Lock
 	.byte SetBank
 	.byte 0x00
 	.word errormessage
 	.byte CallStd
 	.byte 0x03
+	.byte Release
 	.byte End
 
 StandardErrorScriptNPC:
@@ -30,6 +35,43 @@ StandardErrorScriptNPC:
 	.byte 0x04
 	.byte Release
 	.byte End
+
+SelectMappedScript:
+	.byte Lock
+	.byte Switch
+	.short 0x800D
+	.short 0x0003
+	.word SelectMappedSwitch
+	.byte SetBank
+	.byte 0x00
+	.word selecterrormessage
+	.byte CallStd
+	.byte 0x04
+	.byte Release
+	.byte End
+
+SelectMappedSwitch:
+	.word Select
+	.word LeftBumper
+	.word RightBumper
+
+Select:
+	.byte BufferString
+	.byte 0x00
+	.word selectstring
+	.byte Return
+
+LeftBumper:
+	.byte BufferString
+	.byte 0x00
+	.word leftbumperstring
+	.byte Return
+
+RightBumper:
+	.byte BufferString
+	.byte 0x00
+	.word rightbumperstring
+	.byte Return
 
 errormessage:
 	.byte 0x54
@@ -181,5 +223,85 @@ errormessage:
 	.byte 0x70
 	.byte 0x74
 	.byte 0x2E
+	.byte 0x00
+
+
+selecterrormessage:
+	.byte 0x41
+	.byte 0x6E
+	.byte 0x20
+	.byte 0x69
+	.byte 0x74
+	.byte 0x65
+	.byte 0x6D
+	.byte 0x20
+	.byte 0x69
+	.byte 0x6E
+	.byte 0x20
+	.byte 0x74
+	.byte 0x68
+	.byte 0x65
+	.byte 0x20
+	.byte 0x42
+	.byte 0x61
+	.byte 0x67
+	.byte 0x20
+	.byte 0x63
+	.byte 0x61
+	.byte 0x6E
+	.byte 0x20
+	.byte 0x62
+	.byte 0x65
+	.byte 0x0A
+	.byte 0x72
+	.byte 0x65
+	.byte 0x67
+	.byte 0x69
+	.byte 0x73
+	.byte 0x74
+	.byte 0x65
+	.byte 0x72
+	.byte 0x65
+	.byte 0x64
+	.byte 0x20
+	.byte 0x74
+	.byte 0x6F
+	.byte 0x20
+	.byte 0xFB
+	.byte 0x00
+	.byte 0x20
+	.byte 0x66
+	.byte 0x6F
+	.byte 0x72
+	.byte 0x20
+	.byte 0x65
+	.byte 0x61
+	.byte 0x73
+	.byte 0x79
+	.byte 0x20
+	.byte 0x75
+	.byte 0x73
+	.byte 0x65
+	.byte 0x2E
+	.byte 0x00
+
+
+selectstring:
+	.byte 0x53
+	.byte 0x65
+	.byte 0x6C
+	.byte 0x65
+	.byte 0x63
+	.byte 0x74
+	.byte 0x00
+
+
+leftbumperstring:
+	.byte 0x4C
+	.byte 0x00
+
+
+rightbumperstring:
+	.byte 0x52
 	.byte 0x00
 

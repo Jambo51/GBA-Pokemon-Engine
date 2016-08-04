@@ -334,7 +334,7 @@ namespace Core
 					}
 					break;
 				case Gender:
-					if (value == Gender_Male || value == Gender_Female || value == Gender_Genderless && Pokemon::IsGenderLegitimate(value, species))
+					if ((value == Gender_Male || value == Gender_Female || value == Gender_Genderless) && Pokemon::IsGenderLegitimate(value, species))
 					{
 						gender = value;
 					}

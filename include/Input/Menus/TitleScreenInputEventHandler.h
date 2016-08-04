@@ -17,8 +17,8 @@ namespace Input
 	public:
 		TitleScreenInputEventHandler();
 		~TitleScreenInputEventHandler();
-		void OnPressA();
-		void OnPressStart();
+		bool OnPressA();
+		bool OnPressStart();
 	};
 }
 

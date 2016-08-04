@@ -27,8 +27,8 @@ namespace Input
 	public:
 		ScriptWaitKeyPressEventHandler(Tasks::ScriptRunners::ScriptRunner* runner);
 		~ScriptWaitKeyPressEventHandler();
-		void OnPressA();
-		void OnPressB();
+		bool OnPressA();
+		bool OnPressB();
 	};
 }
 

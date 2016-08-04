@@ -84,38 +84,42 @@ u32 IfGoto(Tasks::ScriptRunners::ScriptRunner* runner)
 	u16 status = runner->GetStatus();
 	u8* script = runner->GetScriptPointer();
 	script++;
+	bool jumpNeeded = false;
 	switch (*script)
 	{
 		case 3:
 			if (status < 2)
 			{
-				runner->SetScriptPointer((u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4));
-				return NotEnded;
+				jumpNeeded = true;
 			}
 			break;
 		case 4:
 			if (status > 0)
 			{
-				runner->SetScriptPointer((u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4));
-				return NotEnded;
+				jumpNeeded = true;
 			}
 			break;
 		case 5:
 			if (status != 1)
 			{
-				runner->SetScriptPointer((u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4));
-				return NotEnded;
+				jumpNeeded = true;
 			}
 			break;
 		default:
 			if (*script == status)
 			{
-				runner->SetScriptPointer((u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4));
-				return NotEnded;
+				jumpNeeded = true;
 			}
 			break;
 	}
-	runner->IncrementScriptPointer(6);
+	if (jumpNeeded)
+	{
+		runner->SetScriptPointer((u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4));
+	}
+	else
+	{
+		runner->IncrementScriptPointer(6);
+	}
 	return NotEnded;
 }
 
@@ -160,7 +164,7 @@ u32 IfCall(Tasks::ScriptRunners::ScriptRunner* runner)
 	return NotEnded;
 }
 
-#define NumStdScripts 14
+#define NumStdScripts 16
 
 TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptZero,
@@ -176,7 +180,9 @@ TEXT_LOCATION ALIGN(4) u8* standardScripts[NumStdScripts] = {
 		(u8*)StandardScriptTen,
 		(u8*)StandardScriptEleven,
 		(u8*)StandardScriptTwelve,
-		(u8*)StandardScriptThirteen
+		(u8*)StandardScriptThirteen,
+		(u8*)StandardScriptFourteen,
+		(u8*)StandardScriptFifteen
 };
 
 u32 GotoStandardScript(Tasks::ScriptRunners::ScriptRunner* runner)
@@ -319,10 +325,10 @@ u32 SetByte2(Tasks::ScriptRunners::ScriptRunner* runner)
 u32 WriteByteToOffset(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	u8* script = runner->GetScriptPointer();
-	script++;
 	u8* location = (u8*)UnalignedNumberHandler::LoadUnalignedNumber(script, 1, 4);
+	script += 5;
 	*location = *script;
-	runner->IncrementScriptPointer(3);
+	runner->IncrementScriptPointer(6);
 	return NotEnded;
 }
 
@@ -644,9 +650,9 @@ typedef u16 (*SpecialFunctionPointer)(Tasks::ScriptRunners::ScriptRunner*);
 
 TEXT_LOCATION ALIGN(4) SpecialFunctionPointer specials[] = {
 		(SpecialFunctionPointer)&Special0HealParty,
-		(SpecialFunctionPointer)&EmptySpecial,
-		(SpecialFunctionPointer)&EmptySpecial,
-		(SpecialFunctionPointer)&EmptySpecial,
+		(SpecialFunctionPointer)&Special1CheckExistingSave,
+		(SpecialFunctionPointer)&Special2SaveGame,
+		(SpecialFunctionPointer)&Special3ReopenMenu,
 		(SpecialFunctionPointer)&EmptySpecial,
 		(SpecialFunctionPointer)&EmptySpecial,
 		(SpecialFunctionPointer)&EmptySpecial,
@@ -1094,6 +1100,7 @@ u32 SetupTrainerBattle(Tasks::ScriptRunners::ScriptRunner* runner)
 			{
 				runner->IncrementScriptPointer(14);
 			}
+			break;
 		default:
 			if (battle)
 			{
@@ -1220,6 +1227,35 @@ u32 CloseMessageOnKeyPress(Tasks::ScriptRunners::ScriptRunner* runner)
 	return NotEnded;
 }
 
+u32 LockAllInScript(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	Input::InputManager::SetEventHandler(new Input::DoNothingInputEventHandler());
+	Core::Game::DisableNPCMovement();
+	runner->IncrementScriptPointer(1);
+	return NotEnded;
+}
+
+u32 LockInScript(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	Input::InputManager::SetEventHandler(new Input::DoNothingInputEventHandler());
+	runner->IncrementScriptPointer(1);
+	return NotEnded;
+}
+
+u32 ReleaseAllFromScript(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	runner->SetCallback(new Callbacks::ReleaseFromScriptAndUnlockAllCallback());
+	runner->IncrementScriptPointer(1);
+	return NotEnded;
+}
+
+u32 ReleaseFromScript(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	runner->SetCallback(new Callbacks::ReleaseFromScriptCallback());
+	runner->IncrementScriptPointer(1);
+	return NotEnded;
+}
+
 u32 WaitKeyPress(Tasks::ScriptRunners::ScriptRunner* runner)
 {
 	if (!runner->EventHandlerSet())
@@ -1254,10 +1290,161 @@ u32 YesNoBox(Tasks::ScriptRunners::ScriptRunner* runner)
 	{
 		return WaitForFrames;
 	}
-	TextFunctions::DeleteMenuBox(0, *(script + 1), *(script + 2), 8, 6);
-	TextFunctions::UnfillMenuBox(0, *(script + 1), *(script + 2), 8, 6);
+	if (!runner->ForceTextBoxOpen())
+	{
+		TextFunctions::DeleteMenuBox(0, *(script + 1), *(script + 2), 8, 6);
+		TextFunctions::UnfillMenuBox(0, *(script + 1), *(script + 2), 8, 6);
+		TextFunctions::ClearTextAreaFromMap(0, *(script + 1) + 1, *(script + 2) + 1, 6, 4);
+	}
 	runner->KeyPressReceived(false);
 	runner->IncrementScriptPointer(3);
+	InputManager::SetEventHandler(new DoNothingInputEventHandler());
+	runner->EventHandlerSet(false);
+	return NotEnded;
+}
+
+#define NumMultichoices 1
+
+TEXT_LOCATION char* multichoiceList0[] = {
+		"New Name",
+		"Green",
+		"Gary",
+		"Kaz",
+		"Toru"
+};
+
+TEXT_LOCATION Tasks::ScriptRunners::MultichoiceDefinitionStruct multichoices[NumMultichoices] = {
+		{ 5, (char**)&multichoiceList0 }
+};
+
+inline const Tasks::ScriptRunners::MultichoiceDefinitionStruct* GetMultichoiceData(u32 id, Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	if (id == 0xFF)
+	{
+		Tasks::ScriptRunners::MultichoiceDefinitionStruct* str = (Tasks::ScriptRunners::MultichoiceDefinitionStruct*)runner->GetBank(0);
+		return str;
+	}
+	else if (id < NumMultichoices)
+	{
+		return &multichoices[id];
+	}
+	return &multichoices[0];
+}
+
+inline void DrawMultichoiceBox(u32 size, char** options, u8* script, u32 startPos)
+{
+	TextFunctions::SetTextColour(2, 3, 0);
+	u32 widest = 0;
+	for (u32 i = 0; i < size; i++)
+	{
+		u32 width = TextFunctions::StringTileWidth(options[i]);
+		if (width > widest)
+		{
+			widest = width;
+		}
+		TextFunctions::DrawString(options[i], 8, 0x40 + (0x10 * i));
+	}
+	widest++;
+	TextFunctions::DrawCharacter(ARROWCHAR, 0, 0x40 + (0x10 * startPos));
+	TextFunctions::DrawMenuBox(0, *(script + 1), *(script + 2), widest + 2, (size + 1) << 1);
+	TextFunctions::DrawTextAreaToMap(0, Core::Rectangle(*(script + 1) + 1, *(script + 2) + 1, widest, size << 1), Core::Vector2D(0, 8));
+}
+
+inline void ClearMultichoiceBox(u32 size, char** options, u8* script, u32 arrowPos)
+{
+	TextFunctions::SetTextColour(1, 1, 0);
+	u32 widest = 0;
+	for (u32 i = 0; i < size; i++)
+	{
+		u32 width = TextFunctions::StringTileWidth(options[i]);
+		if (width > widest)
+		{
+			widest = width;
+		}
+		TextFunctions::DrawString(options[i], 8, 0x40 + (0x10 * i));
+	}
+	widest++;
+	TextFunctions::DrawCharacter(ARROWCHAR, 0, 0x40 + (0x10 * arrowPos));
+	TextFunctions::DeleteMenuBox(0, *(script + 1), *(script + 2), widest + 2, (size + 1) << 1);
+	TextFunctions::UnfillMenuBox(0, *(script + 1), *(script + 2), widest + 2, (size + 1) << 1);
+	TextFunctions::ClearTextAreaFromMap(0, *(script + 1) + 1, *(script + 2) + 1, widest, size << 1);
+}
+
+u32 Multichoice(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	if (!runner->EventHandlerSet())
+	{
+		u32 id = *(script + 3);
+		const Tasks::ScriptRunners::MultichoiceDefinitionStruct* str = GetMultichoiceData(id, runner);
+		if (!str || !str->pointerToList)
+		{
+			runner->SetStatus(0);
+			runner->IncrementScriptPointer(5);
+			return NotEnded;
+		}
+		char** options = str->pointerToList;
+		u32 size = str->size;
+		if (size > 6)
+		{
+			// Can only render a maximum of 8 options at once
+			// Will need to scroll for larger choice boxes
+			// Maximum size (with text on screen) is six, assuming placement
+			// at the very top of the screen
+			size = 6;
+		}
+		DrawMultichoiceBox(size, options, script, 0);
+		InputManager::SetEventHandler(new MultichoiceInputHandler(runner, *(script + 4) == 1, size));
+		return WaitForFrames;
+	}
+	if (!runner->KeyPressReceived())
+	{
+		return WaitForFrames;
+	}
+	const Tasks::ScriptRunners::MultichoiceDefinitionStruct* str = GetMultichoiceData(*(script + 3), runner);
+	ClearMultichoiceBox(str->size, str->pointerToList, script, SmartPointerFunctions::Cast<InputHandler, MultichoiceInputHandler>(InputManager::GetHandler())->GetArrowPosition());
+	runner->IncrementScriptPointer(5);
+	runner->KeyPressReceived(false);
+	InputManager::SetEventHandler(new DoNothingInputEventHandler());
+	runner->EventHandlerSet(false);
+	return NotEnded;
+}
+
+u32 MultichoiceWithDefault(Tasks::ScriptRunners::ScriptRunner* runner)
+{
+	u8* script = runner->GetScriptPointer();
+	if (!runner->EventHandlerSet())
+	{
+		u32 id = *(script + 3);
+		const Tasks::ScriptRunners::MultichoiceDefinitionStruct* str = GetMultichoiceData(id, runner);
+		if (!str || !str->pointerToList)
+		{
+			runner->SetStatus(0);
+			runner->IncrementScriptPointer(5);
+			return NotEnded;
+		}
+		char** options = str->pointerToList;
+		u32 size = str->size;
+		if (size > 6)
+		{
+			// Can only render a maximum of 8 options at once
+			// Will need to scroll for larger choice boxes
+			// Maximum size (with text on screen) is six, assuming placement
+			// at the very top of the screen
+			size = 6;
+		}
+		DrawMultichoiceBox(size, options, script, *(script + 4));
+		InputManager::SetEventHandler(new MultichoiceInputHandler(runner, *(script + 5) == 1, size, *(script + 4)));
+		return WaitForFrames;
+	}
+	if (!runner->KeyPressReceived())
+	{
+		return WaitForFrames;
+	}
+	const Tasks::ScriptRunners::MultichoiceDefinitionStruct* str = GetMultichoiceData(*(script + 3), runner);
+	ClearMultichoiceBox(str->size, str->pointerToList, script, SmartPointerFunctions::Cast<InputHandler, MultichoiceInputHandler>(InputManager::GetHandler())->GetArrowPosition());
+	runner->IncrementScriptPointer(6);
+	runner->KeyPressReceived(false);
 	InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	runner->EventHandlerSet(false);
 	return NotEnded;

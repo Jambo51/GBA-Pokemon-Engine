@@ -10,6 +10,7 @@
 
 #include "GlobalDefinitions.h"
 #include "InputHandler.h"
+#include "SmartPointer.h"
 
 typedef struct KeyBuffer {
 	union
@@ -25,14 +26,17 @@ namespace Input
 	{
 	private:
 		static KeyBuffer inputValues;
-		static InputHandler* handler;
-		static InputHandler* newInputHandler;
+		static SmartPointer<InputHandler> handler;
+		static SmartPointer<InputHandler> newInputHandler;
 		InputManager();
 		~InputManager();
-		static bool IsKeyDown(Keys keyID);
 	public:
 		static void KeyPoll();
-		static void SetEventHandler(InputHandler* newHandler);
+		static void SetEventHandler(SmartPointer<InputHandler> newHandler);
+		static SmartPointer<InputHandler> GetHandler();
+		static bool IsKeyDown(Keys keyID);
+		static bool IsKeyHeld(Keys keyID);
+		static bool IsKeyDownAndNotHeld(Keys keyID);
 	};
 }
 

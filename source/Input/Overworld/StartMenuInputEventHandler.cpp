@@ -8,10 +8,12 @@
 #include "Input/Menus/StartMenuInputEventHandler.h"
 #include "Input/InputManager.h"
 #include "Input/Overworld/OverworldInputEventHandler.h"
-//#include "PauseMenuSwitchFunctions.h"
 #include "Input/DoNothingInputEventHandler.h"
 #include "Core.h"
 #include "Text.h"
+#include "Tasks.h"
+#include "LibraryHeaders/liboverworldscripts.h"
+#include "Callbacks.h"
 
 using namespace Text;
 using namespace Core;
@@ -19,19 +21,34 @@ using namespace Core::Data;
 
 namespace Input
 {
+	void StartSaveFunction(void);
+	void CloseMenuFunction(void);
+
 	TEXT_LOCATION ALIGN(1) char StartMenuInputEventHandler::nameString[] = { 0xFB, 0x10, '\0' };
 	TEXT_LOCATION ALIGN(4) StringAndFunctionPointerStruct StartMenuInputEventHandler::baseMenuOptions[NumOptions] = {
 			{ "Bag", NULL },
-			{ "Jambo51", NULL },
-			{ "Save", NULL },
+			{ (char*)&nameString, NULL },
+			{ "Save", &StartSaveFunction },
 			{ "Options", NULL },
-			{ "Close", NULL }
+			{ "Close", &CloseMenuFunction }
 	};
 	TEXT_LOCATION ALIGN(4) StringAndFunctionPointerWithFlagIDStruct StartMenuInputEventHandler::additionalMenuOptions[NumAdditionalOptions] = {
 			{ "Pokédex", NULL, Flag_Pokedex, 0 },
 			{ "Pokégear", NULL, Flag_Pokegear, 0 },
 			{ "Pokémon", NULL, Flag_PokemonMenu, 0 }
 	};
+
+	void StartSaveFunction()
+	{
+		InputManager::SetEventHandler(new DoNothingInputEventHandler());
+		Tasks::ScriptRunners::OverworldScriptRunner* runner = new Tasks::ScriptRunners::OverworldScriptRunner((u8*)&SaveScript);
+		runner->SetCallback(new Callbacks::ReturnToMenuCallback());
+	}
+
+	void CloseMenuFunction()
+	{
+		InputManager::SetEventHandler(new OverworldInputEventHandler());
+	}
 
 	StartMenuInputEventHandler::StartMenuInputEventHandler()
 	{
@@ -61,7 +78,14 @@ namespace Input
 		}
 		for (u32 i = 0; i < NumOptions; i++)
 		{
-			TextFunctions::DrawString(baseMenuOptions[i].string, 8, currentMenuPos << 4);
+			char* string = baseMenuOptions[i].string;
+			u32 length = 0;
+			if (i == 1)
+			{
+				string = TextFunctions::GetBufferAddress(0x10);
+				length = TextFunctions::GetBufferLength(0x10);
+			}
+			TextFunctions::DrawString(string, 8, currentMenuPos << 4, length);
 			menu[currentMenuPos] = baseMenuOptions[i].function;
 			currentMenuPos++;
 		}
@@ -78,10 +102,9 @@ namespace Input
 		TextFunctions::ClearTextTileArea();
 	}
 
-	void StartMenuInputEventHandler::OnPressA()
+	bool StartMenuInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		if (!keyHeld[Key_A])
+		if (!InputHandler::OnPressA())
 		{
 			if (menu[menuPosition])
 			{
@@ -92,30 +115,30 @@ namespace Input
 				menu[menuPosition]();
 			}
 		}
+		return false;
 	}
 
-	void StartMenuInputEventHandler::OnPressB()
+	bool StartMenuInputEventHandler::OnPressB()
 	{
-		InputHandler::OnPressB();
-		if (!keyHeld[Key_B])
+		if (!InputHandler::OnPressB())
 		{
 			InputManager::SetEventHandler(new OverworldInputEventHandler());
 		}
+		return false;
 	}
 
-	void StartMenuInputEventHandler::OnPressStart()
+	bool StartMenuInputEventHandler::OnPressStart()
 	{
-		InputHandler::OnPressStart();
-		if (!keyHeld[Key_Start])
+		if (!InputHandler::OnPressStart())
 		{
 			InputManager::SetEventHandler(new OverworldInputEventHandler());
 		}
+		return false;
 	}
 
-	void StartMenuInputEventHandler::OnPressUp()
+	bool StartMenuInputEventHandler::OnPressUp()
 	{
-		InputHandler::OnPressUp();
-		if (!keyHeld[Key_Up])
+		if (!InputHandler::OnPressUp())
 		{
 			TextFunctions::ClearTile(0, menuPosition);
 			if (menuPosition > 0)
@@ -129,12 +152,12 @@ namespace Input
 			TextFunctions::DrawCharacter(ARROWCHAR, 0, menuPosition << 4);
 			Game::SetMenuPosition(menuPosition);
 		}
+		return false;
 	}
 
-	void StartMenuInputEventHandler::OnPressDown()
+	bool StartMenuInputEventHandler::OnPressDown()
 	{
-		InputHandler::OnPressDown();
-		if (!keyHeld[Key_Down])
+		if (!InputHandler::OnPressDown())
 		{
 			TextFunctions::ClearTile(0, menuPosition);
 			if (menuPosition < numMenuItems - 1)
@@ -148,5 +171,6 @@ namespace Input
 			TextFunctions::DrawCharacter(ARROWCHAR, 0, menuPosition << 4);
 			Game::SetMenuPosition(menuPosition);
 		}
+		return false;
 	}
 }

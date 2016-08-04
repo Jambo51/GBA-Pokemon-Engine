@@ -46,13 +46,15 @@ namespace Scenes
 		menuPosition = previousMenuPosition;
 		BackgroundFunctions::CreateWindow(0, Core::Rectangle());
 		BackgroundFunctions::ClearAllBackgrounds();
-		u16* newPalette = new u16[512];
-		memset32(newPalette, 0, 0x100);
-		Colour c = { 0 };
-		c.colour = 0x7E51;
-		Palettes::SetColour(0, 0, c, newPalette);
-		TextFunctions::LoadPaletteAndTiles(false, newPalette);
-		Palettes::FadeToPalette(newPalette, true, HalfSecond, true, false);
+		{
+			SmartArrayPointer<u16> newPalette = new u16[512];
+			newPalette.Clear(512);
+			Colour c = { 0 };
+			c.colour = 0x7E51;
+			Palettes::SetColour(0, 0, c, newPalette);
+			TextFunctions::LoadPaletteAndTiles(false, newPalette);
+			Palettes::FadeToPalette(newPalette, true, HalfSecond, true, false);
+		}
 		RedrawWindow(menuPosition);
 		for (u32 i = 0; i < 5; i++)
 		{

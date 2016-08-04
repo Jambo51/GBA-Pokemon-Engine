@@ -28,6 +28,13 @@ namespace Scenes
 {
 	namespace Misc
 	{
+		TEXT_LOCATION char* WelcomeToTheWorldOfPokemon::defaultRivalNames[] = {
+				"Green",
+				"Gary",
+				"Kaz",
+				"Toru"
+		};
+
 		WelcomeToTheWorldOfPokemon::WelcomeToTheWorldOfPokemon(u32 varStartValue)
 		{
 			BackgroundFunctions::ClearAllBackgrounds();
@@ -76,14 +83,33 @@ namespace Scenes
 					break;
 				}
 				case 13:
-					Data::Variables::SetVar(0x801F, 14);
+				{
+					// Note: this is placeholder
+					// to be replaced with actual naming scene
+					// when ready
+					Game::SetRivalName("Gamer20", 0);
+					//SceneManager::SetScene(new NamingScene(7, playerNameLoc, ));
+					SceneManager::SetScene(new WelcomeToTheWorldOfPokemon(15));
+					break;
+				}
+				case 14:
+					Data::Variables::SetVar(0x801F, 16);
+					Game::SetRivalName(defaultRivalNames[Data::Variables::GetVar(Var_LastResult) - 1], 0);
+					break;
+				case 16:
+					Data::Variables::SetVar(0x801F, 17);
+					new ScriptRunners::OverworldScriptRunner((u8*)&ConfirmRivalName);
+					break;
+				case 18:
+					Data::Variables::SetVar(0x801F, 19);
 					new ScriptRunners::OverworldScriptRunner((u8*)&WelcomePartSeven);
 					break;
-				case 15:
+				case 20:
 					Core::Game::Initialise();
 					Core::Data::Flags::Initialise();
 					Core::Data::Variables::Initialise();
 					Audio::SoundEngine::FadeSongToSilence();
+					Core::Game::InitialisePlayer();
 					Palettes::FadeToBlack(true, HalfSecond, true, true);
 				default:
 					break;
@@ -102,6 +128,10 @@ namespace Scenes
 			else if (Data::Variables::GetVar(0x801F) == 12)
 			{
 				new ScriptRunners::OverworldScriptRunner((u8*)&WelcomePartSix);
+			}
+			else if (Data::Variables::GetVar(0x801F) == 15)
+			{
+				new ScriptRunners::OverworldScriptRunner((u8*)&ConfirmRivalName);
 			}
 		}
 

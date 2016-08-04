@@ -294,8 +294,8 @@ namespace Scenes
 			Core::Pokemon::Pokemon enemyPokemon[6];
 			BattleData battleData;
 			Battle(const BattleTypeStruct &bts);
-			~Battle();
 		public:
+			virtual ~Battle();
 			static u32 TiltEffectTypeChartCallback(u32 incomingValue);
 			static u32 InversionEffectTypeChartCallback(u32 incomingValue);
 			static u32 TiltedInversionTypeChartCallback(u32 incomingValue);

@@ -11,9 +11,9 @@ namespace Entities
 		EntityManager::RegisterEntity(this);
 	}
 
-	u32 Entity::EvaluatePositionScore() const
+	u32 Entity::EvaluatePositionScore()
 	{
-		return _position.GetX() + _position.GetY() + 0x200 * (3 - _object->GetPriority());
+		return _position.GetX() + _position.GetY() + 0x200 * (3 - object->GetPriority());
 	}
 
 	bool Entity::Update()

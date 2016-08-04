@@ -26,8 +26,9 @@ setvar 0x801F 0xB
 end
 
 #globalorg @WelcomePartSix
-message @WelcomeMessageFive MSG_YESNO
-if B_YES goto @WelcomePartSixTwo
+message @WelcomeMessageFive MSG_YESNOANDDONTDESTROY
+compare LASTRESULT B_YES
+if B_== goto @WelcomePartSixTwo
 fadescreen 0x0
 waitstate
 setvar 0x801F 0xB
@@ -37,26 +38,38 @@ end
 message @WelcomeMessageSix MSG_KEEPOPENANDDONTDESTROY
 #org @WelcomeMultichoice
 multichoice 0x1 0x1 0x0 0x0
+compare LASTRESULT 0x0
+if B_== goto @NameFromScene
+setvar 0x801F 0xE
+end
+
+#globalorg @ConfirmRivalName
 message @WelcomeMessageSixTwo MSG_YESNO
-if B_YES goto @WelcomePartSixThree
+compare LASTRESULT B_YES
+if B_== goto @WelcomePartSixThree
 message @WelcomeMessageSixThree MSG_KEEPOPENANDDONTDESTROY
 goto @WelcomeMultichoice
 
-#org @WelcomePartSixThree
-message @WelcomeMessageSixFour MSG_KEEPOPEN
+#org @NameFromScene
+message @PreSceneChat MSG_KEEPOPENANDFADEBLACK
 setvar 0x801F 0xD
+end
+
+#org @WelcomePartSixThree
+message @WelcomeMessageSixFour MSG_KEEPOPENANDDONTDESTROY
+setvar 0x801F 0x12
 end
 
 #globalorg WelcomePartSeven
 message @WelcomeMessageSeven MSG_KEEPOPEN
-setvar 0x801F 0xF
+setvar 0x801F 0x14
 end
 
 #org @WelcomeMessage
 #text Hello, there!\nGlad to meet you!\pWelcome to the world of Pokémon!\pMy name is Oak.\pPeople affectionately refer to me\nas the Pokémon Professor.\pThis world[.]
 
 #org @WelcomeMessageOne
-#text [.]is inhabited far and wide by\ncreatues called Pokémon.\pFor some people, Pokémon are pets.\nOthers use them for battling.\pAs for myself[.]\pI study Pokémon as a profession.
+#text [.]is inhabited far and wide by\ncreatures called Pokémon.\pFor some people, Pokémon are pets.\nOthers use them for battling.\pAs for myself[.]\pI study Pokémon as a profession.
 
 #org @WelcomeMessageTwo
 #text But first, tell me a little about\nyourself.
@@ -84,3 +97,6 @@ end
 
 #org @WelcomeMessageSixFour
 #text That's right! I remember now!\nHis name is [rival]!
+
+#org @PreSceneChat
+#text Alright, what is his name then?

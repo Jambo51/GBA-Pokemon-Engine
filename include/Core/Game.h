@@ -15,6 +15,14 @@
 #include "Callbacks/Callback.h"
 #include "Entities/NonPlayerCharacter.h"
 #include "Collections/Queues/LinkedQueue.h"
+#include "SmartPointer.h"
+#include "Tasks/Memory/MemoryTask.h"
+#include "Tasks/ScriptRunners/OverworldScriptRunner.h"
+#include "Core/Data/Items.h"
+#include "Collections.h"
+#include "LibraryHeaders/liboverworldscripts.h"
+#include "Core/Data/Variables.h"
+#include "Callbacks/ReleaseFromScriptCallback.h"
 
 #define PartyLength 6
 #define EggCycleLength 257
@@ -30,7 +38,7 @@ namespace Core
 	} PokemonStorageBoxes;
 
 	typedef struct NPCData {
-		Entities::NonPlayerCharacter* dataPointer;
+		SmartPointer<Entities::NonPlayerCharacter> dataPointer;
 		u16 xLocation;
 		u16 yLocation;
 		u16 prevXLocation;
@@ -48,6 +56,7 @@ namespace Core
 		u8 frameDelay;
 		u8 pixelsMoved;
 		u8 dataSpriteID;
+		u32 isLocked;
 	} NPCData;
 
 	enum SoundEngineIDs { M4AEngineID, GBPSoundsEngineID };
@@ -56,6 +65,7 @@ namespace Core
 
 	class Game
 	{
+		friend class Tasks::Memory::MemoryTask;
 	private:
 		static Pokemon::Pokemon partyPokemon[];
 		static Pokemon::Pokemon temporaryHoldingPokemon;
@@ -75,7 +85,6 @@ namespace Core
 		static bool layer0Included;
 		static u8 validGameSave;
 		static u8 soundEngineID;
-		static SaveLocationStruct saveData[];
 		static u16 eggCycle;
 		static u8 happinessCycle;
 		static u8 poisonCycle;
@@ -87,7 +96,10 @@ namespace Core
 		static u8 layer1ID;
 		static u8 layer2ID;
 		static u8 layer3ID;
-		static Collections::Queues::LinkedQueue<Callbacks::Callback*> actions;
+		static Collections::Queues::LinkedQueue<SmartPointer<Callbacks::Callback> > actions;
+		static VoidFunctionPointerU32 selectMapped;
+		static VoidFunctionPointerU32 lMapped;
+		static VoidFunctionPointerU32 rMapped;
 		Game();
 		~Game();
 		static u32 CountPokemon(Pokemon::Pokemon* location, u32 length);
@@ -109,10 +121,8 @@ namespace Core
 		static u32 CountBoxPokemon(u32 boxID);
 		static u32 CountAllBoxPokemon();
 		static void StartTimer(int timerNum, int timerSetting = 0, u16 cascadeValue = 0);
-		static bool AddNPC(Entities::NonPlayerCharacter* npc);
-		static void OverwriteNPC(Entities::NonPlayerCharacter* npc, u32 position);
-		static void Save();
-		static void Load();
+		static bool AddNPC(SmartPointer<Entities::NonPlayerCharacter> npc);
+		static void OverwriteNPC(SmartPointer<Entities::NonPlayerCharacter> npc, u32 position);
 		static bool ValidSaveDetected() { return validGameSave == 1; }
 		static void ValidSaveDetected(bool newValue) { if (newValue) { validGameSave = 1; } else { validGameSave = 0; } }
 		static u32 GetSoundEngineID() { return soundEngineID; }
@@ -122,7 +132,7 @@ namespace Core
 		static char* GetBufferPointer(u32 bufferID) { if (bufferID < NUMBUFFERS) { return (char*)&buffers[bufferID]; } return NULL; }
 		static Pokemon::Pokemon* GetPartyPokemon(u32 indexID) { if (indexID < 6) { return &partyPokemon[indexID]; } return NULL; }
 		static Pokemon::Pokemon* GetTemporaryPokemon() { return &temporaryHoldingPokemon; }
-		static NPCData* GetNPCDataPointer() { return (NPCData*)&overworldData; }
+		static NPCData* GetNPCData() { return (NPCData*)&overworldData; }
 		static void OnTakeStep();
 		static void MoveCamera(const Vector2D &delta);
 		static void SetCamera(const Vector2D &position);
@@ -219,11 +229,50 @@ namespace Core
 			return pointer;
 		}
 		static void SetPlayerName(char* name);
-		static bool IsValidPointer(void* pointer)
-		{
-			return (u32)pointer >= 0x02000000 && (u32)pointer < 0x02040000;
-		}
+		static void SetRivalName(char* name, u32 rivalIndex);
 		static void ClearPlayer();
+		static void InitialisePlayer();
+		static void ExecuteSelectMapped()
+		{
+			if (selectMapped)
+			{
+				selectMapped(Data::Item_Context_Mapped);
+			}
+			else
+			{
+				Data::Variables::SetVar(Var_LastResult, 0);
+				Tasks::ScriptRunners::OverworldScriptRunner* runner = new Tasks::ScriptRunners::OverworldScriptRunner((u8*)&SelectMappedScript);
+				runner->SetCallback(new Callbacks::ReleaseFromScriptCallback());
+			}
+		}
+		static void ExecuteLMapped()
+		{
+			if (lMapped)
+			{
+				lMapped(Data::Item_Context_Mapped);
+			}
+			else
+			{
+				Data::Variables::SetVar(Var_LastResult, 1);
+				Tasks::ScriptRunners::OverworldScriptRunner* runner = new Tasks::ScriptRunners::OverworldScriptRunner((u8*)&SelectMappedScript);
+				runner->SetCallback(new Callbacks::ReleaseFromScriptCallback());
+			}
+		}
+		static void ExecuteRMapped()
+		{
+			if (rMapped)
+			{
+				rMapped(Data::Item_Context_Mapped);
+			}
+			else
+			{
+				Data::Variables::SetVar(Var_LastResult, 2);
+				Tasks::ScriptRunners::OverworldScriptRunner* runner = new Tasks::ScriptRunners::OverworldScriptRunner((u8*)&SelectMappedScript);
+				runner->SetCallback(new Callbacks::ReleaseFromScriptCallback());
+			}
+		}
+		static void DisableNPCMovement(s32 id = -1);
+		static void EnableNPCMovement(s32 id = -1);
 	};
 }
 

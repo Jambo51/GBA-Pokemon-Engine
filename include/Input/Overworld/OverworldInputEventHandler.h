@@ -43,16 +43,16 @@ namespace Input
 	public:
 		OverworldInputEventHandler();
 		~OverworldInputEventHandler();
-		void OnPressA();
-		void OnPressB();
-		void OnPressStart();
-		void OnPressSelect();
-		void OnPressL();
-		void OnPressR();
-		void OnPressUp();
-		void OnPressDown();
-		void OnPressLeft();
-		void OnPressRight();
+		bool OnPressA();
+		bool OnPressB();
+		bool OnPressStart();
+		bool OnPressSelect();
+		bool OnPressL();
+		bool OnPressR();
+		bool OnPressUp();
+		bool OnPressDown();
+		bool OnPressLeft();
+		bool OnPressRight();
 		void Update();
 	};
 }

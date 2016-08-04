@@ -10,7 +10,6 @@
 
 #define SetOctave0 0xD8
 #define SetOctave7 0xD0
-#define SONG_FADE_FRAME_DELAY 5
 
 #include "GlobalDefinitions.h"
 

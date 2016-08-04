@@ -30,7 +30,7 @@ namespace Callbacks
 
 	void ResetToIntroCallback::DoCallback()
 	{
-		((Menus::TitleScreen*)SceneManager::GetScene())->SetExitContext(ResetToIntro);
+		SmartPointerFunctions::Cast<Scene, Menus::TitleScreen>(SceneManager::GetScene())->SetExitContext(ResetToIntro);
 		Palettes::FadeToBlack(true, HalfSecond, true);
 		SoundEngine::FadeSongToSilence();
 		InputManager::SetEventHandler(new DoNothingInputEventHandler());

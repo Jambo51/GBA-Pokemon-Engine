@@ -18,6 +18,9 @@ namespace Tasks
 
 extern u16 EmptySpecial(Tasks::ScriptRunners::ScriptRunner* runner);
 extern u16 Special0HealParty(Tasks::ScriptRunners::ScriptRunner* runner);
+extern u16 Special1CheckExistingSave(Tasks::ScriptRunners::ScriptRunner* runner);
+extern u16 Special2SaveGame(Tasks::ScriptRunners::ScriptRunner* runner);
+extern u16 Special3ReopenMenu(Tasks::ScriptRunners::ScriptRunner* runner);
 extern u16 Special38PlayTrainerMusic(Tasks::ScriptRunners::ScriptRunner* runner);
 extern u16 SpecialB5BufferDaycarePokemonNames(Tasks::ScriptRunners::ScriptRunner* runner);
 extern u16 SpecialB6GetDayCareStatus(Tasks::ScriptRunners::ScriptRunner* runner);

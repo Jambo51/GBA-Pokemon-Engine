@@ -8,6 +8,7 @@
 #include "Input/Overworld/YesNoBoxInputEventHandler.h"
 #include "Tasks.h"
 #include "Text.h"
+#include "Core.h"
 
 namespace Input
 {
@@ -23,24 +24,24 @@ namespace Input
 
 	}
 
-	void YesNoBoxInputEventHandler::OnPressA()
+	bool YesNoBoxInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		if (!keyHeld[Key_A])
+		if (!InputHandler::OnPressA())
 		{
 			runner->KeyPressReceived(true);
-			runner->SetStatus(selectedIndex);
+			Core::Data::Variables::SetVar(Var_LastResult, selectedIndex);
 		}
+		return false;
 	}
 
-	void YesNoBoxInputEventHandler::OnPressB()
+	bool YesNoBoxInputEventHandler::OnPressB()
 	{
-		InputHandler::OnPressB();
-		if (!keyHeld[Key_B])
+		if (!InputHandler::OnPressB())
 		{
 			runner->KeyPressReceived(true);
-			runner->SetStatus(1);
+			Core::Data::Variables::SetVar(Var_LastResult, 1);
 		}
+		return false;
 	}
 
 	inline void RedrawArrowCharacter(u32 index)
@@ -51,25 +52,25 @@ namespace Input
 		Text::TextFunctions::DrawCharacter(ARROWCHAR, 0, index * 0x10 + 0x20);
 	}
 
-	void YesNoBoxInputEventHandler::OnPressUp()
+	bool YesNoBoxInputEventHandler::OnPressUp()
 	{
-		InputHandler::OnPressUp();
-		if (!keyHeld[Key_Up])
+		if (!InputHandler::OnPressUp())
 		{
 			selectedIndex--;
 			selectedIndex &= 1;
 			RedrawArrowCharacter(selectedIndex);
 		}
+		return false;
 	}
 
-	void YesNoBoxInputEventHandler::OnPressDown()
+	bool YesNoBoxInputEventHandler::OnPressDown()
 	{
-		InputHandler::OnPressDown();
-		if (!keyHeld[Key_Down])
+		if (!InputHandler::OnPressDown())
 		{
 			selectedIndex++;
 			selectedIndex &= 1;
 			RedrawArrowCharacter(selectedIndex);
 		}
+		return false;
 	}
 }

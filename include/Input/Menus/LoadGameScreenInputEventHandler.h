@@ -17,11 +17,11 @@ namespace Input
 	public:
 		LoadGameScreenInputEventHandler();
 		~LoadGameScreenInputEventHandler();
-		void OnPressA();
-		void OnPressB();
-		void OnPressUp();
-		void OnPressDown();
-		void OnPressStart();
+		bool OnPressA();
+		bool OnPressB();
+		bool OnPressUp();
+		bool OnPressDown();
+		bool OnPressStart();
 	};
 }
 

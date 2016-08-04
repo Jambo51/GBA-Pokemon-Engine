@@ -106,8 +106,8 @@ namespace Collections
 							itemCount--;
 							return item;
 						}
-						return T();
 					}
+					return T();
 				}
 
 				T Peek()

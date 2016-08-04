@@ -10,6 +10,7 @@
 #include "Audio.h"
 #include "Scenes.h"
 #include "Text.h"
+#include "Input.h"
 #include "Callbacks/WhiteoutCallback.h"
 
 using namespace Core::Pokemon;
@@ -63,6 +64,37 @@ u16 Special0HealParty(ScriptRunner* runner)
 
 u16 EmptySpecial(ScriptRunner* runner)
 {
+	return 0;
+}
+
+#define NoExistingSave 0
+#define ExistingSave 1
+#define ExistingAltSave 2
+
+u16 Special1CheckExistingSave(ScriptRunner* runner)
+{
+	if (Game::ValidSaveDetected())
+	{
+		u32 saveTrainerID = 0;
+		if (Game::GetPlayer().completeTrainerID == saveTrainerID)
+		{
+			return ExistingSave;
+		}
+		return ExistingAltSave;
+	}
+	return NoExistingSave;
+}
+
+u16 Special2SaveGame(ScriptRunner* runner)
+{
+	FlashFunctions::SaveGame(runner);
+	runner->SetWaitFrames(1);
+	return 0;
+}
+
+u16 Special3ReopenMenu(ScriptRunner* runner)
+{
+	Input::InputManager::SetEventHandler(new Input::StartMenuInputEventHandler());
 	return 0;
 }
 

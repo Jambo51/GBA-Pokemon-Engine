@@ -10,8 +10,8 @@
 
 namespace Tasks
 {
-	EWRAM_LOCATION ALIGN(4) Collections::Lists::ArrayList<Task*> TaskManager::tasks = Collections::Lists::ArrayList<Task*>();
-	EWRAM_LOCATION ALIGN(4) Collections::Lists::LinkedList<Task*> TaskManager::tasksToRemove = Collections::Lists::LinkedList<Task*>();
+	EWRAM_LOCATION ALIGN(4) Collections::Lists::ArrayList<SmartPointer<Task> > TaskManager::tasks = Collections::Lists::ArrayList<SmartPointer<Task> >();
+	EWRAM_LOCATION ALIGN(4) Collections::Lists::LinkedList<SmartPointer<Task> > TaskManager::tasksToRemove = Collections::Lists::LinkedList<SmartPointer<Task> >();
 
 	TaskManager::TaskManager()
 	{
@@ -24,29 +24,32 @@ namespace Tasks
 		// TODO Auto-generated destructor stub
 	}
 
-	void TaskManager::AddTask(Task* task)
+	void TaskManager::AddTask(SmartPointer<Task> task)
 	{
-		tasks.PushBack(task);
-	}
-
-	void TaskManager::RemoveTask(Task* task)
-	{
-		tasksToRemove.PushBack(task);
+		if (!tasks.Contains(task))
+		{
+			tasks.PushBack(task);
+		}
 	}
 
 	void TaskManager::Update()
 	{
 		for (int i = 0; i < tasks.Size(); i++)
 		{
-			tasks[i]->Update();
+			SmartPointer<Task> task = tasks[i];
+			if (task->Update())
+			{
+				if (!tasksToRemove.Contains(task))
+				{
+					tasksToRemove.PushBack(task);
+				}
+			}
 		}
 		for (int i = 0; i < tasksToRemove.Size(); i++)
 		{
-			Task* t = tasksToRemove[i];
-			tasks.Remove(t);
-			delete t;
+			tasks.Remove(tasksToRemove[i]);
 		}
-		if (tasksToRemove.Size())
+		if (tasksToRemove.Size() > 0)
 		{
 			tasksToRemove.Clear();
 		}

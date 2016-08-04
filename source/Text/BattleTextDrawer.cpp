@@ -10,7 +10,7 @@
 
 namespace Text
 {
-	BattleTextDrawer::BattleTextDrawer(char* newString, u8 x, u8 y, u32 speed, Callbacks::Callback* endFunction, u32 inkColour) : TextDrawer(newString, x, y, speed, endFunction, inkColour)
+	BattleTextDrawer::BattleTextDrawer(SmartArrayPointer<char> newString, u8 x, u8 y, u32 speed, SmartPointer<Callbacks::Callback> endFunction, u32 inkColour) : TextDrawer(newString, x, y, speed, endFunction, inkColour)
 	{
 		// TODO Auto-generated constructor stub
 
@@ -21,7 +21,7 @@ namespace Text
 		// TODO Auto-generated destructor stub
 		if (string)
 		{
-			delete[] string;
+			string = 0;
 		}
 	}
 

@@ -9,6 +9,7 @@
 #define INCLUDE_CORE_PALETTES_H_
 
 #include "GlobalDefinitions.h"
+#include "SmartPointer.h"
 #include "Callbacks/Callback.h"
 
 namespace Core
@@ -26,13 +27,13 @@ namespace Core
 			static bool doExitCallback;
 			static bool paletteWriteDetected;
 			static bool fade256;
-			static u16* currentPalette;
-			static u16* targetPalette;
+			static SmartArrayPointer<u16> currentPalette;
+			static SmartArrayPointer<u16> targetPalette;
 			static u32 numFrames;
 			static u32 originalFrames;
 			static u32 alphaSteps;
 			static u32 currentAlpha;
-			static Callbacks::Callback* callbackFunction;
+			static SmartPointer<Callbacks::Callback> callbackFunction;
 			static u16 blackPalette[];
 			static u16 whitePalette[];
 			static u32 framesInFades[];
@@ -40,22 +41,22 @@ namespace Core
 			Palettes();
 			~Palettes();
 			static u32 GetFadeColour(u16 clra, u16 clrb);
-			static void DoFadeOnPalette(u32 paletteID, u16* target, u16* current);
+			static void DoFadeOnPalette(u32 paletteID, SmartArrayPointer<u16> target, SmartArrayPointer<u16> current);
 			static void DoFade();
 		public:
-			static u16* GetCurrentPalette();
-			static void SetAllPalettes(u16* source, u16* destination = 0);
-			static void SetPalette(u32 paletteID, u16* source, u16* destination = 0);
-			static void SetColour(u32 paletteID, u32 slotID, Colour c, u16* destination = 0);
-			static void FadeToPalette(const u16* newPalette, bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
+			static SmartArrayPointer<u16> GetCurrentPalette();
+			static void SetAllPalettes(SmartArrayPointer<u16> source, SmartArrayPointer<u16> destination = 0);
+			static void SetPalette(u32 paletteID, SmartArrayPointer<u16> source, SmartArrayPointer<u16> destination = 0);
+			static void SetColour(u32 paletteID, u32 slotID, Colour c, SmartArrayPointer<u16> destination = 0);
+			static void FadeToPalette(SmartArrayPointer<u16> newPalette, bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
 			static void FadeToGreyScale(FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true);
-			static void FadeToBlack(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&blackPalette, fade256Colours, FrameCount, callback, exitCallback); }
-			static void FadeToWhite(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette((const u16*)&whitePalette, fade256Colours, FrameCount, callback, exitCallback); }
-			static void PaletteFlash(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount);
-			static void BlackPaletteFlash(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true, u32 blendAmount = 50) { PaletteFlash((const u16*)&blackPalette, fade256Colours, FrameCount, callback, exitCallback, blendAmount); }
-			static void WhitePaletteFlash(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true, u32 blendAmount = 50) { PaletteFlash((const u16*)&whitePalette, fade256Colours, FrameCount, callback, exitCallback, blendAmount); }
-			static u16* GetGreyScale(const u16* original);
-			static void SetCustomFadeCallback(Callbacks::Callback* function) { callbackFunction = function; }
+			static void FadeToBlack(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette(SmartArrayPointer<u16>((u16*)&blackPalette), fade256Colours, FrameCount, callback, exitCallback); }
+			static void FadeToWhite(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true) { FadeToPalette(SmartArrayPointer<u16>((u16*)&whitePalette), fade256Colours, FrameCount, callback, exitCallback); }
+			static void PaletteFlash(SmartArrayPointer<u16> newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount);
+			static void BlackPaletteFlash(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true, u32 blendAmount = 50) { PaletteFlash(SmartArrayPointer<u16>((u16*)&blackPalette), fade256Colours, FrameCount, callback, exitCallback, blendAmount); }
+			static void WhitePaletteFlash(bool fade256Colours = false, FadeIDs FrameCount = HalfSecond, bool callback = false, bool exitCallback = true, u32 blendAmount = 50) { PaletteFlash(SmartArrayPointer<u16>((u16*)&whitePalette), fade256Colours, FrameCount, callback, exitCallback, blendAmount); }
+			static SmartArrayPointer<u16> GetGreyScale(SmartArrayPointer<u16> &original);
+			static void SetCustomFadeCallback(SmartPointer<Callbacks::Callback> function) { callbackFunction = function; }
 			static void SetPaletteToWhite();
 			static void Update();
 	};

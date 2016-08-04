@@ -10,8 +10,7 @@
 
 #include "Tasks/TaskManager.h"
 #include "Tasks/Task.h"
+#include "Tasks/MemoryTasks.h"
 #include "Tasks/ScriptRunners/ScriptRunners.h"
-
-
 
 #endif /* INCLUDE_TASKS_H_ */

@@ -10,12 +10,14 @@
 #include "Tasks/TaskManager.h"
 #include "Core/Game.h"
 #include "Scenes/Overworld/PrimaryOverworld.h"
+#include "Input/InputManager.h"
+#include "Audio/SoundEngine.h"
 
 using namespace Tasks;
 
 namespace Text
 {
-	TextDrawer::TextDrawer(char* newString, u8 x, u8 y, u32 speed, Callbacks::Callback* endFunction, u32 inkColour) : Tasks::Task()
+	TextDrawer::TextDrawer(SmartArrayPointer<char> newString, u8 x, u8 y, u32 speed, SmartPointer<Callbacks::Callback> endFunction, u32 inkColour) : Tasks::Task()
 	{
 		// TODO Auto-generated constructor stub
 		string = newString;
@@ -43,9 +45,9 @@ namespace Text
 	TextDrawer::~TextDrawer()
 	{
 		// TODO Auto-generated destructor stub
-		if (Core::Game::IsValidPointer(string))
+		if (string)
 		{
-			delete[] string;
+			string = 0;
 		}
 	}
 
@@ -65,8 +67,9 @@ namespace Text
 		}
 		else if (c == 0xFE)
 		{
-			if (aDown || bDown)
+			if ((aDown && !aHeld) || (bDown && !bHeld))
 			{
+				//Audio::SoundEngine::PlaySFX(5);
 				TextFunctions::ClearTextTileArea();
 				currentX = initialX;
 				newCurrentX = initialX;
@@ -121,10 +124,17 @@ namespace Text
 			stringPosition++;
 		}
 		currentY = newCurrentY;
-		framesToWait = textSpeed;
+		if (bDown)
+		{
+			framesToWait = 2;
+		}
+		else
+		{
+			framesToWait = textSpeed;
+		}
 	}
 
-	void TextDrawer::Update()
+	bool TextDrawer::Update()
 	{
 		const TFont* font = TextFunctions::GetFont();
 		if (framesToWait == 0 || aDown)
@@ -139,9 +149,9 @@ namespace Text
 				if (endFunction)
 				{
 					endFunction->DoCallback();
-					delete endFunction;
+					endFunction = 0;
 				}
-				TaskManager::RemoveTask(this);
+				return true;
 			}
 		}
 		else
@@ -150,5 +160,6 @@ namespace Text
 		}
 		aDown = false;
 		bDown = false;
+		return false;
 	}
 }

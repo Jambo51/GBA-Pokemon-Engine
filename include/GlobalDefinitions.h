@@ -53,6 +53,7 @@
 #define PLAYERNAMELENGTH 7
 #define NUMBOXES 25
 #define POKEMONPERBOX 30
+#define SONG_FADE_FRAME_DELAY 5
 
 #define BG0HOFS (u16*)0x04000010
 #define BG0VOFS (u16*)0x04000012
@@ -140,7 +141,7 @@ enum GBPSoundsEngineSets { GBP_Set_BGM, GBP_Set_Fanfare, GBP_Set_SFX, GBP_Set_Ma
 
 enum TypeChartSettings { Standard, Tilt, Invert, UnusedTypeChartSetting };
 
-enum VariableIDs { Var_RegionID = 0x4000 };
+enum VariableIDs { Var_RegionID = 0x4000, Var_LastResult = 0x800D, Var_LastTalked = 0x800F };
 
 typedef u32 (*U32FunctionPointerVoid)(void);
 

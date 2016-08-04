@@ -23,15 +23,19 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
-	void TextInputHandler::OnPressA()
+	bool TextInputHandler::OnPressA()
 	{
 		InputHandler::OnPressA();
-		drawer->ADown(true);
+		drawer->SetADown(true);
+		drawer->SetAHeld(InputHandler::IsKeyHeld(Key_A));
+		return false;
 	}
 
-	void TextInputHandler::OnPressB()
+	bool TextInputHandler::OnPressB()
 	{
 		InputHandler::OnPressB();
-		drawer->BDown(true);
+		drawer->SetBDown(true);
+		drawer->SetBHeld(InputHandler::IsKeyHeld(Key_B));
+		return false;
 	}
 }

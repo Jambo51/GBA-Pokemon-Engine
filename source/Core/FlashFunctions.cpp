@@ -9,6 +9,8 @@
 #include "Core/Game.h"
 #include "Core/Data/Flags.h"
 #include "Core/Data/Variables.h"
+#include "Tasks.h"
+#include "Callbacks.h"
 
 using namespace Core::Data;
 
@@ -145,14 +147,11 @@ namespace Core
 		}
 	}
 
-	void FlashFunctions::SaveGame()
+	void FlashFunctions::SaveGame(Tasks::ScriptRunners::ScriptRunner* runner)
 	{
 		if (ChipIdentify())
 		{
-			Game::Save();
-			Flags::Save();
-			Variables::Save();
-			CalculateChecksums();
+			new Tasks::Memory::SaveGameTask(new Callbacks::ReleaseWaitingScriptRunnerCallback(runner));
 		}
 	}
 
@@ -185,45 +184,23 @@ namespace Core
 		{
 			if (ValidateSave())
 			{
-				Game::Load();
-				if (Game::ValidSaveDetected())
-				{
-					Flags::Load();
-					Variables::Load();
-					return;
-				}
+				new Tasks::Memory::LoadGameTask(new Callbacks::OnGameLoadCallback());
+				return;
 			}
 		}
-		else
-		{
-			Game::Initialise();
-			Flags::Initialise();
-			Variables::Initialise();
-			Game::ValidSaveDetected(false);
-		}
+		Game::Initialise();
+		Flags::Initialise();
+		Variables::Initialise();
+		Game::ValidSaveDetected(false);
 	}
 
 	void FlashFunctions::WriteToFlash(SaveLocationStruct* structData)
 	{
-		u32 counter = 0;
-		u8* ptr = structData[counter].destinationPosition;
-		do
-		{
-			SaveThing((void*)ptr, (const void*)structData[counter].sourcePosition, structData[counter].length);
-			counter++;
-			ptr = structData[counter].destinationPosition;
-		} while ((u32)ptr != 0xFFFFFFFF);
+		SaveThing((void*)structData->destinationPosition, (const void*)structData->sourcePosition, structData->length);
 	}
 
 	void FlashFunctions::ReadFromFlash(SaveLocationStruct* structData)
 	{
-		u32 counter = 0;
-		u8* ptr = structData[counter].destinationPosition;
-		do
-		{
-			LoadThing((void*)structData[counter].sourcePosition, (const void*)ptr, structData[counter].length);
-			counter++;
-			ptr = structData[counter].destinationPosition;
-		} while ((u32)ptr != 0xFFFFFFFF);
+		LoadThing((void*)structData->sourcePosition, (const void*)structData->destinationPosition, structData->length);
 	}
 }

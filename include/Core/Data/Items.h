@@ -30,13 +30,14 @@ namespace Core
 			u16 mysteryValue;
 			u8 category;
 			u8 type;
-			VoidFunctionPointerVoid FieldUse;
+			VoidFunctionPointerU32 FieldUse;
 			u32 battleUsageCategory;
 			VoidFunctionPointerVoid BattleUsage;
 			u32 unknown;
 		} Item;
 
 		enum ItemCategories { Item_Category_Items, Item_Category_Balls, Item_Category_TMsAndHMs, Item_Category_Berries, Item_Category_KeyItems };
+		enum ItemContexts { Item_Context_Bag, Item_Context_Mapped };
 
 		class Items
 		{

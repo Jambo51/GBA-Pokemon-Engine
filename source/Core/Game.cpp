@@ -54,44 +54,10 @@ namespace Core
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer1ID;
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer2ID;
 	EWRAM_LOCATION ALIGN(1) u8 Game::layer3ID;
-	EWRAM_LOCATION ALIGN(4) Collections::Queues::LinkedQueue<Callbacks::Callback*> Game::actions = Collections::Queues::LinkedQueue<Callbacks::Callback*>();
-
-	#define SizeOfPokemonBoxStructure sizeof(PokemonStorageBoxes)
-	#define BaseBlocks (SizeOfPokemonBoxStructure / SaveBlockMaxLength)
-	#define LengthOfLastStorageBoxBlock (SizeOfPokemonBoxStructure - (BaseBlocks * SaveBlockMaxLength))
-	#define BaseSaveAddress ((0x1000 * BaseBlocks) + LengthOfLastStorageBoxBlock)
-
-	RODATA_LOCATION ALIGN(4) SaveLocationStruct Game::saveData[] = {
-			{ (u8*)0x0000, (u8*)&Game::storageBoxes, SaveBlockMaxLength },
-			{ (u8*)0x1000, (u8*)((u32)&Game::storageBoxes + SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x2000, (u8*)((u32)&Game::storageBoxes + 2 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x3000, (u8*)((u32)&Game::storageBoxes + 3 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x4000, (u8*)((u32)&Game::storageBoxes + 4 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x5000, (u8*)((u32)&Game::storageBoxes + 5 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x6000, (u8*)((u32)&Game::storageBoxes + 6 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x7000, (u8*)((u32)&Game::storageBoxes + 7 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x8000, (u8*)((u32)&Game::storageBoxes + 8 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0x9000, (u8*)((u32)&Game::storageBoxes + 9 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0xA000, (u8*)((u32)&Game::storageBoxes + 10 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0xB000, (u8*)((u32)&Game::storageBoxes + 11 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0xC000, (u8*)((u32)&Game::storageBoxes + 12 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0xD000, (u8*)((u32)&Game::storageBoxes + 13 * SaveBlockMaxLength), SaveBlockMaxLength },
-			{ (u8*)0xE000, (u8*)((u32)&Game::storageBoxes + 14 * SaveBlockMaxLength), LengthOfLastStorageBoxBlock },
-			{ (u8*)BaseSaveAddress, (u8*)&Game::partyPokemon, sizeof(Core::Pokemon::Pokemon) * PartyLength },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength), (u8*)&Game::player, sizeof(Player) },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player)), (u8*)&Game::currentMap.mapLocation, sizeof(MapBankMapCombo) },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo)), (u8*)&Game::options, sizeof(Options) },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options)), (u8*)&Game::overworldData, sizeof(NPCData) * NumberOfOverworlds },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds)), (u8*)&Game::validGameSave, 1 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8)), (u8*)&Game::soundEngineID, 1 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2), (u8*)&Game::eggCycle, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 1), (u8*)&Game::repelCounter, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 2), (u8*)&Game::repelStrength, 2 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 3), (u8*)&Game::happinessCycle, 1 },
-			{ (u8*)(BaseSaveAddress + sizeof(Core::Pokemon::Pokemon) * PartyLength + sizeof(Player) + sizeof(MapBankMapCombo) + sizeof(Options) + (sizeof(NPCData) * NumberOfOverworlds) + sizeof(u8) * 2 + sizeof(u16) * 4 + sizeof(u8)), (u8*)&Game::poisonCycle, 1 },
-			{ (u8*)(0x1000 * (BaseBlocks + 1)), (u8*)&Game::bag, sizeof(Bag) },
-			{ (u8*)0xFFFFFFFF, 0, 0 }
-	};
+	EWRAM_LOCATION ALIGN(4) Collections::Queues::LinkedQueue<SmartPointer<Callbacks::Callback> > Game::actions = Collections::Queues::LinkedQueue<SmartPointer<Callbacks::Callback> >();
+	EWRAM_LOCATION ALIGN(4) VoidFunctionPointerU32 Game::selectMapped = __null;
+	EWRAM_LOCATION ALIGN(4) VoidFunctionPointerU32 Game::lMapped = __null;
+	EWRAM_LOCATION ALIGN(4) VoidFunctionPointerU32 Game::rMapped = __null;
 
 	Game::Game()
 	{
@@ -116,10 +82,6 @@ namespace Core
 			options.options.useImperialUnits = 1;
 		}
 		options.options.optionsSet = 0;
-		memset32(&currentHealingPlace, 0, sizeof(HealingPlace) >> 2);
-		memset32(&storageBoxes, 0, sizeof(PokemonStorageBoxes) >> 2);
-		memset32(&partyPokemon, 0, (sizeof(Core::Pokemon::Pokemon) * 6) >> 2);
-		memset32(&bag, 0, sizeof(Bag) >> 2);
 		memset32(&overworldData, 0, (sizeof(NPCData) * NumberOfOverworlds) >> 2);
 		soundEngineID = GBPSoundsEngineID;
 		eggCycle = EggCycleLength;
@@ -128,6 +90,16 @@ namespace Core
 		repelCounter = 0;
 		repelStrength = 0;
 		cameraPos = Vector2D(0, 8);
+	}
+
+	void Game::InitialisePlayer()
+	{
+		memset32(&currentHealingPlace, 0, sizeof(HealingPlace) >> 2);
+		memset32(&storageBoxes, 0, sizeof(PokemonStorageBoxes) >> 2);
+		memset32(&partyPokemon, 0, (sizeof(Core::Pokemon::Pokemon) * 6) >> 2);
+		memset32(&bag, 0, sizeof(Bag) >> 2);
+		overworldData[0].xLocation = 6;
+		overworldData[0].yLocation = 8;
 	}
 
 	void Game::OnTakeStep()
@@ -412,7 +384,7 @@ namespace Core
 		}
 	}
 
-	bool Game::AddNPC(NonPlayerCharacter* npc)
+	bool Game::AddNPC(SmartPointer<Entities::NonPlayerCharacter> npc)
 	{
 		for (int i = 1; i < NumberOfOverworlds; i++)
 		{
@@ -448,7 +420,7 @@ namespace Core
 		return false;
 	}
 
-	void Game::OverwriteNPC(NonPlayerCharacter* npc, u32 position)
+	void Game::OverwriteNPC(SmartPointer<Entities::NonPlayerCharacter> npc, u32 position)
 	{
 		if (position < NumberOfOverworlds)
 		{
@@ -469,21 +441,6 @@ namespace Core
 			overworldData[position].previousWalkingFrame = 0;
 			overworldData[position].scriptLocation = 0;
 			overworldData[position].spriteID = npc->GetSpriteIndex();
-		}
-	}
-
-	void Game::Save()
-	{
-		validGameSave = true;
-		FlashFunctions::WriteToFlash((SaveLocationStruct*)&saveData);
-	}
-
-	void Game::Load()
-	{
-		FlashFunctions::ReadFromFlash((SaveLocationStruct*)&saveData);
-		if (validGameSave != 1)
-		{
-			Initialise();
 		}
 	}
 
@@ -811,6 +768,46 @@ namespace Core
 		}
 	}
 
+	void Game::SetRivalName(char* name, u32 rivalIndex)
+	{
+		switch (rivalIndex)
+		{
+			case 0:
+				for (int i = 0; i < 7; i++)
+				{
+					char c = name[i];
+					player.primaryRivalName[i] = c;
+					if (c == '\0')
+					{
+						break;
+					}
+				}
+				break;
+			case 1:
+				for (int i = 0; i < 7; i++)
+				{
+					char c = name[i];
+					player.secondaryRivalName[i] = c;
+					if (c == '\0')
+					{
+						break;
+					}
+				}
+				break;
+			case 2:
+				for (int i = 0; i < 7; i++)
+				{
+					char c = name[i];
+					player.tertiaryRivalName[i] = c;
+					if (c == '\0')
+					{
+						break;
+					}
+				}
+				break;
+		}
+	}
+
 	bool Game::RemovePlayerMoney(u32 cashRemoved)
 	{
 		if (player.balance < cashRemoved)
@@ -845,5 +842,47 @@ namespace Core
 	void Game::ClearParty()
 	{
 		memset32((void*)&partyPokemon, 0, (sizeof(Core::Pokemon::Pokemon) * 6) >> 2);
+	}
+
+	void Game::DisableNPCMovement(s32 id)
+	{
+		if (id < 0)
+		{
+			for (int i = 0; i < NumberOfOverworlds; i++)
+			{
+				overworldData[i].isLocked = 1;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < NumberOfOverworlds; i++)
+			{
+				if (overworldData[i].dataSpriteID == id)
+				{
+					overworldData[i].isLocked = 1;
+				}
+			}
+		}
+	}
+
+	void Game::EnableNPCMovement(s32 id)
+	{
+		if (id < 0)
+		{
+			for (int i = 0; i < NumberOfOverworlds; i++)
+			{
+				overworldData[i].isLocked = 0;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < NumberOfOverworlds; i++)
+			{
+				if (overworldData[i].dataSpriteID == id)
+				{
+					overworldData[i].isLocked = 0;
+				}
+			}
+		}
 	}
 }

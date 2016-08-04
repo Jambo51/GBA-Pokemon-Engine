@@ -1,11 +1,15 @@
 #include "std"
 
 #globalorg @StandardErrorScript
+lock
 message @errormessage MSG_KEEPOPEN
+release
 end
 
 #globalorg @StandardErrorScriptSignpost
+lock
 message @errormessage MSG_SIGN
+release
 end
 
 #globalorg @StandardErrorScriptNPC
@@ -15,5 +19,41 @@ message @errormessage MSG_KEEPOPEN
 release
 end
 
+#globalorg @SelectMappedScript
+lock
+switch LASTRESULT 3 @SelectMappedSwitch
+message @selecterrormessage MSG_KEEPOPEN
+release
+end
+
+#org @SelectMappedSwitch
+#pointer @Select
+#pointer @LeftBumper
+#pointer @RightBumper
+
+#org @Select
+bufferstring 0x0 @selectstring
+return
+
+#org @LeftBumper
+bufferstring 0x0 @leftbumperstring
+return
+
+#org @RightBumper
+bufferstring 0x0 @rightbumperstring
+return
+
 #org @errormessage
 #text This is a standard error message.\pYou are seeing this because the\nengine failed to detect the\pcorrect message to show you\nor you didn't set a script.
+
+#org @selecterrormessage
+#text An item in the Bag can be\nregistered to [buffer0] for easy use.
+
+#org @selectstring
+#text Select
+
+#org @leftbumperstring
+#text L
+
+#org @rightbumperstring
+#text R

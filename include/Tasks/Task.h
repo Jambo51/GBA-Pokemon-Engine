@@ -8,24 +8,30 @@
 #ifndef TASK_H_
 #define TASK_H_
 
-#include "TaskManager.h"
+#include "SmartPointer.h"
+#include "Callbacks.h"
 
 namespace Tasks
 {
 	class Task
 	{
 	protected:
-		Task()
-		{
-			// TODO Auto-generated constructor stub
-			TaskManager::AddTask(this);
-		}
+		SmartPointer<Callbacks::Callback> callback;
+		Task(SmartPointer<Callbacks::Callback> = 0);
 	public:
 		virtual ~Task()
 		{
-
+			if (callback)
+			{
+				callback->DoCallback();
+				callback = 0;
+			}
 		}
-		virtual void Update() = 0;
+		virtual bool Update() = 0;
+		void SetCallback(SmartPointer<Callbacks::Callback> newCallback)
+		{
+			callback = newCallback;
+		}
 	};
 }
 

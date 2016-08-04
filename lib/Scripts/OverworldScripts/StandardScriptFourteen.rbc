@@ -1,0 +1,13 @@
+#include "std"
+
+#globalorg @StandardScriptFourteen
+dontdestroytextboxonend 0x1
+preparemsg 0x0
+waitmsg
+yesnobox 0x14 0x8
+compare LASTRESULT B_YES
+if B_!= goto @StandardScriptFourteenAlt
+hidebox 0x14 0x8 0x8 0x6
+
+#org @StandardScriptFourteenAlt
+return

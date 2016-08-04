@@ -10,16 +10,18 @@
 
 #ifndef __ASSEMBLER__
 
+#include "Audio/MusicEngine.h"
+#include "SmartPointer.h"
+#include "Audio/M4A/EngineM4.h"
+#include "Audio/M4A/M4APlayer.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "MusicEngine.h"
-#include "Audio/M4A/EngineM4.h"
-
 #define FADESPEED 4
 #define M4_MAXVOL 127
-#define M4_MaxPlayers 4
+#define M4_MaxPlayers 3
 
 enum Fades { Fade_Out, Fade_In };
 
@@ -31,78 +33,37 @@ typedef struct M4FadeStruct
 	u8 direction;
 } M4FadeStruct;
 
-class M4AEngine : public MusicEngine
+namespace Audio
 {
-private:
-	static u16 Sqrt[];
-	static u32 M4_MixArea[];
-	M4APlayer players[M4_MaxPlayers];
-	M4Driver M4DriverArea;
-	M4CGBChan M4CGBArea[4];
-	s32	M4MixArea[M4_BuffLen];
-	M4FadeStruct fadeStruct;
-	void StartSong(u16 songID, bool startWithZeroVolume = false);
-	void StartFanfare(u16 fanfareID);
-	void StartSFX(u16 sfxID);
-	void FadeSong();
-	void FadeSongOut();
-	void FadeSongIn();
-	void M4_Main();
-	void MidiUpdate(M4Player *Play);
-	void M4_Update(M4Player *Play);
-	void M4_Player(u8* eightBitAddress);
-	void M4_StopSong(u32 Player);
-	void M4_PlaySong(u32 Player, const SongData *Song);
-	void M4_PlayByName(SongData *Song);
-	void M4_PlayByIdx(u32 Idx);
-	void M4_StopByName(SongData *Song);
-	void M4_PlayerStopAll(void);
-	M4Channel* M4_FetchChannel(M4Track *Trck, ToneData *Tone);
-	void HandleNote(M4Track *Track, M4Player *Play, u32 Time);
-	void M4_Fine(M4Track *Track, M4Player *Play);
-	void M4_Goto(M4Track *Track);
-	void M4_Patt(M4Track *Track);
-	void M4_Pend(M4Track *Track);
-	void M4_Rept(M4Track *Track);
-	void M4_MemAcc(M4Track *Track);
-	void M4_Prio(M4Track *Track);
-	void M4_Tempo(M4Track *Track, M4Player *Play);
-	void M4_KeyShift(M4Track *Track);
-	void M4_Voice(M4Track *Track);
-	void M4_Volume(M4Track *Track);
-	void M4_Pan(M4Track *Track);
-	void M4_Bend(M4Track *Track);
-	void M4_Range(M4Track *Track);
-	void M4_LFOSpeed(M4Track *Track);
-	void M4_LFODelay(M4Track *Track);
-	void M4_ModDepth(M4Track *Track);
-	void M4_ModType(M4Track *Track);
-	void M4_FineTune(M4Track *Track);
-	void M4_XCmd(M4Track *Track);
-	void M4_Eot(M4Track *Track, M4Player *Play);
-	void M4_Tie(M4Track *Track, M4Player *Play);
-	void M4_TrackUpdate(M4Track *Track, M4Player *Play);
-	M4Channel* FetchChannel();
-	M4Channel* M4_SFX(const WaveData *Wave);
-public:
-	M4AEngine()
+	namespace M4A
 	{
-
+		class M4AEngine : public MusicEngine
+		{
+		private:
+			static u16 sqrt[];
+			static s16 M4MixArea[];
+			STT* songTable;
+			SmartPointer<M4APlayer> players[M4_MaxPlayers];
+			MusicFadeInfo fadeInfo;
+			void StartSong(u16 songID, bool startWithZeroVolume = false);
+			void StartFanfare(u16 fanfareID);
+			void StartSFX(u16 sfxID);
+			void FadeSong();
+			void FadeSongOut();
+			void FadeSongIn();
+		public:
+			M4AEngine();
+			~M4AEngine();
+			void Interrupt();
+			void Update();
+			void SwitchWavePattern(u32 patternID);
+			void Initialise(void* songTablePointer);
+			void ResumeSong();
+			bool FanfarePlaying();
+			bool SFXPlaying();
+		};
 	}
-	~M4AEngine()
-	{
-
-	}
-	void Interrupt();
-	void Update();
-	void SetSongOnEndFunction(VoidFunctionPointerVoid function);
-	void SetSFXOnEndFunction(VoidFunctionPointerVoid function);
-	void SwitchWavePattern(u8 patternID) const;
-	void Initialise();
-	void ResumeSong();
-	bool FanfarePlaying();
-	bool SFXPlaying();
-};
+}
 
 #ifdef __cplusplus
 }

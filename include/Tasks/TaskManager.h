@@ -9,6 +9,8 @@
 #define TASKMANAGER_H_
 
 #include "Collections/Lists.h"
+#include "Tasks/Task.h"
+#include "SmartPointer.h"
 
 namespace Tasks
 {
@@ -17,13 +19,12 @@ namespace Tasks
 	class TaskManager
 	{
 	private:
-		static Collections::Lists::ArrayList<Task*> tasks;
-		static Collections::Lists::LinkedList<Task*> tasksToRemove;
+		static Collections::Lists::ArrayList<SmartPointer<Task> > tasks;
+		static Collections::Lists::LinkedList<SmartPointer<Task> > tasksToRemove;
 		TaskManager();
 		~TaskManager();
 	public:
-		static void AddTask(Task* callback);
-		static void RemoveTask(Task* callback);
+		static void AddTask(SmartPointer<Task> callback);
 		static void Update();
 	};
 }

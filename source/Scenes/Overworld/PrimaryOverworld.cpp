@@ -78,7 +78,7 @@ namespace Scenes
 
 		void PrimaryOverworld::PlaceNPCs(u16* newColours)
 		{
-			NPCData* data = Game::GetNPCDataPointer();
+			NPCData* data = Game::GetNPCData();
 			NonPlayerCharacter* npc = new PlayerEntity(Vector2D(data[0].xLocation, data[0].yLocation), 2, false, newColours);
 			npc->ChangeFrame(data[0].frameID);
 			Game::OverwriteNPC(npc, 0);
@@ -615,7 +615,7 @@ namespace Scenes
 		void PrimaryOverworld::OnCompleteTurn()
 		{
 			const MapHeader &header = Game::GetCurrentMap();
-			NPCData* data = Game::GetNPCDataPointer();
+			NPCData* data = Game::GetNPCData();
 			if (header.wildDataLocation)
 			{
 				const BlockMetadata &battleValues = CalculateBlockAttributes(data[0].xLocation, data[0].yLocation);
@@ -670,7 +670,7 @@ namespace Scenes
 		void PrimaryOverworld::OnCompleteMove(u32 direction)
 		{
 			Game::OnTakeStep();
-			NPCData* data = Game::GetNPCDataPointer();
+			NPCData* data = Game::GetNPCData();
 
 			// Check for warping
 
@@ -849,6 +849,39 @@ namespace Scenes
 					bts.basicInfo = 0;
 					bts.info.isWildBattle = 1;
 					SceneManager::SetScene(new SingleWildBattle(bts));
+				}
+			}
+		}
+
+		void FacingClick()
+		{
+			NPCData* data = Game::GetNPCData();
+			Vector2D facingTile = Game::GetPlayerPos();
+			switch (data[0].frameID)
+			{
+				case Facing_Down_Logical:
+					facingTile += Vector2D(0, 1);
+					break;
+				case Facing_Up_Logical:
+					facingTile += Vector2D(0, -1);
+					break;
+				case Facing_Left_Logical:
+					facingTile += Vector2D(-1, 0);
+					break;
+				case Facing_Right_Logical:
+					facingTile += Vector2D(1, 0);
+					break;
+			}
+			for (int i = 1; i < NumberOfOverworlds; i++)
+			{
+				if (data[i].isActive && !data[i].isMoving && data[i].dataSpriteID != 0xFF)
+				{
+					Vector2D pos = Vector2D(data[i].xLocation, data[i].yLocation);
+					if (pos == facingTile)
+					{
+						new Tasks::ScriptRunners::OverworldScriptRunner(data[i].scriptLocation);
+						return;
+					}
 				}
 			}
 		}

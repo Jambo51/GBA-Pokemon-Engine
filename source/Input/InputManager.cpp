@@ -8,12 +8,13 @@
 #include "Input/InputManager.h"
 #include "Core/Game.h"
 #include "GlobalDefinitions.h"
+#include "Collections.h"
 
 namespace Input
 {
 	EWRAM_LOCATION ALIGN(4) KeyBuffer InputManager::inputValues;
-	EWRAM_LOCATION ALIGN(4) InputHandler* InputManager::handler = NULL;
-	EWRAM_LOCATION ALIGN(4) InputHandler* InputManager::newInputHandler = NULL;
+	EWRAM_LOCATION ALIGN(4) SmartPointer<InputHandler> InputManager::handler = SmartPointer<InputHandler>();
+	EWRAM_LOCATION ALIGN(4) SmartPointer<InputHandler> InputManager::newInputHandler = SmartPointer<InputHandler>();
 
 	InputManager::InputManager()
 	{
@@ -31,6 +32,16 @@ namespace Input
 		return (inputValues.keyBits & (1 << keyID)) != 0;
 	}
 
+	bool InputManager::IsKeyHeld(Keys keyID)
+	{
+		return handler->IsKeyHeld(keyID);
+	}
+
+	bool InputManager::IsKeyDownAndNotHeld(Keys keyID)
+	{
+		return handler->IsKeyDownAndNotHeld(keyID);
+	}
+
 	void InputManager::KeyPoll()
 	{
 		if (newInputHandler)
@@ -38,10 +49,9 @@ namespace Input
 			if (handler)
 			{
 				newInputHandler->CopyInput(*handler);
-				delete handler;
 			}
 			handler = newInputHandler;
-			newInputHandler = NULL;
+			newInputHandler = 0;
 		}
 		inputValues.keyBits = (~(REG_KEYINPUT)) & 0x3FF;
 		if (handler)
@@ -90,11 +100,16 @@ namespace Input
 		}
 	}
 
-	void InputManager::SetEventHandler(InputHandler* newHandler)
+	void InputManager::SetEventHandler(SmartPointer<InputHandler> newHandler)
 	{
-		if (Core::Game::IsValidPointer(newHandler))
+		if (newHandler != newInputHandler)
 		{
 			newInputHandler = newHandler;
 		}
+	}
+
+	SmartPointer<InputHandler> InputManager::GetHandler()
+	{
+		return handler;
 	}
 }

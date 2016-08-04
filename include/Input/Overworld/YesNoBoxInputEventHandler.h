@@ -28,10 +28,10 @@ namespace Input
 		public:
 			YesNoBoxInputEventHandler(Tasks::ScriptRunners::ScriptRunner* runner);
 			~YesNoBoxInputEventHandler();
-			void OnPressA();
-			void OnPressB();
-			void OnPressUp();
-			void OnPressDown();
+			bool OnPressA();
+			bool OnPressB();
+			bool OnPressUp();
+			bool OnPressDown();
 	};
 }
 

@@ -214,9 +214,9 @@ namespace Text
 						}
 						case 0xFD - 0xF8:
 						{
-							const Battle &bs = *((Battle*)SceneManager::GetScene());
-							const BattleData &battleData = bs.GetBattleData();
-							const BattleTypeStruct &battleType = bs.GetBattleTypeStruct();
+							SmartPointer<Battle> bs = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene());
+							const BattleData &battleData = bs->GetBattleData();
+							const BattleTypeStruct &battleType = bs->GetBattleTypeStruct();
 							char* pointer = 0;
 							u32 length = 0;
 							char c = stringSource[pos + 1];
@@ -367,6 +367,7 @@ namespace Text
 							pos++;
 							currentChar = stringSource[pos];
 						}
+						break;
 					}
 				}
 				else
@@ -461,8 +462,8 @@ namespace Text
 			case 10:
 			case 11:
 			{
-				const Battle &bs = *((Battle*)SceneManager::GetScene());
-				thePokemon = bs.GetEnemyBattlerByIndex((u32)(pokemonIndex - 6));
+				SmartPointer<Battle> bs = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene());
+				thePokemon = bs->GetEnemyBattlerByIndex((u32)(pokemonIndex - 6));
 				break;
 			}
 			default:
@@ -630,21 +631,21 @@ namespace Text
 		tte_printf((char*)&string);
 	}
 
-	void TextFunctions::DrawString(char* string, u8 x, u8 y)
+	void TextFunctions::DrawString(char* string, u8 x, u8 y, u32 lengthLimit)
 	{
 		if (string != 0)
 		{
 			char* newString = new char[100 * sizeof(char)];
-			StringCopyWithBufferChecks(newString, string, 0, 0);
+			StringCopyWithBufferChecks(newString, string, lengthLimit, 0);
 			tte_printf(posString, x, y);
 			tte_printf(newString);
 			delete[] newString;
 		}
 	}
 
-	void TextFunctions::DrawString(const String &string, u8 x, u8 y)
+	void TextFunctions::DrawString(const String &string, u8 x, u8 y, u32 lengthLimit)
 	{
-		DrawString(string.GetUnderlyingArray(), x, y);
+		DrawString(string.GetUnderlyingArray(), x, y, lengthLimit);
 	}
 
 	void TextFunctions::DrawStringOverTime(char* string, u8 x, u8 y, Callbacks::Callback* endFunction)
@@ -699,12 +700,12 @@ namespace Text
 		rival3NameLoc = (char*)&Game::GetPlayer().tertiaryRivalName;
 	}
 
-	void TextFunctions::LoadPaletteAndTiles(bool isBattle, u16* paletteOverride)
+	void TextFunctions::LoadPaletteAndTiles(bool isBattle, SmartArrayPointer<u16> paletteOverride)
 	{
 		if (paletteOverride)
 		{
-			memcpy32((void*)((u32)paletteOverride + 0x1C0), &primaryTextPalette, 8);
-			memcpy32((void*)((u32)paletteOverride + 0x1E0), &primaryOutlinePalette, 8);
+			Palettes::SetPalette(0xE, SmartArrayPointer<u16>((u16*)&primaryTextPalette), paletteOverride);
+			Palettes::SetPalette(0xF, SmartArrayPointer<u16>((u16*)&primaryOutlinePalette), paletteOverride);
 		}
 		else
 		{
@@ -1223,5 +1224,30 @@ namespace Text
 		DeleteTextBoxTop(layer, xStartTile, yStartTile, width);
 		DeleteTextBoxSides(layer, xStartTile, yStartTile + 1, height - 2, width);
 		DeleteTextBoxBottom(layer, xStartTile, yStartTile + height - 1, width);
+	}
+
+	u32 TextFunctions::StringWidth(const char* string)
+	{
+		const TFont &font = *GetFont();
+		u32 index = 0;
+		u32 width = 0;
+		char c = string[0];
+		do
+		{
+			width += font.widths[(u32)c - font.charOffset];
+			index++;
+			c = string[index];
+		} while (c != '\0');
+		return width;
+	}
+
+	u32 TextFunctions::StringTileWidth(const char* string)
+	{
+		u32 width = StringWidth(string);
+		while ((width & 7) != 0)
+		{
+			width++;
+		}
+		return width >> 3;
 	}
 }

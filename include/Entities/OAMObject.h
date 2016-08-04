@@ -61,15 +61,15 @@ namespace Entities
 		OAMObject(u32 shape, u32 size, u32 paletteMode, void* image, u32 paletteID, void* palette, u32 priority = 0, bool compressed = true, u16* colourAddress = NULL);
 		~OAMObject();
 		void Update(u32 position);
-		u32 GetPriority() const { return priority; }
+		u32 GetPriority() { return priority; }
 		void SetPosition(u16 x, u16 y) { xLocation = x; yLocation = y; }
 		void SetPosition(const Vector2D &position) { SetPosition(position.GetX(), position.GetY()); }
 		void UpdatePalette(void* newPalette, u16* locationToWriteTo);
 		void UpdateImage(void* image, bool compressed = false);
 		void HFlip(bool newValue) { hFlip = (newValue) ? 1 : 0; }
-		bool HFlip() const { return hFlip == 1; }
+		bool HFlip() { return hFlip == 1; }
 		void VFlip(bool newValue) { vFlip = (newValue) ? 1 : 0; }
-		bool VFlip() const { return vFlip == 1; }
+		bool VFlip() { return vFlip == 1; }
 		static Vector2D CalculateRelativePosition(const Vector2D& pos);
 	};
 }

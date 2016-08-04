@@ -15,6 +15,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#include "GlobalDefinitions.h"
 namespace Core
 {
 	class IRQHandler
@@ -24,7 +25,7 @@ namespace Core
 		~IRQHandler();
 	public:
 		static void Initialise();
-		static void PrimeIRQ(enum eIrqIndex irqID);
+		static void PrimeIRQ(enum eIrqIndex irqID, VoidFunctionPointerVoid interruptFunction = 0);
 	};
 }
 

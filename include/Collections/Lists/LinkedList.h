@@ -231,6 +231,23 @@ namespace Collections
 					}
 				}
 
+				bool Contains(T item)
+				{
+					ListNode<T>* currNode = frontNode;
+					if (frontNode)
+					{
+						do
+						{
+							if (currNode->GetItem() == item)
+							{
+								return true;
+							}
+							currNode = currNode->GetNext();
+						} while (currNode);
+					}
+					return false;
+				}
+
 				void Replace(int index, T item)
 				{
 					ListNode<T>* node = NodeAt(index);

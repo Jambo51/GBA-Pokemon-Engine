@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SmartPointer.h"
 #include "Core/Vector2D.h"
 #include "OAMObject.h"
 
@@ -12,7 +13,7 @@ namespace Entities
 	protected:
 		Vector2D _position;
 		bool _isVisible;
-		OAMObject* _object;
+		SmartPointer<OAMObject> object;
 		Entity(const Vector2D &location, u32 backgroundLevel = 0, bool isAlive = true, bool isVisible = true);
 	public:
 		virtual ~Entity() { }
@@ -23,12 +24,12 @@ namespace Entities
 		virtual bool Update();
 		virtual void UnloadContent() = 0;
 		virtual void TimeTick(u32 time) = 0;
-		u32 EvaluatePositionScore() const;
-		OAMObject* GetObject() const { return _object; }
-		void SetOAMPosition(const Vector2D &pos) { _object->SetPosition(OAMObject::CalculateRelativePosition(pos)); }
-		void HFlip(bool newValue) { if (_object) { _object->HFlip(newValue); } }
-		bool HFlip() const { if (_object) { return _object->HFlip(); } return false; }
-		void VFlip(bool newValue) { if (_object) { _object->VFlip(newValue); } }
-		bool VFlip() const { if (_object) { return _object->VFlip(); } return false; }
+		u32 EvaluatePositionScore();
+		const SmartPointer<OAMObject> &GetObject() const { return object; }
+		void SetOAMPosition(const Vector2D &pos) { object->SetPosition(OAMObject::CalculateRelativePosition(pos)); }
+		void HFlip(bool newValue) { if (object) { object->HFlip(newValue); } }
+		bool HFlip() { if (object) { return object->HFlip(); } return false; }
+		void VFlip(bool newValue) { if (object) { object->VFlip(newValue); } }
+		bool VFlip() { if (object) { return object->VFlip(); } return false; }
 	};
 }

@@ -3,12 +3,6 @@
 #include "Core/Game.h"
 #include "Scenes/Menus/Pokedex.h"
 
-#define NumberofSeenCaughts ((NumberOfPokemon >> 3) << 3)
-#define NumberofTrainerBytes ((NumberOfTrainers >> 3) << 3)
-#define BytesForFlagsBase (NumberOfPokemon >> 3)
-#define BytesForTrainerflagsBase (NumberOfTrainers >> 3)
-#define FlagsToBytes(n) (n >> 3)
-
 using namespace Scenes;
 
 namespace Core
@@ -48,31 +42,6 @@ namespace Core
 				Flag_Badge15,
 				Flag_Badge16,
 				0xFFFF
-		};
-
-		RODATA_LOCATION ALIGN(4) SaveLocationStruct Flags::saveData[] = {
-				{ (u8*)0x10000, (u8*)&Flags::mainFlagBank, FlagsToBytes(NumFlags) },
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags)), (u8*)&Flags::worldMapFlagBank, FlagsToBytes(0x100) },
-		#if NumberofTrainerBytes == NumberOfTrainers
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase },
-		#if NumberofSeenCaughts == NumberOfPokemon
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase },
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
-		#else
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
-		#endif
-		#else
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100)), (u8*)&Flags::trainerflags, BytesForTrainerflagsBase + 1 },
-		#if NumberofSeenCaughts == NumberOfPokemon
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase },
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase), (u8*)&Flags::caughtFlags, BytesForFlagsBase },
-		#else
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1), (u8*)&Flags::seenFlags, BytesForFlagsBase + 1 },
-				{ (u8*)(0x10000 + FlagsToBytes(NumFlags) + FlagsToBytes(0x100) + BytesForTrainerflagsBase + 1 + BytesForFlagsBase + 1), (u8*)&Flags::caughtFlags, BytesForFlagsBase + 1 },
-		#endif
-		#endif
-				{ (u8*)0xFFFFFFFF, 0, 0 }
 		};
 
 		u8* Flags::FlagDecryption(u32 flagID, u8* ramLocation, u32 upperFlagLimit)
@@ -200,16 +169,6 @@ namespace Core
 		void Flags::ClearWorldMapFlag(u32 flagID)
 		{
 			GenericClearFlag(flagID, (u8*)(&worldMapFlagBank), 0x100);
-		}
-
-		void Flags::Save()
-		{
-			FlashFunctions::WriteToFlash((SaveLocationStruct*)&saveData);
-		}
-
-		void Flags::Load()
-		{
-			FlashFunctions::ReadFromFlash((SaveLocationStruct*)&saveData);
 		}
 
 		void Flags::Initialise()

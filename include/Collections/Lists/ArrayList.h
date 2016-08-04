@@ -210,10 +210,9 @@ namespace Collections
 
 				void Clear()
 				{
-					for (int i = 0; i < itemCount; i++)
-					{
-						arrayPointer[i] = T();
-					}
+					delete[] arrayPointer;
+					arrayPointer = 0;
+					itemCount = 0;
 				}
 
 				void PushAt(T item, int index)
@@ -258,6 +257,21 @@ namespace Collections
 						return arrayPointer[index];
 					}
 					return T();
+				}
+
+				bool Contains(T item)
+				{
+					if (arrayPointer)
+					{
+						for (int i = 0; i < itemCount; i++)
+						{
+							if (arrayPointer[i] == item)
+							{
+								return true;
+							}
+						}
+					}
+					return false;
 				}
 
 				void Replace(int index, T item)

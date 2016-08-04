@@ -2,6 +2,7 @@
 
 #include "GBSChannel.h"
 #include "../MusicEngine.h"
+#include "SmartPointer.h"
 
 namespace Audio
 {
@@ -11,7 +12,7 @@ namespace Audio
 		{
 		protected:
 			static WavePattern wavePatterns[];
-			GBSChannel* channels[3];
+			SmartPointer<GBSChannel> channels[3];
 			MusicFadeInfo fadeInfo;
 			bool skipWaveChange;
 			bool channelsPlaying[3];
@@ -24,26 +25,12 @@ namespace Audio
 			GBSTrackHeader** songTable;
 			static void ResumeSongStatic();
 		public:
-			GBSEngine()
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					channels[i] = new GBSChannel(this, (u32)i);
-					channelsPlaying[i] = false;
-					skipWaveChange = false;
-				}
-			}
-			~GBSEngine()
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					delete channels[i];
-				}
-			}
+			GBSEngine();
+			~GBSEngine();
 			void Interrupt();
 			void Update();
 			void ResumeSong();
-			void SwitchWavePattern(u8 patternID) const;
+			void SwitchWavePattern(u32 patternID);
 			void Initialise(void* songTablePointer);
 			bool SFXPlaying();
 			bool FanfarePlaying();

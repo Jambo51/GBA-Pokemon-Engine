@@ -17,26 +17,28 @@ namespace Input
 	class InputHandler
 	{
 	protected:
+		bool previousKeyDown[10];
 		bool keyDown[10];
-		bool keyHeld[10];
-		u8 keyPressTimers[10];
 		InputHandler();
 		bool* KeyDownAddress() const { return (bool*)&keyDown; }
-		bool* KeyHeldAddress() const { return (bool*)&keyHeld; }
-		u8* KeyPressTimersAddress() const { return (u8*)&keyPressTimers; }
+		bool* PreviousKeyDownAddress() const { return (bool*)&previousKeyDown; }
+		void UpdateKeyStatus(Keys key);
 	public:
 		virtual ~InputHandler();
-		virtual void OnPressA();
-		virtual void OnPressB();
-		virtual void OnPressUp();
-		virtual void OnPressDown();
-		virtual void OnPressLeft();
-		virtual void OnPressRight();
-		virtual void OnPressStart();
-		virtual void OnPressSelect();
-		virtual void OnPressL();
-		virtual void OnPressR();
+		virtual bool OnPressA();
+		virtual bool OnPressB();
+		virtual bool OnPressUp();
+		virtual bool OnPressDown();
+		virtual bool OnPressLeft();
+		virtual bool OnPressRight();
+		virtual bool OnPressStart();
+		virtual bool OnPressSelect();
+		virtual bool OnPressL();
+		virtual bool OnPressR();
 		virtual void Update();
+		bool IsKeyHeld(Keys keyID);
+		bool IsKeyDown(Keys keyID);
+		bool IsKeyDownAndNotHeld(Keys keyID);
 		void CopyInput(const InputHandler &other);
 	};
 }

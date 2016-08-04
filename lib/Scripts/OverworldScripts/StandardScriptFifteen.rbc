@@ -1,0 +1,5 @@
+#globalorg @StandardScriptFifteen
+preparemsg 0x0
+waitmsg
+waitstate
+return

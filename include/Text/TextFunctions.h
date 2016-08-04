@@ -17,6 +17,7 @@
 #include "TextDrawer.h"
 #include "Core/Pokemon/Pokemon.h"
 #include "Core/Rectangle.h"
+#include "SmartPointer.h"
 
 typedef struct StringAndFlagID {
 	char* string;
@@ -88,9 +89,9 @@ namespace Text
 		static void BufferSignedFractionalNumber(s32 number, u32 length, u8 bufferID, u32 positionOfDecimalPoint);
 		static s32 CharacterComparison(u8 charOne, u8 charTwo);
 		static void DrawCharacter(char c, u8 x, u8 y);
-		static void DrawString(char* string, u8 x, u8 y);
+		static void DrawString(char* string, u8 x, u8 y, u32 lengthLimit = 0);
 		static void DrawStringOverTime(char* string, u8 x, u8 y, Callbacks::Callback* endFunction);
-		static void DrawString(const String &string, u8 x, u8 y);
+		static void DrawString(const String &string, u8 x, u8 y, u32 lengthLimit = 0);
 		static void DrawStringOverTime(const String &string, u8 x, u8 y, void (*endFunction)(u32));
 		static void InitialiseTextEngine(u32 textSetID);
 		static void BufferMoveName(u16 moveIndex, u8 bufferID);
@@ -102,7 +103,7 @@ namespace Text
 		static void BufferString(const String &string, u8 bufferID, u32 maxLength);
 		static void ClearTextTileArea();
 		static void DrawTextAreaToMap(u32 layer, const Core::Rectangle &rect, const Core::Vector2D &offset = Core::Vector2D());
-		static void LoadPaletteAndTiles(bool isBattle = false, u16* paletteOverride = 0);
+		static void LoadPaletteAndTiles(bool isBattle = false, SmartArrayPointer<u16> paletteOverride = 0);
 		static void RevertMapToStandard(u32 layer);
 		static void ClearTextAreaFromMap(u32 layer, u32 xTileStart, u32 yTileStart, u32 xTileWidth, u32 yTileHeight);
 		static void ClearTile(u32 x, u32 y);
@@ -114,6 +115,10 @@ namespace Text
 		static void FillTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
 		static void UnfillTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
 		static void DeleteTextBox(u32 layer, u32 xStartTile, u32 yStartTile, u32 width, u32 height);
+		static u32 StringWidth(const char* string);
+		static u32 StringTileWidth(const char* string);
+		static u32 StringWidth(const String &string) { return StringWidth(string.GetUnderlyingArray()); }
+		static u32 StringTileWidth(const String &string) { return StringTileWidth(string.GetUnderlyingArray()); }
 	};
 }
 

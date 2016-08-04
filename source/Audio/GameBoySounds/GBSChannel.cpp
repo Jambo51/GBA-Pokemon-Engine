@@ -15,7 +15,7 @@ namespace Audio
 {
 	namespace GameBoySounds
 	{
-		GBSChannel::GBSChannel(GBSEngine* hostEngine, u32 channelID)
+		GBSChannel::GBSChannel(u32 channelID)
 		{
 			this->channelID = channelID;
 			// TODO Auto-generated constructor stub
@@ -23,7 +23,6 @@ namespace Audio
 			{
 				tracksIncluded[i] = false;
 			}
-			address = hostEngine;
 			for (int i = 0; i < 2; i++)
 			{
 				toneTracks[i] = new ToneTrack(i);
@@ -37,10 +36,10 @@ namespace Audio
 			// TODO Auto-generated destructor stub
 			for (int i = 0; i < 2; i++)
 			{
-				delete toneTracks[i];
+				toneTracks[i] = 0;
 			}
-			delete waveTrack;
-			delete noiseTrack;
+			waveTrack = 0;
+			noiseTrack = 0;
 		}
 
 		bool GBSChannel::Update()
@@ -78,22 +77,22 @@ namespace Audio
 
 		u16* GBSChannel::GetBufferAddress() const
 		{
-			return address->GetBufferAddress();
+			return SoundEngine::GetBufferAddress();
 		}
 
-		Callbacks::Callback* GBSChannel::GetAssociatedCallback() const
+		SmartPointer<Callbacks::Callback> GBSChannel::GetAssociatedCallback() const
 		{
-			Callbacks::Callback* callback = 0;
+			SmartPointer<Callbacks::Callback> callback;
 			switch (channelID)
 			{
 				case 0:
-					callback = address->GetSongOnEndFunction();
+					callback = SoundEngine::GetOnSongEndCallback();
 					break;
 				case 1:
 					callback = SoundEngine::GetFanfareCallback();
 					break;
 				case 2:
-					callback = address->GetSFXOnEndFunction();
+					callback = SoundEngine::GetOnSFXEndCallback();
 					break;
 			}
 			return callback;
@@ -101,7 +100,7 @@ namespace Audio
 
 		void GBSChannel::ExecuteOnEndFunction() const
 		{
-			Callbacks::Callback* callback = GetAssociatedCallback();
+			SmartPointer<Callbacks::Callback> callback = GetAssociatedCallback();
 			if (callback)
 			{
 				callback->DoCallback();
@@ -122,19 +121,19 @@ namespace Audio
 			}
 			if (!saveCallback)
 			{
-				Callbacks::Callback* callback = 0;
+				SmartPointer<Callbacks::Callback> callback;
 				switch (channelID)
 				{
 					case 0:
-						callback = address->GetSongOnEndFunction();
+						callback = SoundEngine::GetOnSongEndCallback();
 						break;
 					case 2:
-						callback = address->GetSFXOnEndFunction();
+						callback = SoundEngine::GetOnSFXEndCallback();
 						break;
 				}
 				if (callback)
 				{
-					delete callback;
+					callback = 0;
 				}
 			}
 		}
@@ -199,9 +198,9 @@ namespace Audio
 			}
 		}
 
-		void GBSChannel::SwitchWavePattern(u8 voiceID) const
+		void GBSChannel::SwitchWavePattern(u32 voiceID)
 		{
-			address->SwitchWavePattern(voiceID);
+			SoundEngine::SwitchWavePattern(voiceID);
 		}
 	}
 }

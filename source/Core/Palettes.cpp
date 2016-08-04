@@ -21,9 +21,9 @@ namespace Core
 	EWRAM_LOCATION ALIGN(1) bool Palettes::doCallback = false;
 	EWRAM_LOCATION ALIGN(1) bool Palettes::doExitCallback = false;
 	EWRAM_LOCATION ALIGN(1) bool Palettes::fade256 = false;
-	EWRAM_LOCATION ALIGN(4) Callbacks::Callback* Palettes::callbackFunction = NULL;
-	EWRAM_LOCATION ALIGN(4) u16* Palettes::currentPalette = NULL;
-	EWRAM_LOCATION ALIGN(4) u16* Palettes::targetPalette = NULL;
+	EWRAM_LOCATION ALIGN(4) SmartPointer<Callbacks::Callback> Palettes::callbackFunction = SmartPointer<Callbacks::Callback>();
+	EWRAM_LOCATION ALIGN(4) SmartArrayPointer<u16> Palettes::currentPalette = SmartArrayPointer<u16>();
+	EWRAM_LOCATION ALIGN(4) SmartArrayPointer<u16> Palettes::targetPalette = SmartArrayPointer<u16>();
 	EWRAM_LOCATION ALIGN(4) u32 Palettes::numFrames = 0;
 	EWRAM_LOCATION ALIGN(4) u32 Palettes::originalFrames = 0;
 	EWRAM_LOCATION ALIGN(4) u32 Palettes::alphaSteps = 0;
@@ -44,35 +44,35 @@ namespace Core
 
 	}
 
-	void Palettes::SetAllPalettes(u16* source, u16* destination)
+	void Palettes::SetAllPalettes(SmartArrayPointer<u16> source, SmartArrayPointer<u16> destination)
 	{
 		if (destination)
 		{
-			memcpy32((void*)destination, (const void*)source, 0x100);
+			source.CopyTo(destination, 0, 0x400);
 		}
 		else
 		{
-			memcpy32((void*)0x05000000, (const void*)source, 0x100);
+			source.CopyTo((void*)0x05000000, 0, 0x400);
 		}
 	}
 
-	void Palettes::SetPalette(u32 paletteID, u16* source, u16* destination)
+	void Palettes::SetPalette(u32 paletteID, SmartArrayPointer<u16> source, SmartArrayPointer<u16> destination)
 	{
 		if (destination)
 		{
-			memcpy32((void*)(destination + (0x20 * paletteID)), (const void*)source, 8);
+			source.CopyTo(destination, paletteID * 0x20, 32);
 		}
 		else
 		{
-			memcpy32((void*)(0x05000000 + (0x20 * paletteID)), (const void*)source, 8);
+			source.CopyTo((void*)0x05000000, paletteID * 0x20, 32);
 		}
 	}
 
-	void Palettes::SetColour(u32 paletteID, u32 slotID, Colour c, u16* destination)
+	void Palettes::SetColour(u32 paletteID, u32 slotID, Colour c, SmartArrayPointer<u16> destination)
 	{
 		if (destination)
 		{
-			*((u16*)((u32)destination +  + (0x20 * paletteID) + (2 * slotID))) = c.colour;
+			destination[(0x10 * paletteID) + slotID] = c.colour;
 		}
 		else
 		{
@@ -124,23 +124,21 @@ namespace Core
 			{
 				doFade = false;
 				doFade2 = false;
-				memset32(currentPalette, 0, (sizeof(u16) * 512) >> 2);
-				delete[] currentPalette;
-				currentPalette = NULL;
+				currentPalette.Clear(512);
+				currentPalette = 0;
 				if (targetPalette)
 				{
 					SetAllPalettes(targetPalette);
-					if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
+					if (targetPalette < 0x02040000 && targetPalette >= 0x02000000)
 					{
-						memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
-						delete[] targetPalette;
+						targetPalette.Clear(512);
 					}
 				}
-				targetPalette = NULL;
+				targetPalette = 0;
 				if (callbackFunction)
 				{
 					callbackFunction->DoCallback();
-					callbackFunction = NULL;
+					callbackFunction = 0;
 				}
 				if (doCallback)
 				{
@@ -190,12 +188,12 @@ namespace Core
 			return clr;
 		}
 
-		void Palettes::DoFadeOnPalette(u32 paletteID, u16* target, u16* current)
+		void Palettes::DoFadeOnPalette(u32 paletteID, SmartArrayPointer<u16> target, SmartArrayPointer<u16> current)
 		{
 			u16* dst = (u16*)(0x05000000 + 0x20 * paletteID);
 			for(u32 i = (fade256) ? 0 : 1; i < 16; i++)
 			{
-				dst[i] = GetFadeColour(target[i], current[i]);
+				dst[i] = GetFadeColour(target[i + (0x10 * paletteID)], current[i + (0x10 * paletteID)]);
 			}
 		}
 
@@ -203,15 +201,15 @@ namespace Core
 		{
 			for(u32 i = 0; i < 32; i++)
 			{
-				DoFadeOnPalette(i, (u16*)&targetPalette[(16 * i)], (u16*)&currentPalette[(16 * i)]);
+				DoFadeOnPalette(i, targetPalette, currentPalette);
 			}
 		}
 
-		u16* Palettes::GetCurrentPalette()
+		SmartArrayPointer<u16> Palettes::GetCurrentPalette()
 		{
 			u16* temp = new u16[512];
 			memcpy32((void*)temp, (const void*)0x05000000, 0x100);
-			return temp;
+			return SmartArrayPointer<u16>(temp);
 		}
 
 		void Palettes::FadeToGreyScale(FadeIDs FrameCount, bool callback, bool exitCallback)
@@ -228,7 +226,7 @@ namespace Core
 			}
 		}
 
-		u16* Palettes::GetGreyScale(const u16* original)
+		SmartArrayPointer<u16> Palettes::GetGreyScale(SmartArrayPointer<u16> &original)
 		{
 			u16* dst = new u16[512];
 			u16* orig = dst;
@@ -247,10 +245,10 @@ namespace Core
 
 				*dst++= RGB15(gray, gray, gray);
 			}
-			return orig;
+			return SmartArrayPointer<u16>(orig);
 		}
 
-		void Palettes::FadeToPalette(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback)
+		void Palettes::FadeToPalette(SmartArrayPointer<u16> newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback)
 		{
 			if (!doFade)
 			{
@@ -262,7 +260,7 @@ namespace Core
 					numFrames = framesInFades[FrameCount];
 					alphaSteps = alphaStepsInFades[FrameCount];
 					currentAlpha = 0;
-					targetPalette = (u16*)newPalette;
+					targetPalette = newPalette;
 					doCallback = callback;
 					doExitCallback = exitCallback;
 					paletteWriteDetected = true;
@@ -271,16 +269,15 @@ namespace Core
 			}
 			else
 			{
-				if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
+				if (targetPalette < 0x02040000 && targetPalette >= 0x02000000)
 				{
-					memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
-					delete[] targetPalette;
-					targetPalette = NULL;
+					targetPalette.Clear(512);
 				}
+				targetPalette = 0;
 			}
 		}
 
-		void Palettes::PaletteFlash(const u16 *newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount)
+		void Palettes::PaletteFlash(SmartArrayPointer<u16> newPalette, bool fade256Colours, FadeIDs FrameCount, bool callback, bool exitCallback, u32 blendAmount)
 		{
 			if (!doFade)
 			{
@@ -292,7 +289,7 @@ namespace Core
 					numFrames = Maths::UnsignedFractionalMultiplication(framesInFades[FrameCount], blendAmount);
 					alphaSteps = alphaStepsInFades[FrameCount];
 					currentAlpha = 0;
-					targetPalette = (u16*)newPalette;
+					targetPalette = newPalette;
 					doCallback = callback;
 					doExitCallback = exitCallback;
 					paletteWriteDetected = true;
@@ -302,12 +299,11 @@ namespace Core
 			}
 			else
 			{
-				if ((u32)targetPalette < 0x02040000 && (u32)targetPalette >= 0x02000000)
+				if ((targetPalette < 0x02040000) && (targetPalette >= 0x02000000))
 				{
-					memset32(targetPalette, 0, (sizeof(u16) * 512) >> 2);
-					delete[] targetPalette;
-					targetPalette = NULL;
+					targetPalette.Clear(512);
 				}
+				targetPalette = 0;
 			}
 		}
 
@@ -315,7 +311,7 @@ namespace Core
 
 		void Palettes::SetPaletteToWhite()
 		{
-			SetAllPalettes((u16*)&whitePalette);
+			SetAllPalettes(SmartArrayPointer<u16>((u16*)&whitePalette));
 		}
 }
 

@@ -45,6 +45,27 @@ namespace Audio
 			SwitchWavePattern(0);
 		}
 
+
+		GBSEngine::GBSEngine()
+		{
+			for (u32 i = 0; i < 3; i++)
+			{
+				channels[i] = new GBSChannel(i);
+				channelsPlaying[i] = false;
+				skipWaveChange = false;
+			}
+		}
+
+		GBSEngine::~GBSEngine()
+		{
+			for (u32 i = 0; i < 3; i++)
+			{
+				channels[i] = 0;
+				channelsPlaying[i] = false;
+				skipWaveChange = false;
+			}
+		}
+
 		void GBSEngine::Update()
 		{
 			switch (SoundEngine::GetStatus())
@@ -108,7 +129,7 @@ namespace Audio
 
 		void GBSEngine::StartSong(u16 songID, bool startWithZeroVolume)
 		{
-			Callbacks::Callback* callback = onEndSongCallback;
+			SmartPointer<Callbacks::Callback> callback = onEndSongCallback;
 			channels[0]->Clear(true);
 			onEndSongCallback = callback;
 			memset32(&buffer, 0, 8);
@@ -122,7 +143,7 @@ namespace Audio
 			}
 		}
 
-		void GBSEngine::SwitchWavePattern(u8 patternID) const
+		void GBSEngine::SwitchWavePattern(u32 patternID)
 		{
 			vu16* tone1Controller = (vu16*)(0x04000060);
 			if (patternID < NUMWAVEPATTERNS)
@@ -137,9 +158,9 @@ namespace Audio
 		void GBSEngine::ResumeSong()
 		{
 			channels[0]->Unpause();
-			if (!skipWaveChange && channels[0]->GetWave().GetCurrentVoice() != channels[1]->GetWave().GetCurrentVoice())
+			if (!skipWaveChange && channels[0]->GetWave()->GetCurrentVoice() != channels[1]->GetWave()->GetCurrentVoice())
 			{
-				SwitchWavePattern(channels[0]->GetWave().GetCurrentVoice());
+				SwitchWavePattern(channels[0]->GetWave()->GetCurrentVoice());
 			}
 			if (!channels[0]->Update() && channelsPlaying[0])
 			{
@@ -158,7 +179,16 @@ namespace Audio
 
 		void GBSEngine::StartSFX(u16 sfxID)
 		{
-			channelsPlaying[2] = true;
+			SmartPointer<Callbacks::Callback> callback = onEndSFXCallback;
+			channels[2]->Clear(true);
+			onEndSFXCallback = callback;
+			if (sfxID > 0)
+			{
+				channels[2]->StartTrack(songTable[sfxID - 1]);
+				SwitchWavePattern(0);
+				skipWaveChange = true;
+				channelsPlaying[2] = true;
+			}
 		}
 
 		void GBSEngine::Interrupt()

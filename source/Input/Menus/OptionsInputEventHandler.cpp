@@ -35,51 +35,50 @@ namespace Input
 		InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	}
 
-	void OptionsInputEventHandler::OnPressB()
+	bool OptionsInputEventHandler::OnPressB()
 	{
-		InputHandler::OnPressB();
-		if (!keyHeld[Key_B])
+		if (!InputHandler::OnPressB())
 		{
 			ReturnToPreviousScreen();
 		}
+		return false;
 	}
 
-	void OptionsInputEventHandler::OnPressUp()
+	bool OptionsInputEventHandler::OnPressUp()
 	{
-		InputHandler::OnPressUp();
-		if (!keyHeld[Key_Up])
+		if (!InputHandler::OnPressUp())
 		{
-			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			SmartPointer<OptionsScreen> sc = SmartPointerFunctions::Cast<Scene, OptionsScreen>(SceneManager::GetScene());
 			sc->DecrementMenuPosition();
 		}
+		return false;
 	}
 
-	void OptionsInputEventHandler::OnPressDown()
+	bool OptionsInputEventHandler::OnPressDown()
 	{
-		InputHandler::OnPressDown();
-		if (!keyHeld[Key_Down])
+		if (!InputHandler::OnPressDown())
 		{
-			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			SmartPointer<OptionsScreen> sc = SmartPointerFunctions::Cast<Scene, OptionsScreen>(SceneManager::GetScene());
 			sc->IncrementMenuPosition();
 		}
+		return false;
 	}
 
-	void OptionsInputEventHandler::OnPressRight()
+	bool OptionsInputEventHandler::OnPressRight()
 	{
-		InputHandler::OnPressRight();
-		if (!keyHeld[Key_Right])
+		if (!InputHandler::OnPressRight())
 		{
-			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			SmartPointer<OptionsScreen> sc = SmartPointerFunctions::Cast<Scene, OptionsScreen>(SceneManager::GetScene());
 			sc->IncrementValueAt();
 		}
+		return false;
 	}
 
-	void OptionsInputEventHandler::OnPressA()
+	bool OptionsInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		if (!keyHeld[Key_A])
+		if (!InputHandler::OnPressA())
 		{
-			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			SmartPointer<OptionsScreen> sc = SmartPointerFunctions::Cast<Scene, OptionsScreen>(SceneManager::GetScene());
 			if (sc->GetMenuPosition() == 6)
 			{
 				sc->Save();
@@ -90,15 +89,16 @@ namespace Input
 				sc->IncrementValueAt();
 			}
 		}
+		return false;
 	}
 
-	void OptionsInputEventHandler::OnPressLeft()
+	bool OptionsInputEventHandler::OnPressLeft()
 	{
-		InputHandler::OnPressLeft();
-		if (!keyHeld[Key_Left])
+		if (!InputHandler::OnPressLeft())
 		{
-			OptionsScreen* sc = (OptionsScreen*)SceneManager::GetScene();
+			SmartPointer<OptionsScreen> sc = SmartPointerFunctions::Cast<Scene, OptionsScreen>(SceneManager::GetScene());
 			sc->DecrementValueAt();
 		}
+		return false;
 	}
 }

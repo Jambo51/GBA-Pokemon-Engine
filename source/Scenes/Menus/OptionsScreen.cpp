@@ -62,10 +62,12 @@ namespace Scenes
 			BackgroundFunctions::SetFirstTargetPixel(7, 0);
 			BackgroundFunctions::SetEVAAlphaBlend(0x10);
 			BackgroundFunctions::SetWindowBrightnessCoefficient(2);
-			u16* newPalette = new u16[512];
-			memset32(newPalette, 0, 0x100);
-			TextFunctions::LoadPaletteAndTiles(false, newPalette);
-			Palettes::FadeToPalette(newPalette, true, HalfSecond, true, false);
+			{
+				SmartArrayPointer<u16> newPalette = new u16[512];
+				newPalette.Clear(512);
+				TextFunctions::LoadPaletteAndTiles(false, newPalette);
+				Palettes::FadeToPalette(newPalette, true, HalfSecond, true, false);
+			}
 			const Options &options = Game::GetConstOptions();
 			optionValues[0] = options.textSpeed;
 			optionValues[1] = options.playAnimations;

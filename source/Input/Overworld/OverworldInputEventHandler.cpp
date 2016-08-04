@@ -13,6 +13,7 @@
 #include "Scenes/SceneManager.h"
 #include "Input/Menus/StartMenuInputEventHandler.h"
 #include "Input/InputManager.h"
+#include "SmartPointer.h"
 
 using namespace Core;
 using namespace Scenes;
@@ -32,52 +33,70 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
-	void OverworldInputEventHandler::OnPressA()
+	bool OverworldInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
+		if (!InputHandler::OnPressA() && !movementWord.movement.isMoving)
+		{
+			//SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<PrimaryOverworld>(SceneManager::GetScene());
+			//ow->FacingClick();
+		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressB()
+	bool OverworldInputEventHandler::OnPressB()
 	{
 		InputHandler::OnPressB();
 		movementWord.movement.isBDown = 1;
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressStart()
+	bool OverworldInputEventHandler::OnPressStart()
 	{
-		InputHandler::OnPressStart();
-		if (!keyHeld[Key_Start] && !movementWord.movement.isMoving)
+		if (!InputHandler::OnPressStart() && !movementWord.movement.isMoving)
 		{
 			InputManager::SetEventHandler(new StartMenuInputEventHandler());
 		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressSelect()
+	bool OverworldInputEventHandler::OnPressSelect()
 	{
-		InputHandler::OnPressSelect();
+		if (!InputHandler::OnPressSelect() && !movementWord.movement.isMoving)
+		{
+			Game::ExecuteSelectMapped();
+		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressL()
+	bool OverworldInputEventHandler::OnPressL()
 	{
-		InputHandler::OnPressL();
+		if (!InputHandler::OnPressL() && !movementWord.movement.isMoving)
+		{
+			Game::ExecuteLMapped();
+		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressR()
+	bool OverworldInputEventHandler::OnPressR()
 	{
-		InputHandler::OnPressR();
+		if (!InputHandler::OnPressR() && !movementWord.movement.isMoving)
+		{
+			Game::ExecuteRMapped();
+		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressUp()
+	bool OverworldInputEventHandler::OnPressUp()
 	{
-		InputHandler::OnPressUp();
+		bool keyHeld = InputHandler::OnPressUp();
 		if (!movementWord.movement.locked)
 		{
 			if (!movementWord.movement.isMoving)
 			{
-				NPCData* data = Game::GetNPCDataPointer();
+				NPCData* data = Game::GetNPCData();
 				if (data[0].frameID != Facing_Up_Logical && !movementWord.movement.wasMoving)
 				{
-					if (!keyHeld[Key_Up])
+					if (!keyHeld)
 					{
 						data[0].dataPointer->ChangeFrame(Walking_Up_1);
 						data[0].frameID = Facing_Up_Logical;
@@ -88,7 +107,7 @@ namespace Input
 				}
 				else if (!movementWord.movement.ignoreCounter)
 				{
-					PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+					SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 					if (ow->CalculateBlockMovementPermissions(data[0].xLocation, data[0].yLocation - 1) == 0xC)
 					{
 						if (!ow->IsNewLocationInBounds(data[0].xLocation, data[0].yLocation - 1))
@@ -157,19 +176,20 @@ namespace Input
 				}
 			}
 		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressDown()
+	bool OverworldInputEventHandler::OnPressDown()
 	{
-		InputHandler::OnPressDown();
+		bool keyHeld = InputHandler::OnPressDown();
 		if (!movementWord.movement.locked)
 		{
 			if (!movementWord.movement.isMoving)
 			{
-				NPCData* data = Game::GetNPCDataPointer();
+				NPCData* data = Game::GetNPCData();
 				if (data[0].frameID != Facing_Down_Logical && !movementWord.movement.wasMoving)
 				{
-					if (!keyHeld[Key_Down])
+					if (!keyHeld)
 					{
 						data[0].dataPointer->ChangeFrame(Walking_Down_1);
 						data[0].frameID = Facing_Down_Logical;
@@ -180,7 +200,7 @@ namespace Input
 				}
 				else if (!movementWord.movement.ignoreCounter)
 				{
-					PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+					SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 					if (ow->CalculateBlockMovementPermissions(data[0].xLocation, data[0].yLocation + 1) == 0xC)
 					{
 						if (!ow->IsNewLocationInBounds(data[0].xLocation, data[0].yLocation + 1))
@@ -237,19 +257,20 @@ namespace Input
 				}
 			}
 		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressLeft()
+	bool OverworldInputEventHandler::OnPressLeft()
 	{
-		InputHandler::OnPressLeft();
+		bool keyHeld = InputHandler::OnPressLeft();
 		if (!movementWord.movement.locked)
 		{
 			if (!movementWord.movement.isMoving)
 			{
-				NPCData* data = Game::GetNPCDataPointer();
+				NPCData* data = Game::GetNPCData();
 				if (data[0].frameID != Facing_Left_Logical && !movementWord.movement.wasMoving)
 				{
-					if (!keyHeld[Key_Left])
+					if (!keyHeld)
 					{
 						data[0].dataPointer->ChangeFrame(Walking_Left_1);
 						data[0].frameID = Facing_Left_Logical;
@@ -260,7 +281,7 @@ namespace Input
 				}
 				else if (!movementWord.movement.ignoreCounter)
 				{
-					PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+					SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 					if (ow->CalculateBlockMovementPermissions(data[0].xLocation - 1, data[0].yLocation) == 0xC)
 					{
 						if (!ow->IsNewLocationInBounds(data[0].xLocation - 1, data[0].yLocation))
@@ -303,19 +324,20 @@ namespace Input
 				}
 			}
 		}
+		return false;
 	}
 
-	void OverworldInputEventHandler::OnPressRight()
+	bool OverworldInputEventHandler::OnPressRight()
 	{
-		InputHandler::OnPressRight();
+		bool keyHeld = InputHandler::OnPressRight();
 		if (!movementWord.movement.locked)
 		{
 			if (!movementWord.movement.isMoving)
 			{
-				NPCData* data = Game::GetNPCDataPointer();
+				NPCData* data = Game::GetNPCData();
 				if (data[0].frameID != Facing_Right_Logical && !movementWord.movement.wasMoving)
 				{
-					if (!keyHeld[Key_Right])
+					if (!keyHeld)
 					{
 						data[0].dataPointer->ChangeFrame(Walking_Left_1);
 						data[0].frameID = Facing_Right_Logical;
@@ -326,7 +348,7 @@ namespace Input
 				}
 				else if (!movementWord.movement.ignoreCounter)
 				{
-					PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+					SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 					if (ow->CalculateBlockMovementPermissions(data[0].xLocation + 1, data[0].yLocation) == 0xC)
 					{
 						if (!ow->IsNewLocationInBounds(data[0].xLocation + 1, data[0].yLocation))
@@ -367,6 +389,7 @@ namespace Input
 				}
 			}
 		}
+		return false;
 	}
 
 	void OverworldInputEventHandler::Update()
@@ -377,7 +400,7 @@ namespace Input
 			movementWord.movement.ignoreCounter--;
 			if (!movementWord.movement.ignoreCounter && !movementWord.movement.isMoving)
 			{
-				PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+				SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 				ow->OnCompleteTurn();
 			}
 		}
@@ -386,7 +409,7 @@ namespace Input
 			movementWord.movement.changeCounter--;
 			if (!movementWord.movement.changeCounter)
 			{
-				NPCData* data = Game::GetNPCDataPointer();
+				NPCData* data = Game::GetNPCData();
 				switch (data[0].frameID)
 				{
 					case Facing_Down_Logical:
@@ -414,11 +437,11 @@ namespace Input
 			movementWord.movement.movementCounter--;
 			if (!movementWord.movement.movementCounter)
 			{
-				PrimaryOverworld* ow = (PrimaryOverworld*)SceneManager::GetScene();
+				SmartPointer<PrimaryOverworld> ow = SmartPointerFunctions::Cast<Scene, PrimaryOverworld>(SceneManager::GetScene());
 				u32 direction = 0;
 				movementWord.movement.isMoving = 0;
 				movementWord.movement.wasMoving = 1;
-				NPCData* data = Game::GetNPCDataPointer();
+				NPCData* data = Game::GetNPCData();
 				data[0].previousWalkingFrame = (data[0].previousWalkingFrame == 1) ? 0 : 1;
 				if (data[0].frameID == Facing_Right_Logical)
 				{

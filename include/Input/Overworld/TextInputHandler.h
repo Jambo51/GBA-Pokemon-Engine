@@ -24,8 +24,8 @@ namespace Input
 	public:
 		TextInputHandler(Text::TextDrawer* drawer);
 		~TextInputHandler();
-		void OnPressA();
-		void OnPressB();
+		bool OnPressA();
+		bool OnPressB();
 	};
 }
 

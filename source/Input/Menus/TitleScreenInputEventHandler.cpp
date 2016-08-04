@@ -31,28 +31,28 @@ namespace Input
 
 	void TransitionToLoadGameScreen()
 	{
-		((Menus::TitleScreen*)SceneManager::GetScene())->SetExitContext(((Game::ValidSaveDetected()) ? LoadGame : NewGame));
+		SmartPointerFunctions::Cast<Scene, Menus::TitleScreen>(SceneManager::GetScene())->SetExitContext(((Game::ValidSaveDetected()) ? LoadGame : NewGame));
 		Palettes::FadeToWhite(true, HalfSecond, true);
 		SoundEngine::FadeSongToSilence();
 		Maths::ReseedRNG();
 		InputManager::SetEventHandler(new DoNothingInputEventHandler());
 	}
 
-	void TitleScreenInputEventHandler::OnPressA()
+	bool TitleScreenInputEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		if (!keyHeld[Key_A])
+		if (!InputHandler::OnPressA())
 		{
 			TransitionToLoadGameScreen();
 		}
+		return false;
 	}
 
-	void TitleScreenInputEventHandler::OnPressStart()
+	bool TitleScreenInputEventHandler::OnPressStart()
 	{
-		InputHandler::OnPressStart();
-		if (!keyHeld[Key_Start])
+		if (!InputHandler::OnPressStart())
 		{
 			TransitionToLoadGameScreen();
 		}
+		return false;
 	}
 }

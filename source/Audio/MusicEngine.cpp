@@ -12,10 +12,7 @@ namespace Audio
 {
 	MusicEngine::MusicEngine()
 	{
-		for (int i = 0; i < 17; i++)
-		{
-			buffer[i] = 0;
-		}
+		memset16(buffer, 0, 17);
 	}
 
 	MusicEngine::~MusicEngine()

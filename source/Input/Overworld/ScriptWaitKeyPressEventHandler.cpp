@@ -24,15 +24,21 @@ namespace Input
 		// TODO Auto-generated destructor stub
 	}
 
-	void ScriptWaitKeyPressEventHandler::OnPressA()
+	bool ScriptWaitKeyPressEventHandler::OnPressA()
 	{
-		InputHandler::OnPressA();
-		runner->KeyPressReceived(true);
+		if (!InputHandler::OnPressA())
+		{
+			runner->KeyPressReceived(true);
+		}
+		return false;
 	}
 
-	void ScriptWaitKeyPressEventHandler::OnPressB()
+	bool ScriptWaitKeyPressEventHandler::OnPressB()
 	{
-		InputHandler::OnPressB();
-		runner->KeyPressReceived(true);
+		if (!InputHandler::OnPressB())
+		{
+			runner->KeyPressReceived(true);
+		}
+		return false;
 	}
 }

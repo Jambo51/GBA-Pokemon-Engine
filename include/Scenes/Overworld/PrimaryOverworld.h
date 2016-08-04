@@ -91,6 +91,7 @@ namespace Scenes
 			void ResetRow() { row = 0; }
 			void SetEnterContext(u32 context) { exitContext = context; }
 			void WarpOnCompleteMove(bool value, const WarpEvent &event) { warpOnCompleteMove = value; warpData = event; }
+			void FacingClick();
 			static char** GetMapNamesTablePointer() { return (char**)&mapNamesTable; }
 			static const HealingPlace & GetHealingPlaceByID(u32 id) { if (id < NumFlightSpots) { return healingPlaces[id]; } return healingPlaces[0]; }
 			static const FlightSpot & GetFlightSpotByID(u32 id) { if (id < NumFlightSpots + 1) { return flightSpots[id]; } return flightSpots[0]; }

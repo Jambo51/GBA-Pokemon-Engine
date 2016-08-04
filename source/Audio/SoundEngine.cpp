@@ -7,16 +7,17 @@
 
 #include "Audio/SoundEngine.h"
 #include "Audio/MusicEngine.h"
+#include "Audio/M4A/M4APlayer.h"
 #include "Callbacks/ResumeSongCallback.h"
 
 namespace Audio
 {
-	EWRAM_LOCATION ALIGN(4) MusicEngine* SoundEngine::me = NULL;
+	EWRAM_LOCATION ALIGN(4) SmartPointer<MusicEngine> SoundEngine::me = SmartPointer<MusicEngine>();
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songPlayingMode = DoNothing;
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::songIDInt = 0;
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::fanfareIDInt = 0;
 	EWRAM_LOCATION ALIGN(2) u16 SoundEngine::sfxIDInt = 0;
-	EWRAM_LOCATION ALIGN(4) Callbacks::Callback* SoundEngine::onEndFanfareCallback = NULL;
+	EWRAM_LOCATION ALIGN(4) SmartPointer<Callbacks::Callback> SoundEngine::onEndFanfareCallback = SmartPointer<Callbacks::Callback>();
 
 	SoundEngine::~SoundEngine()
 	{
@@ -28,15 +29,15 @@ namespace Audio
 		// TODO Auto-generated constructor stub
 	}
 
-	void SoundEngine::Initialise(MusicEngine* engine, void* songTablePointer)
+	void SoundEngine::Initialise(SmartPointer<MusicEngine> engine, void* songTablePointer)
 	{
 		if (!onEndFanfareCallback)
 		{
 			onEndFanfareCallback = new Callbacks::ResumeSongCallback();
 		}
-		if (me)
+		if (!M4A::M4APlayer::Initialised())
 		{
-			delete me;
+			M4A::M4APlayer::Initialise();
 		}
 		me = engine;
 		me->Initialise(songTablePointer);
@@ -132,7 +133,7 @@ namespace Audio
 		songPlayingMode = InitialiseSong;
 	}
 
-	void SoundEngine::SetOnSongEndCallback(Callbacks::Callback* ptr)
+	void SoundEngine::SetOnSongEndCallback(SmartPointer<Callbacks::Callback> ptr)
 	{
 		if (me)
 		{
@@ -140,7 +141,25 @@ namespace Audio
 		}
 	}
 
-	void SoundEngine::SetOnSFXEndCallback(Callbacks::Callback* ptr)
+	SmartPointer<Callbacks::Callback> SoundEngine::GetOnSongEndCallback()
+	{
+		if (me)
+		{
+			return me->GetSongOnEndFunction();
+		}
+		return __null;
+	}
+
+	SmartPointer<Callbacks::Callback> SoundEngine::GetOnSFXEndCallback()
+	{
+		if (me)
+		{
+			return me->GetSongOnEndFunction();
+		}
+		return __null;
+	}
+
+	void SoundEngine::SetOnSFXEndCallback(SmartPointer<Callbacks::Callback> ptr)
 	{
 		if (me)
 		{
@@ -171,6 +190,23 @@ namespace Audio
 		if (me)
 		{
 			me->ResumeSong();
+		}
+	}
+
+	u16* SoundEngine::GetBufferAddress()
+	{
+		if (me)
+		{
+			return me->GetBufferAddress();
+		}
+		return __null;
+	}
+
+	void SoundEngine::SwitchWavePattern(u32 patternID)
+	{
+		if (me)
+		{
+			me->SwitchWavePattern(patternID);
 		}
 	}
 }

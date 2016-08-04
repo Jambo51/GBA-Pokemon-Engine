@@ -30,6 +30,7 @@ namespace Collections
 			virtual void PushAt(T item, int index) = 0;
 			virtual T At(int index) const = 0;
 			virtual void Replace(int index, T item) = 0;
+			virtual bool Contains(T item)= 0;
 			const T First() const
 			{
 				return At(0);

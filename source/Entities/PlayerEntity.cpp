@@ -13,7 +13,7 @@ namespace Entities
 	PlayerEntity::PlayerEntity(const Vector2D &location, u32 backgroundLevel, bool gender, u16* colourAddress) : NonPlayerCharacter(location, backgroundLevel, (gender) ? 30 : 0, 0xFF, colourAddress)
 	{
 		// TODO Auto-generated constructor stub
-		_object->SetPosition(Vector2D(112, 56));
+		object->SetPosition(Vector2D(112, 56));
 	}
 
 	PlayerEntity::~PlayerEntity()
@@ -23,12 +23,12 @@ namespace Entities
 
 	bool PlayerEntity::Initialise()
 	{
-
+		return true;
 	}
 
 	bool PlayerEntity::LoadContent()
 	{
-
+		return true;
 	}
 
 	bool PlayerEntity::Update()

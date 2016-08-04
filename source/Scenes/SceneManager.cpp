@@ -12,8 +12,8 @@
 
 namespace Scenes
 {
-	EWRAM_LOCATION ALIGN(4) Scene* SceneManager::scene = NULL;
-	EWRAM_LOCATION ALIGN(4) Scene* SceneManager::newScene = NULL;
+	EWRAM_LOCATION ALIGN(4) SmartPointer<Scene> SceneManager::scene = SmartPointer<Scene>();
+	EWRAM_LOCATION ALIGN(4) SmartPointer<Scene> SceneManager::newScene = SmartPointer<Scene>();
 
 	SceneManager::SceneManager()
 	{
@@ -26,22 +26,15 @@ namespace Scenes
 		// TODO Auto-generated destructor stub
 	}
 
-	void SceneManager::SetScene(Scene* newscene)
+	void SceneManager::SetScene(SmartPointer<Scene> newscene)
 	{
-		if (Core::Game::IsValidPointer(newscene))
-		{
-			newScene = newscene;
-		}
+		newScene = newscene;
 	}
 
 	void SceneManager::Update()
 	{
 		if (newScene)
 		{
-			if (scene)
-			{
-				delete scene;
-			}
 			scene = newScene;
 			newScene = NULL;
 		}

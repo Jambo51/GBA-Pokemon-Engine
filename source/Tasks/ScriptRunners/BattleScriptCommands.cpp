@@ -195,7 +195,7 @@ u32 BattlePokemonHasType(PokemonBattleData* data, u32 type)
 
 u32 CheckForAbilityInBattle(u32 abilityID, u32 side)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	for (u32 i = 0; i < battleDataPointer.battleBanks[NumBattlers]; i++)
 	{
 		if (side == 2 || (i & 1) == side)
@@ -212,7 +212,7 @@ u32 CheckForAbilityInBattle(u32 abilityID, u32 side)
 
 u32 CanItemBeUsed(PokemonBattleData* attacker, PokemonBattleData* defender)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u32 result = true;
 	if (attacker[0].ability == Klutz || CheckForAbilityInBattle(Unnerve, (~(battleDataPointer.battleBanks[User] & 1) & 1)))
 	{
@@ -255,8 +255,8 @@ u32 GetSecondaryItemEffect(u16 itemID)
 
 u32 CalculateExperienceGain(u32 mode)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	PokemonBattleData* beneficiary = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User]];
 	PokemonBattleData* victim = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
 	u32 expGain = victim[0].mainPointer->GetBaseExperience();
@@ -349,7 +349,7 @@ const u16 badgeLevelEffects[][2] = {
 
 u32 CheckForMoveCancellingStatuses(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 userBank = battleDataPointer.battleBanks[User];
 	PokemonBattleData* attacker = &battleDataPointer.pokemonStats[userBank];
@@ -627,7 +627,7 @@ const u16 evasionAccuracyChart[] = {
 u32 HitMissCalculation(ScriptRunner* runner)
 {
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u32 userBank = battleDataPointer.battleBanks[User];
 	u32 defenderBank = battleDataPointer.battleBanks[Target];
 	PokemonBattleData* attacker = &battleDataPointer.pokemonStats[userBank];
@@ -664,7 +664,7 @@ u32 HitMissCalculation(ScriptRunner* runner)
 
 void StopBattleScriptTextWait(u32 number)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	battleDataPointer.flags.battleScriptTextWaitFlag = 0;
 	battleDataPointer.flags.battleScriptTextContinueFlag = 1;
 }
@@ -672,7 +672,7 @@ void StopBattleScriptTextWait(u32 number)
 u32 PokemonUsedMessage(ScriptRunner* runner)
 {
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	if (battleDataPointer.flags.battleScriptTextContinueFlag)
 	{
 		battleDataPointer.flags.battleScriptTextContinueFlag = 0;
@@ -692,7 +692,7 @@ u32 PokemonUsedMessage(ScriptRunner* runner)
 u32 DecrementPP(ScriptRunner* runner)
 {
 	u8* battleScriptPointer = runner->GetScriptPointer();
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u32 userBank = battleDataPointer.battleBanks[User];
 	u32 defenderBank = battleDataPointer.battleBanks[Target];
 	PokemonBattleData* attacker = &battleDataPointer.pokemonStats[userBank];
@@ -720,7 +720,7 @@ u32 DecrementPP(ScriptRunner* runner)
 
 u32 ApplyWeatherBasedModifiers(u32 currentDamage, u32 moveType)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	if (CheckForAbilityInBattle(Air_Lock, 2) == false && CheckForAbilityInBattle(Cloud_Nine, 2) == false)
 	{
 		if (battleDataPointer.weatherBits.sunny)
@@ -766,7 +766,7 @@ u32 CheckAdditionalTypeEffects(u32 defenderType, u32 moveType, u32 currentEffect
 
 u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveType)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u32 defenderType1 = defender[0].type1;
 	u32 defenderType2 = defender[0].type2;
 	u32 defenderType3 = defender[0].type3;
@@ -826,7 +826,7 @@ u32 CalculateTypeEffectivenessOnPokemon(PokemonBattleData* defender, u32 moveTyp
 
 u32 ApplyTypeBasedModifiers(PokemonBattleData* defender, u32 moveType, u32 currentDamage)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u32 effectiveness = CalculateTypeEffectivenessOnPokemon(defender, moveType);
 	currentDamage = Maths::UnsignedFractionalMultiplication(currentDamage, effectiveness);
 	u32 value = NoEffect;
@@ -851,7 +851,7 @@ u32 ApplyTypeBasedModifiers(PokemonBattleData* defender, u32 moveType, u32 curre
 
 u32 SetCriticalHitFlagsAndValues(u32 currentDamage, u32 attackerAbility)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	battleDataPointer.flags.criticalHitFlag = 1;
 	if (attackerAbility == Sniper)
 	{
@@ -866,7 +866,7 @@ u32 SetCriticalHitFlagsAndValues(u32 currentDamage, u32 attackerAbility)
 
 u32 ApplyCriticalHitModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	battleDataPointer.flags.criticalHitFlag = 0;
 	u32 defenderAbility = defender[0].ability;
 	if (defenderAbility != Battle_Armour && defenderAbility != Shell_Armour)
@@ -922,8 +922,8 @@ u32 ApplyCriticalHitModifiers(u32 currentDamage, PokemonBattleData* attacker, Po
 
 u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, const MoveData &moveInfo)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	u32 moveType = moveInfo.type;
 	if (battleDataPointer.flags.moveTypeOverride)
 	{
@@ -1089,7 +1089,7 @@ u32 ApplyAbilityModifiers(u32 currentDamage, PokemonBattleData* attacker, Pokemo
 
 u32 ApplyBasePowerModifiers(u32 currentDamage, PokemonBattleData* attacker, PokemonBattleData* defender, const MoveData &moveInfo)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u32 ability = attacker[0].ability;
 	if (ability == Technician && currentDamage <= 60)
 	{
@@ -1307,8 +1307,8 @@ u8 naturalGiftDamageValues[] = {
 
 u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* defender, const MoveData &moveInfo, ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	u32 returnable;
 	switch (moveInfo.effectID)
 	{
@@ -1613,7 +1613,7 @@ u32 GetMoveBasePowerFromData(PokemonBattleData* attacker, PokemonBattleData* def
 
 u32 CalculateDamage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 damage = 0;
 	u16 moveID = battleDataPointer.moveIndex;
@@ -1855,8 +1855,8 @@ u32 StoreWord(ScriptRunner* runner)
 
 u32 JumpIf(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 context = battleScriptPointer[1];
 	switch (context)
@@ -2227,7 +2227,7 @@ u32 SetMoveSecondaryEffect(ScriptRunner* runner)
 
 u32 ExecuteMoveAnimation(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (Game::GetConstOptions().playAnimations)
 	{
@@ -2241,7 +2241,7 @@ u32 ExecuteMoveAnimation(ScriptRunner* runner)
 
 u32 WaitMoveAnimation(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (battleDataPointer.flags.waitForMoveAnimation == 0)
 	{
@@ -2254,7 +2254,7 @@ u32 WaitMoveAnimation(ScriptRunner* runner)
 
 u32 ExecuteDamageReceptionAnimation(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	switch (battleDataPointer.flags.attackEffectiveness)
 	{
@@ -2280,7 +2280,7 @@ u32 ExecuteDamageReceptionAnimation(ScriptRunner* runner)
 
 u32 ApplyCalculatedDamage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	PokemonBattleData* defender = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
 	if (defender[0].currentHP <= runner->GetBank(0))
@@ -2315,7 +2315,7 @@ u32 UpdateHPBar(ScriptRunner* runner)
 
 u32 FaintIfNecessary(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 targetBank = battleDataPointer.battleBanks[Target];
 	if (battleDataPointer.pokemonStats[targetBank].currentHP == 0)
@@ -2324,7 +2324,7 @@ u32 FaintIfNecessary(ScriptRunner* runner)
 		u32 counter = 0;
 		for (i = 0; i < 6; i++)
 		{
-			Core::Pokemon::Pokemon* target = (targetBank & 1) ? ((Battle*)SceneManager::GetScene())->GetEnemyBattlerByIndex(i) : Game::GetPartyPokemon(i);
+			Core::Pokemon::Pokemon* target = (targetBank & 1) ? SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetEnemyBattlerByIndex(i) : Game::GetPartyPokemon(i);
 			if (target->Decrypt(CurrentHP) != 0)
 			{
 				counter++;
@@ -2367,7 +2367,7 @@ u32 CalculateExperience(ScriptRunner* runner)
 
 u32 ApplyEVs(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	PokemonBattleData* attacker = (PokemonBattleData*)&battleDataPointer.pokemonStats[battleDataPointer.battleBanks[User]];
 	PokemonBattleData* defender = (PokemonBattleData*)&battleDataPointer.pokemonStats[battleDataPointer.battleBanks[Target]];
@@ -2416,7 +2416,7 @@ u32 ApplyEVs(ScriptRunner* runner)
 
 u32 ApplyMoveEffects(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 i;
 	for (i = 0; i < MaxNumEffects; i++)
@@ -2682,7 +2682,7 @@ u32 ApplyMoveEffects(ScriptRunner* runner)
 
 u32 SetBattleStatusFlag(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 value = battleDataPointer.battleBanks[battleScriptPointer[1]];
 	PokemonBattleData* data = &battleDataPointer.pokemonStats[value];
@@ -2694,7 +2694,7 @@ u32 SetBattleStatusFlag(ScriptRunner* runner)
 
 u32 ClearBattleStatusFlag(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 value = battleDataPointer.battleBanks[battleScriptPointer[1]];
 	PokemonBattleData* data = &battleDataPointer.pokemonStats[value];
@@ -2748,7 +2748,7 @@ u32 PauseBattleScript(ScriptRunner* runner)
 
 u32 PauseBattleScriptIfTextRendering(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u16 battleScriptFrameWait = runner->GetWaitFrames();
 	u32 textRendering = battleDataPointer.flags.battleScriptTextWaitFlag;
@@ -2786,7 +2786,7 @@ u32 PauseBattleScriptIfTextRendering(ScriptRunner* runner)
 
 u32 EndTurn(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	battleDataPointer.flags.waitAttack = 0;
 	battleDataPointer.currentBattlerIndex++;
 	return Ended;
@@ -2794,7 +2794,7 @@ u32 EndTurn(ScriptRunner* runner)
 
 u32 EndScript(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	battleDataPointer.flags.waitAttack = 0;
 	battleDataPointer.flags.endBattle = 1;
 	return Ended;
@@ -2802,7 +2802,7 @@ u32 EndScript(ScriptRunner* runner)
 
 u32 PrintCriticalHitMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (battleDataPointer.flags.criticalHitFlag)
 	{
@@ -2817,7 +2817,7 @@ u32 PrintCriticalHitMessage(ScriptRunner* runner)
 
 u32 PrintEffectivenessMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	switch (battleDataPointer.flags.attackEffectiveness)
 	{
@@ -2846,7 +2846,7 @@ u32 PrintEffectivenessMessage(ScriptRunner* runner)
 
 u32 PrintMessageByPointer(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -2858,7 +2858,7 @@ u32 PrintMessageByPointer(ScriptRunner* runner)
 
 u32 PrintMessageByID(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -2883,8 +2883,8 @@ const u16 afterTrainerBattleFanfares[] = {
 
 u32 PlayBattleEndFanfare(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (battleType.info.isWildBattle)
 	{
@@ -2917,7 +2917,7 @@ u32 PlayBattleEndFanfare(ScriptRunner* runner)
 
 u32 PrintFaintMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -2929,7 +2929,7 @@ u32 PrintFaintMessage(ScriptRunner* runner)
 
 u32 PrintExperienceMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -2946,7 +2946,7 @@ u32 PrintExperienceMessage(ScriptRunner* runner)
 
 u32 WaitKeyPressTextBattle(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (battleDataPointer.flags.battleScriptTextWaitFlag == 0 && battleDataPointer.flags.battleScriptTextContinueFlag == 0)
 	{
@@ -2966,7 +2966,7 @@ u32 WaitKeyPressTextBattle(ScriptRunner* runner)
 
 u32 PrintTrainerVictoryMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -2978,7 +2978,7 @@ u32 PrintTrainerVictoryMessage(ScriptRunner* runner)
 
 u32 PrintTrainerAfterMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	char* theString = battleDataPointer.trainerData[0].afterBattleText;
 	if (theString)
@@ -3001,8 +3001,8 @@ const u8 trainerClassMoneyRates[] = {
 
 u32 CalculateTrainerWinnings(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	u32 calculatedValue = 0;
 	if (battleType.info.isTrainerBattle)
@@ -3050,7 +3050,7 @@ u32 CalculateTrainerWinnings(ScriptRunner* runner)
 
 u32 PrintTrainerCashGainMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (runner->GetBank(0))
 	{
@@ -3065,7 +3065,7 @@ u32 PrintTrainerCashGainMessage(ScriptRunner* runner)
 
 u32 PrintMumCashGainMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (Flags::CheckFlag(Flag_MumBank))
 	{
@@ -3104,7 +3104,7 @@ u32 PrintMumCashGainMessage(ScriptRunner* runner)
 
 u32 CalculatePickupWinnings(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	runner->SetBank(0, battleDataPointer.counterBits.payDay * 5);
 	u32 i;
@@ -3128,7 +3128,7 @@ u32 CalculatePickupWinnings(ScriptRunner* runner)
 
 u32 PrintPayDayCashGainMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (runner->GetBank(0))
 	{
@@ -3151,7 +3151,7 @@ u32 PrintItemEffectMessage(ScriptRunner* runner)
 
 u32 CalculateFleeProbabilityValue(u32 speed1, u32 speed2)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	speed1 *= 32;
 	speed1 = Maths::UnsignedDivide(speed1, speed2 >> 2);
 	speed1 += (30 * battleDataPointer.counterBits.escapeAttempts);
@@ -3161,8 +3161,8 @@ u32 CalculateFleeProbabilityValue(u32 speed1, u32 speed2)
 
 u32 CalculateFleeResult(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
-	const BattleTypeStruct &battleType = ((Battle*)SceneManager::GetScene())->GetBattleTypeStruct();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
+	const BattleTypeStruct &battleType = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleTypeStruct();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	if (battleType.info.isWildBattle || battleType.info.isLinkBattle)
 	{
@@ -3307,7 +3307,7 @@ u32 CalculateFleeResult(ScriptRunner* runner)
 
 u32 PrintCallEffectMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -3336,7 +3336,7 @@ u32 PrintCallEffectMessage(ScriptRunner* runner)
 
 u32 PrintFleeEffectMessage(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	SetTilesForTextRender(runner);
 	battleDataPointer.flags.battleScriptTextWaitFlag = 1;
@@ -3411,7 +3411,7 @@ u32 SetBattleDamageMultiplier(ScriptRunner* runner)
 
 u32 SetSecondaryStatus(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	PokemonBattleData* target = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[battleScriptPointer[1]]];
 	target[0].secondaryStatuses = UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 2, 4);
@@ -3422,7 +3422,7 @@ u32 SetSecondaryStatus(ScriptRunner* runner)
 
 u32 SetSpecialBattleStatus(ScriptRunner* runner)
 {
-	BattleData &battleDataPointer = ((Battle*)SceneManager::GetScene())->GetBattleData();
+	BattleData &battleDataPointer = SmartPointerFunctions::Cast<Scene, Battle>(SceneManager::GetScene())->GetBattleData();
 	u8* battleScriptPointer = runner->GetScriptPointer();
 	PokemonBattleData* target = &battleDataPointer.pokemonStats[battleDataPointer.battleBanks[battleScriptPointer[1]]];
 	u32 value = UnalignedNumberHandler::LoadUnalignedNumber(battleScriptPointer, 3, 4);

@@ -42,7 +42,7 @@ namespace Tasks
 		}
 
 
-		void ScriptRunner::Update()
+		bool ScriptRunner::Update()
 		{
 			u32 scriptEnded = NotEnded;
 			if (!scriptPointer)
@@ -56,10 +56,10 @@ namespace Tasks
 				scriptEnded = Command(this);
 				if (scriptEnded == WaitForFrames)
 				{
-					return;
+					return false;
 				}
 			}
-			TaskManager::RemoveTask(this);
+			return true;
 		}
 	}
 }

@@ -28,11 +28,11 @@ namespace Input
 	public:
 		StartMenuInputEventHandler();
 		~StartMenuInputEventHandler();
-		void OnPressA();
-		void OnPressB();
-		void OnPressStart();
-		void OnPressUp();
-		void OnPressDown();
+		bool OnPressA();
+		bool OnPressB();
+		bool OnPressStart();
+		bool OnPressUp();
+		bool OnPressDown();
 	};
 }
 

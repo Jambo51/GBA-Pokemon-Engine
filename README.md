@@ -12,8 +12,8 @@ undertake before you will be able to compile this.
 First up, you'll need to get yourself a copy of devkitPro. You can find an updater/installer for devkitPro
 here: https://sourceforge.net/projects/devkitpro/
 
-You should install the software to somewhere which has no spaces in it path, because having spaces complicates
-the compilationg process significantly. As an example, on my PC, I have it at C:\devkitPro.
+You should install the software to somewhere which has no spaces in its path, because having spaces complicates
+the compilation process significantly. As an example, on my PC, I have it at C:\devkitPro.
 
 This may raise another question - does the source code work on Unix style operating systems?
 My answer is that it should, but I cannot definitively say it will. I have kept case sensitivity in mind
@@ -30,7 +30,7 @@ code. This is a necessity for the makefile to be able to find and include the li
 
 Now, clone this repo, and place it within the GBA workspace established before.
 
-Skip to line 67 if you do not want to use an IDE to compile the engine, or would prefer
+Skip to the end if you do not want to use an IDE to compile the engine, or would prefer
 to use the CLI to build it.
 
 It is advised, though not required, that you make use of an IDE to help code for the engine.
@@ -66,4 +66,5 @@ If this has all worked, then you are clear to start developing features for the 
 
 If you wish to build the engine from the CLI, simply open up your favourite CLI and navigate to the directory in which
 the engine is held, then type "make". This will trigger the pre-existing makefile which should build the engine in its
-entirety without needing to interact with Eclipse in any way.
+entirety without needing to interact with Eclipse in any way. You can specify whether you want to just build, clean or
+rebuild the engine by using the terms "all", "clean" and "clean all" as parameters for the make command.

@@ -1,6 +1,8 @@
 # GBA-Pokemon-Engine
 Source code for Jambo51's Open Source GBA Pokémon Game Engine
 
+# Please Note - this engine is no longer being developed as a result of Nintendo's copyright takedowns on varying hacks and Pokémon fan projects. I apologise for this unfortunate end to the project, but please feel free to adapt any of this code for your own projects.
+
 This engine is being developed in my spare time by myself and only myself. As a result, progress has been slow.
 Being open source, anyone is, of course, welcome to contribute to the engine, and I will attempt to assist in
 understanding the code where possible. It is assumed at this stage that you know how to run a GBA ROM
